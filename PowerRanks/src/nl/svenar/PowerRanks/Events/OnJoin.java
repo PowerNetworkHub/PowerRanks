@@ -26,9 +26,9 @@ public class OnJoin implements Listener {
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		
-		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
-		
+		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));		
 		this.m.setupPermissions(player);
+		this.m.updateTablistName(player);
 		try {
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
