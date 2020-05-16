@@ -13,7 +13,7 @@
 # Enable or disable processing the `build` tag in Ranks.yml
 # --------------------
 # Tablist Modification
-# Change the player's display name
+# Change the player's name in the tablist
 # Available options:
 # [prefix] rank name
 # [suffix] suffix
