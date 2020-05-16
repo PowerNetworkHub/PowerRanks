@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.Rank;
 import nl.svenar.PowerRanks.metrics.Metrics;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.io.File;
 import java.util.logging.Logger;
@@ -97,12 +98,13 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		this.loadAllFiles();
 		this.verifyConfig();
-		
+
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			String playerName = player.getName();
-			if (playerPermissionAttachment.get(playerName) == null) playerPermissionAttachment.put(playerName, player.addAttachment(this));
+			if (playerPermissionAttachment.get(playerName) == null)
+				playerPermissionAttachment.put(playerName, player.addAttachment(this));
 		}
-		
+
 		this.setupPermissions();
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
@@ -121,23 +123,27 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
-		
-		try {
-			Metrics metrics = new Metrics(this);
-			metrics.start();
-		} catch (IOException e) {
-			this.log.warning("Failed to connect to plugin metrics: " + e.getMessage());
-		}
+
+		int pluginId = 7565;
+		@SuppressWarnings("unused")
+		Metrics metrics = new Metrics(this, pluginId);
+
+//		try {
+//			Metrics metrics = new Metrics(this);
+//			metrics.start();
+//		} catch (IOException e) {
+//			this.log.warning("Failed to connect to plugin metrics: " + e.getMessage());
+//		}
 	}
 
 	public void onDisable() {
 		Bukkit.getServer().getScheduler().cancelTasks(this);
-		
+
 		for (Entry<String, PermissionAttachment> pa : playerPermissionAttachment.entrySet()) {
 			pa.getValue().remove();
 		}
 		playerPermissionAttachment.clear();
-		
+
 		if (this.log != null && this.pdf != null) {
 			this.log.info("Disabled " + this.pdf.getName() + " v" + this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
 		}
@@ -261,12 +267,13 @@ public class Main extends JavaPlugin implements Listener {
 	private void setupPermissions() {
 		for (final Player player : Bukkit.getServer().getOnlinePlayers()) {
 			this.setupPermissions(player);
+			this.updateTablistName(player);
 		}
 	}
 
 	public void setupPermissions(Player player) {
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
-		
+
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -277,10 +284,10 @@ public class Main extends JavaPlugin implements Listener {
 			final String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			final List<String> GroupPermissions = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
 			final List<String> Inheritances = (List<String>) rankYaml.getStringList("Groups." + rank + ".inheritance");
-			
+
 			if (GroupPermissions != null) {
 				for (int i = 0; i < GroupPermissions.size(); i++) {
-					
+
 					boolean enabled = !GroupPermissions.get(i).startsWith("-");
 					if (enabled) {
 						attachment.setPermission((String) GroupPermissions.get(i), true);
@@ -289,13 +296,13 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				}
 			}
-			
+
 			if (Inheritances != null) {
 				for (int i = 0; i < Inheritances.size(); i++) {
 					List<String> Permissions = (List<String>) rankYaml.getStringList("Groups." + Inheritances.get(i) + ".permissions");
 					if (Permissions != null) {
 						for (int j = 0; j < Permissions.size(); j++) {
-							
+
 							boolean enabled = !Permissions.get(j).startsWith("-");
 							if (enabled) {
 								attachment.setPermission((String) Permissions.get(j), true);
@@ -313,7 +320,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	public void removePermissions(Player player) {
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
-		
+
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -324,13 +331,13 @@ public class Main extends JavaPlugin implements Listener {
 			final String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			final List<String> GroupPermissions = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
 			final List<String> Inheritances = (List<String>) rankYaml.getStringList("Groups." + rank + ".inheritance");
-			
+
 			if (GroupPermissions != null) {
 				for (int i = 0; i < GroupPermissions.size(); ++i) {
 					attachment.unsetPermission((String) GroupPermissions.get(i));
 				}
 			}
-			
+
 			if (Inheritances != null) {
 				for (int i = 0; i < Inheritances.size(); ++i) {
 					final List<String> Permissions = (List<String>) rankYaml.getStringList("Groups." + Inheritances.get(i) + ".permissions");
@@ -343,6 +350,35 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateTablistName(Player player) {
+		File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
+		File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		YamlConfiguration configYaml = new YamlConfiguration();
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		YamlConfiguration playerYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+			if (!configYaml.getBoolean("displayname_modification.enabled")) return;
+			
+			rankYaml.load(rankFile);
+			playerYaml.load(playerFile);
+			
+			String format = configYaml.getString("displayname_modification.format");
+			String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
+			String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
+			String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
+
+			format = Util.replaceAll(format, "[name]", player.getPlayerListName());
+			format = Util.replaceAll(format, "[prefix]", prefix);
+			format = Util.replaceAll(format, "[suffix]", suffix);
+			format = Util.replaceAll(format, "&", "§");
+			player.setPlayerListName(format);
+		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 	}
@@ -392,6 +428,7 @@ public class Main extends JavaPlugin implements Listener {
 		player.sendMessage(ChatColor.GREEN + "/pr createrank <rankName>" + ChatColor.DARK_GREEN + " - Create a new rank");
 		player.sendMessage(ChatColor.GREEN + "/pr deleterank <rankName>" + ChatColor.DARK_GREEN + " - Delete a rank");
 		player.sendMessage(ChatColor.GREEN + "/pr set <playerName> <rankName>" + ChatColor.DARK_GREEN + " - Set someone's rank");
+		player.sendMessage(ChatColor.GREEN + "/pr setown <rankName>" + ChatColor.DARK_GREEN + " - Set your own rank");
 		player.sendMessage(ChatColor.GREEN + "/pr promote <playerName>" + ChatColor.DARK_GREEN + " - Promote a player to the next rank");
 		player.sendMessage(ChatColor.GREEN + "/pr demote <playerName>" + ChatColor.DARK_GREEN + " - Demote a player to the previous rank");
 		player.sendMessage(ChatColor.GREEN + "/pr check <playerName>" + ChatColor.DARK_GREEN + " - Check someone's rank");
