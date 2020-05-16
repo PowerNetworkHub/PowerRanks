@@ -1,7 +1,6 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -10,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.Util;
 
 public class OnChat implements Listener {
 	
@@ -37,11 +37,11 @@ public class OnChat implements Listener {
             final String suffix = (rankYaml.getString("Groups." + rank + ".chat.suffix") != null) ? rankYaml.getString("Groups." + rank + ".chat.suffix") : "";
             final String chatColor = (rankYaml.getString("Groups." + rank + ".chat.chatColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.chatColor") : "";
             final String nameColor = (rankYaml.getString("Groups." + rank + ".chat.nameColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.nameColor") : "";
-            format = replaceAll(format, "[prefix]", prefix);
-            format = replaceAll(format, " [suffix]", (suffix.length() > 0) ? (" " + suffix) : suffix);
-            format = replaceAll(format, "[player]", String.valueOf(nameColor) + "%1$s");
-            format = replaceAll(format, "[msg]", String.valueOf(chatColor) + "%2$s");
-            format = replaceAll(format, "[format]", e.getFormat());
+            format = Util.replaceAll(format, "[prefix]", prefix);
+            format = Util.replaceAll(format, " [suffix]", (suffix.length() > 0) ? (" " + suffix) : suffix);
+            format = Util.replaceAll(format, "[player]", String.valueOf(nameColor) + "%1$s");
+            format = Util.replaceAll(format, "[msg]", String.valueOf(chatColor) + "%2$s");
+            format = Util.replaceAll(format, "[format]", e.getFormat());
             format = this.m.chatColor(this.m.colorChar.charAt(0), format);
             if (configYaml.getBoolean("chat.enabled")) {
                 e.setFormat(format);
@@ -51,20 +51,5 @@ public class OnChat implements Listener {
             e2.printStackTrace();
             e.setFormat("%1$s: %2$s");
         }
-    }
-    
-    public static String replaceAll(String source, final String key, final String value) {
-        final String[] split = source.split(Pattern.quote(key));
-        final StringBuilder builder = new StringBuilder();
-        builder.append(split[0]);
-        for (int i = 1; i < split.length; ++i) {
-            builder.append(value);
-            builder.append(split[i]);
-        }
-        while (source.endsWith(key)) {
-            builder.append(value);
-            source = source.substring(0, source.length() - key.length());
-        }
-        return builder.toString();
     }
 }
