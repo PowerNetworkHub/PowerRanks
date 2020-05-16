@@ -1,0 +1,22 @@
+name: PowerRanks
+version: 0.1.6
+main: nl.svenar.PowerRanks.Main
+api-version: 1.13
+authors: [svenar_nl]
+website: 'http://dev.bukkit.org/bukkit-plugins/powerranks'
+commands:
+  powerranks:
+    description: Main Command
+  pr:
+    description: Main Command
+permissions:
+  powerranks.cmd.help:
+    default: true
+  powerranks.cmd.check:
+    default: true
+  powerranks.cmd.set:
+    default: op
+  powerranks.cmd.list:
+    default: op
+  powerranks.cmd.create:
+    default: op

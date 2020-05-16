@@ -1,0 +1,14 @@
+# Chat format
+# Available options:
+# [prefix] rank name
+# [suffix] suffix
+# [player] player name
+# [msg] message player typed
+# [format] get the current chat format
+# Example, use the current chat format and adding the rank's prefix:
+# format: '[prefix] [format]'
+chat:
+  enabled: true
+  format: '[prefix] [player] [suffix]&r: [msg]'
+build_modification:
+  enabled: true
