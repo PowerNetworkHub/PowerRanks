@@ -284,11 +284,8 @@ public class Main extends JavaPlugin implements Listener {
 					boolean enabled = !GroupPermissions.get(i).startsWith("-");
 					if (enabled) {
 						attachment.setPermission((String) GroupPermissions.get(i), true);
-						this.log.info("[ADD] " + GroupPermissions.get(i));
 					} else {
-						//attachment.unsetPermission((String) GroupPermissions.get(i).replaceFirst("-", ""));
 						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
-						this.log.info("[DEL] " + GroupPermissions.get(i).replaceFirst("-", ""));
 					}
 				}
 			}
@@ -302,11 +299,8 @@ public class Main extends JavaPlugin implements Listener {
 							boolean enabled = !Permissions.get(j).startsWith("-");
 							if (enabled) {
 								attachment.setPermission((String) Permissions.get(j), true);
-								this.log.info("[ADD] " + Permissions.get(j));
 							} else {
-								//attachment.unsetPermission((String) Permissions.get(j).replaceFirst("-", ""));
-								attachment.setPermission((String) Permissions.get(i).replaceFirst("-", ""), false);
-								this.log.info("[DEL] " + Permissions.get(j).replaceFirst("-", ""));
+								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
 							}
 						}
 					}
@@ -314,9 +308,6 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		for (Entry<String, Boolean> pa : attachment.getPermissions().entrySet()) {
-			this.log.info("[PERM] " + pa.getKey() + " - " + String.valueOf(pa.getValue()));
 		}
 	}
 
