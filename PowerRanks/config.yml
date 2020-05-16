@@ -1,3 +1,4 @@
+# --------------------
 # Chat format
 # Available options:
 # [prefix] rank name
@@ -7,8 +8,23 @@
 # [format] get the current chat format
 # Example, use the current chat format and adding the rank's prefix:
 # format: '[prefix] [format]'
+# --------------------
+# Build Modification
+# Enable or disable processing the `build` tag in Ranks.yml
+# --------------------
+# Tablist Modification
+# Change the player's display name
+# Available options:
+# [prefix] rank name
+# [suffix] suffix
+# [name] player name
+# --------------------
+
 chat:
   enabled: true
   format: '[prefix] [player] [suffix]&r: [msg]'
 build_modification:
   enabled: true
+tablist_modification:
+  enabled: true
+  format: '[prefix] [name]'
