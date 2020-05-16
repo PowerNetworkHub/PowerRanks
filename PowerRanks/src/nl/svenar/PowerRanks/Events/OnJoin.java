@@ -26,7 +26,7 @@ public class OnJoin implements Listener {
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		
-		if (this.m.playerPermissionAttachment.get(player.getName()) == null) this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
+		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
 		
 		this.m.setupPermissions(player);
 		try {
@@ -47,6 +47,6 @@ public class OnJoin implements Listener {
 		final Player player = e.getPlayer();
 		this.m.removePermissions(player);
 		
-		if (this.m.playerPermissionAttachment.get(player.getName()) != null) this.m.playerPermissionAttachment.remove(player.getName());
+		this.m.playerPermissionAttachment.remove(player.getName());
 	}
 }
