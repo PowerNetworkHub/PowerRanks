@@ -48,7 +48,7 @@ public class Main extends JavaPlugin implements Listener {
 	public String configFileLoc;
 	public String fileLoc;
 	File configFile;
-	File ranksile;
+	File ranksFile;
 	File playersFile;
 	FileConfiguration config;
 	FileConfiguration ranks;
@@ -56,6 +56,7 @@ public class Main extends JavaPlugin implements Listener {
 	protected UpdateChecker updatechecker;
 	public String updatemsg;
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
+	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
 
 	public Main() {
 		this.pdf = this.getDescription();
@@ -86,7 +87,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.log.info("Enabled " + this.pdf.getName() + " v" + this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
 //		this.log.info("By: " + this.pdf.getAuthors().get(0));
 		this.configFile = new File(this.getDataFolder(), "config.yml");
-		this.ranksile = new File(this.fileLoc, "Ranks.yml");
+		this.ranksFile = new File(this.fileLoc, "Ranks.yml");
 		this.playersFile = new File(this.fileLoc, "Players.yml");
 		this.config = (FileConfiguration) new YamlConfiguration();
 		this.ranks = (FileConfiguration) new YamlConfiguration();
@@ -127,13 +128,6 @@ public class Main extends JavaPlugin implements Listener {
 		int pluginId = 7565;
 		@SuppressWarnings("unused")
 		Metrics metrics = new Metrics(this, pluginId);
-
-//		try {
-//			Metrics metrics = new Metrics(this);
-//			metrics.start();
-//		} catch (IOException e) {
-//			this.log.warning("Failed to connect to plugin metrics: " + e.getMessage());
-//		}
 	}
 
 	public void onDisable() {
@@ -143,6 +137,11 @@ public class Main extends JavaPlugin implements Listener {
 			pa.getValue().remove();
 		}
 		playerPermissionAttachment.clear();
+		
+		for (Entry<Player, String> pa : playerTablistNameBackup.entrySet()) {
+			pa.getKey().setPlayerListName(pa.getValue());
+		}
+		playerTablistNameBackup.clear();
 
 		if (this.log != null && this.pdf != null) {
 			this.log.info("Disabled " + this.pdf.getName() + " v" + this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
@@ -169,25 +168,25 @@ public class Main extends JavaPlugin implements Listener {
 			configYaml.load(configFile);
 
 			if (rankYaml.getString("version") == null) {
-				rankYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
+				rankYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			} else {
-				if (!rankYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z]", ""))) {
+				if (!rankYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
 					printVersionError("Ranks.yml");
 				}
 			}
 
 			if (playerYaml.getString("version") == null) {
-				playerYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
+				playerYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			} else {
-				if (!playerYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z]", ""))) {
+				if (!playerYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
 					printVersionError("Players.yml");
 				}
 			}
 
 			if (configYaml.getString("version") == null) {
-				configYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
+				configYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			} else {
-				if (!configYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z]", ""))) {
+				if (!configYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
 					printVersionError("config.yml");
 				}
 			}
@@ -216,9 +215,9 @@ public class Main extends JavaPlugin implements Listener {
 			this.configFile.getParentFile().mkdirs();
 			this.copy(this.getResource("config.yml"), this.configFile);
 		}
-		if (!this.ranksile.exists()) {
-			this.ranksile.getParentFile().mkdirs();
-			this.copy(this.getResource("Ranks.yml"), this.ranksile);
+		if (!this.ranksFile.exists()) {
+			this.ranksFile.getParentFile().mkdirs();
+			this.copy(this.getResource("Ranks.yml"), this.ranksFile);
 		}
 		if (!this.playersFile.exists()) {
 			this.playersFile.getParentFile().mkdirs();
@@ -244,7 +243,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void saveAllFiles() {
 		try {
 			this.config.save(this.configFile);
-			this.ranks.save(this.ranksile);
+			this.ranks.save(this.ranksFile);
 			this.players.save(this.playersFile);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -254,7 +253,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void loadAllFiles() {
 		try {
 			this.config.load(this.configFile);
-			this.ranks.load(this.ranksile);
+			this.ranks.load(this.ranksFile);
 			this.players.load(this.playersFile);
 		} catch (Exception e) {
 			System.out.println("-----------------------------");
@@ -355,6 +354,8 @@ public class Main extends JavaPlugin implements Listener {
 	}
 	
 	public void updateTablistName(Player player) {
+		playerTablistNameBackup.put(player, player.getPlayerListName());
+		
 		File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
@@ -363,12 +364,12 @@ public class Main extends JavaPlugin implements Listener {
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
 			configYaml.load(configFile);
-			if (!configYaml.getBoolean("displayname_modification.enabled")) return;
+			if (!configYaml.getBoolean("tablist_modification.enabled")) return;
 			
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
 			
-			String format = configYaml.getString("displayname_modification.format");
+			String format = configYaml.getString("tablist_modification.format");
 			String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
 			String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
