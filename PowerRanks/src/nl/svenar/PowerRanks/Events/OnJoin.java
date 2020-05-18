@@ -8,11 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.permissions.Permissible;
 
 import nl.svenar.PowerRanks.Main;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
-import nl.svenar.PowerRanks.Data.PowerPermissableBase;
 
 public class OnJoin implements Listener {
 	Main m;
@@ -29,9 +27,7 @@ public class OnJoin implements Listener {
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		
-		Permissible permissible = new PowerPermissableBase(player);
-        Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
-        ((PowerPermissableBase) permissible).setOldPermissible(oldPermissible);
+		this.m.playerInjectPermissible(player);
         		
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));		
 		this.m.setupPermissions(player);
@@ -55,7 +51,7 @@ public class OnJoin implements Listener {
 	public void onPlayerLeave(final PlayerQuitEvent e) {
 		final Player player = e.getPlayer();
 		this.m.removePermissions(player);
-		
+
 		this.m.playerPermissionAttachment.remove(player.getName());
 	}
 }

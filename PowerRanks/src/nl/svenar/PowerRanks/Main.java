@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachment;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.CommandExecutor;
 import nl.svenar.PowerRanks.Commands.Cmd;
+import nl.svenar.PowerRanks.Data.PermissibleInjector;
+import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
 import nl.svenar.PowerRanks.Events.OnJoin;
@@ -102,6 +105,7 @@ public class Main extends JavaPlugin implements Listener {
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			String playerName = player.getName();
+			this.playerInjectPermissible(player);
 			if (playerPermissionAttachment.get(playerName) == null)
 				playerPermissionAttachment.put(playerName, player.addAttachment(this));
 		}
@@ -351,6 +355,12 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void playerInjectPermissible(Player player) {
+//		Permissible permissible = new PowerPermissibleBase(player);
+//        Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
+//        ((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
 	}
 	
 	public void updateTablistName(Player player) {

@@ -1,15 +1,10 @@
 package nl.svenar.PowerRanks.Data;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 
-import javax.annotation.Nonnull;
-
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.libs.jline.internal.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissibleBase;
@@ -18,17 +13,19 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-public class PowerPermissableBase extends PermissibleBase {
+public class PowerPermissibleBase extends PermissibleBase {
 	
 	private Player p;
     private Map<String, PermissionAttachmentInfo> permissions;
     private Permissible oldPermissible = new PermissibleBase(null);
 
-    public PowerPermissableBase(Player p) {
+    public PowerPermissibleBase(Player p) {
         super(p);
         this.p = p;
         permissions = new LinkedHashMap<String, PermissionAttachmentInfo>() {
-            @Override
+        	private static final long serialVersionUID = 1L;
+        	
+			@Override
             public PermissionAttachmentInfo put(String k, PermissionAttachmentInfo v) {
                 PermissionAttachmentInfo existing = this.get(k);
                 if (existing != null) {
