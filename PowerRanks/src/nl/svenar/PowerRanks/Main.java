@@ -137,11 +137,15 @@ public class Main extends JavaPlugin implements Listener {
 	public void onDisable() {
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 
+		for (Player player : this.getServer().getOnlinePlayers()) {
+			this.playerUninjectPermissible(player);
+		}
+
 		for (Entry<String, PermissionAttachment> pa : playerPermissionAttachment.entrySet()) {
 			pa.getValue().remove();
 		}
 		playerPermissionAttachment.clear();
-		
+
 		for (Entry<Player, String> pa : playerTablistNameBackup.entrySet()) {
 			pa.getKey().setPlayerListName(pa.getValue());
 		}
@@ -194,6 +198,30 @@ public class Main extends JavaPlugin implements Listener {
 					printVersionError("config.yml");
 				}
 			}
+
+			rankYaml.save(rankFile);
+			playerYaml.save(playerFile);
+			configYaml.save(configFile);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
+	}
+
+	public void forceUpdateConfigVersions() {
+		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+		final YamlConfiguration playerYaml = new YamlConfiguration();
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			playerYaml.load(playerFile);
+			configYaml.load(configFile);
+
+			rankYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+			playerYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+			configYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 
 			rankYaml.save(rankFile);
 			playerYaml.save(playerFile);
@@ -356,16 +384,20 @@ public class Main extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void playerInjectPermissible(Player player) {
-//		Permissible permissible = new PowerPermissibleBase(player);
-//        Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
-//        ((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
+		Permissible permissible = new PowerPermissibleBase(player);
+		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
+		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
 	}
-	
+
+	public void playerUninjectPermissible(Player player) {
+		PermissibleInjector.uninject(player);
+	}
+
 	public void updateTablistName(Player player) {
 		playerTablistNameBackup.put(player, player.getPlayerListName());
-		
+
 		File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
@@ -374,11 +406,12 @@ public class Main extends JavaPlugin implements Listener {
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
 			configYaml.load(configFile);
-			if (!configYaml.getBoolean("tablist_modification.enabled")) return;
-			
+			if (!configYaml.getBoolean("tablist_modification.enabled"))
+				return;
+
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
-			
+
 			String format = configYaml.getString("tablist_modification.format");
 			String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
@@ -454,6 +487,7 @@ public class Main extends JavaPlugin implements Listener {
 		player.sendMessage(ChatColor.GREEN + "/pr delinheritance <rank> <inheritance>" + ChatColor.DARK_GREEN + " - Remove a inheritance from a rank");
 		player.sendMessage(ChatColor.GREEN + "/pr enablebuild <rank>" + ChatColor.DARK_GREEN + " - Enable building on a rank");
 		player.sendMessage(ChatColor.GREEN + "/pr disablebuild <rank>" + ChatColor.DARK_GREEN + " - Disable building on a rank");
+		player.sendMessage(ChatColor.GREEN + "/pr forceupdateconfigversion" + ChatColor.DARK_GREEN + " - Update the version variable in all configuration files.");
 		player.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 

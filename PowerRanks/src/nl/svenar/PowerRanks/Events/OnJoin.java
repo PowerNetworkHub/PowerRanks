@@ -50,6 +50,7 @@ public class OnJoin implements Listener {
 	@EventHandler
 	public void onPlayerLeave(final PlayerQuitEvent e) {
 		final Player player = e.getPlayer();
+		this.m.playerUninjectPermissible(player);
 		this.m.removePermissions(player);
 
 		this.m.playerPermissionAttachment.remove(player.getName());

@@ -15,13 +15,13 @@ import org.bukkit.plugin.Plugin;
 
 public class PowerPermissibleBase extends PermissibleBase {
 	
-	private Player p;
+//	private Player p;
     private Map<String, PermissionAttachmentInfo> permissions;
     private Permissible oldPermissible = new PermissibleBase(null);
 
     public PowerPermissibleBase(Player p) {
         super(p);
-        this.p = p;
+//        this.p = p;
         permissions = new LinkedHashMap<String, PermissionAttachmentInfo>() {
         	private static final long serialVersionUID = 1L;
         	
@@ -51,6 +51,8 @@ public class PowerPermissibleBase extends PermissibleBase {
         if (oldPermissible == null) {
             return super.hasPermission(perm);
         }
+        
+//        Main.log.info("[PowerPermissibleBase] hasSuperPerm '" + perm + "'" + (oldPermissible.hasPermission(perm) ? "yes" : "no"));
 
         return oldPermissible.hasPermission(perm);
     }
@@ -60,11 +62,12 @@ public class PowerPermissibleBase extends PermissibleBase {
         if (permission == null) {
             throw new NullPointerException("permission");
         }
+        
+//        Main.log.info("[PowerPermissibleBase] hasPermission '" + permission + "'" + (oldPermissible.hasPermission(permission) ? "yes" : "no"));
+//        Main.log.info("[PowerPermissibleBase] hasPermission '*'" + (oldPermissible.hasPermission("*") ? "yes" : "no"));
 
 //        boolean res = Permissions.getInstance().getPermissionsManager().has(p, permission);
-        boolean res = true;
-
-        return res;
+        return oldPermissible.hasPermission(permission) || oldPermissible.hasPermission("*");
     }
 
     @Override
@@ -112,12 +115,13 @@ public class PowerPermissibleBase extends PermissibleBase {
 
     @Override
     public boolean isPermissionSet(String permission) {
-        return true;
+//        Main.log.info("[PowerPermissibleBase] isPermissionSet '" + permission + "'" + (permissions.containsKey(permission.toLowerCase(java.util.Locale.ENGLISH)) ? "yes" : "no"));
+        return permissions.containsKey(permission.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     @Override
     public boolean isPermissionSet(Permission perm) {
-        return true;
+        return isPermissionSet(perm.getName());
     }
 
     @Override

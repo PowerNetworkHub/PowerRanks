@@ -20,3 +20,5 @@ permissions:
     default: op
   powerranks.cmd.create:
     default: op
+  powerranks.cmd.admin:
+    default: op

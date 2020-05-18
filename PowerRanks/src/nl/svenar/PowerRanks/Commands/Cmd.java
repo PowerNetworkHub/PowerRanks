@@ -308,6 +308,13 @@ public class Cmd implements CommandExecutor {
 					} else {
 						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr demote <playerName>");
 					}
+				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						this.m.forceUpdateConfigVersions();
+						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Configuration version updated!");
+					} else {
+						this.m.noPermission(player);
+					}
 				}
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
@@ -528,6 +535,9 @@ public class Cmd implements CommandExecutor {
 					} else {
 						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr demote <playerName>");
 					}
+				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
+					this.m.forceUpdateConfigVersions();
+					sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Configuration version updated!");
 				}
 			}
 		}
