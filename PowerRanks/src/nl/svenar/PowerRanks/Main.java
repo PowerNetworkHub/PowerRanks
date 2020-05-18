@@ -238,6 +238,8 @@ public class Main extends JavaPlugin implements Listener {
 		this.log.warning(fileName);
 		this.log.warning(this.pdf.getName() + " may not work with this config.");
 		this.log.warning("Manual verification is required.");
+		this.log.warning("To forcefuly get rid of this message with all its consequences use the following command:");
+		this.log.warning("/pr forceupdateconfigversion");
 		this.log.warning("Visit " + this.pdf.getWebsite() + " for more info.");
 		this.log.warning("===------------------------------===");
 	}
@@ -512,6 +514,7 @@ public class Main extends JavaPlugin implements Listener {
 		console.sendMessage(ChatColor.GREEN + "/pr delinheritance <rank> <inheritance>" + ChatColor.DARK_GREEN + " - Remove a inheritance from a rank");
 		console.sendMessage(ChatColor.GREEN + "/pr enablebuild <rank>" + ChatColor.DARK_GREEN + " - Enable building on a rank");
 		console.sendMessage(ChatColor.GREEN + "/pr disablebuild <rank>" + ChatColor.DARK_GREEN + " - Disable building on a rank");
+		console.sendMessage(ChatColor.GREEN + "/pr forceupdateconfigversion" + ChatColor.DARK_GREEN + " - Update the version variable in all configuration files.");
 		console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 

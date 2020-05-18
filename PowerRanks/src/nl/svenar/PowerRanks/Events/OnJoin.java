@@ -30,8 +30,6 @@ public class OnJoin implements Listener {
 		this.m.playerInjectPermissible(player);
         		
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));		
-		this.m.setupPermissions(player);
-		this.m.updateTablistName(player);
 		try {
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
@@ -43,6 +41,9 @@ public class OnJoin implements Listener {
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
+		
+		this.m.setupPermissions(player);
+		this.m.updateTablistName(player);
 		
         this.m.log.info("Injected: " + (PermissibleInjector.isInjected(player) ? "yes" : "no"));
 	}
