@@ -1,0 +1,35 @@
+# All PowerRanks messages can be changed here
+# Available options:
+# %plugin_name% | name of the plugin.
+
+general:
+   prefix: ""
+
+messages:
+   pass: ""
+
+commands:
+   help:
+   - "&3--------&1%plugin_name%&3--------"
+   - ChatColor.AQUA + "[Optional] <Required> " + ChatColor.DARK_AQUA + "|" + ChatColor.AQUA + " Rank names are casesensetive"
+   - "&a/pr help&2 - Shows this menu"
+   - "&a/pr createrank <rankName>&2 - Create a new rank"
+   - "&a/pr deleterank <rankName>&2 - Delete a rank"
+   - "&a/pr set <playerName> <rankName>&2 - Set someone's rank"
+   - "&a/pr setown <rankName>&2 - Set your own rank"
+   - "&a/pr promote <playerName>&2 - Promote a player to the next rank"
+   - "&a/pr demote <playerName>&2 - Demote a player to the previous rank"
+   - "&a/pr check <playerName>&2 - Check someone's rank"
+   - "&a/pr reload&2 - Reload PowerRanks"
+   - "&a/pr addperm <rank> <permission>&2 - Add a permission to a rank"
+   - "&a/pr delperm <rank> <permission>&2 - Remove a permission from a rank"
+   - "&a/pr setprefix <rank> <prefix>&2 - Change the prefix of a rank"
+   - "&a/pr setsuffix <rank> <suffix>&2 - Change the suffix of a rank"
+   - "&a/pr setchatcolor <rank> <color>&2 - Change the chat color of a rank"
+   - "&a/pr setnamecolor <rank> <color>&2 - Change the name color of a rank"
+   - "&a/pr addinheritance <rank> <inheritance>&2 - Add a inheritance to a rank"
+   - "&a/pr delinheritance <rank> <inheritance>&2 - Remove a inheritance from a rank"
+   - "&a/pr enablebuild <rank>&2 - Enable building on a rank"
+   - "&a/pr disablebuild <rank>&2 - Disable building on a rank"
+   - "&a/pr forceupdateconfigversion&2 - Update the version variable in all configuration files."
+   - "&3--------------------------"
