@@ -1,5 +1,5 @@
 name: PowerRanks
-version: 0.1.7
+version: 0.1.8 BETA
 main: nl.svenar.PowerRanks.Main
 api-version: 1.13
 authors: [svenar_nl]
@@ -14,6 +14,8 @@ permissions:
     default: true
   powerranks.cmd.check:
     default: true
+  powerranks.cmd.reload:
+    default: op
   powerranks.cmd.set:
     default: op
   powerranks.cmd.list:

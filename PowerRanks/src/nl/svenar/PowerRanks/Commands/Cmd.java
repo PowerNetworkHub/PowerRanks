@@ -95,12 +95,16 @@ public class Cmd implements CommandExecutor {
 						this.m.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("check")) {
-					if (args.length == 2) {
-						s.getGroup(((Player) sender).getName(), args[1]);
-					} else if (args.length == 1) {
-						s.getGroup(((Player) sender).getName(), ((Player) sender).getName());
+					if (sender.hasPermission("powerranks.cmd.check")) {
+						if (args.length == 2) {
+							s.getGroup(((Player) sender).getName(), args[1]);
+						} else if (args.length == 1) {
+							s.getGroup(((Player) sender).getName(), ((Player) sender).getName());
+						} else {
+							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr check [username]");
+						}
 					} else {
-						player.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr check [username]");
+						this.m.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
