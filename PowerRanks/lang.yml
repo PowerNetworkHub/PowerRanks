@@ -7,6 +7,10 @@
 # %argument_rank% | command argument rank name
 # %argument_sender% | command argument sender name
 # %argument_target% | command argument target name
+# %argument_permission% | command argument permission node
+# %argument_prefix% | command argument prefix
+# %argument_suffix% | command argument suffix
+# %argument_color% | command argument color
 
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
@@ -18,11 +22,46 @@ messages:
    player_not_found: "%plugin_prefix% &cPlayer '%argument_target%' not found!"
    group_not_found: "%plugin_prefix% &cGroup '%argument_rank%' not found! &cGroup names must be Case sensitive"
    player_check_rank: "%plugin_prefix% %argument_target%'s rank is %argument_rank%"
+   inheritance_added: "%plugin_prefix% &aInheritance '%argument_inheritance%' added to rank: %argument_rank%"
+   inheritance_removed: "%plugin_prefix% &aInheritance '%argument_inheritance%' removed from rank: %argument_rank%"
+   rank_set_prefix: "%plugin_prefix% &aChanged prefix to '%argument_prefix%' on rank: %argument_rank%"
+   rank_set_suffix: "%plugin_prefix% &aChanged suffix to '%argument_suffix%' on rank: %argument_rank%"
+   rank_set_name_color: "%plugin_prefix% &aChanged name color to '%argument_color%' on rank: %argument_rank%"
+   rank_set_chat_color: "%plugin_prefix% &aChanged chat color to '%argument_color%' on rank: %argument_rank%"
+   error_create_rank: "%plugin_prefix% &cCould not create rank: %argument_rank%"
+   error_delete_rank: "%plugin_prefix% &cCould not delete rank: %argument_rank%"
+   rank_created: "%plugin_prefix% &aRank '%argument_rank%' created"
+   rank_deleted: "%plugin_prefix% &aRank '%argument_rank%' deleted"
+   player_promoted: "%plugin_prefix% &aPlayer %argument_target% promoted!"
+   player_demoted: "%plugin_prefix% &aPlayer %argument_target% demoted!"
+   error_player_promote: "%plugin_prefix% &aCould not promote player %argument_target%!"
+   error_player_demote: "%plugin_prefix% &aCould not demote player %argument_target%!"
+   build_enabled: "%plugin_prefix% &aBuilding enabled on rank: %argument_rank%"
+   build_disabled: "%plugin_prefix% &aBuilding disabled on rank: %argument_rank%"
+   permission_added: "%plugin_prefix% Permission '%argument_permission%' added to rank: %argument_rank%"
+   permission_removed: "%plugin_prefix% Permission '%argument_permission%' removed from rank: %argument_rank%"
+   config_version_updated: "%plugin_prefix% &aConfiguration version updated!"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
    usage_command_set: "%plugin_prefix% &c/pr set <username> <rank>"
    usage_command_setown: "%plugin_prefix% &c/pr setown <rank>"
+   usage_command_check: "%plugin_prefix% &c/pr check [playername]"
+   usage_command_add_permission: "%plugin_prefix% &c/pr addperm <rank> <permission>"
+   usage_command_remove_permission: "%plugin_prefix% &c/pr delperm <rank> <permission>"
+   usage_command_add_inheritance: "%plugin_prefix% &c/pr addinheritance <rank> <inheritance>"
+   usage_command_remove_inheritance: "%plugin_prefix% &c/pr delinheritance <rank> <inheritance>"
+   usage_command_set_prefix: "%plugin_prefix% &c/pr setprefix <rank> <prefix>"
+   usage_command_set_suffix: "%plugin_prefix% &c/pr setsuffix <rank> <suffix>"
+   usage_command_set_chat_color: "%plugin_prefix% &c/pr setchatcolor <rank> <color>"
+   usage_command_set_name_color: "%plugin_prefix% &c/pr setnamecolor <rank> <color>"
+   usage_command_create_rank: "%plugin_prefix% &c/pr createrank <rankName>"
+   usage_command_delete_rank: "%plugin_prefix% &c/pr deleterank <rankName>"
+   usage_command_enable_build: "%plugin_prefix% &c/pr enablebuild <rankName>"
+   usage_command_disable_build: "%plugin_prefix% &c/pr disblebuild <rankName>"
+   usage_command_promote: "%plugin_prefix% &c/pr promote <playerName>"
+   usage_command_demote: "%plugin_prefix% &c/pr demote <playerName>"
+   
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
    reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"

@@ -103,7 +103,7 @@ public class Cmd implements CommandExecutor {
 						} else if (args.length == 1) {
 							s.getGroup(((Player) sender).getName(), ((Player) sender).getName());
 						} else {
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr check [username]");
+							this.m.messageCommandUsageCheck(player);
 						}
 					} else {
 						this.m.noPermission(player);
@@ -115,12 +115,12 @@ public class Cmd implements CommandExecutor {
 							final String permission = args[2];
 							final boolean result = s.addPermission(rank2, permission);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Permission '" + permission + "' added to rank: " + rank2);
+								this.m.messageCommandPermissionAdded(player, permission, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to add permission. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr addperm <rank> <permission>");
+							this.m.messageCommandUsageAddperm(player);
 						}
 					} else {
 						this.m.noPermission(player);
@@ -132,12 +132,12 @@ public class Cmd implements CommandExecutor {
 							final String permission = args[2];
 							final boolean result = s.removePermission(rank2, permission);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Permission '" + permission + "' removed from rank: " + rank2);
+								this.m.messageCommandPermissionRemoved(player, permission, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to remove permission. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr delperm <rank> <permission>");
+							this.m.messageCommandUsageDelperm(player);
 						}
 					} else {
 						this.m.noPermission(player);
@@ -149,12 +149,12 @@ public class Cmd implements CommandExecutor {
 							final String inheritance = args[2];
 							final boolean result = s.addInheritance(rank2, inheritance);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Inheritance '" + inheritance + "' added to rank: " + rank2);
+								this.m.messageCommandInheritanceAdded(player, inheritance, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to add inheritance. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr addinheritance <rank> <inheritance>");
+							this.m.messageCommandUsageAddInheritance(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
@@ -164,12 +164,12 @@ public class Cmd implements CommandExecutor {
 							final String inheritance = args[2];
 							final boolean result = s.removeInheritance(rank2, inheritance);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Inheritance '" + inheritance + "' removed from rank: " + rank2);
+								this.m.messageCommandInheritanceRemoved(player, inheritance, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to remove inheritance. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr delinheritance <rank> <inheritance>");
+							this.m.messageCommandUsageRemoveInheritance(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
@@ -179,12 +179,12 @@ public class Cmd implements CommandExecutor {
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed prefix to '" + prefix + "' on rank: " + rank2);
+								this.m.messageCommandSetPrefix(player, prefix, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set prefix. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setprefix <rank> <prefix>");
+							this.m.messageCommandUsageSetPrefix(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
@@ -194,12 +194,12 @@ public class Cmd implements CommandExecutor {
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed suffix to '" + suffix + "' on rank: " + rank2);
+								this.m.messageCommandSetSuffix(player, suffix, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set suffix. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setsuffix <rank> <suffix>");
+							this.m.messageCommandUsageSetSuffix(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
@@ -209,12 +209,12 @@ public class Cmd implements CommandExecutor {
 							final String color = args[2];
 							final boolean result = s.setChatColor(rank2, color);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed chat color to '" + color + "' on rank: " + rank2);
+								this.m.messageCommandSetChatColor(player, color, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set chat color. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setchatcolor <rank> <color>");
+							this.m.messageCommandUsageSetChatColor(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
@@ -224,12 +224,12 @@ public class Cmd implements CommandExecutor {
 							final String color = args[2];
 							final boolean result = s.setNameColor(rank2, color);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed name color to '" + color + "' on rank: " + rank2);
+								this.m.messageCommandSetNameColor(player, color, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set name color. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setnamecolor <rank> <color>");
+							this.m.messageCommandUsageSetNameColor(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("createrank")) {
@@ -238,12 +238,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.createRank(rank2);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Rank " + rank2 + " created");
+								this.m.messageCommandCreateRankSuccess(player, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not create rank " + rank2);
+								this.m.messageCommandCreateRankError(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr createrank <rankName>");
+							this.m.messageCommandUsageCreateRank(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
@@ -252,12 +252,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.deleteRank(rank2);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Rank " + rank2 + " deleted");
+								this.m.messageCommandDeleteRankSuccess(player, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not delete rank " + rank2);
+								this.m.messageCommandDeleteRankError(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr deleterank <rankName>");
+							this.m.messageCommandUsageDeleteRank(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
@@ -266,12 +266,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.setBuild(rank2, true);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Building enabled on rank " + rank2);
+								this.m.messageCommandBuildEnabled(player, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not enable building on rank " + rank2);
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr enablebuild <rankName>");
+							this.m.messageCommandUsageEnableBuild(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("disablebuild")) {
@@ -280,12 +280,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.setBuild(rank2, false);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Building disabled on rank " + rank2);
+								this.m.messageCommandBuildDisabled(player, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not disable building on rank " + rank2);
+								this.m.messageGroupNotFound(player, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr disablebuild <rankName>");
+							this.m.messageCommandUsageDisableBuild(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
@@ -294,12 +294,12 @@ public class Cmd implements CommandExecutor {
 							final String playername = args[1];
 							final boolean success = s.promote(playername);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Player promoted");
+								this.m.messageCommandPromoteSuccess(player, playername);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not promote player");
+								this.m.messageCommandPromoteError(player, playername);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr promote <playerName>");
+							this.m.messageCommandUsagePromote(player);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("demote") && sender.hasPermission("powerranks.cmd.set")) {
@@ -307,17 +307,17 @@ public class Cmd implements CommandExecutor {
 						final String playername = args[1];
 						final boolean success = s.demote(playername);
 						if (success) {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Player demoted");
+							this.m.messageCommandDemoteSuccess(player, playername);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not demote player");
+							this.m.messageCommandDemoteError(player, playername);
 						}
 					} else {
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr demote <playerName>");
+						this.m.messageCommandUsageDemote(player);
 					}
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						this.m.forceUpdateConfigVersions();
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Configuration version updated!");
+						this.m.messageConfigVersionUpdated(player);
 					} else {
 						this.m.noPermission(player);
 					}
@@ -339,13 +339,13 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 3) {
 						s.setGroup(null, args[1], args[2]);
 					} else {
-						console.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr set <username> <rank>");
+						this.m.messageCommandUsageSet(console);
 					}
 				} else if (args[0].equalsIgnoreCase("check")) {
 					if (args.length == 2) {
 						s.getGroup(null, args[1]);
 					} else {
-						console.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr check <username>");
+						this.m.messageCommandUsageCheck(console);
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (args.length == 3) {
@@ -353,12 +353,12 @@ public class Cmd implements CommandExecutor {
 						final String permission = args[2];
 						final boolean result = s.addPermission(rank2, permission);
 						if (result) {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Permission '" + permission + "' added to rank: " + rank2);
+							this.m.messageCommandPermissionAdded(console, permission, rank2);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to add permission. (Rank must be Case Sensitive)");
+							this.m.messageGroupNotFound(console, rank2);
 						}
 					} else {
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr addperm <rank> <permission>");
+						this.m.messageCommandUsageAddperm(console);
 					}
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (args.length == 3) {
@@ -366,12 +366,12 @@ public class Cmd implements CommandExecutor {
 						final String permission = args[2];
 						final boolean result = s.removePermission(rank2, permission);
 						if (result) {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Permission '" + permission + "' removed from rank: " + rank2);
+							this.m.messageCommandPermissionRemoved(console, permission, rank2);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to remove permission. (Rank must be Case Sensitive)");
+							this.m.messageGroupNotFound(console, rank2);
 						}
 					} else {
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr delperm <rank> <permission>");
+						this.m.messageCommandUsageDelperm(console);
 					}
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
@@ -380,12 +380,12 @@ public class Cmd implements CommandExecutor {
 							final String inheritance = args[2];
 							final boolean result = s.addInheritance(rank2, inheritance);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Inheritance '" + inheritance + "' added to rank: " + rank2);
+								this.m.messageCommandInheritanceAdded(console, inheritance, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to add inheritance. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr addinheritance <rank> <inheritance>");
+							this.m.messageCommandUsageAddInheritance(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
@@ -395,12 +395,12 @@ public class Cmd implements CommandExecutor {
 							final String inheritance = args[2];
 							final boolean result = s.removeInheritance(rank2, inheritance);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Inheritance '" + inheritance + "' removed from rank: " + rank2);
+								this.m.messageCommandInheritanceRemoved(console, inheritance, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to remove inheritance. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr delinheritance <rank> <inheritance>");
+							this.m.messageCommandUsageRemoveInheritance(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
@@ -410,12 +410,12 @@ public class Cmd implements CommandExecutor {
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed prefix to '" + prefix + "' on rank: " + rank2);
+								this.m.messageCommandSetPrefix(console, prefix, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set prefix. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setprefix <rank> <prefix>");
+							this.m.messageCommandUsageSetPrefix(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
@@ -425,12 +425,12 @@ public class Cmd implements CommandExecutor {
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed suffix to '" + suffix + "' on rank: " + rank2);
+								this.m.messageCommandSetSuffix(console, suffix, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set suffix. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setsuffix <rank> <suffix>");
+							this.m.messageCommandUsageSetSuffix(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
@@ -440,12 +440,12 @@ public class Cmd implements CommandExecutor {
 							final String color = args[2];
 							final boolean result = s.setChatColor(rank2, color);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed chat color to '" + color + "' on rank: " + rank2);
+								this.m.messageCommandSetChatColor(console, color, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set chat color. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setchatcolor <rank> <color>");
+							this.m.messageCommandUsageSetChatColor(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
@@ -455,12 +455,12 @@ public class Cmd implements CommandExecutor {
 							final String color = args[2];
 							final boolean result = s.setNameColor(rank2, color);
 							if (result) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Changed name color to '" + color + "' on rank: " + rank2);
+								this.m.messageCommandSetNameColor(console, color, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Failed to set name color. (Rank must be Case Sensitive)");
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setnamecolor <rank> <color>");
+							this.m.messageCommandUsageSetNameColor(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("createrank")) {
@@ -469,12 +469,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.createRank(rank2);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Rank " + rank2 + " created");
+								this.m.messageCommandCreateRankSuccess(console, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not create rank " + rank2);
+								this.m.messageCommandCreateRankError(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr createrank <rankName>");
+							this.m.messageCommandUsageCreateRank(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
@@ -483,12 +483,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.deleteRank(rank2);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Rank " + rank2 + " deleted");
+								this.m.messageCommandDeleteRankSuccess(console, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not delete rank " + rank2);
+								this.m.messageCommandDeleteRankError(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr deleterank <rankName>");
+							this.m.messageCommandUsageDeleteRank(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
@@ -497,12 +497,12 @@ public class Cmd implements CommandExecutor {
 							final String rank2 = args[1];
 							final boolean success = s.setBuild(rank2, true);
 							if (success) {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Building enabled on rank " + rank2);
+								this.m.messageCommandBuildEnabled(console, rank2);
 							} else {
-								sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not enable building on rank " + rank2);
+								this.m.messageGroupNotFound(console, rank2);
 							}
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr enablebuild <rankName>");
+							this.m.messageCommandUsageEnableBuild(console);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
@@ -510,40 +510,40 @@ public class Cmd implements CommandExecutor {
 						final String rank2 = args[1];
 						final boolean success = s.setBuild(rank2, false);
 						if (success) {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Building disabled on rank " + rank2);
+							this.m.messageCommandBuildDisabled(console, rank2);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not disable building on rank " + rank2);
+							this.m.messageGroupNotFound(console, rank2);
 						}
 					} else {
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr disablebuild <rankName>");
+						this.m.messageCommandUsageDisableBuild(console);
 					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (args.length == 2) {
 						final String playername = args[1];
 						final boolean success = s.promote(playername);
 						if (success) {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Player promoted");
+							this.m.messageCommandPromoteSuccess(console, playername);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not promote player");
+							this.m.messageCommandPromoteError(console, playername);
 						}
 					} else {
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr promote <playerName>");
+						this.m.messageCommandUsagePromote(console);
 					}
 				} else if (args[0].equalsIgnoreCase("demote")) {
 					if (args.length == 2) {
 						final String playername = args[1];
 						final boolean success = s.demote(playername);
 						if (success) {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Player demoted");
+							this.m.messageCommandDemoteSuccess(console, playername);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "Could not demote player");
+							this.m.messageCommandDemoteError(console, playername);
 						}
 					} else {
-						sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr demote <playerName>");
+						this.m.messageCommandUsageDemote(console);
 					}
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					this.m.forceUpdateConfigVersions();
-					sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Configuration version updated!");
+					this.m.messageConfigVersionUpdated(console);
 				}
 			}
 		}
