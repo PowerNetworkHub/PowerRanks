@@ -547,4 +547,59 @@ public class Users implements Listener {
 		}
 		return false;
 	}
+
+	public boolean renameRank(String rank, String to) {
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		YamlConfiguration playerYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			playerYaml.load(playerFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		if (rankYaml.get("Groups." + rank) != null) {
+			List<String> listPermissions = (List<String>) rankYaml.getStringList("Groups." + to + ".permissions");
+			for (String line : rankYaml.getStringList("Groups." + rank + ".permissions")) {
+				listPermissions.add(line);
+			}
+			rankYaml.set("Groups." + to + ".permissions", (Object) listPermissions);
+
+			List<String> listInheritance = (List<String>) rankYaml.getStringList("Groups." + to + ".inheritance");
+			for (String line : rankYaml.getStringList("Groups." + rank + ".inheritance")) {
+				listInheritance.add(line);
+			}
+			rankYaml.set("Groups." + to + ".inheritance", (Object) listInheritance);
+
+			rankYaml.set("Groups." + to + ".build", rankYaml.get("Groups." + rank + ".build"));
+			rankYaml.set("Groups." + to + ".chat.prefix", rankYaml.get("Groups." + rank + ".chat.prefix"));
+			rankYaml.set("Groups." + to + ".chat.suffix", rankYaml.get("Groups." + rank + ".chat.suffix"));
+			rankYaml.set("Groups." + to + ".chat.chatColor", rankYaml.get("Groups." + rank + ".chat.chatColor"));
+			rankYaml.set("Groups." + to + ".chat.nameColor", rankYaml.get("Groups." + rank + ".chat.nameColor"));
+			rankYaml.set("Groups." + to + ".level.promote", rankYaml.get("Groups." + rank + ".level.promote"));
+			rankYaml.set("Groups." + to + ".level.demote", rankYaml.get("Groups." + rank + ".level.demote"));
+			
+			ConfigurationSection players = playerYaml.getConfigurationSection("players");
+			for (String p : players.getKeys(false)) {
+				if (playerYaml.getString("players." + p + ".rank") != null) {
+					this.m.log.info(playerYaml.getString("players." + p + ".rank") + (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank) ? " Match" : " No Match"));
+					if (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank)) {
+						playerYaml.set("players." + p + ".rank", to);
+					}
+				}
+			}
+			try {
+				rankYaml.save(rankFile);
+				playerYaml.save(playerFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			deleteRank(rank);
+			return true;
+		}
+		return false;
+	}
 }

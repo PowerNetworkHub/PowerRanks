@@ -1193,4 +1193,32 @@ public class Main extends JavaPlugin implements Listener {
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		console.sendMessage(msg);
 	}
+
+	public void messageCommandRenameRankSuccess(Player player, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.rank_renamed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		player.sendMessage(msg);
+	}
+	
+	public void messageCommandRenameRankSuccess(ConsoleCommandSender console, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.rank_renamed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		console.sendMessage(msg);
+	}
+
+	public void messageCommandRenameRankError(Player player, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_renaming_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		player.sendMessage(msg);
+	}
+	
+	public void messageCommandRenameRankError(ConsoleCommandSender console, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_renaming_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		console.sendMessage(msg);
+	}
 }
