@@ -3,7 +3,6 @@ package nl.svenar.PowerRanks.Data;
 import java.util.List;
 import java.util.ArrayList;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
@@ -37,13 +36,11 @@ public class Users implements Listener {
 							playerYaml.load(playerFile);
 							playerYaml.set("players." + target.getUniqueId() + ".rank", (Object) rank);
 							playerYaml.save(playerFile);
-							player.sendMessage(String.valueOf(this.m.plp) + " Set '" + t + "' to rank: " + rank);
-							target.sendMessage(String.valueOf(this.m.plp) + " You have been promoted to: " + rank
-									+ " by " + player.getName());
+							this.m.messageSetRankSuccessSender(player, t, rank);
+							this.m.messageSetRankSuccessTarget(target, player.getName(), rank);
 							this.m.setupPermissions(target);
 						} else {
-							player.sendMessage(String.valueOf(this.m.plp) + " Group '" + rank + "' not found! "
-									+ ChatColor.RED + "Group names must be Case sensitive");
+							this.m.messageGroupNotFound(player, rank);
 						}
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -64,26 +61,22 @@ public class Users implements Listener {
 								if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
 									playerYaml2.set("players." + key + ".rank", (Object) rank);
 									playerYaml2.save(playerFile2);
-									player.sendMessage(
-											String.valueOf(this.m.plp) + " Set '" + t + "' to rank: " + rank);
+									this.m.messageSetRankSuccessSender(player, t, rank);
 
 									offline_player_found = true;
 								}
 							}
 
 							if (!offline_player_found) {
-								player.sendMessage(String.valueOf(this.m.plp) + " Player '" + t + "' not found!");
+								this.m.messagePlayerNotFound(player, t);
 							}
 						} else {
-							player.sendMessage(String.valueOf(this.m.plp) + " Group '" + rank + "' not found! "
-									+ ChatColor.RED + "Group names must be Case sensitive");
+							this.m.messageGroupNotFound(player, rank);
 						}
 					} catch (IOException | InvalidConfigurationException e) {
 						e.printStackTrace();
 					}
 				}
-			} else {
-				this.m.errorArgsSet(player);
 			}
 		} else {
 			ConsoleCommandSender console = Bukkit.getConsoleSender();
@@ -100,13 +93,11 @@ public class Users implements Listener {
 						playerYaml2.load(playerFile2);
 						playerYaml2.set("players." + target2.getUniqueId() + ".rank", (Object) rank);
 						playerYaml2.save(playerFile2);
-						console.sendMessage(String.valueOf(this.m.plp) + " Set '" + t + "' to rank: " + rank);
-						target2.sendMessage(String.valueOf(this.m.plp) + " You have been promoted to: " + rank + " by "
-								+ console.getName());
+						this.m.messageSetRankSuccessSender(console, t, rank);
+						this.m.messageSetRankSuccessTarget(target2, console.getName(), rank);
 						this.m.setupPermissions(target2);
 					} else {
-						console.sendMessage(String.valueOf(this.m.plp) + " Group '" + rank + "' not found! "
-								+ ChatColor.RED + "Group names must be Case sensitive");
+						this.m.messageGroupNotFound(console, rank);
 					}
 				} catch (Exception e2) {
 					e2.printStackTrace();
@@ -127,18 +118,17 @@ public class Users implements Listener {
 							if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
 								playerYaml2.set("players." + key + ".rank", (Object) rank);
 								playerYaml2.save(playerFile2);
-								console.sendMessage(String.valueOf(this.m.plp) + " Set '" + t + "' to rank: " + rank);
+								this.m.messageSetRankSuccessSender(console, t, rank);
 
 								offline_player_found = true;
 							}
 						}
 
 						if (!offline_player_found) {
-							console.sendMessage(String.valueOf(this.m.plp) + " Player '" + t + "' not found!");
+							this.m.messagePlayerNotFound(console, t);
 						}
 					} else {
-						console.sendMessage(String.valueOf(this.m.plp) + " Group '" + rank + "' not found! "
-								+ ChatColor.RED + "Group names must be Case sensitive");
+						this.m.messageGroupNotFound(console, rank);
 					}
 				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
@@ -215,17 +205,15 @@ public class Users implements Listener {
 		}
 		if (group.length() > 0) {
 			if (sender != null) {
-				sender.sendMessage(
-						String.valueOf(this.m.plp) + (target == null ? t : target.getName()) + "'s rank is: " + group);
+				this.m.messagePlayerCheckRank(sender, group);
 			} else {
-				Bukkit.getConsoleSender().sendMessage(
-						String.valueOf(this.m.plp) + (target == null ? t : target.getName()) + "'s rank is: " + group);
+				this.m.messagePlayerCheckRank(Bukkit.getConsoleSender(), group);
 			}
 		} else {
 			if (sender != null) {
-				sender.sendMessage(String.valueOf(this.m.plp) + "Player " + t + " not found!");
+				this.m.messagePlayerNotFound(sender, t);
 			} else {
-				Bukkit.getConsoleSender().sendMessage(String.valueOf(this.m.plp) + "Player " + t + " not found!");
+				this.m.messagePlayerNotFound(Bukkit.getConsoleSender(), t);
 			}
 		}
 		return (group.length() == 0) ? "error" : group;
@@ -479,14 +467,15 @@ public class Users implements Listener {
 			try {
 				rankYaml.load(rankFile);
 				playerYaml.load(playerFile);
-				
+
 				boolean offline_player_found = false;
 
 				for (String key : playerYaml.getConfigurationSection("players").getKeys(false)) {
 					if (playerYaml.getString("players." + key + ".name").equalsIgnoreCase(playername)) {
 						String rankname = rankYaml.getString("Groups." + playerYaml.getString("players." + key + ".rank") + ".level.promote");
-						if (rankname.length() == 0) return false;
-						
+						if (rankname.length() == 0)
+							return false;
+
 						playerYaml.set("players." + key + ".rank", (Object) rankname);
 						playerYaml.save(playerFile);
 
@@ -531,14 +520,15 @@ public class Users implements Listener {
 			try {
 				rankYaml.load(rankFile);
 				playerYaml.load(playerFile);
-				
+
 				boolean offline_player_found = false;
 
 				for (String key : playerYaml.getConfigurationSection("players").getKeys(false)) {
 					if (playerYaml.getString("players." + key + ".name").equalsIgnoreCase(playername)) {
 						String rankname = rankYaml.getString("Groups." + playerYaml.getString("players." + key + ".rank") + ".level.demote");
-						if (rankname.length() == 0) return false;
-						
+						if (rankname.length() == 0)
+							return false;
+
 						playerYaml.set("players." + key + ".rank", (Object) rankname);
 						playerYaml.save(playerFile);
 

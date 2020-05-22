@@ -50,12 +50,15 @@ public class Main extends JavaPlugin implements Listener {
 	public Logger log;
 	public String configFileLoc;
 	public String fileLoc;
+	public static String langFileLoc;
 	File configFile;
 	File ranksFile;
 	File playersFile;
+	File langFile;
 	FileConfiguration config;
 	FileConfiguration ranks;
 	FileConfiguration players;
+	FileConfiguration lang;
 	protected UpdateChecker updatechecker;
 	public String updatemsg;
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
@@ -74,6 +77,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.plp = this.black + "[" + this.aqua + this.pdf.getName() + this.black + "]" + this.reset + " ";
 		this.configFileLoc = this.getDataFolder() + File.separator;
 		this.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
+		Main.langFileLoc = this.configFileLoc + "lang.yml";
 		this.updatemsg = "";
 	}
 
@@ -92,9 +96,11 @@ public class Main extends JavaPlugin implements Listener {
 		this.configFile = new File(this.getDataFolder(), "config.yml");
 		this.ranksFile = new File(this.fileLoc, "Ranks.yml");
 		this.playersFile = new File(this.fileLoc, "Players.yml");
+		this.langFile = new File(this.getDataFolder(), "lang.yml");
 		this.config = (FileConfiguration) new YamlConfiguration();
 		this.ranks = (FileConfiguration) new YamlConfiguration();
 		this.players = (FileConfiguration) new YamlConfiguration();
+		this.lang = (FileConfiguration) new YamlConfiguration();
 		try {
 			this.copyFiles();
 		} catch (Exception e) {
@@ -167,13 +173,16 @@ public class Main extends JavaPlugin implements Listener {
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final File langFile = new File(Main.langFileLoc);
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		final YamlConfiguration configYaml = new YamlConfiguration();
+		final YamlConfiguration langYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
 			configYaml.load(configFile);
+			langYaml.load(langFile);
 
 			if (rankYaml.getString("version") == null) {
 				rankYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
@@ -199,9 +208,18 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 
+			if (langYaml.getString("version") == null) {
+				langYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+			} else {
+				if (!langYaml.getString("version").equalsIgnoreCase(this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
+					printVersionError("lang.yml");
+				}
+			}
+
 			rankYaml.save(rankFile);
 			playerYaml.save(playerFile);
 			configYaml.save(configFile);
+			langYaml.save(langFile);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
@@ -211,21 +229,26 @@ public class Main extends JavaPlugin implements Listener {
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final File langFile = new File(Main.langFileLoc);
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		final YamlConfiguration configYaml = new YamlConfiguration();
+		final YamlConfiguration langYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
 			configYaml.load(configFile);
+			langYaml.load(langFile);
 
 			rankYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			playerYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			configYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+			langYaml.set("version", this.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 
 			rankYaml.save(rankFile);
 			playerYaml.save(playerFile);
 			configYaml.save(configFile);
+			langYaml.save(langFile);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
@@ -257,6 +280,10 @@ public class Main extends JavaPlugin implements Listener {
 			this.playersFile.getParentFile().mkdirs();
 			this.copy(this.getResource("Players.yml"), this.playersFile);
 		}
+		if (!this.langFile.exists()) {
+			this.langFile.getParentFile().mkdirs();
+			this.copy(this.getResource("lang.yml"), this.langFile);
+		}
 	}
 
 	private void copy(final InputStream in, final File file) {
@@ -279,6 +306,7 @@ public class Main extends JavaPlugin implements Listener {
 			this.config.save(this.configFile);
 			this.ranks.save(this.ranksFile);
 			this.players.save(this.playersFile);
+			this.lang.save(this.langFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -289,6 +317,7 @@ public class Main extends JavaPlugin implements Listener {
 			this.config.load(this.configFile);
 			this.ranks.load(this.ranksFile);
 			this.players.load(this.playersFile);
+			this.lang.load(this.langFile);
 		} catch (Exception e) {
 			System.out.println("-----------------------------");
 			this.log.warning("Failed to load the config files (If this is the first time PowerRanks starts you could ignore this message)");
@@ -418,8 +447,9 @@ public class Main extends JavaPlugin implements Listener {
 			String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
 			String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
+			String namecolor = rankYaml.getString("Groups." + rank + ".chat.nameColor");
 
-			format = Util.replaceAll(format, "[name]", player.getPlayerListName());
+			format = Util.replaceAll(format, "[name]", chatColor(this.colorChar.charAt(0), namecolor) + player.getPlayerListName());
 			format = Util.replaceAll(format, "[prefix]", prefix);
 			format = Util.replaceAll(format, "[suffix]", suffix);
 			format = Util.replaceAll(format, "&", "§");
@@ -440,11 +470,22 @@ public class Main extends JavaPlugin implements Listener {
 		return new String(charArray);
 	}
 
-	public void errorMessage(final Player player, final String args) {
-		player.sendMessage(ChatColor.RED + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.RED + "--------");
-		player.sendMessage("Argument " + args + " not found");
-		player.sendMessage(ChatColor.GREEN + "/pr help");
-		player.sendMessage(ChatColor.RED + "--------------------------");
+//	public void errorMessage(final Player player, final String args) {
+//		player.sendMessage(ChatColor.RED + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.RED + "--------");
+//		player.sendMessage("Argument " + args + " not found");
+//		player.sendMessage(ChatColor.GREEN + "/pr help");
+//		player.sendMessage(ChatColor.RED + "--------------------------");
+//	}
+
+	public YamlConfiguration loadLangFile() {
+		File langFile = new File(Main.langFileLoc);
+		YamlConfiguration langYaml = new YamlConfiguration();
+		try {
+			langYaml.load(langFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		return langYaml;
 	}
 
 	public void messageNoArgs(final Player player) {
@@ -468,71 +509,183 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void helpMenu(final Player player) {
-		player.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-		player.sendMessage(ChatColor.AQUA + "[Optional] <Required> " + ChatColor.DARK_AQUA + "|" + ChatColor.AQUA + " Rank names are casesensetive");
-		player.sendMessage(ChatColor.GREEN + "/pr help" + ChatColor.DARK_GREEN + " - Shows this menu");
-		player.sendMessage(ChatColor.GREEN + "/pr createrank <rankName>" + ChatColor.DARK_GREEN + " - Create a new rank");
-		player.sendMessage(ChatColor.GREEN + "/pr deleterank <rankName>" + ChatColor.DARK_GREEN + " - Delete a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr set <playerName> <rankName>" + ChatColor.DARK_GREEN + " - Set someone's rank");
-		player.sendMessage(ChatColor.GREEN + "/pr setown <rankName>" + ChatColor.DARK_GREEN + " - Set your own rank");
-		player.sendMessage(ChatColor.GREEN + "/pr promote <playerName>" + ChatColor.DARK_GREEN + " - Promote a player to the next rank");
-		player.sendMessage(ChatColor.GREEN + "/pr demote <playerName>" + ChatColor.DARK_GREEN + " - Demote a player to the previous rank");
-		player.sendMessage(ChatColor.GREEN + "/pr check <playerName>" + ChatColor.DARK_GREEN + " - Check someone's rank");
-		player.sendMessage(ChatColor.GREEN + "/pr reload" + ChatColor.DARK_GREEN + " - Reload PowerRanks");
-		player.sendMessage(ChatColor.GREEN + "/pr addperm <rank> <permission>" + ChatColor.DARK_GREEN + " - Add a permission to a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr delperm <rank> <permission>" + ChatColor.DARK_GREEN + " - Remove a permission from a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr setprefix <rank> <prefix>" + ChatColor.DARK_GREEN + " - Change the prefix of a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr setsuffix <rank> <suffix>" + ChatColor.DARK_GREEN + " - Change the suffix of a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr setchatcolor <rank> <color>" + ChatColor.DARK_GREEN + " - Change the chat color of a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr setnamecolor <rank> <color>" + ChatColor.DARK_GREEN + " - Change the name color of a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr addinheritance <rank> <inheritance>" + ChatColor.DARK_GREEN + " - Add a inheritance to a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr delinheritance <rank> <inheritance>" + ChatColor.DARK_GREEN + " - Remove a inheritance from a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr enablebuild <rank>" + ChatColor.DARK_GREEN + " - Enable building on a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr disablebuild <rank>" + ChatColor.DARK_GREEN + " - Disable building on a rank");
-		player.sendMessage(ChatColor.GREEN + "/pr forceupdateconfigversion" + ChatColor.DARK_GREEN + " - Update the version variable in all configuration files.");
-		player.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		YamlConfiguration langYaml = loadLangFile();
+
+		List<String> lines = (List<String>) langYaml.getStringList("commands.help");
+		if (lines != null) {
+			String prefix = langYaml.getString("general.prefix");
+			for (String line : lines) {
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
 	}
 
 	public void helpMenu(final ConsoleCommandSender console) {
-		console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-		console.sendMessage(ChatColor.AQUA + "[Optional] <Required> " + ChatColor.DARK_AQUA + "|" + ChatColor.AQUA + " Rank names are case-sensetive");
-		console.sendMessage(ChatColor.GREEN + "/pr help" + ChatColor.DARK_GREEN + " - Shows this menu");
-		console.sendMessage(ChatColor.GREEN + "/pr createrank <rankName>" + ChatColor.DARK_GREEN + " - Create a new rank");
-		console.sendMessage(ChatColor.GREEN + "/pr deleterank <rankName>" + ChatColor.DARK_GREEN + " - Delete a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr set <playerName> <rankName>" + ChatColor.DARK_GREEN + " - Set someone's rank");
-		console.sendMessage(ChatColor.GREEN + "/pr promote <playerName>" + ChatColor.DARK_GREEN + " - Promote a player to the next rank");
-		console.sendMessage(ChatColor.GREEN + "/pr demote <playerName>" + ChatColor.DARK_GREEN + " - Demote a player to the previous rank");
-		console.sendMessage(ChatColor.GREEN + "/pr check <playerName>" + ChatColor.DARK_GREEN + " - Check someone's rank");
-		console.sendMessage(ChatColor.GREEN + "/pr reload" + ChatColor.DARK_GREEN + " - Reload PowerRanks");
-		console.sendMessage(ChatColor.GREEN + "/pr addperm <rank> <permission>" + ChatColor.DARK_GREEN + " - Add a permission to a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr delperm <rank> <permission>" + ChatColor.DARK_GREEN + " - Remove a permission from a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr setprefix <rank> <prefix>" + ChatColor.DARK_GREEN + " - Change the prefix of a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr setsuffix <rank> <suffix>" + ChatColor.DARK_GREEN + " - Change the suffix of a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr setchatcolor <rank> <color>" + ChatColor.DARK_GREEN + " - Change the chat color of a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr setnamecolor <rank> <color>" + ChatColor.DARK_GREEN + " - Change the name color of a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr addinheritance <rank> <inheritance>" + ChatColor.DARK_GREEN + " - Add a inheritance to a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr delinheritance <rank> <inheritance>" + ChatColor.DARK_GREEN + " - Remove a inheritance from a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr enablebuild <rank>" + ChatColor.DARK_GREEN + " - Enable building on a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr disablebuild <rank>" + ChatColor.DARK_GREEN + " - Disable building on a rank");
-		console.sendMessage(ChatColor.GREEN + "/pr forceupdateconfigversion" + ChatColor.DARK_GREEN + " - Update the version variable in all configuration files.");
-		console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
-	}
+		YamlConfiguration langYaml = loadLangFile();
 
-	public void errorMessageCheck(final Player player) {
-		player.sendMessage(ChatColor.RED + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.RED + "--------");
-		player.sendMessage(ChatColor.AQUA + "[Optional] <Requires>");
-		player.sendMessage(ChatColor.GREEN + "/pr check [playerName]");
-		player.sendMessage(ChatColor.RED + "--------------------------");
-	}
-
-	public void errorArgsSet(final Player player) {
-		player.sendMessage(ChatColor.RED + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.RED + "--------");
-		player.sendMessage(ChatColor.AQUA + "[Optional] <Requires>");
-		player.sendMessage(ChatColor.GREEN + "/pr set <playerName> <Rank (Case sensitive)>");
-		player.sendMessage(ChatColor.RED + "--------------------------");
+		List<String> lines = (List<String>) langYaml.getStringList("commands.help");
+		if (lines != null) {
+			String prefix = langYaml.getString("general.prefix");
+			for (String line : lines) {
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				console.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
 	}
 
 	public void noPermission(Player player) {
-		player.sendMessage(plp + ChatColor.DARK_RED + "You don't have permission to perform this command!");
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.no_permission");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+
+	public void messageSetRankSuccessSender(Player player, String target, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.rank_set_sender");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_target%", target);
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+	
+	public void messageSetRankSuccessSender(ConsoleCommandSender console, String target, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.rank_set_sender");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_target%", target);
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				console.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+
+	public void messageSetRankSuccessTarget(Player target, String sender, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.rank_set_target");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_sender%", sender);
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				target.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+
+	}
+
+	public void messagePlayerNotFound(Player player, String target) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.player_not_found");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_target%", target);
+				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+	
+	public void messagePlayerNotFound(ConsoleCommandSender console, String target) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.player_not_found");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_target%", target);
+				console.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+
+	public void messageGroupNotFound(Player player, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.group_not_found");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+
+	public void messageGroupNotFound(ConsoleCommandSender console, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.group_not_found");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				console.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+	
+	public void messagePlayerCheckRank(Player player, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.player_check_rank");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
+	}
+	
+	public void messagePlayerCheckRank(ConsoleCommandSender console, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+
+		String line = langYaml.getString("messages.player_check_rank");
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				line = Util.replaceAll(line, "%argument_rank%", rank);
+				console.sendMessage(chatColor(this.colorChar.charAt(0), line));
+			}
+		}
 	}
 }

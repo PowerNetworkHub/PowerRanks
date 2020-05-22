@@ -36,6 +36,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length != 2) {
 						player.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/powerranks reload [config/plugin/all]");
+						this.m.messageCommandUsageReload(player);
 					} else if (sender.hasPermission("powerranks.cmd.reload")) {
 						if (args[1].equalsIgnoreCase("config")) {
 							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Reloading (config) " + this.m.pdf.getName());
