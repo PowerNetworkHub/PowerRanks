@@ -1,8 +1,9 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
@@ -232,17 +233,17 @@ public class Users implements Listener {
 		return group;
 	}
 
-	public ArrayList<String> getGroups() {
-		ArrayList<String> ranks = new ArrayList<String>();
+	public Set<String> getGroups() {
+		ConfigurationSection ranks = null;
 		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
-			rankYaml.getList("Groups");
+			ranks = rankYaml.getConfigurationSection("Groups");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ranks;
+		return ranks.getKeys(false);
 	}
 
 	public boolean addPermission(String rank, String permission) {

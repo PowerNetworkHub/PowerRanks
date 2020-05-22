@@ -20,7 +20,13 @@ messages:
    player_check_rank: "%plugin_prefix% %argument_target%'s rank is %argument_rank%"
 
 commands:
-   usage_command_reload: "%plugin_prefix% &c/powerranks reload [config/plugin/all]"
+   usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
+   usage_command_set: "%plugin_prefix% &c/pr set <username> <rank>"
+   usage_command_setown: "%plugin_prefix% &c/pr setown <rank>"
+   reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
+   reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
+   reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"
+   reload_plugin_done: "%plugin_prefix% &2%plugin_name% Reloaded (plugin)!"
    help:
    - "&3--------&1%plugin_name%&3--------"
    - "&b[Optional] <Required> &3| &bRank names are casesensetive"

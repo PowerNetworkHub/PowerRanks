@@ -1,17 +1,19 @@
 package nl.svenar.PowerRanks.Commands;
 
-import java.util.ArrayList;
+import java.util.Set;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import nl.svenar.PowerRanks.Data.Users;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import nl.svenar.PowerRanks.Main;
 import org.bukkit.command.CommandExecutor;
+
+import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.Data.Users;
 
 public class Cmd implements CommandExecutor {
 	Main m;
@@ -35,32 +37,31 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length != 2) {
-						player.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/powerranks reload [config/plugin/all]");
 						this.m.messageCommandUsageReload(player);
 					} else if (sender.hasPermission("powerranks.cmd.reload")) {
 						if (args[1].equalsIgnoreCase("config")) {
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Reloading (config) " + this.m.pdf.getName());
+							this.m.messageCommandReloadConfig(player);
 							this.m.reloadConfig();
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + this.m.pdf.getName() + " Reloaded (config)!");
+							this.m.messageCommandReloadConfigDone(player);
 						} else if (args[1].equalsIgnoreCase("plugin")) {
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Reloading (plugin) " + this.m.pdf.getName());
+							this.m.messageCommandReloadPlugin(player);
 							final PluginManager plg = Bukkit.getPluginManager();
 							final Plugin plgname = plg.getPlugin(this.m.pdf.getName());
 							plg.disablePlugin(plgname);
 							plg.enablePlugin(plgname);
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + this.m.pdf.getName() + " Reloaded (plugin)!");
+							this.m.messageCommandReloadPluginDone(player);
 						} else if (args[1].equalsIgnoreCase("all")) {
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Reloading (plugin) " + this.m.pdf.getName());
+							this.m.messageCommandReloadPlugin(player);
 							final PluginManager plg = Bukkit.getPluginManager();
 							final Plugin plgname = plg.getPlugin(this.m.pdf.getName());
 							plg.disablePlugin(plgname);
 							plg.enablePlugin(plgname);
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + this.m.pdf.getName() + " Reloaded (plugin)!");
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + "Reloading (config) " + this.m.pdf.getName());
+							this.m.messageCommandReloadPluginDone(player);
+							this.m.messageCommandReloadConfig(player);
 							this.m.reloadConfig();
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.GREEN + this.m.pdf.getName() + " Reloaded (config)!");
+							this.m.messageCommandReloadConfigDone(player);
 						} else {
-							player.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr reload [config/plugin/all]");
+							this.m.messageCommandUsageReload(player);
 						}
 					} else {
 						this.m.noPermission(player);
@@ -70,7 +71,7 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 3) {
 							s.setGroup((Player) sender, args[1], args[2]);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr set <username> <rank>");
+							this.m.messageCommandUsageSet(player);
 						}
 					} else {
 						this.m.noPermission(player);
@@ -80,16 +81,16 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							s.setGroup((Player) sender, sender.getName(), args[1]);
 						} else {
-							sender.sendMessage(String.valueOf(this.m.plp) + ChatColor.RED + "/pr setown <rank>");
+							this.m.messageCommandUsageSetown(player);
 						}
 					} else {
 						this.m.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("list")) {
 					if (sender.hasPermission("powerranks.cmd.list")) {
-						final ArrayList<String> ranks = s.getGroups();
+						Set<String> ranks = s.getGroups();
 						sender.sendMessage("Ranks(" + ranks.size() + "):");
-						for (final String rank : ranks) {
+						for (String rank : ranks) {
 							sender.sendMessage(rank);
 						}
 					} else {

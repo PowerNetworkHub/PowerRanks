@@ -487,6 +487,22 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		return langYaml;
 	}
+	
+	public String getGeneralMessage(YamlConfiguration langYaml, String lang_config_line) {
+		String msg = "";
+		
+		String line = langYaml.getString(lang_config_line);
+		if (line != null) {
+			if (line.length() > 0) {
+				String prefix = langYaml.getString("general.prefix");
+				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+				msg = chatColor(this.colorChar.charAt(0), line);
+			}
+		}
+		
+		return msg;
+	}
 
 	public void messageNoArgs(final Player player) {
 		player.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.DARK_AQUA + "--------");
@@ -538,16 +554,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	public void noPermission(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
-
-		String line = langYaml.getString("messages.no_permission");
-		if (line != null) {
-			if (line.length() > 0) {
-				String prefix = langYaml.getString("general.prefix");
-				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
-				line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
-				player.sendMessage(chatColor(this.colorChar.charAt(0), line));
-			}
-		}
+		player.sendMessage(getGeneralMessage(langYaml, "messages.no_permission"));
 	}
 
 	public void messageSetRankSuccessSender(Player player, String target, String rank) {
@@ -565,7 +572,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
 	public void messageSetRankSuccessSender(ConsoleCommandSender console, String target, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 
@@ -613,7 +620,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
 	public void messagePlayerNotFound(ConsoleCommandSender console, String target) {
 		YamlConfiguration langYaml = loadLangFile();
 
@@ -658,7 +665,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
 	public void messagePlayerCheckRank(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 
@@ -673,7 +680,7 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
-	
+
 	public void messagePlayerCheckRank(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 
@@ -687,5 +694,75 @@ public class Main extends JavaPlugin implements Listener {
 				console.sendMessage(chatColor(this.colorChar.charAt(0), line));
 			}
 		}
+	}
+
+	public void messageCommandUsageReload(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.usage_command_reload"));
+	}
+	
+	public void messageCommandUsageReload(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.usage_command_reload"));
+	}
+
+	public void messageCommandReloadConfig(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.reload_config"));
+	}
+	
+	public void messageCommandReloadConfig(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.reload_config"));
+	}
+
+	public void messageCommandReloadConfigDone(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.reload_config_done"));
+	}
+	
+	public void messageCommandReloadConfigDone(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.reload_config_done"));
+	}
+
+	public void messageCommandReloadPlugin(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.reload_plugin"));
+	}
+	
+	public void messageCommandReloadPlugin(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.reload_plugin"));
+	}
+
+	public void messageCommandReloadPluginDone(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.reload_plugin_done"));
+	}
+	
+	public void messageCommandReloadPluginDone(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.reload_plugin_done"));
+	}
+
+	public void messageCommandUsageSet(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.usage_command_set"));
+	}
+	
+	public void messageCommandUsageSet(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.usage_command_set"));
+	}
+
+	public void messageCommandUsageSetown(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		player.sendMessage(getGeneralMessage(langYaml, "commands.usage_command_setown"));
+	}
+	
+	public void messageCommandUsageSetown(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = loadLangFile();
+		console.sendMessage(getGeneralMessage(langYaml, "commands.usage_command_setown"));
 	}
 }
