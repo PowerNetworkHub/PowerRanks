@@ -602,4 +602,27 @@ public class Users implements Listener {
 		}
 		return false;
 	}
+	
+	public boolean setDefaultRank(String rankname) {
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		if (rankYaml.get("Groups." + rankname) != null) {
+			rankYaml.set("Default", rankname);
+			try {
+				rankYaml.save(rankFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return true;
+		}
+		
+		return false;
+	}
 }

@@ -427,35 +427,38 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void updateTablistName(Player player) {
-		playerTablistNameBackup.put(player, player.getPlayerListName());
-
-		File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-		File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-		File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
-		YamlConfiguration configYaml = new YamlConfiguration();
-		YamlConfiguration rankYaml = new YamlConfiguration();
-		YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
-			configYaml.load(configFile);
-			if (!configYaml.getBoolean("tablist_modification.enabled"))
-				return;
+			playerTablistNameBackup.put(player, player.getPlayerListName());
 
-			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
+			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+			File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
+			File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+			YamlConfiguration configYaml = new YamlConfiguration();
+			YamlConfiguration rankYaml = new YamlConfiguration();
+			YamlConfiguration playerYaml = new YamlConfiguration();
+			try {
+				configYaml.load(configFile);
+				if (!configYaml.getBoolean("tablist_modification.enabled"))
+					return;
 
-			String format = configYaml.getString("tablist_modification.format");
-			String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-			String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
-			String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
-			String namecolor = rankYaml.getString("Groups." + rank + ".chat.nameColor");
+				rankYaml.load(rankFile);
+				playerYaml.load(playerFile);
 
-			format = Util.replaceAll(format, "[name]", chatColor(this.colorChar.charAt(0), namecolor) + player.getPlayerListName());
-			format = Util.replaceAll(format, "[prefix]", prefix);
-			format = Util.replaceAll(format, "[suffix]", suffix);
-			format = Util.replaceAll(format, "&", "§");
-			player.setPlayerListName(format);
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
+				String format = configYaml.getString("tablist_modification.format");
+				String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
+				String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
+				String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
+				String namecolor = rankYaml.getString("Groups." + rank + ".chat.nameColor");
+
+				format = Util.replaceAll(format, "[name]", chatColor(this.colorChar.charAt(0), namecolor) + player.getPlayerListName());
+				format = Util.replaceAll(format, "[prefix]", prefix);
+				format = Util.replaceAll(format, "[suffix]", suffix);
+				format = Util.replaceAll(format, "&", "§");
+				player.setPlayerListName(format);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
 		}
 	}
 
@@ -1123,7 +1126,7 @@ public class Main extends JavaPlugin implements Listener {
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		console.sendMessage(msg);
 	}
-	
+
 	public void messageCommandPromoteError(Player player, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_player_promote");
@@ -1172,7 +1175,7 @@ public class Main extends JavaPlugin implements Listener {
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		player.sendMessage(msg);
 	}
-	
+
 	public void messageCommandBuildEnabled(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.build_enabled");
@@ -1186,7 +1189,7 @@ public class Main extends JavaPlugin implements Listener {
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		player.sendMessage(msg);
 	}
-	
+
 	public void messageCommandBuildDisabled(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.build_disabled");
@@ -1200,7 +1203,7 @@ public class Main extends JavaPlugin implements Listener {
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		player.sendMessage(msg);
 	}
-	
+
 	public void messageCommandRenameRankSuccess(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_renamed");
@@ -1214,10 +1217,38 @@ public class Main extends JavaPlugin implements Listener {
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		player.sendMessage(msg);
 	}
-	
+
 	public void messageCommandRenameRankError(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_renaming_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		console.sendMessage(msg);
+	}
+
+	public void messageCommandSetDefaultRankSuccess(Player player, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.default_rank_changed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		player.sendMessage(msg);
+	}
+
+	public void messageCommandSetDefaultRankSuccess(ConsoleCommandSender console, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.default_rank_changed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		console.sendMessage(msg);
+	}
+
+	public void messageCommandSetDefaultRankError(Player player, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_changing_default_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		player.sendMessage(msg);
+	}
+
+	public void messageCommandSetDefaultRankError(ConsoleCommandSender console, String rank) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_changing_default_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		console.sendMessage(msg);
 	}

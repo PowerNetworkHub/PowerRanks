@@ -356,6 +356,18 @@ public class Cmd implements CommandExecutor {
 					} else {
 						this.m.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("setdefaultrank")) {
+					if (args.length == 2) {
+						final String rankname = args[1];
+						final boolean success = s.setDefaultRank(rankname);
+						if (success) {
+							this.m.messageCommandSetDefaultRankSuccess(player, rankname);
+						} else {
+							this.m.messageCommandSetDefaultRankError(player, rankname);
+						}
+					} else {
+						this.m.messageCommandUsageDemote(player);
+					}
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						this.m.forceUpdateConfigVersions();
@@ -592,6 +604,18 @@ public class Cmd implements CommandExecutor {
 							this.m.messageCommandRenameRankSuccess(console, from);
 						} else {
 							this.m.messageCommandRenameRankError(console, from);
+						}
+					} else {
+						this.m.messageCommandUsageDemote(console);
+					}
+				} else if (args[0].equalsIgnoreCase("setdefaultrank")) {
+					if (args.length == 2) {
+						final String rankname = args[1];
+						final boolean success = s.setDefaultRank(rankname);
+						if (success) {
+							this.m.messageCommandSetDefaultRankSuccess(console, rankname);
+						} else {
+							this.m.messageCommandSetDefaultRankError(console, rankname);
 						}
 					} else {
 						this.m.messageCommandUsageDemote(console);

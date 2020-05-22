@@ -42,6 +42,8 @@ messages:
    permission_removed: "%plugin_prefix% &aPermission '%argument_permission%' removed from rank: %argument_rank%"
    rank_renamed: "%plugin_prefix% &aRank '%argument_rank%' renamed!"
    error_renaming_rank: "%plugin_prefix% &cError renaming rank '%argument_rank%'!"
+   default_rank_changed: "%plugin_prefix% &aChanged default rank to: %argument_rank%"
+   error_changing_default_rank: "%plugin_prefix% &cError changing default rank to: '%argument_rank%'!"
    config_version_updated: "%plugin_prefix% &aConfiguration version updated!"
 
 commands:
@@ -91,5 +93,6 @@ commands:
    - "&a/pr enablebuild <rank>&2 - Enable building on a rank"
    - "&a/pr disablebuild <rank>&2 - Disable building on a rank"
    - "&a/pr renamerank <from_rank> <to_rank>&2 - Rename a rank"
+   - "&a/pr setdefaultrank <rank>&2 - Set the default rank for new players"
    - "&a/pr forceupdateconfigversion&2 - Update the version variable in all configuration files"
    - "&3--------------------------"
