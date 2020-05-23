@@ -110,10 +110,7 @@ public class Main extends JavaPlugin implements Listener {
 		this.verifyConfig();
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
-			String playerName = player.getName();
 			this.playerInjectPermissible(player);
-			if (playerPermissionAttachment.get(playerName) == null)
-				playerPermissionAttachment.put(playerName, player.addAttachment(this));
 		}
 
 		this.setupPermissions();
@@ -420,6 +417,9 @@ public class Main extends JavaPlugin implements Listener {
 		Permissible permissible = new PowerPermissibleBase(player);
 		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
 		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
+		
+		if (playerPermissionAttachment.get(player.getName()) == null)
+			playerPermissionAttachment.put(player.getName(), player.addAttachment(this));
 	}
 
 	public void playerUninjectPermissible(Player player) {
@@ -459,6 +459,7 @@ public class Main extends JavaPlugin implements Listener {
 				e.printStackTrace();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

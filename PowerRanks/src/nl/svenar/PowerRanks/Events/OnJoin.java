@@ -43,8 +43,6 @@ public class OnJoin implements Listener {
 		
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
-		
-//        this.m.log.info("Injected: " + (PermissibleInjector.isInjected(player) ? "yes" : "no"));
 	}
 
 	@EventHandler

@@ -40,6 +40,7 @@ public class Users implements Listener {
 							this.m.messageSetRankSuccessSender(player, t, rank);
 							this.m.messageSetRankSuccessTarget(target, player.getName(), rank);
 							this.m.setupPermissions(target);
+							this.m.updateTablistName(target);
 						} else {
 							this.m.messageGroupNotFound(player, rank);
 						}
@@ -97,6 +98,7 @@ public class Users implements Listener {
 						this.m.messageSetRankSuccessSender(console, t, rank);
 						this.m.messageSetRankSuccessTarget(target2, console.getName(), rank);
 						this.m.setupPermissions(target2);
+						this.m.updateTablistName(target2);
 					} else {
 						this.m.messageGroupNotFound(console, rank);
 					}
@@ -151,6 +153,7 @@ public class Users implements Listener {
 				playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rank);
 				playerYaml.save(playerFile);
 				this.m.setupPermissions(player);
+				this.m.updateTablistName(player);
 				success = true;
 			} else {
 				success = false;
