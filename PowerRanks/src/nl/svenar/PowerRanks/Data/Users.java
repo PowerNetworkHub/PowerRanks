@@ -625,4 +625,26 @@ public class Users implements Listener {
 		
 		return false;
 	}
+	
+	public String getRankIgnoreCase(String rankname) {
+		String rank = rankname;
+		
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		ConfigurationSection ranks = rankYaml.getConfigurationSection("Groups");
+		for (String r : ranks.getKeys(false)) {
+			if (r.equalsIgnoreCase(rankname)) {
+				rank = r;
+				break;
+			}
+		}
+		
+		return rank;
+	}
 }

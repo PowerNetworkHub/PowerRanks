@@ -68,7 +68,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("set")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							s.setGroup((Player) sender, args[1], args[2]);
+							s.setGroup((Player) sender, args[1], s.getRankIgnoreCase(args[2]));
 						} else {
 							this.m.messageCommandUsageSet(player);
 						}
@@ -78,7 +78,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setown")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
-							s.setGroup((Player) sender, sender.getName(), args[1]);
+							s.setGroup((Player) sender, sender.getName(), s.getRankIgnoreCase(args[1]));
 						} else {
 							this.m.messageCommandUsageSetown(player);
 						}
@@ -110,7 +110,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String permission = args[2];
 							final boolean result = s.addPermission(rank2, permission);
 							if (result) {
@@ -127,7 +127,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String permission = args[2];
 							final boolean result = s.removePermission(rank2, permission);
 							if (result) {
@@ -144,7 +144,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String inheritance = args[2];
 							final boolean result = s.addInheritance(rank2, inheritance);
 							if (result) {
@@ -161,7 +161,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String inheritance = args[2];
 							final boolean result = s.removeInheritance(rank2, inheritance);
 							if (result) {
@@ -178,7 +178,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
 							if (result) {
@@ -195,7 +195,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);
 							if (result) {
@@ -212,7 +212,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
 							final boolean result = s.setChatColor(rank2, color);
 							if (result) {
@@ -229,7 +229,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
 							final boolean result = s.setNameColor(rank2, color);
 							if (result) {
@@ -246,7 +246,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("createrank")) {
 					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.createRank(rank2);
 							if (success) {
 								this.m.messageCommandCreateRankSuccess(player, rank2);
@@ -262,7 +262,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
 					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.deleteRank(rank2);
 							if (success) {
 								this.m.messageCommandDeleteRankSuccess(player, rank2);
@@ -278,7 +278,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.setBuild(rank2, true);
 							if (success) {
 								this.m.messageCommandBuildEnabled(player, rank2);
@@ -294,7 +294,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("disablebuild")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.setBuild(rank2, false);
 							if (success) {
 								this.m.messageCommandBuildDisabled(player, rank2);
@@ -342,7 +342,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("renamerank")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String from = args[1];
+							final String from = s.getRankIgnoreCase(args[1]);
 							final String to = args[2];
 							final boolean success = s.renameRank(from, to);
 							if (success) {
@@ -358,7 +358,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setdefaultrank")) {
 					if (args.length == 2) {
-						final String rankname = args[1];
+						final String rankname = s.getRankIgnoreCase(args[1]);
 						final boolean success = s.setDefaultRank(rankname);
 						if (success) {
 							this.m.messageCommandSetDefaultRankSuccess(player, rankname);
@@ -391,7 +391,7 @@ public class Cmd implements CommandExecutor {
 					this.m.helpMenu(console);
 				} else if (args[0].equalsIgnoreCase("set")) {
 					if (args.length == 3) {
-						s.setGroup(null, args[1], args[2]);
+						s.setGroup(null, args[1], s.getRankIgnoreCase(args[2]));
 					} else {
 						this.m.messageCommandUsageSet(console);
 					}
@@ -403,7 +403,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (args.length == 3) {
-						final String rank2 = args[1];
+						final String rank2 = s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
 						final boolean result = s.addPermission(rank2, permission);
 						if (result) {
@@ -416,7 +416,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (args.length == 3) {
-						final String rank2 = args[1];
+						final String rank2 = s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
 						final boolean result = s.removePermission(rank2, permission);
 						if (result) {
@@ -430,7 +430,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String inheritance = args[2];
 							final boolean result = s.addInheritance(rank2, inheritance);
 							if (result) {
@@ -445,7 +445,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String inheritance = args[2];
 							final boolean result = s.removeInheritance(rank2, inheritance);
 							if (result) {
@@ -460,7 +460,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
 							if (result) {
@@ -475,7 +475,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);
 							if (result) {
@@ -490,7 +490,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
 							final boolean result = s.setChatColor(rank2, color);
 							if (result) {
@@ -505,7 +505,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
 							final boolean result = s.setNameColor(rank2, color);
 							if (result) {
@@ -520,7 +520,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("createrank")) {
 					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.createRank(rank2);
 							if (success) {
 								this.m.messageCommandCreateRankSuccess(console, rank2);
@@ -534,7 +534,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
 					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.deleteRank(rank2);
 							if (success) {
 								this.m.messageCommandDeleteRankSuccess(console, rank2);
@@ -548,7 +548,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
-							final String rank2 = args[1];
+							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.setBuild(rank2, true);
 							if (success) {
 								this.m.messageCommandBuildEnabled(console, rank2);
@@ -561,7 +561,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
 					if (args.length == 2) {
-						final String rank2 = args[1];
+						final String rank2 = s.getRankIgnoreCase(args[1]);
 						final boolean success = s.setBuild(rank2, false);
 						if (success) {
 							this.m.messageCommandBuildDisabled(console, rank2);
@@ -597,7 +597,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("renamerank")) {
 					if (args.length == 3) {
-						final String from = args[1];
+						final String from = s.getRankIgnoreCase(args[1]);
 						final String to = args[2];
 						final boolean success = s.renameRank(from, to);
 						if (success) {
@@ -610,7 +610,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setdefaultrank")) {
 					if (args.length == 2) {
-						final String rankname = args[1];
+						final String rankname = s.getRankIgnoreCase(args[1]);
 						final boolean success = s.setDefaultRank(rankname);
 						if (success) {
 							this.m.messageCommandSetDefaultRankSuccess(console, rankname);

@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.Main;
-import nl.svenar.PowerRanks.Data.PermissibleInjector;
 
 public class OnJoin implements Listener {
 	Main m;
@@ -45,7 +44,7 @@ public class OnJoin implements Listener {
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
 		
-        this.m.log.info("Injected: " + (PermissibleInjector.isInjected(player) ? "yes" : "no"));
+//        this.m.log.info("Injected: " + (PermissibleInjector.isInjected(player) ? "yes" : "no"));
 	}
 
 	@EventHandler
