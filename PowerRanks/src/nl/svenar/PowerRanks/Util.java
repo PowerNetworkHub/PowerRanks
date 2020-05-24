@@ -1,16 +1,15 @@
 package nl.svenar.PowerRanks;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Sign;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Util {
-
-	public String getCraftBukkitClassName(String simpleName) {
-		String version = Bukkit.getServer().getClass().getName().substring("org.bukkit.craftbukkit".length());
-		version = version.substring(0, version.length() - "CraftServer".length());
-		return "org.bukkit.craftbukkit" + version + simpleName;
-	}
 
 	public static String replaceAll(String source, String key, String value) {
 		String[] split = source.split(Pattern.quote(key));
@@ -26,20 +25,42 @@ public class Util {
 		}
 		return builder.toString();
 	}
+
+	public static boolean isPowerRanksSign(Main main, Sign sign) {
+		String sign_header = sign.getLine(0);
+		return isPowerRanksSign(main, sign_header);
+	}
 	
+	public static boolean isPowerRanksSign(Main main, String sign_header) {
+		final File configFile = new File(String.valueOf(main.configFileLoc) + "config" + ".yml");
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		return sign_header.toLowerCase().contains("powerranks") && configYaml.getBoolean("signs.enabled");
+	}
+
+	public String getCraftBukkitClassName(String simpleName) {
+		String version = Bukkit.getServer().getClass().getName().substring("org.bukkit.craftbukkit".length());
+		version = version.substring(0, version.length() - "CraftServer".length());
+		return "org.bukkit.craftbukkit" + version + simpleName;
+	}
+
 	private static String getServerVersion() {
-        Class<?> server = Bukkit.getServer().getClass();
-        if (!server.getSimpleName().equals("CraftServer")) {
-            return ".";
-        }
-        if (server.getName().equals("org.bukkit.craftbukkit.CraftServer")) {
-            // Non versioned class
-            return ".";
-        } else {
-            String version = server.getName().substring("org.bukkit.craftbukkit".length());
-            return version.substring(0, version.length() - "CraftServer".length());
-        }
-    }
+		Class<?> server = Bukkit.getServer().getClass();
+		if (!server.getSimpleName().equals("CraftServer")) {
+			return ".";
+		}
+		if (server.getName().equals("org.bukkit.craftbukkit.CraftServer")) {
+			// Non versioned class
+			return ".";
+		} else {
+			String version = server.getName().substring("org.bukkit.craftbukkit".length());
+			return version.substring(0, version.length() - "CraftServer".length());
+		}
+	}
 
 	public static String nms(String className) {
 		return "net.minecraft.server" + getServerVersion() + className;

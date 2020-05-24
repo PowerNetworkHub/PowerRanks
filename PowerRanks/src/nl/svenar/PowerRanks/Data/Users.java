@@ -154,6 +154,7 @@ public class Users implements Listener {
 				playerYaml.save(playerFile);
 				this.m.setupPermissions(player);
 				this.m.updateTablistName(player);
+				this.m.messageSetRankSuccessSender(player, player.getName(), rank);
 				success = true;
 			} else {
 				success = false;
@@ -209,9 +210,9 @@ public class Users implements Listener {
 		}
 		if (group.length() > 0) {
 			if (sender != null) {
-				this.m.messagePlayerCheckRank(sender, group);
+				this.m.messagePlayerCheckRank(sender, target.getName(), group);
 			} else {
-				this.m.messagePlayerCheckRank(Bukkit.getConsoleSender(), group);
+				this.m.messagePlayerCheckRank(Bukkit.getConsoleSender(), target.getName(), group);
 			}
 		} else {
 			if (sender != null) {
@@ -459,8 +460,11 @@ public class Users implements Listener {
 				if (rankYaml.get("Groups." + rank) != null) {
 					String rankname = rankYaml.getString("Groups." + rank + ".level.promote");
 					if (rankYaml.get("Groups." + rankname) != null && rankname.length() > 0) {
-						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
-						playerYaml.save(playerFile);
+						this.setGroup(player, rankname);
+//						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
+//						playerYaml.save(playerFile);
+//						this.m.setupPermissions(player);
+//						this.m.updateTablistName(player);
 						return true;
 					}
 				}
@@ -480,8 +484,11 @@ public class Users implements Listener {
 						if (rankname.length() == 0)
 							return false;
 
-						playerYaml.set("players." + key + ".rank", (Object) rankname);
-						playerYaml.save(playerFile);
+						this.setGroup(player, rankname);
+//						playerYaml.set("players." + key + ".rank", (Object) rankname);
+//						playerYaml.save(playerFile);
+//						this.m.setupPermissions(player);
+//						this.m.updateTablistName(player);
 
 						offline_player_found = true;
 						return true;
@@ -512,8 +519,9 @@ public class Users implements Listener {
 				if (rankYaml.get("Groups." + rank) != null) {
 					String rankname = rankYaml.getString("Groups." + rank + ".level.demote");
 					if (rankYaml.get("Groups." + rankname) != null && rankname.length() > 0) {
-						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
-						playerYaml.save(playerFile);
+						this.setGroup(player, rankname);
+//						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
+//						playerYaml.save(playerFile);
 						return true;
 					}
 				}
@@ -533,8 +541,9 @@ public class Users implements Listener {
 						if (rankname.length() == 0)
 							return false;
 
-						playerYaml.set("players." + key + ".rank", (Object) rankname);
-						playerYaml.save(playerFile);
+						this.setGroup(player, rankname);
+//						playerYaml.set("players." + key + ".rank", (Object) rankname);
+//						playerYaml.save(playerFile);
 
 						offline_player_found = true;
 						return true;
@@ -583,7 +592,7 @@ public class Users implements Listener {
 			rankYaml.set("Groups." + to + ".chat.nameColor", rankYaml.get("Groups." + rank + ".chat.nameColor"));
 			rankYaml.set("Groups." + to + ".level.promote", rankYaml.get("Groups." + rank + ".level.promote"));
 			rankYaml.set("Groups." + to + ".level.demote", rankYaml.get("Groups." + rank + ".level.demote"));
-			
+
 			ConfigurationSection players = playerYaml.getConfigurationSection("players");
 			for (String p : players.getKeys(false)) {
 				if (playerYaml.getString("players." + p + ".rank") != null) {
@@ -599,13 +608,13 @@ public class Users implements Listener {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			deleteRank(rank);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public boolean setDefaultRank(String rankname) {
 		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -614,7 +623,7 @@ public class Users implements Listener {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (rankYaml.get("Groups." + rankname) != null) {
 			rankYaml.set("Default", rankname);
 			try {
@@ -625,13 +634,13 @@ public class Users implements Listener {
 
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public String getRankIgnoreCase(String rankname) {
 		String rank = rankname;
-		
+
 		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
@@ -639,7 +648,7 @@ public class Users implements Listener {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		ConfigurationSection ranks = rankYaml.getConfigurationSection("Groups");
 		for (String r : ranks.getKeys(false)) {
 			if (r.equalsIgnoreCase(rankname)) {
@@ -647,7 +656,7 @@ public class Users implements Listener {
 				break;
 			}
 		}
-		
+
 		return rank;
 	}
 }

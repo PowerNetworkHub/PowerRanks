@@ -20,7 +20,7 @@ messages:
    rank_set_sender: "%plugin_prefix% Set '%argument_target%' to rank: %argument_rank%"
    rank_set_target: "%plugin_prefix% You have been promoted to: %argument_rank% by %argument_sender%"
    player_not_found: "%plugin_prefix% &cPlayer '%argument_target%' not found!"
-   group_not_found: "%plugin_prefix% &cGroup '%argument_rank%' not found! &cGroup names must be Case sensitive"
+   group_not_found: "%plugin_prefix% &cGroup '%argument_rank%' not found!"
    player_check_rank: "%plugin_prefix% %argument_target%'s rank is %argument_rank%"
    inheritance_added: "%plugin_prefix% &aInheritance '%argument_inheritance%' added to rank: %argument_rank%"
    inheritance_removed: "%plugin_prefix% &aInheritance '%argument_inheritance%' removed from rank: %argument_rank%"
@@ -45,6 +45,8 @@ messages:
    default_rank_changed: "%plugin_prefix% &aChanged default rank to: %argument_rank%"
    error_changing_default_rank: "%plugin_prefix% &cError changing default rank to: '%argument_rank%'!"
    config_version_updated: "%plugin_prefix% &aConfiguration version updated!"
+   error_sign_unknown_rank: "%plugin_prefix% &cUnknown sign command!"
+   sign_created: "%plugin_prefix% &aSign created!"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -72,7 +74,7 @@ commands:
    reload_plugin_done: "%plugin_prefix% &2%plugin_name% Reloaded (plugin)!"
    help:
    - "&3--------&1%plugin_name%&3--------"
-   - "&b[Optional] <Required> &3| &bRank names are casesensetive"
+   - "&b[Optional] <Required>"
    - "&a/pr help&2 - Shows this menu"
    - "&a/pr createrank <rankName>&2 - Create a new rank"
    - "&a/pr deleterank <rankName>&2 - Delete a rank"

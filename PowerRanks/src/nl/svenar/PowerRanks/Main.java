@@ -21,7 +21,11 @@ import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
+import nl.svenar.PowerRanks.Events.OnInteract;
 import nl.svenar.PowerRanks.Events.OnJoin;
+import nl.svenar.PowerRanks.Events.OnSignChanged;
+import nl.svenar.PowerRanks.Events.TabExecutor;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.Rank;
@@ -88,8 +92,13 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBuild(this), (Plugin) this);
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
+		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new TabExecutor());
+		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new TabExecutor());
+		
 		this.createDir(this.fileLoc);
 		this.log.info("Enabled " + this.pdf.getName() + " v" + this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
 //		this.log.info("By: " + this.pdf.getAuthors().get(0));
@@ -417,7 +426,7 @@ public class Main extends JavaPlugin implements Listener {
 		Permissible permissible = new PowerPermissibleBase(player);
 		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
 		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
-		
+
 		if (playerPermissionAttachment.get(player.getName()) == null)
 			playerPermissionAttachment.put(player.getName(), player.addAttachment(this));
 	}
@@ -428,6 +437,8 @@ public class Main extends JavaPlugin implements Listener {
 
 	public void updateTablistName(Player player) {
 		try {
+			player.setPlayerListName(playerTablistNameBackup.get(player));
+
 			playerTablistNameBackup.put(player, player.getPlayerListName());
 
 			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
@@ -676,7 +687,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void messagePlayerCheckRank(Player player, String rank) {
+	public void messagePlayerCheckRank(Player player, String target, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 
 		String line = langYaml.getString("messages.player_check_rank");
@@ -684,6 +695,7 @@ public class Main extends JavaPlugin implements Listener {
 			String prefix = langYaml.getString("general.prefix");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+			line = Util.replaceAll(line, "%argument_target%", target);
 			line = Util.replaceAll(line, "%argument_rank%", rank);
 			String msg = chatColor(this.colorChar.charAt(0), line);
 			if (msg.length() > 0)
@@ -691,7 +703,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void messagePlayerCheckRank(ConsoleCommandSender console, String rank) {
+	public void messagePlayerCheckRank(ConsoleCommandSender console, String target, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 
 		String line = langYaml.getString("messages.player_check_rank");
@@ -699,6 +711,7 @@ public class Main extends JavaPlugin implements Listener {
 			String prefix = langYaml.getString("general.prefix");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", this.pdf.getName());
+			line = Util.replaceAll(line, "%argument_target%", target);
 			line = Util.replaceAll(line, "%argument_rank%", rank);
 			String msg = chatColor(this.colorChar.charAt(0), line);
 			if (msg.length() > 0)
@@ -709,121 +722,141 @@ public class Main extends JavaPlugin implements Listener {
 	public void messageCommandUsageReload(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_reload");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageReload(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_reload");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandReloadConfig(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_config");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandReloadConfig(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_config");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandReloadConfigDone(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_config_done");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandReloadConfigDone(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_config_done");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandReloadPlugin(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_plugin");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandReloadPlugin(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_plugin");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandReloadPluginDone(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_plugin_done");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandReloadPluginDone(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_plugin_done");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSet(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSet(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetown(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_setown");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetown(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_setown");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageCheck(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_check");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageCheck(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_check");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageAddperm(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_permission");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageAddperm(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_permission");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDelperm(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_permission");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDelperm(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_permission");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandPermissionAdded(Player player, String permission, String rank) {
@@ -831,7 +864,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.permission_added");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandPermissionAdded(ConsoleCommandSender console, String permission, String rank) {
@@ -839,7 +873,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.permission_added");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandPermissionRemoved(Player player, String permission, String rank) {
@@ -847,7 +882,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.permission_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandPermissionRemoved(ConsoleCommandSender console, String permission, String rank) {
@@ -855,163 +891,190 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.permission_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageConfigVersionUpdated(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.config_version_updated");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageConfigVersionUpdated(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.config_version_updated");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageAddInheritance(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_inheritance");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageAddInheritance(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_inheritance");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageRemoveInheritance(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_inheritance");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageRemoveInheritance(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_inheritance");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetPrefix(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_prefix");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetPrefix(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_prefix");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetSuffix(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_suffix");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetSuffix(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_suffix");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetChatColor(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_chat_color");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetChatColor(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_chat_color");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetNameColor(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_name_color");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageSetNameColor(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_name_color");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageCreateRank(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_create_rank");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageCreateRank(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_create_rank");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDeleteRank(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_delete_rank");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDeleteRank(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_delete_rank");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageEnableBuild(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_enable_build");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageEnableBuild(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_enable_build");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDisableBuild(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_disable_build");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDisableBuild(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_disable_build");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsagePromote(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_promote");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsagePromote(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_promote");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDemote(Player player) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_demote");
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandUsageDemote(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_demote");
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandInheritanceAdded(Player player, String inheritance, String rank) {
@@ -1019,7 +1082,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.inheritance_added");
 		msg = Util.replaceAll(msg, "%argument_inheritance%", inheritance);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandInheritanceAdded(ConsoleCommandSender console, String inheritance, String rank) {
@@ -1027,7 +1091,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.inheritance_added");
 		msg = Util.replaceAll(msg, "%argument_inheritance%", inheritance);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandInheritanceRemoved(Player player, String inheritance, String rank) {
@@ -1035,7 +1100,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.inheritance_removed");
 		msg = Util.replaceAll(msg, "%argument_inheritance%", inheritance);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandInheritanceRemoved(ConsoleCommandSender console, String inheritance, String rank) {
@@ -1043,7 +1109,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.inheritance_removed");
 		msg = Util.replaceAll(msg, "%argument_inheritance%", inheritance);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandSetPrefix(Player player, String prefix, String rank) {
@@ -1051,7 +1118,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_prefix");
 		msg = Util.replaceAll(msg, "%argument_prefix%", prefix);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandSetPrefix(ConsoleCommandSender console, String prefix, String rank) {
@@ -1059,7 +1127,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_prefix");
 		msg = Util.replaceAll(msg, "%argument_prefix%", prefix);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandSetSuffix(Player player, String suffix, String rank) {
@@ -1067,7 +1136,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_suffix");
 		msg = Util.replaceAll(msg, "%argument_suffix%", suffix);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandSetSuffix(ConsoleCommandSender console, String suffix, String rank) {
@@ -1075,7 +1145,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_suffix");
 		msg = Util.replaceAll(msg, "%argument_suffix%", suffix);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandSetChatColor(Player player, String color, String rank) {
@@ -1083,7 +1154,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_chat_color");
 		msg = Util.replaceAll(msg, "%argument_color%", color);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandSetChatColor(ConsoleCommandSender console, String color, String rank) {
@@ -1091,7 +1163,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_chat_color");
 		msg = Util.replaceAll(msg, "%argument_color%", color);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandSetNameColor(Player player, String color, String rank) {
@@ -1099,7 +1172,8 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_name_color");
 		msg = Util.replaceAll(msg, "%argument_color%", color);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandSetNameColor(ConsoleCommandSender console, String color, String rank) {
@@ -1107,202 +1181,245 @@ public class Main extends JavaPlugin implements Listener {
 		String msg = getGeneralMessage(langYaml, "messages.rank_set_name_color");
 		msg = Util.replaceAll(msg, "%argument_color%", color);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandCreateRankSuccess(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_created");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandCreateRankSuccess(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_created");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandCreateRankError(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_create_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandCreateRankError(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_create_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandDeleteRankSuccess(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_deleted");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandDeleteRankSuccess(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_deleted");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandDeleteRankError(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_delete_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandDeleteRankError(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_delete_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandPromoteSuccess(Player player, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.player_promoted");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandPromoteSuccess(ConsoleCommandSender console, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.player_promoted");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandPromoteError(Player player, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_player_promote");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandPromoteError(ConsoleCommandSender console, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_player_promote");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandDemoteSuccess(Player player, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.player_demoted");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandDemoteSuccess(ConsoleCommandSender console, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.player_demoted");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandDemoteError(Player player, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_player_demote");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandDemoteError(ConsoleCommandSender console, String playername) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_player_demote");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandBuildEnabled(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.build_enabled");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandBuildEnabled(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.build_enabled");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandBuildDisabled(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.build_disabled");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandBuildDisabled(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.build_disabled");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandRenameRankSuccess(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_renamed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandRenameRankSuccess(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.rank_renamed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandRenameRankError(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_renaming_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandRenameRankError(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_renaming_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandSetDefaultRankSuccess(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.default_rank_changed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandSetDefaultRankSuccess(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.default_rank_changed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
 	}
 
 	public void messageCommandSetDefaultRankError(Player player, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_changing_default_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) player.sendMessage(msg);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 
 	public void messageCommandSetDefaultRankError(ConsoleCommandSender console, String rank) {
 		YamlConfiguration langYaml = loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_changing_default_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0) console.sendMessage(msg);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+
+	public void messageSignUnknownCommand(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_sign_unknown_rank");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public void messageSignCreated(Player player) {
+		YamlConfiguration langYaml = loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.sign_created");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
 	}
 }

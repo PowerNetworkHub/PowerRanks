@@ -19,6 +19,14 @@
 # [suffix] suffix
 # [name] player name
 # --------------------
+# Signs
+# Set the player's rank using signs.
+# Available commands: promote, demote, set, check
+# Format:
+# Line 1: [PowerRanks]
+# Line 2: <command>
+# Line 3: [rank]
+# --------------------
 
 chat:
   enabled: true
@@ -28,3 +36,6 @@ build_modification:
 tablist_modification:
   enabled: true
   format: '[prefix] [name]'
+signs:
+  enabled: true
+  title_format: "&0[&b%plugin_name%&0]"
