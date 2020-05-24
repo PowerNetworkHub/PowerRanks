@@ -24,7 +24,7 @@ import nl.svenar.PowerRanks.Events.OnChat;
 import nl.svenar.PowerRanks.Events.OnInteract;
 import nl.svenar.PowerRanks.Events.OnJoin;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
-import nl.svenar.PowerRanks.Events.TabExecutor;
+import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
@@ -43,13 +43,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin implements Listener {
 	public PluginDescriptionFile pdf;
 	public String colorChar;
-	public ChatColor black;
-	public ChatColor aqua;
-	public ChatColor red;
-	public ChatColor dark_red;
-	public ChatColor blue;
-	public ChatColor dark_blue;
-	public ChatColor reset;
 	public String plp;
 	public Logger log;
 	public String configFileLoc;
@@ -71,14 +64,7 @@ public class Main extends JavaPlugin implements Listener {
 	public Main() {
 		this.pdf = this.getDescription();
 		this.colorChar = "&";
-		this.black = ChatColor.BLACK;
-		this.aqua = ChatColor.AQUA;
-		this.red = ChatColor.RED;
-		this.dark_red = ChatColor.DARK_RED;
-		this.blue = ChatColor.BLUE;
-		this.dark_blue = ChatColor.DARK_BLUE;
-		this.reset = ChatColor.RESET;
-		this.plp = this.black + "[" + this.aqua + this.pdf.getName() + this.black + "]" + this.reset + " ";
+		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + this.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
 		this.configFileLoc = this.getDataFolder() + File.separator;
 		this.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
 		Main.langFileLoc = this.configFileLoc + "lang.yml";
@@ -96,8 +82,8 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
-		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new TabExecutor());
-		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new TabExecutor());
+		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor());
+		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor());
 		
 		this.createDir(this.fileLoc);
 		this.log.info("Enabled " + this.pdf.getName() + " v" + this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));

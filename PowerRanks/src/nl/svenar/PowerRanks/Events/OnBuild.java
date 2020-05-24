@@ -3,6 +3,7 @@ package nl.svenar.PowerRanks.Events;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.entity.Player;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -29,21 +30,21 @@ public class OnBuild implements Listener {
 		try {
 			rankYaml.load(rankFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + this.m.dark_red + "Error reading Ranks.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED+ "Error reading Ranks.yml Does it exist?");
 			return;
 		}
 
 		try {
 			playerYaml.load(playerFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + this.m.dark_red + "Error reading Players.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Players.yml Does it exist?");
 			return;
 		}
 
 		try {
 			configYaml.load(configFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + this.m.dark_red + "Error reading config.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading config.yml Does it exist?");
 			return;
 		}
 
@@ -68,21 +69,21 @@ public class OnBuild implements Listener {
 		try {
 			rankYaml.load(rankFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + this.m.dark_red + "Error reading Ranks.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Ranks.yml Does it exist?");
 			return;
 		}
 
 		try {
 			playerYaml.load(playerFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + this.m.dark_red + "Error reading Players.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Players.yml Does it exist?");
 			return;
 		}
 
 		try {
 			configYaml.load(configFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + this.m.dark_red + "Error reading config.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading config.yml Does it exist?");
 			return;
 		}
 
