@@ -30,7 +30,7 @@ public class OnBuild implements Listener {
 		try {
 			rankYaml.load(rankFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED+ "Error reading Ranks.yml Does it exist?");
+			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Ranks.yml Does it exist?");
 			return;
 		}
 

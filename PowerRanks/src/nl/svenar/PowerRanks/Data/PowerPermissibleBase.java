@@ -1,9 +1,6 @@
 package nl.svenar.PowerRanks.Data;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permissible;
@@ -13,26 +10,30 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import nl.svenar.PowerRanks.Main;
+
 public class PowerPermissibleBase extends PermissibleBase {
 	
-    private Map<String, PermissionAttachmentInfo> permissions;
+//    private Map<String, PermissionAttachmentInfo> permissions;
     private Permissible oldPermissible = new PermissibleBase(null);
-
-    public PowerPermissibleBase(Player p) {
+    private Main plugin;
+    
+    public PowerPermissibleBase(Player p, Main main) {
         super(p);
-        permissions = new LinkedHashMap<String, PermissionAttachmentInfo>() {
-        	private static final long serialVersionUID = 1L;
-        	
-			@Override
-            public PermissionAttachmentInfo put(String k, PermissionAttachmentInfo v) {
-                PermissionAttachmentInfo existing = this.get(k);
-                if (existing != null) {
-                    return existing;
-                }
-
-                return super.put(k, v);
-            }
-        };
+        this.plugin = main;
+//        permissions = new LinkedHashMap<String, PermissionAttachmentInfo>() {
+//        	private static final long serialVersionUID = 1L;
+//        	
+//			@Override
+//            public PermissionAttachmentInfo put(String k, PermissionAttachmentInfo v) {
+//                PermissionAttachmentInfo existing = this.get(k);
+//                if (existing != null) {
+//                    return existing;
+//                }
+//
+//                return super.put(k, v);
+//            }
+//        };
     }
 
     public Permissible getOldPermissible() {
@@ -53,6 +54,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
     @Override
     public boolean hasPermission(String permission) {
+    	plugin.log.info("[hasPermission] " + permission + ": " + oldPermissible.hasPermission(permission));
         if (permission == null) {
             throw new NullPointerException("permission");
         }
@@ -81,7 +83,7 @@ public class PowerPermissibleBase extends PermissibleBase {
             return super.getEffectivePermissions();
         }
 
-        return new LinkedHashSet<>(permissions.values());
+        return oldPermissible.getEffectivePermissions();
     }
 
     @Override
@@ -105,7 +107,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 
     @Override
     public boolean isPermissionSet(String permission) {
-        return permissions.containsKey(permission.toLowerCase(java.util.Locale.ENGLISH)) || oldPermissible.isPermissionSet(permission) || oldPermissible.hasPermission("*");
+    	plugin.log.info("[isPermissionSet] " + permission + ": " + (oldPermissible.isPermissionSet(permission)));
+        return oldPermissible.isPermissionSet(permission) || oldPermissible.hasPermission("*");
     }
 
     @Override

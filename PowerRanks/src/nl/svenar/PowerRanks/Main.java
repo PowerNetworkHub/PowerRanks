@@ -84,7 +84,7 @@ public class Main extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor());
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor());
-		
+
 		this.createDir(this.fileLoc);
 		this.log.info("Enabled " + this.pdf.getName() + " v" + this.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
 //		this.log.info("By: " + this.pdf.getAuthors().get(0));
@@ -409,7 +409,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public void playerInjectPermissible(Player player) {
-		Permissible permissible = new PowerPermissibleBase(player);
+		Permissible permissible = new PowerPermissibleBase(player, this);
 		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
 		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
 
