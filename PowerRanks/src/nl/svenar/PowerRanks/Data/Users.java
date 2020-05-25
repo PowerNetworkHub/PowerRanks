@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.command.ConsoleCommandSender;
@@ -165,23 +166,60 @@ public class Users implements Listener {
 		return success;
 	}
 
-	public String getPrefix(Player player) {
-		String prefix = "";
+	public String getRanksConfigFieldString(String rank, String field) {
+		String value = "";
 		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
-		YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
-			String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-			prefix = rankYaml.getString("Groups." + rank + ".chat.prefix").replaceAll("&", "§");
+			value = rankYaml.getString("Groups." + rank + "." + field);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return prefix;
+		return value;
 	}
-
+	
+	public boolean setRanksConfigFieldString(String rank, String field, String new_value) {
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			rankYaml.set("Groups." + rank + "." + field, new_value);
+			rankYaml.save(rankFile);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean getRanksConfigFieldBoolean(String rank, String field) {
+		boolean value = false;
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			value = rankYaml.getBoolean("Groups." + rank + "." + field);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return value;
+	}
+	
+	public boolean setRanksConfigFieldBoolean(String rank, String field, boolean new_value) {
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			rankYaml.set("Groups." + rank + "." + field, new_value);
+			rankYaml.save(rankFile);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public String getGroup(String plr, String t) {
 		Player sender = (plr == null || plr == "API") ? null : Bukkit.getServer().getPlayer(plr);
 		Player target = Bukkit.getServer().getPlayer(t);
@@ -658,5 +696,33 @@ public class Users implements Listener {
 		}
 
 		return rank;
+	}
+
+	public List<String> getPermissions(String rank) {
+		List<String> permissions = new ArrayList<String>();
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		permissions = rankYaml.getStringList("Groups." + rank + ".permissions");
+		return permissions;
+	}
+
+	public List<String> getInheritances(String rank) {
+		List<String> inheritances = new ArrayList<String>();
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		inheritances = rankYaml.getStringList("Groups." + rank + ".inheritance");
+		return inheritances;
 	}
 }

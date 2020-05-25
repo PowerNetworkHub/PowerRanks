@@ -14,26 +14,12 @@ import nl.svenar.PowerRanks.Main;
 
 public class PowerPermissibleBase extends PermissibleBase {
 	
-//    private Map<String, PermissionAttachmentInfo> permissions;
     private Permissible oldPermissible = new PermissibleBase(null);
     private Main plugin;
     
     public PowerPermissibleBase(Player p, Main main) {
         super(p);
         this.plugin = main;
-//        permissions = new LinkedHashMap<String, PermissionAttachmentInfo>() {
-//        	private static final long serialVersionUID = 1L;
-//        	
-//			@Override
-//            public PermissionAttachmentInfo put(String k, PermissionAttachmentInfo v) {
-//                PermissionAttachmentInfo existing = this.get(k);
-//                if (existing != null) {
-//                    return existing;
-//                }
-//
-//                return super.put(k, v);
-//            }
-//        };
     }
 
     public Permissible getOldPermissible() {
@@ -54,7 +40,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
     @Override
     public boolean hasPermission(String permission) {
-    	plugin.log.info("[hasPermission] " + permission + ": " + oldPermissible.hasPermission(permission));
+//    	plugin.log.info("[hasPermission] " + permission + ": " + oldPermissible.hasPermission(permission));
         if (permission == null) {
             throw new NullPointerException("permission");
         }
@@ -107,7 +93,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
     @Override
     public boolean isPermissionSet(String permission) {
-    	plugin.log.info("[isPermissionSet] " + permission + ": " + (oldPermissible.isPermissionSet(permission)));
+//    	plugin.log.info("[isPermissionSet] " + permission + ": " + (oldPermissible.isPermissionSet(permission)));
         return oldPermissible.isPermissionSet(permission) || oldPermissible.hasPermission("*");
     }
 

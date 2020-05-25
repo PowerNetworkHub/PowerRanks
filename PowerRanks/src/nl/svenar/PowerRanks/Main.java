@@ -28,7 +28,7 @@ import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
-import nl.svenar.PowerRanks.api.Rank;
+import nl.svenar.PowerRanks.api.API;
 import nl.svenar.PowerRanks.metrics.Metrics;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -73,7 +73,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		this.log = this.getLogger();
-		Rank.main = this;
+		API.main = this;
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
