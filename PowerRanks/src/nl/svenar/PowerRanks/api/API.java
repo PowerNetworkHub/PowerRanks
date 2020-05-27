@@ -5,12 +5,12 @@ import java.util.Set;
 
 import org.bukkit.entity.Player;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class API {
 	
-	public static Main main;
+	public static PowerRanks main;
 	private Users s;
 	
 	public API() {
@@ -122,6 +122,16 @@ public class API {
 	
 	public boolean setDemoteRank(String rank, String new_value) {
 		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote", new_value);
+		return value;
+	}
+	
+	public boolean createRank(String rank) {
+		boolean value = s.createRank(rank);
+		return value;
+	}
+	
+	public boolean deleteRank(String rank) {
+		boolean value = s.deleteRank(rank);
 		return value;
 	}
 }

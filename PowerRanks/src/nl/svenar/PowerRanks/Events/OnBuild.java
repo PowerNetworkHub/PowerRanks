@@ -7,13 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import org.bukkit.event.block.BlockPlaceEvent;
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import org.bukkit.event.Listener;
 
 public class OnBuild implements Listener {
-	Main m;
+	PowerRanks m;
 
-	public OnBuild(final Main m) {
+	public OnBuild(final PowerRanks m) {
 		this.m = m;
 	}
 

@@ -10,15 +10,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class OnSignChanged implements Listener {
 
-	Main m;
+	PowerRanks m;
 
-	public OnSignChanged(Main m) {
+	public OnSignChanged(PowerRanks m) {
 		this.m = m;
 	}
 

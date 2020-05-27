@@ -10,16 +10,16 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 
 public class PowerPermissibleBase extends PermissibleBase {
 	
     private Permissible oldPermissible = new PermissibleBase(null);
-    private Main plugin;
+//    private Main plugin;
     
-    public PowerPermissibleBase(Player p, Main main) {
+    public PowerPermissibleBase(Player p, PowerRanks main) {
         super(p);
-        this.plugin = main;
+//        this.plugin = main;
     }
 
     public Permissible getOldPermissible() {

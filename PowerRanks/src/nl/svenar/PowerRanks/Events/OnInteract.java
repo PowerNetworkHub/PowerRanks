@@ -8,15 +8,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class OnInteract implements Listener {
 
-	Main m;
+	PowerRanks m;
 
-	public OnInteract(Main m) {
+	public OnInteract(PowerRanks m) {
 		this.m = m;
 	}
 

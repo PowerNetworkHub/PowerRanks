@@ -40,7 +40,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements Listener {
+public class PowerRanks extends JavaPlugin implements Listener {
 	public PluginDescriptionFile pdf;
 	public String colorChar;
 	public String plp;
@@ -61,13 +61,13 @@ public class Main extends JavaPlugin implements Listener {
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
 
-	public Main() {
+	public PowerRanks() {
 		this.pdf = this.getDescription();
 		this.colorChar = "&";
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + this.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
 		this.configFileLoc = this.getDataFolder() + File.separator;
 		this.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
-		Main.langFileLoc = this.configFileLoc + "lang.yml";
+		PowerRanks.langFileLoc = this.configFileLoc + "lang.yml";
 		this.updatemsg = "";
 	}
 
@@ -165,7 +165,7 @@ public class Main extends JavaPlugin implements Listener {
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-		final File langFile = new File(Main.langFileLoc);
+		final File langFile = new File(PowerRanks.langFileLoc);
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		final YamlConfiguration configYaml = new YamlConfiguration();
@@ -221,7 +221,7 @@ public class Main extends JavaPlugin implements Listener {
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-		final File langFile = new File(Main.langFileLoc);
+		final File langFile = new File(PowerRanks.langFileLoc);
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		final YamlConfiguration configYaml = new YamlConfiguration();
@@ -479,7 +479,7 @@ public class Main extends JavaPlugin implements Listener {
 //	}
 
 	public YamlConfiguration loadLangFile() {
-		File langFile = new File(Main.langFileLoc);
+		File langFile = new File(PowerRanks.langFileLoc);
 		YamlConfiguration langYaml = new YamlConfiguration();
 		try {
 			langYaml.load(langFile);
@@ -503,6 +503,10 @@ public class Main extends JavaPlugin implements Listener {
 		}
 
 		return msg;
+	}
+	
+	public API createNewAPI() {
+		return new API();
 	}
 
 	public void messageNoArgs(final Player player) {

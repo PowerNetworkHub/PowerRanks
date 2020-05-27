@@ -8,13 +8,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 
 public class OnChat implements Listener {
 	
-	Main m;
-	public OnChat(Main m){
+	PowerRanks m;
+	public OnChat(PowerRanks m){
 		this.m = m;
 	}
 		

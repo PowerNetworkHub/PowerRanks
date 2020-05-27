@@ -9,10 +9,10 @@ import java.net.URL;
 
 public class UpdateChecker
 {
-    private Main plugin;
+    private PowerRanks plugin;
     private String plugin_url;
     
-    public UpdateChecker(final Main plugin, final String plugin_url) {
+    public UpdateChecker(final PowerRanks plugin, final String plugin_url) {
         this.plugin = plugin;
         this.plugin_url = plugin_url;
     }

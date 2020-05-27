@@ -9,12 +9,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 
 public class OnJoin implements Listener {
-	Main m;
+	PowerRanks m;
 
-	public OnJoin(Main m) {
+	public OnJoin(PowerRanks m) {
 		this.m = m;
 	}
 

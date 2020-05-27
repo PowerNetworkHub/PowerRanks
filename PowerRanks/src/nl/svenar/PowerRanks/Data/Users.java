@@ -12,13 +12,13 @@ import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import org.bukkit.event.Listener;
 
 public class Users implements Listener {
-	Main m;
+	PowerRanks m;
 
-	public Users(Main m) {
+	public Users(PowerRanks m) {
 		this.m = m;
 	}
 

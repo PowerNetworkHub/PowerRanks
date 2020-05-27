@@ -26,12 +26,12 @@ public class Util {
 		return builder.toString();
 	}
 
-	public static boolean isPowerRanksSign(Main main, Sign sign) {
+	public static boolean isPowerRanksSign(PowerRanks main, Sign sign) {
 		String sign_header = sign.getLine(0);
 		return isPowerRanksSign(main, sign_header);
 	}
 	
-	public static boolean isPowerRanksSign(Main main, String sign_header) {
+	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
 		final File configFile = new File(String.valueOf(main.configFileLoc) + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {

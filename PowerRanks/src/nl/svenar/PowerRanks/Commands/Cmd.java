@@ -11,13 +11,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
 
-import nl.svenar.PowerRanks.Main;
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class Cmd implements CommandExecutor {
-	Main m;
+	PowerRanks m;
 
-	public Cmd(Main m) {
+	public Cmd(PowerRanks m) {
 		this.m = m;
 	}
 
@@ -395,6 +395,12 @@ public class Cmd implements CommandExecutor {
 					} else {
 						this.m.messageCommandUsageSet(console);
 					}
+				} else if (args[0].equalsIgnoreCase("list")) {
+						Set<String> ranks = s.getGroups();
+						console.sendMessage("Ranks(" + ranks.size() + "):");
+						for (String rank : ranks) {
+							console.sendMessage(rank);
+						}
 				} else if (args[0].equalsIgnoreCase("check")) {
 					if (args.length == 2) {
 						s.getGroup(null, args[1]);
