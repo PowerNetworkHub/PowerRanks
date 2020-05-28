@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
+import java.util.Date;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,10 +26,10 @@ public class OnJoin implements Listener {
 		final File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
-		
+
 		this.m.playerInjectPermissible(player);
-        		
-		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));		
+
+		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
 		try {
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
@@ -40,9 +41,12 @@ public class OnJoin implements Listener {
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
-		
+
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
+
+		long time = new Date().getTime();
+		this.m.playerLoginTime.put(player, time);
 	}
 
 	@EventHandler
@@ -52,5 +56,14 @@ public class OnJoin implements Listener {
 		this.m.removePermissions(player);
 
 		this.m.playerPermissionAttachment.remove(player.getName());
+
+		long leave_time = new Date().getTime();
+		long join_time = leave_time;
+		try {
+			join_time = this.m.playerLoginTime.get(player);
+		} catch (Exception e1) {}
+
+		this.m.updatePlaytime(player, join_time, leave_time);
+
 	}
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bukkit.permissions.Permissible;
@@ -18,6 +19,7 @@ import org.bukkit.command.CommandExecutor;
 import nl.svenar.PowerRanks.Commands.Cmd;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
+import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
 import nl.svenar.PowerRanks.Events.OnInteract;
@@ -38,6 +40,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public static PluginDescriptionFile pdf;
@@ -59,6 +64,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public String updatemsg;
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
+	public Map<Player, Long> playerLoginTime = new HashMap<Player, Long>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -106,8 +112,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
 		}
-
-		this.setupPermissions();
+		
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -125,6 +130,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
+		
+		this.setupPermissions();
+		this.setupScoreboardTeams();
 
 		int pluginId = 7565;
 		@SuppressWarnings("unused")
@@ -419,6 +427,24 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void playerUninjectPermissible(Player player) {
 		PermissibleInjector.uninject(player);
 	}
+	
+	private void setupScoreboardTeams() {
+	    ScoreboardManager manager = Bukkit.getScoreboardManager();
+	    Scoreboard board = manager.getNewScoreboard();
+	    Users s = new Users(this);
+	    Set<String> ranks = s.getGroups();
+	    for (String rank : ranks) {
+	    	Team team = board.registerNewTeam(rank);
+	    	team.setPrefix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.prefix"), true));
+	    	team.setSuffix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.suffix"), true));
+	    	
+		    for (Player player : Bukkit.getOnlinePlayers()) {
+		    	if (s.getGroup(player).equalsIgnoreCase(rank)) {
+		    		team.addEntry(player.getName());
+		    	}
+		    }
+	    }
+	}
 
 	public void updateTablistName(Player player) {
 		try {
@@ -541,13 +567,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return msg;
 	}
 
-//	public void errorMessage(final Player player, final String args) {
-//		player.sendMessage(ChatColor.RED + "--------" + ChatColor.DARK_BLUE + this.pdf.getName() + ChatColor.RED + "--------");
-//		player.sendMessage("Argument " + args + " not found");
-//		player.sendMessage(ChatColor.GREEN + "/pr help");
-//		player.sendMessage(ChatColor.RED + "--------------------------");
-//	}
-
 	public static YamlConfiguration loadLangFile() {
 		File langFile = new File(PowerRanks.langFileLoc);
 		YamlConfiguration langYaml = new YamlConfiguration();
@@ -561,5 +580,24 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public PowerRanksAPI loadAPI() {
 		return new PowerRanksAPI();
+	}
+
+	public void updatePlaytime(Player player, long join_time, long leave_time) {
+		File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playerYaml = new YamlConfiguration();
+		try {
+			playerYaml.load(playerFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		
+		Long current_playtime = playerYaml.getLong("players." + player.getUniqueId() + ".playtime");
+		playerYaml.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
+		
+		try {
+			playerYaml.save(playerFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
