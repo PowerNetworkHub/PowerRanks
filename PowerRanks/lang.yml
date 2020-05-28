@@ -47,6 +47,7 @@ messages:
    config_version_updated: "%plugin_prefix% &aConfiguration version updated!"
    error_sign_unknown_rank: "%plugin_prefix% &cUnknown sign command!"
    sign_created: "%plugin_prefix% &aSign created!"
+   error_adding_permission: "%plugin_prefix% &cError adding permission '%argument_permission%' to rank: %argument_rank%"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -67,6 +68,7 @@ commands:
    usage_command_disable_build: "%plugin_prefix% &c/pr disblebuild <rankName>"
    usage_command_promote: "%plugin_prefix% &c/pr promote <playerName>"
    usage_command_demote: "%plugin_prefix% &c/pr demote <playerName>"
+   usage_command_listpermissions: "%plugin_prefix% &c/pr listpermissions <rankName>"
    
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
@@ -83,6 +85,8 @@ commands:
    - "&a/pr promote <playerName>&2 - Promote a player to the next rank"
    - "&a/pr demote <playerName>&2 - Demote a player to the previous rank"
    - "&a/pr check <playerName>&2 - Check someone's rank"
+   - "&a/pr listranks&2 - List all ranks"
+   - "&a/pr listpermissions <rankName>&2 - List all permissions in a rank"
    - "&a/pr reload&2 - Reload PowerRanks"
    - "&a/pr addperm <rank> <permission>&2 - Add a permission to a rank"
    - "&a/pr delperm <rank> <permission>&2 - Remove a permission from a rank"

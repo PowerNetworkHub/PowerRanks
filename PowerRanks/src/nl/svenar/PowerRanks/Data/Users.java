@@ -293,13 +293,19 @@ public class Users implements Listener {
 	public boolean addPermission(String rank, String permission) {
 		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
+		if (permission.contains("/") || permission.contains(":")) {
+			return false;
+		}
+		
 		try {
 			rankYaml.load(rankFile);
 			if (rankYaml.get("Groups." + rank) != null) {
 				List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
-				list.add(permission);
-				rankYaml.set("Groups." + rank + ".permissions", (Object) list);
-				rankYaml.save(rankFile);
+				if (!list.contains(permission)) {
+					list.add(permission);
+					rankYaml.set("Groups." + rank + ".permissions", (Object) list);
+					rankYaml.save(rankFile);
+				}
 				return true;
 			}
 		} catch (Exception e) {

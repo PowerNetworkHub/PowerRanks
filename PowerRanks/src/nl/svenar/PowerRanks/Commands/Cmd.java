@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.Commands;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.plugin.Plugin;
@@ -87,13 +88,32 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-				} else if (args[0].equalsIgnoreCase("list")) {
+				} else if (args[0].equalsIgnoreCase("listranks")) {
 					if (sender.hasPermission("powerranks.cmd.list")) {
 						Set<String> ranks = s.getGroups();
 						sender.sendMessage("Ranks(" + ranks.size() + "):");
 						for (String rank : ranks) {
 							sender.sendMessage(rank);
 						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("listpermissions")) {
+					if (sender.hasPermission("powerranks.cmd.list")) {
+						if (args.length == 2) {
+							if (s.getGroups().contains(s.getRankIgnoreCase(args[1]))) {
+								List<String> permissions = s.getPermissions(s.getRankIgnoreCase(args[1]));
+								sender.sendMessage("Permissions of " + s.getRankIgnoreCase(args[1]) + "(" + permissions.size() + "):");
+								for (String permission : permissions) {
+									sender.sendMessage(permission);
+								}
+							} else {
+								Messages.messageGroupNotFound(player, args[1]);
+							}
+						} else {
+							Messages.messageCommandUsageListPermissions(player);
+						}
+
 					} else {
 						Messages.noPermission(player);
 					}
@@ -118,7 +138,7 @@ public class Cmd implements CommandExecutor {
 							if (result) {
 								Messages.messageCommandPermissionAdded(player, permission, rank2);
 							} else {
-								Messages.messageGroupNotFound(player, rank2);
+								Messages.messageErrorAddingPermission(player, rank2, permission);
 							}
 						} else {
 							Messages.messageCommandUsageAddperm(player);
@@ -397,12 +417,27 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageSet(console);
 					}
-				} else if (args[0].equalsIgnoreCase("list")) {
-						Set<String> ranks = s.getGroups();
-						console.sendMessage("Ranks(" + ranks.size() + "):");
-						for (String rank : ranks) {
-							console.sendMessage(rank);
+				} else if (args[0].equalsIgnoreCase("listranks")) {
+					Set<String> ranks = s.getGroups();
+					console.sendMessage("Ranks(" + ranks.size() + "):");
+					for (String rank : ranks) {
+						console.sendMessage(rank);
+					}
+				} else if (args[0].equalsIgnoreCase("listpermissions")) {
+					if (args.length == 2) {
+						if (s.getGroups().contains(s.getRankIgnoreCase(args[1]))) {
+							List<String> permissions = s.getPermissions(s.getRankIgnoreCase(args[1]));
+							sender.sendMessage("Permissions of " + s.getRankIgnoreCase(args[1]) + "(" + permissions.size() + "):");
+							for (String permission : permissions) {
+								sender.sendMessage(permission);
+							}
+						} else {
+							Messages.messageGroupNotFound(console, args[1]);
 						}
+					} else {
+						Messages.messageCommandUsageListPermissions(console);
+					}
+
 				} else if (args[0].equalsIgnoreCase("check")) {
 					if (args.length == 2) {
 						s.getGroup(null, args[1]);
@@ -417,7 +452,7 @@ public class Cmd implements CommandExecutor {
 						if (result) {
 							Messages.messageCommandPermissionAdded(console, permission, rank2);
 						} else {
-							Messages.messageGroupNotFound(console, rank2);
+							Messages.messageErrorAddingPermission(console, rank2, permission);
 						}
 					} else {
 						Messages.messageCommandUsageAddperm(console);

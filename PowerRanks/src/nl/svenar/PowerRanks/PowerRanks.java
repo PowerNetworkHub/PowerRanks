@@ -79,12 +79,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.main = this;
+		
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBuild(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
+		
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor());

@@ -930,4 +930,36 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
+
+	public static void messageCommandUsageListPermissions(Player player) {
+		 YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_listpermissions");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageListPermissions(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_listpermissions");
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+
+	public static void messageErrorAddingPermission(Player player, String rank, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_permission");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+	
+	public static void messageErrorAddingPermission(ConsoleCommandSender console, String rank, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_permission");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
 }
