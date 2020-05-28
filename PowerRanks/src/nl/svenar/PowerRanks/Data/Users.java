@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import nl.svenar.PowerRanks.Messages;
 import nl.svenar.PowerRanks.PowerRanks;
 import org.bukkit.event.Listener;
 
@@ -38,12 +40,12 @@ public class Users implements Listener {
 							playerYaml.load(playerFile);
 							playerYaml.set("players." + target.getUniqueId() + ".rank", (Object) rank);
 							playerYaml.save(playerFile);
-							this.m.messageSetRankSuccessSender(player, t, rank);
-							this.m.messageSetRankSuccessTarget(target, player.getName(), rank);
+							Messages.messageSetRankSuccessSender(player, t, rank);
+							Messages.messageSetRankSuccessTarget(target, player.getName(), rank);
 							this.m.setupPermissions(target);
 							this.m.updateTablistName(target);
 						} else {
-							this.m.messageGroupNotFound(player, rank);
+							Messages.messageGroupNotFound(player, rank);
 						}
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -64,17 +66,17 @@ public class Users implements Listener {
 								if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
 									playerYaml2.set("players." + key + ".rank", (Object) rank);
 									playerYaml2.save(playerFile2);
-									this.m.messageSetRankSuccessSender(player, t, rank);
+									Messages.messageSetRankSuccessSender(player, t, rank);
 
 									offline_player_found = true;
 								}
 							}
 
 							if (!offline_player_found) {
-								this.m.messagePlayerNotFound(player, t);
+								Messages.messagePlayerNotFound(player, t);
 							}
 						} else {
-							this.m.messageGroupNotFound(player, rank);
+							Messages.messageGroupNotFound(player, rank);
 						}
 					} catch (IOException | InvalidConfigurationException e) {
 						e.printStackTrace();
@@ -96,12 +98,12 @@ public class Users implements Listener {
 						playerYaml2.load(playerFile2);
 						playerYaml2.set("players." + target2.getUniqueId() + ".rank", (Object) rank);
 						playerYaml2.save(playerFile2);
-						this.m.messageSetRankSuccessSender(console, t, rank);
-						this.m.messageSetRankSuccessTarget(target2, console.getName(), rank);
+						Messages.messageSetRankSuccessSender(console, t, rank);
+						Messages.messageSetRankSuccessTarget(target2, console.getName(), rank);
 						this.m.setupPermissions(target2);
 						this.m.updateTablistName(target2);
 					} else {
-						this.m.messageGroupNotFound(console, rank);
+						Messages.messageGroupNotFound(console, rank);
 					}
 				} catch (Exception e2) {
 					e2.printStackTrace();
@@ -122,17 +124,17 @@ public class Users implements Listener {
 							if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
 								playerYaml2.set("players." + key + ".rank", (Object) rank);
 								playerYaml2.save(playerFile2);
-								this.m.messageSetRankSuccessSender(console, t, rank);
+								Messages.messageSetRankSuccessSender(console, t, rank);
 
 								offline_player_found = true;
 							}
 						}
 
 						if (!offline_player_found) {
-							this.m.messagePlayerNotFound(console, t);
+							Messages.messagePlayerNotFound(console, t);
 						}
 					} else {
-						this.m.messageGroupNotFound(console, rank);
+						Messages.messageGroupNotFound(console, rank);
 					}
 				} catch (IOException | InvalidConfigurationException e) {
 					e.printStackTrace();
@@ -155,7 +157,7 @@ public class Users implements Listener {
 				playerYaml.save(playerFile);
 				this.m.setupPermissions(player);
 				this.m.updateTablistName(player);
-				this.m.messageSetRankSuccessSender(player, player.getName(), rank);
+				Messages.messageSetRankSuccessSender(player, player.getName(), rank);
 				success = true;
 			} else {
 				success = false;
@@ -248,15 +250,15 @@ public class Users implements Listener {
 		}
 		if (group.length() > 0) {
 			if (sender != null) {
-				this.m.messagePlayerCheckRank(sender, target.getName(), group);
+				Messages.messagePlayerCheckRank(sender, target.getName(), group);
 			} else {
-				this.m.messagePlayerCheckRank(Bukkit.getConsoleSender(), target.getName(), group);
+				Messages.messagePlayerCheckRank(Bukkit.getConsoleSender(), target.getName(), group);
 			}
 		} else {
 			if (sender != null) {
-				this.m.messagePlayerNotFound(sender, t);
+				Messages.messagePlayerNotFound(sender, t);
 			} else {
-				this.m.messagePlayerNotFound(Bukkit.getConsoleSender(), t);
+				Messages.messagePlayerNotFound(Bukkit.getConsoleSender(), t);
 			}
 		}
 		return (group.length() == 0) ? "error" : group;
@@ -634,7 +636,7 @@ public class Users implements Listener {
 			ConfigurationSection players = playerYaml.getConfigurationSection("players");
 			for (String p : players.getKeys(false)) {
 				if (playerYaml.getString("players." + p + ".rank") != null) {
-					this.m.log.info(playerYaml.getString("players." + p + ".rank") + (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank) ? " Match" : " No Match"));
+					PowerRanks.log.info(playerYaml.getString("players." + p + ".rank") + (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank) ? " Match" : " No Match"));
 					if (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank)) {
 						playerYaml.set("players." + p + ".rank", to);
 					}

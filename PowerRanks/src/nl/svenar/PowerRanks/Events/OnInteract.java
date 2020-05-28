@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import nl.svenar.PowerRanks.Messages;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Users;
@@ -43,21 +44,21 @@ public class OnInteract implements Listener {
 		if (!sign_error) {
 			if (sign_command.equalsIgnoreCase("promote")) {
 				if (s.promote(player.getName()))
-					this.m.messageCommandPromoteSuccess(player, player.getName());
+					Messages.messageCommandPromoteSuccess(player, player.getName());
 				else
-					this.m.messageCommandPromoteError(player, player.getName());
+					Messages.messageCommandPromoteError(player, player.getName());
 			} else if (sign_command.equalsIgnoreCase("demote")) {
 				if (s.demote(player.getName()))
-					this.m.messageCommandDemoteSuccess(player, player.getName());
+					Messages.messageCommandDemoteSuccess(player, player.getName());
 				else
-					this.m.messageCommandDemoteError(player, player.getName());
+					Messages.messageCommandDemoteError(player, player.getName());
 			} else if (sign_command.equalsIgnoreCase("set")) {
 				s.setGroup(player, s.getRankIgnoreCase(sign_argument));
 			} else if (sign_command.equalsIgnoreCase("check")) {
 				s.getGroup(player.getName(), player.getName());
 			} else {
 				if (player.hasPermission("powerranks.cmd.admin")) {
-					this.m.messageSignUnknownCommand(player);
+					Messages.messageSignUnknownCommand(player);
 				}
 			}
 		}

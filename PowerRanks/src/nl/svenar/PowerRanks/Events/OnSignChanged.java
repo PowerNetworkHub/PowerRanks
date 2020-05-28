@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
+import nl.svenar.PowerRanks.Messages;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Users;
@@ -34,14 +35,14 @@ public class OnSignChanged implements Listener {
 					e.printStackTrace();
 				}
 
-				event.setLine(0, this.m.chatColor(this.m.colorChar.charAt(0), Util.replaceAll(configYaml.getString("signs.title_format"), "%plugin_name%", this.m.pdf.getName())));
+				event.setLine(0, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), Util.replaceAll(configYaml.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
 
 				final Users s = new Users(this.m);
 				String sign_command = event.getLine(1);
 				String sign_argument = event.getLine(2);
 
 				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("check")) {
-					this.m.messageSignCreated(event.getPlayer());
+					Messages.messageSignCreated(event.getPlayer());
 				} else if (sign_command.equalsIgnoreCase("set")) {
 					Set<String> ranks = s.getGroups();
 					boolean rank_exists = false;
@@ -52,14 +53,14 @@ public class OnSignChanged implements Listener {
 						}
 					}
 					if (!rank_exists) {
-						this.m.messageGroupNotFound(event.getPlayer(), sign_argument);
-						event.setLine(3, this.m.chatColor(this.m.colorChar.charAt(0), "&4Error"));
+						Messages.messageGroupNotFound(event.getPlayer(), sign_argument);
+						event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
 					} else {
-						this.m.messageSignCreated(event.getPlayer());
+						Messages.messageSignCreated(event.getPlayer());
 					}
 				} else {
-					this.m.messageSignUnknownCommand(event.getPlayer());
-					event.setLine(3, this.m.chatColor(this.m.colorChar.charAt(0), "&4Error"));
+					Messages.messageSignUnknownCommand(event.getPlayer());
+					event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
 				}
 			} else {
 				event.setLine(0, "");

@@ -9,7 +9,8 @@ import java.net.URL;
 
 public class UpdateChecker
 {
-    private PowerRanks plugin;
+    @SuppressWarnings("unused")
+	private PowerRanks plugin;
     private String plugin_url;
     
     public UpdateChecker(final PowerRanks plugin, final String plugin_url) {
@@ -35,7 +36,7 @@ public class UpdateChecker
                     final Matcher m = p.matcher(inputLine);
                     if (m.find()) {
                         final String downloadUrl = "http://www.spigotmc.org/" + m.group(1).toString().replace("\"", "");
-                        this.plugin.log.info(downloadUrl);
+                        PowerRanks.log.info(downloadUrl);
                     }
                     getLinkNow = false;
                 }
@@ -47,9 +48,9 @@ public class UpdateChecker
             return true;
         }
         catch (Exception e) {
-            this.plugin.log.warning("Something went wrong while downloading an update.");
-            this.plugin.log.warning("Please check the plugin's page to see if there are any updates available.");
-            this.plugin.log.warning(e.getMessage());
+            PowerRanks.log.warning("Something went wrong while downloading an update.");
+            PowerRanks.log.warning("Please check the plugin's page to see if there are any updates available.");
+            PowerRanks.log.warning(e.getMessage());
             e.printStackTrace();
             return false;
         }

@@ -2,6 +2,7 @@ package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,12 +38,12 @@ public class OnChat implements Listener {
             final String suffix = (rankYaml.getString("Groups." + rank + ".chat.suffix") != null) ? rankYaml.getString("Groups." + rank + ".chat.suffix") : "";
             final String chatColor = (rankYaml.getString("Groups." + rank + ".chat.chatColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.chatColor") : "";
             final String nameColor = (rankYaml.getString("Groups." + rank + ".chat.nameColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.nameColor") : "";
-            format = Util.replaceAll(format, "[prefix]", prefix);
-            format = Util.replaceAll(format, " [suffix]", (suffix.length() > 0) ? (" " + suffix) : suffix);
+            format = Util.replaceAll(format, "[prefix]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), prefix, true) + ChatColor.RESET);
+            format = Util.replaceAll(format, " [suffix]", (suffix.length() > 0) ? (" " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true)) : PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
             format = Util.replaceAll(format, "[player]", String.valueOf(nameColor) + "%1$s");
             format = Util.replaceAll(format, "[msg]", String.valueOf(chatColor) + "%2$s");
             format = Util.replaceAll(format, "[format]", e.getFormat());
-            format = this.m.chatColor(this.m.colorChar.charAt(0), format);
+            format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, false);
             if (configYaml.getBoolean("chat.enabled")) {
                 e.setFormat(format);
             }

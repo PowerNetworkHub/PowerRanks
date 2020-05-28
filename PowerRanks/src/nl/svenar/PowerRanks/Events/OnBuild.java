@@ -30,21 +30,21 @@ public class OnBuild implements Listener {
 		try {
 			rankYaml.load(rankFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Ranks.yml Does it exist?");
+			PowerRanks.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Ranks.yml Does it exist?");
 			return;
 		}
 
 		try {
 			playerYaml.load(playerFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Players.yml Does it exist?");
+			PowerRanks.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Players.yml Does it exist?");
 			return;
 		}
 
 		try {
 			configYaml.load(configFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading config.yml Does it exist?");
+			PowerRanks.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading config.yml Does it exist?");
 			return;
 		}
 
@@ -69,21 +69,21 @@ public class OnBuild implements Listener {
 		try {
 			rankYaml.load(rankFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Ranks.yml Does it exist?");
+			PowerRanks.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Ranks.yml Does it exist?");
 			return;
 		}
 
 		try {
 			playerYaml.load(playerFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Players.yml Does it exist?");
+			PowerRanks.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading Players.yml Does it exist?");
 			return;
 		}
 
 		try {
 			configYaml.load(configFile);
 		} catch (Exception e1) {
-			this.m.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading config.yml Does it exist?");
+			PowerRanks.log.warning(this.m.plp + ChatColor.DARK_RED + "Error reading config.yml Does it exist?");
 			return;
 		}
 
