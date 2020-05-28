@@ -634,7 +634,7 @@ public class Cmd implements CommandExecutor {
 				}
 			}
 		} else if (sender instanceof CraftBlockCommandSender) {
-			final CraftBlockCommandSender console = (CraftBlockCommandSender) sender;
+//			final CraftBlockCommandSender console = (CraftBlockCommandSender) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
 //					Messages.messageNoArgs(console);
@@ -643,25 +643,11 @@ public class Cmd implements CommandExecutor {
 					final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
 					plg.disablePlugin(plgname);
 					plg.enablePlugin(plgname);
-				} else if (args[0].equalsIgnoreCase("help")) {
-//					Messages.helpMenu(console);
 				} else if (args[0].equalsIgnoreCase("set")) {
 					if (args.length == 3) {
 						s.setGroup(null, args[1], s.getRankIgnoreCase(args[2]));
 					} else {
 //						Messages.messageCommandUsageSet(console);
-					}
-				} else if (args[0].equalsIgnoreCase("list")) {
-						Set<String> ranks = s.getGroups();
-						console.sendMessage("Ranks(" + ranks.size() + "):");
-						for (String rank : ranks) {
-							console.sendMessage(rank);
-						}
-				} else if (args[0].equalsIgnoreCase("check")) {
-					if (args.length == 2) {
-						s.getGroup(null, args[1]);
-					} else {
-//						Messages.messageCommandUsageCheck(console);
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (args.length == 3) {
