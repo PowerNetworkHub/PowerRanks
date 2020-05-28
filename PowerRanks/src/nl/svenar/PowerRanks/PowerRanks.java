@@ -28,7 +28,7 @@ import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
-import nl.svenar.PowerRanks.api.API;
+import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.metrics.Metrics;
 
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -73,7 +73,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		this.log = this.getLogger();
-		API.main = this;
+		PowerRanksAPI.main = this;
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
@@ -505,8 +505,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return msg;
 	}
 	
-	public API createNewAPI() {
-		return new API();
+	public PowerRanksAPI loadAPI() {
+		return new PowerRanksAPI();
 	}
 
 	public void messageNoArgs(final Player player) {

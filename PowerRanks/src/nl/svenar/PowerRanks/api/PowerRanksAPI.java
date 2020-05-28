@@ -8,13 +8,13 @@ import org.bukkit.entity.Player;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Users;
 
-public class API {
+public class PowerRanksAPI {
 	
 	public static PowerRanks main;
 	private Users s;
 	
-	public API() {
-		this.s = new Users(API.main);
+	public PowerRanksAPI() {
+		this.s = new Users(PowerRanksAPI.main);
 	}
 	
 	public String getPlayerRank(Player player) {
