@@ -48,6 +48,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public static PluginDescriptionFile pdf;
@@ -59,7 +60,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String langFileLoc;
 	
 	// Soft Depencencies
-	private static Economy economy;
+	private static Economy vaultEconomy;
+	private static Permission vaultPermission;
 	// Soft Depencencies
 	
 	File configFile;
@@ -185,20 +187,24 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 		if (has_vault) {
 			PowerRanks.log.info("Vault found!");
-			setupEconomy();
+			setupVaultEconomy();
+			setupVaultPermisssions();
 		}
 
 		if (!has_vault)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
 
-	private boolean setupEconomy() {
-		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-		if (economyProvider != null) {
-			PowerRanks.economy = economyProvider.getProvider();
-		}
-
-		return (PowerRanks.getVaultEconomy() != null);
+	private boolean setupVaultEconomy() {
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+		PowerRanks.vaultEconomy = rsp.getProvider();
+        return PowerRanks.vaultEconomy != null;
+	}
+	
+	private boolean setupVaultPermisssions() {
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+		PowerRanks.vaultPermission = rsp.getProvider();
+        return PowerRanks.vaultPermission != null;
 	}
 
 	private boolean getConfigBool(String path) {
@@ -672,6 +678,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public static Economy getVaultEconomy() {
-		return economy;
+		return vaultEconomy;
 	}
 }

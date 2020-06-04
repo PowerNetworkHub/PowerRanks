@@ -35,12 +35,14 @@ public class OnInventory implements Listener {
 			if (clickedItem == null || clickedItem.getType() == Material.AIR)
 				return;
 
-			if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("close")) player.closeInventory();
-			
+			if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("close"))
+				player.closeInventory();
+
 			if (inventory == PowerRanksGUI.getPowerRanksGUI()) {
 				player.sendMessage("You clicked at slot " + e.getRawSlot() + " - " + clickedItem.getItemMeta().getDisplayName());
+				
 			} else if (inventory == PowerRanksGUI.getPowerRanksGUIShop()) {
-				if (e.getSlot() != PowerRanksGUI.getPowerRanksGUIShop().getSize() - 1 && e.getSlot() != PowerRanksGUI.getPowerRanksGUIShop().getSize() - 2) {
+				if (e.getSlot() < PowerRanksGUI.getPowerRanksGUIShop().getSize() - 9) {
 					Users users = new Users(this.m);
 					String rankname = clickedItem.getItemMeta().getDisplayName();
 					int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
@@ -53,6 +55,17 @@ public class OnInventory implements Listener {
 						Messages.messageBuyRankError(player, rankname);
 					}
 					player.closeInventory();
+				}
+
+				if (e.getSlot() == PowerRanksGUI.getPowerRanksGUIShop().getSize() - 3) {
+					int current_page = Integer.parseInt(clickedItem.getItemMeta().getLore().get(0).toLowerCase().replaceAll("page", "").replaceAll(" ", "")) - 1;
+					if (e.isLeftClick()) {
+						PowerRanksGUI.openPowerRanksRankupGUI(player, current_page + 1);
+					}
+
+					if (e.isRightClick()) {
+						PowerRanksGUI.openPowerRanksRankupGUI(player, current_page - 1);
+					}
 				}
 			}
 		}

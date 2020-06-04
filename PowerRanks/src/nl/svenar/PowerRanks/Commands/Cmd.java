@@ -415,7 +415,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
-						if (PowerRanks.getVaultEconomy() != null) PowerRanksGUI.openPowerRanksRankupGUI(player);
+						if (PowerRanks.getVaultEconomy() != null) PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
 						else Messages.messageBuyRankNotAvailable(player);
 					} else {
 						Messages.noPermission(player);

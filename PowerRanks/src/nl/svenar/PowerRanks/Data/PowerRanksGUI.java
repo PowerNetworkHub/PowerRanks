@@ -31,7 +31,7 @@ public class PowerRanksGUI {
 			return size;
 		}
 	}
-	
+
 	public static void setPlugin(PowerRanks powerRanks) {
 		PowerRanksGUI.powerRanks = powerRanks;
 	}
@@ -39,12 +39,7 @@ public class PowerRanksGUI {
 	public static void setupGUI() {
 		inventoryGUIMain = Bukkit.createInventory(null, INVENTORY_SIZE.NORMAL.getSize(), "PowerRanks");
 		inventoryGUIShop = Bukkit.createInventory(null, INVENTORY_SIZE.NORMAL.getSize(), "Rank shop");
-
-		inventoryGUIMain.addItem(createGuiItem(Material.CAKE, "CAKE!", "Isn't it nice?", "", "A cake", "for you?"));
-		inventoryGUIMain.setItem(inventoryGUIMain.getSize() - 1, createGuiItem(Material.BARRIER, "Close"));
-
-		inventoryGUIShop.setItem(inventoryGUIShop.getSize() - 1, createGuiItem(Material.BARRIER, "Close"));
-}
+	}
 
 	public static ItemStack createGuiItem(final Material material, final String name, final String... lore) {
 		final ItemStack item = new ItemStack(material, 1);
@@ -55,7 +50,7 @@ public class PowerRanksGUI {
 		item.setItemMeta(meta);
 		return item;
 	}
-	
+
 	public static ItemStack createEmptyGuiItem() {
 		final ItemStack item = new ItemStack(Material.AIR, 1);
 		return item;
@@ -71,30 +66,56 @@ public class PowerRanksGUI {
 	}
 
 	public static void openPowerRanksGUI(Player player) {
+//		inventoryGUIMain.addItem(createGuiItem(Material.CAKE, "CAKE!", "Isn't it nice?", "", "A cake", "for you?"));
+		inventoryGUIMain.setItem(inventoryGUIMain.getSize() - 1, createGuiItem(Material.BARRIER, "Close"));
 		player.openInventory(getPowerRanksGUI());
 	}
-	
-	public static void openPowerRanksRankupGUI(Player player) {
+
+	public static void openPowerRanksRankupGUI(Player player, int page) {
+		if (page < 0) {
+			openPowerRanksRankupGUI(player, page + 1);
+			return;
+		}
 		Users users = new Users(powerRanks);
 		for (int i = 0; i < inventoryGUIShop.getSize() - 1; i++) {
 			inventoryGUIShop.setItem(i, createEmptyGuiItem());
 		}
-		for (String rank : users.getGroups()) {
-			if (users.getRanksConfigFieldBoolean(rank, "economy.buyable") && !rank.equalsIgnoreCase(users.getGroup(player))) {
-				Material icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
-				int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
-				if (icon != null)
-					inventoryGUIShop.addItem(createGuiItem(icon, rank, "Cost: " + String.valueOf(cost)));
+		Object[] ranks = users.getGroups().toArray();
+		int num_rank_on_page = inventoryGUIShop.getSize() - 9;
+		
+		if (num_rank_on_page * page > ranks.length) {
+			openPowerRanksRankupGUI(player, page - 1);
+			return;
+		}
+
+		for (int i = 0; i < num_rank_on_page; i++) {
+			if (num_rank_on_page * page + i < ranks.length) {
+				String rank = (String) ranks[num_rank_on_page * page + i];
+				if (users.getRanksConfigFieldBoolean(rank, "economy.buyable") && !rank.equalsIgnoreCase(users.getGroup(player))) {
+					if (users.getRanksConfigFieldString(rank, "gui.icon").length() > 0) {
+						Material icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+						int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
+						if (icon != null)
+							inventoryGUIShop.addItem(createGuiItem(icon, rank, "Cost: " + String.valueOf(cost)));
+						else
+							PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+					} else {
+						PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
+					}
+				}
 			}
 		}
+
 		inventoryGUIShop.setItem(inventoryGUIShop.getSize() - 2, createGuiItem(Material.EMERALD, "Balance", String.valueOf(PowerRanks.getVaultEconomy().getBalance(player))));
+		inventoryGUIShop.setItem(inventoryGUIShop.getSize() - 3, createGuiItem(Material.COMPASS, "Navigation", "Page " + String.valueOf(page + 1), "Left click: next page", "Right click: previous page"));
+		inventoryGUIShop.setItem(inventoryGUIShop.getSize() - 1, createGuiItem(Material.BARRIER, "Close"));
 		player.openInventory(inventoryGUIShop);
 	}
 
 	public static Inventory getPowerRanksGUI() {
 		return inventoryGUIMain;
 	}
-	
+
 	public static Inventory getPowerRanksGUIShop() {
 		return inventoryGUIShop;
 	}
