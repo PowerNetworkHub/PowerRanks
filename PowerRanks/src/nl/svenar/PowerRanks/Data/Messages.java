@@ -1027,4 +1027,11 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
+	
+	public static void unknownCommand(ConsoleCommandSender console) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.unknown_command");
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
 }

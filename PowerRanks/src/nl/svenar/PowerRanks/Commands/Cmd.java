@@ -699,6 +699,8 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					this.m.forceUpdateConfigVersions();
 					Messages.messageConfigVersionUpdated(console);
+				} else {
+					Messages.unknownCommand(console);
 				}
 			}
 		} else if (sender instanceof CraftBlockCommandSender) {
