@@ -9,7 +9,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerRanksGUI;
+import nl.svenar.PowerRanks.Data.Users;
 
 import org.bukkit.event.Listener;
 
@@ -23,23 +25,42 @@ public class OnInventory implements Listener {
 	@EventHandler
 	public void onInventoryClickEvent(InventoryClickEvent e) {
 		Player player = (Player) e.getWhoClicked();
-		
+
 		Inventory inventory = e.getInventory();
 		ItemStack clickedItem = e.getCurrentItem();
-		
-		if (inventory == PowerRanksGUI.getPowerRanksGUI()) {
-			PowerRanksGUI.getPowerRanksGUI().setItem(PowerRanksGUI.getPowerRanksGUI().getSize() - 2, PowerRanksGUI.createGuiHead(player));
+
+		if (inventory == PowerRanksGUI.getPowerRanksGUI() || inventory == PowerRanksGUI.getPowerRanksGUIShop()) {
 			e.setCancelled(true);
+
+			if (clickedItem == null || clickedItem.getType() == Material.AIR)
+				return;
+
+			if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("close")) player.closeInventory();
 			
-			if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
-			
-			player.sendMessage("You clicked at slot " + e.getRawSlot() + " - " + clickedItem.getItemMeta().getDisplayName());
+			if (inventory == PowerRanksGUI.getPowerRanksGUI()) {
+				player.sendMessage("You clicked at slot " + e.getRawSlot() + " - " + clickedItem.getItemMeta().getDisplayName());
+			} else if (inventory == PowerRanksGUI.getPowerRanksGUIShop()) {
+				if (e.getSlot() != PowerRanksGUI.getPowerRanksGUIShop().getSize() - 1 && e.getSlot() != PowerRanksGUI.getPowerRanksGUIShop().getSize() - 2) {
+					Users users = new Users(this.m);
+					String rankname = clickedItem.getItemMeta().getDisplayName();
+					int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
+					double player_balance = PowerRanks.getVaultEconomy().getBalance(player);
+					if (cost >= 0 && player_balance >= cost) {
+						PowerRanks.getVaultEconomy().withdrawPlayer(player, cost);
+						users.setGroup(player, rankname);
+						Messages.messageBuyRankSuccess(player, rankname);
+					} else {
+						Messages.messageBuyRankError(player, rankname);
+					}
+					player.closeInventory();
+				}
+			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onInventoryDragEvent(InventoryDragEvent e) {
-		if (e.getInventory() == PowerRanksGUI.getPowerRanksGUI()) {
+		if (e.getInventory() == PowerRanksGUI.getPowerRanksGUI() || e.getInventory() == PowerRanksGUI.getPowerRanksGUIShop()) {
 			e.setCancelled(true);
 		}
 	}

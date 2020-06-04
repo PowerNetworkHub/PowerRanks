@@ -19,6 +19,7 @@ import org.bukkit.command.CommandExecutor;
 import nl.svenar.PowerRanks.Commands.Cmd;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
+import nl.svenar.PowerRanks.Data.PowerRanksGUI;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
@@ -147,6 +148,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		this.setupPermissions();
 		this.setupScoreboardTeams();
+		
+		PowerRanksGUI.setPlugin(this);
+		PowerRanksGUI.setupGUI();
 
 		int pluginId = 7565;
 		@SuppressWarnings("unused")
@@ -194,7 +198,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.economy = economyProvider.getProvider();
 		}
 
-		return (PowerRanks.economy != null);
+		return (PowerRanks.getVaultEconomy() != null);
 	}
 
 	private boolean getConfigBool(String path) {
@@ -665,5 +669,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				updateTablistName(p);
 			}
 		}
+	}
+
+	public static Economy getVaultEconomy() {
+		return economy;
 	}
 }

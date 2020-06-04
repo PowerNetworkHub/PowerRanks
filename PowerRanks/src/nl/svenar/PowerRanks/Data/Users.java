@@ -194,6 +194,33 @@ public class Users implements Listener {
 		return false;
 	}
 	
+	public int getRanksConfigFieldInt(String rank, String field) {
+		int value = -1;
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			value = rankYaml.getInt("Groups." + rank + "." + field);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return value;
+	}
+	
+	public boolean setRanksConfigFieldInt(String rank, String field, int new_value) {
+		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+			rankYaml.set("Groups." + rank + "." + field, new_value);
+			rankYaml.save(rankFile);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public boolean getRanksConfigFieldBoolean(String rank, String field) {
 		boolean value = false;
 		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
@@ -492,6 +519,7 @@ public class Users implements Listener {
 				rankYaml.set("Groups." + rank + ".level.demote", (Object) "");
 				rankYaml.set("Groups." + rank + ".economy.buyable", (Object) false);
 				rankYaml.set("Groups." + rank + ".economy.cost", (Object) 0);
+				rankYaml.set("Groups." + rank + ".gui.icon", (Object) "stone");
 				rankYaml.save(rankFile);
 				return true;
 			}

@@ -997,4 +997,27 @@ public class Messages {
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
+	
+	public static void messageBuyRankSuccess(Player player, String rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buy_success");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+	
+	public static void messageBuyRankError(Player player, String rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buy_not_enough_money");
+		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+	
+	public static void messageBuyRankNotAvailable(Player player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buy_not_available");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
 }

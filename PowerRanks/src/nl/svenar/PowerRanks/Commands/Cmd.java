@@ -413,6 +413,13 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("rankup")) {
+					if (sender.hasPermission("powerranks.cmd.rankup")) {
+						if (PowerRanks.getVaultEconomy() != null) PowerRanksGUI.openPowerRanksRankupGUI(player);
+						else Messages.messageBuyRankNotAvailable(player);
+					} else {
+						Messages.noPermission(player);
+					}
 				}
 			}
 		} else if (sender instanceof ConsoleCommandSender) {

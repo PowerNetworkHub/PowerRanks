@@ -50,6 +50,9 @@ messages:
    error_sign_unknown_rank: "%plugin_prefix% &cUnknown sign command!"
    sign_created: "%plugin_prefix% &aSign created!"
    error_adding_permission: "%plugin_prefix% &cError adding permission '%argument_permission%' to rank: %argument_rank%"
+   buy_success: "%plugin_prefix% &aYou bought the rank '%argument_rank%'"
+   buy_not_enough_money: "%plugin_prefix% &cInsufficient funds to buy the rank '%argument_rank%'"
+   buy_not_available: "%plugin_prefix% &cBuying ranks is not available on this server."
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
