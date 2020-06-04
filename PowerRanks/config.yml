@@ -27,6 +27,10 @@
 # Line 2: <command>
 # Line 3: [rank]
 # --------------------
+# Plugin hooks
+# Enable or disable the use of a certain soft-dependency.
+# Vault: used for '/pr rankup' and '/pr gui rankup'
+# --------------------
 
 chat:
   enabled: true
@@ -39,3 +43,9 @@ tablist_modification:
 signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"
+plugin_hook:
+  vault: false
+  
+  
+  
+  

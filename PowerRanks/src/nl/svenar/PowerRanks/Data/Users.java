@@ -13,7 +13,6 @@ import java.io.IOException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import nl.svenar.PowerRanks.Messages;
 import nl.svenar.PowerRanks.PowerRanks;
 import org.bukkit.event.Listener;
 
@@ -299,13 +298,29 @@ public class Users implements Listener {
 		
 		try {
 			rankYaml.load(rankFile);
-			if (rankYaml.get("Groups." + rank) != null) {
-				List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
-				if (!list.contains(permission)) {
-					list.add(permission);
-					rankYaml.set("Groups." + rank + ".permissions", (Object) list);
-					rankYaml.save(rankFile);
+			if (rank == "*") {
+				if (rankYaml.get("Groups." + rank) != null) {
+					List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
+					if (!list.contains(permission)) {
+						list.add(permission);
+						rankYaml.set("Groups." + rank + ".permissions", (Object) list);
+						rankYaml.save(rankFile);
+					}
+					this.m.updatePlayersWithRank(this, rank);
+					return true;
 				}
+			} else {
+				for (String r : getGroups()) {
+					if (rankYaml.get("Groups." + r) != null) {
+						List<String> list = (List<String>) rankYaml.getStringList("Groups." + r + ".permissions");
+						if (!list.contains(permission)) {
+							list.add(permission);
+							rankYaml.set("Groups." + r + ".permissions", (Object) list);
+							this.m.updatePlayersWithRank(this, r);
+						}
+					}
+				}
+				rankYaml.save(rankFile);
 				return true;
 			}
 		} catch (Exception e) {
@@ -319,10 +334,25 @@ public class Users implements Listener {
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
-			if (rankYaml.get("Groups." + rank) != null) {
-				List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
-				list.remove(permission);
-				rankYaml.set("Groups." + rank + ".permissions", (Object) list);
+			if (rank == "*") {
+				if (rankYaml.get("Groups." + rank) != null) {
+					List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
+					list.remove(permission);
+					rankYaml.set("Groups." + rank + ".permissions", (Object) list);
+					rankYaml.save(rankFile);
+					this.m.updatePlayersWithRank(this, rank);
+					return true;
+				}
+				
+			} else {
+				for (String r : getGroups()) {
+					if (rankYaml.get("Groups." + r) != null) {
+						List<String> list = (List<String>) rankYaml.getStringList("Groups." + r + ".permissions");
+						list.remove(permission);
+						rankYaml.set("Groups." + r + ".permissions", (Object) list);
+						this.m.updatePlayersWithRank(this, r);
+					}
+				}
 				rankYaml.save(rankFile);
 				return true;
 			}
@@ -344,6 +374,7 @@ public class Users implements Listener {
 				}
 				rankYaml.set("Groups." + rank + ".inheritance", (Object) list);
 				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rank);
 				return true;
 			}
 		} catch (Exception e) {
@@ -360,6 +391,8 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.prefix", (Object) prefix);
 				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rank);
+				this.m.updatePlayersTABlistWithRank(this, rank);
 				return true;
 			}
 		} catch (Exception e) {
@@ -376,6 +409,8 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.suffix", (Object) suffix);
 				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rank);
+				this.m.updatePlayersTABlistWithRank(this, rank);
 				return true;
 			}
 		} catch (Exception e) {
@@ -392,6 +427,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.chatColor", (Object) color);
 				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rank);
 				return true;
 			}
 		} catch (Exception e) {
@@ -408,6 +444,8 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.nameColor", (Object) color);
 				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rank);
+				this.m.updatePlayersTABlistWithRank(this, rank);
 				return true;
 			}
 		} catch (Exception e) {
@@ -428,6 +466,7 @@ public class Users implements Listener {
 				}
 				rankYaml.set("Groups." + rank + ".inheritance", (Object) list);
 				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rank);
 				return true;
 			}
 		} catch (Exception e) {
@@ -451,6 +490,8 @@ public class Users implements Listener {
 				rankYaml.set("Groups." + rank + ".chat.nameColor", (Object) "&f");
 				rankYaml.set("Groups." + rank + ".level.promote", (Object) "");
 				rankYaml.set("Groups." + rank + ".level.demote", (Object) "");
+				rankYaml.set("Groups." + rank + ".economy.buyable", (Object) false);
+				rankYaml.set("Groups." + rank + ".economy.cost", (Object) 0);
 				rankYaml.save(rankFile);
 				return true;
 			}
@@ -511,6 +552,7 @@ public class Users implements Listener {
 //						playerYaml.save(playerFile);
 //						this.m.setupPermissions(player);
 //						this.m.updateTablistName(player);
+						this.m.updatePlayersWithRank(this, rank);
 						return true;
 					}
 				}
@@ -568,6 +610,7 @@ public class Users implements Listener {
 						this.setGroup(player, rankname);
 //						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
 //						playerYaml.save(playerFile);
+						this.m.updatePlayersWithRank(this, rank);
 						return true;
 					}
 				}
@@ -642,7 +685,7 @@ public class Users implements Listener {
 			ConfigurationSection players = playerYaml.getConfigurationSection("players");
 			for (String p : players.getKeys(false)) {
 				if (playerYaml.getString("players." + p + ".rank") != null) {
-					PowerRanks.log.info(playerYaml.getString("players." + p + ".rank") + (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank) ? " Match" : " No Match"));
+//					PowerRanks.log.info(playerYaml.getString("players." + p + ".rank") + (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank) ? " Match" : " No Match"));
 					if (playerYaml.getString("players." + p + ".rank").equalsIgnoreCase(rank)) {
 						playerYaml.set("players." + p + ".rank", to);
 					}

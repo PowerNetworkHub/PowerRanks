@@ -13,8 +13,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
 
-import nl.svenar.PowerRanks.Messages;
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.Data.PowerRanksGUI;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class Cmd implements CommandExecutor {
@@ -136,7 +137,11 @@ public class Cmd implements CommandExecutor {
 							final String permission = args[2];
 							final boolean result = s.addPermission(rank2, permission);
 							if (result) {
-								Messages.messageCommandPermissionAdded(player, permission, rank2);
+								if (rank2 == "*") {
+									Messages.messageCommandPermissionAdded(player, permission, rank2);
+								} else {
+									Messages.messageCommandPermissionAddedToAllRanks(player, permission);
+								}
 							} else {
 								Messages.messageErrorAddingPermission(player, rank2, permission);
 							}
@@ -153,7 +158,11 @@ public class Cmd implements CommandExecutor {
 							final String permission = args[2];
 							final boolean result = s.removePermission(rank2, permission);
 							if (result) {
-								Messages.messageCommandPermissionRemoved(player, permission, rank2);
+								if (rank2 == "*") {
+									Messages.messageCommandPermissionRemoved(player, permission, rank2);
+								} else {
+									Messages.messageCommandPermissionRemovedFromAllRanks(player, permission);
+								}
 							} else {
 								Messages.messageGroupNotFound(player, rank2);
 							}
@@ -397,6 +406,13 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("gui")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						PowerRanksGUI.openPowerRanksGUI(player);
+//						Messages.messageConfigVersionUpdated(player);
+					} else {
+						Messages.noPermission(player);
+					}
 				}
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
@@ -450,7 +466,11 @@ public class Cmd implements CommandExecutor {
 						final String permission = args[2];
 						final boolean result = s.addPermission(rank2, permission);
 						if (result) {
-							Messages.messageCommandPermissionAdded(console, permission, rank2);
+							if (rank2 == "*") {
+								Messages.messageCommandPermissionAdded(console, permission, rank2);
+							} else {
+								Messages.messageCommandPermissionAddedToAllRanks(console, permission);
+							}
 						} else {
 							Messages.messageErrorAddingPermission(console, rank2, permission);
 						}
@@ -463,7 +483,11 @@ public class Cmd implements CommandExecutor {
 						final String permission = args[2];
 						final boolean result = s.removePermission(rank2, permission);
 						if (result) {
-							Messages.messageCommandPermissionRemoved(console, permission, rank2);
+							if (rank2 == "*") {
+								Messages.messageCommandPermissionRemoved(console, permission, rank2);
+							} else {
+								Messages.messageCommandPermissionRemovedFromAllRanks(console, permission);
+							}
 						} else {
 							Messages.messageGroupNotFound(console, rank2);
 						}

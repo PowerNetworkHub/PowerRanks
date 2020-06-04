@@ -40,6 +40,8 @@ messages:
    build_disabled: "%plugin_prefix% &aBuilding disabled on rank: %argument_rank%"
    permission_added: "%plugin_prefix% &aPermission '%argument_permission%' added to rank: %argument_rank%"
    permission_removed: "%plugin_prefix% &aPermission '%argument_permission%' removed from rank: %argument_rank%"
+   permission_added_to_all_ranks: "%plugin_prefix% &aPermission '%argument_permission%' added to all ranks."
+   permission_removed_from_all_ranks: "%plugin_prefix% &aPermission '%argument_permission%' removed from all ranks."
    rank_renamed: "%plugin_prefix% &aRank '%argument_rank%' renamed!"
    error_renaming_rank: "%plugin_prefix% &cError renaming rank '%argument_rank%'!"
    default_rank_changed: "%plugin_prefix% &aChanged default rank to: %argument_rank%"

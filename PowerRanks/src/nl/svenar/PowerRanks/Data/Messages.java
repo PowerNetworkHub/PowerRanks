@@ -1,4 +1,4 @@
-package nl.svenar.PowerRanks;
+package nl.svenar.PowerRanks.Data;
 
 import java.util.List;
 
@@ -6,6 +6,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+
+import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Util;
 
 public class Messages {
 	
@@ -958,6 +961,38 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_adding_permission");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+
+	public static void messageCommandPermissionAddedToAllRanks(Player player, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.permission_added_to_all_ranks");
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+	
+	public static void messageCommandPermissionAddedToAllRanks(ConsoleCommandSender console, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.permission_added_to_all_ranks");
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+	
+	public static void messageCommandPermissionRemovedFromAllRanks(Player player, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.permission_removed_from_all_ranks");
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+	
+	public static void messageCommandPermissionRemovedFromAllRanks(ConsoleCommandSender console, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.permission_removed_from_all_ranks");
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
 			console.sendMessage(msg);

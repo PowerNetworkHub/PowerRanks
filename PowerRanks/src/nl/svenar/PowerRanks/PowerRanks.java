@@ -23,6 +23,7 @@ import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
 import nl.svenar.PowerRanks.Events.OnInteract;
+import nl.svenar.PowerRanks.Events.OnInventory;
 import nl.svenar.PowerRanks.Events.OnJoin;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
@@ -38,11 +39,14 @@ import java.io.File;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public static PluginDescriptionFile pdf;
@@ -52,6 +56,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public String configFileLoc;
 	public String fileLoc;
 	public static String langFileLoc;
+	
+	// Soft Depencencies
+	private static Economy economy;
+	// Soft Depencencies
+	
 	File configFile;
 	File ranksFile;
 	File playersFile;
@@ -79,18 +88,19 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.main = this;
-		
+
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBuild(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
-		
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInventory(this), (Plugin) this);
+
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
-		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor());
-		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor());
+		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
+		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
 		this.createDir(this.fileLoc);
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
@@ -114,7 +124,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
 		}
-		
+
 		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -132,7 +142,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
-		
+
+		setupSoftDependencies();
+
 		this.setupPermissions();
 		this.setupScoreboardTeams();
 
@@ -161,6 +173,42 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
 			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
 		}
+	}
+
+	private void setupSoftDependencies() {
+		boolean has_vault = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault");
+
+		PowerRanks.log.info("Checking for plugins to hook in to:");
+		if (has_vault) {
+			PowerRanks.log.info("Vault found!");
+			setupEconomy();
+		}
+
+		if (!has_vault)
+			PowerRanks.log.info("No other plugins found! Working stand-alone.");
+	}
+
+	private boolean setupEconomy() {
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			PowerRanks.economy = economyProvider.getProvider();
+		}
+
+		return (PowerRanks.economy != null);
+	}
+
+	private boolean getConfigBool(String path) {
+		boolean val = false;
+		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		val = configYaml.getBoolean(path);
+		return val;
 	}
 
 	public void createDir(final String path) {
@@ -429,23 +477,23 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void playerUninjectPermissible(Player player) {
 		PermissibleInjector.uninject(player);
 	}
-	
+
 	private void setupScoreboardTeams() {
-	    ScoreboardManager manager = Bukkit.getScoreboardManager();
-	    Scoreboard board = manager.getNewScoreboard();
-	    Users s = new Users(this);
-	    Set<String> ranks = s.getGroups();
-	    for (String rank : ranks) {
-	    	Team team = board.registerNewTeam(rank);
-	    	team.setPrefix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.prefix"), true));
-	    	team.setSuffix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.suffix"), true));
-	    	
-		    for (Player player : Bukkit.getOnlinePlayers()) {
-		    	if (s.getGroup(player).equalsIgnoreCase(rank)) {
-		    		team.addEntry(player.getName());
-		    	}
-		    }
-	    }
+		ScoreboardManager manager = Bukkit.getScoreboardManager();
+		Scoreboard board = manager.getNewScoreboard();
+		Users s = new Users(this);
+		Set<String> ranks = s.getGroups();
+		for (String rank : ranks) {
+			Team team = board.registerNewTeam(rank);
+			team.setPrefix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.prefix"), true));
+			team.setSuffix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.suffix"), true));
+
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (s.getGroup(player).equalsIgnoreCase(rank)) {
+					team.addEntry(player.getName());
+				}
+			}
+		}
 	}
 
 	public void updateTablistName(Player player) {
@@ -488,7 +536,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public static String chatColor(char altColorChar, String textToTranslate, boolean custom_colors) {
-		
+
 		if (custom_colors) {
 			for (int i = 0; i < textToTranslate.length() - 1; i++) {
 				if (textToTranslate.charAt(i) == altColorChar && "Ii".indexOf(textToTranslate.charAt(i + 1)) > -1) {
@@ -502,7 +550,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					textToTranslate = Util.replaceAll(textToTranslate, rainbow_msg, converted_rainbow_msg);
 				}
 			}
-			
+
 			for (int i = 0; i < textToTranslate.length() - 1; i++) {
 				if (textToTranslate.charAt(i) == altColorChar && "Jj".indexOf(textToTranslate.charAt(i + 1)) > -1) {
 					String random_msg = "";
@@ -515,13 +563,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					textToTranslate = Util.replaceAll(textToTranslate, random_msg, converted_random_msg);
 				}
 			}
-			
+
 			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "I", "");
 			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "i", "");
 			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "J", "");
 			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "j", "");
 		}
-		
+
 		final char[] charArray = textToTranslate.toCharArray();
 
 		for (int i = 0; i < charArray.length - 1; ++i) {
@@ -592,14 +640,30 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		Long current_playtime = playerYaml.getLong("players." + player.getUniqueId() + ".playtime");
 		playerYaml.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
-		
+
 		try {
 			playerYaml.save(playerFile);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void updatePlayersWithRank(Users users, String rank) {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (users.getGroup(p).equalsIgnoreCase(rank)) {
+				setupPermissions(p);
+			}
+		}
+	}
+
+	public void updatePlayersTABlistWithRank(Users users, String rank) {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (users.getGroup(p).equalsIgnoreCase(rank)) {
+				updateTablistName(p);
+			}
 		}
 	}
 }
