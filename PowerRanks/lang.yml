@@ -74,7 +74,7 @@ commands:
    usage_command_promote: "%plugin_prefix% &c/pr promote <playerName>"
    usage_command_demote: "%plugin_prefix% &c/pr demote <playerName>"
    usage_command_listpermissions: "%plugin_prefix% &c/pr listpermissions <rankName>"
-   
+   unknown_command: "%plugin_prefix% &cUnknown command."
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
    reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"

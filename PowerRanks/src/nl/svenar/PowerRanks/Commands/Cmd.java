@@ -406,13 +406,13 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-				} else if (args[0].equalsIgnoreCase("gui")) {
-					if (sender.hasPermission("powerranks.cmd.admin")) {
-						PowerRanksGUI.openPowerRanksGUI(player);
-//						Messages.messageConfigVersionUpdated(player);
-					} else {
-						Messages.noPermission(player);
-					}
+//				} else if (args[0].equalsIgnoreCase("gui")) {
+//					if (sender.hasPermission("powerranks.cmd.admin")) {
+//						PowerRanksGUI.openPowerRanksGUI(player);
+////						Messages.messageConfigVersionUpdated(player);
+//					} else {
+//						Messages.noPermission(player);
+//					}
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
 						if (PowerRanks.getVaultEconomy() != null) PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
@@ -420,6 +420,8 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else {
+					Messages.unknownCommand(player);
 				}
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
