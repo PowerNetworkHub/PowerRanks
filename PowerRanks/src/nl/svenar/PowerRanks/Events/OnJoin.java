@@ -22,8 +22,8 @@ public class OnJoin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
-		final File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 

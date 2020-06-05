@@ -22,8 +22,8 @@ public class OnChat implements Listener {
 	@EventHandler
     public void onPlayerChat(final AsyncPlayerChatEvent e) {
         final File configFile = new File(String.valueOf(this.m.configFileLoc) + "config" + ".yml");
-        final File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-        final File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+        final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+        final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
         final YamlConfiguration configYaml = new YamlConfiguration();
         final YamlConfiguration rankYaml = new YamlConfiguration();
         final YamlConfiguration playerYaml = new YamlConfiguration();

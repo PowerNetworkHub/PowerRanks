@@ -56,12 +56,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public String plp;
 	public static Logger log;
 	public String configFileLoc;
-	public String fileLoc;
+	public static String fileLoc;
 	public static String langFileLoc;
 	
 	// Soft Depencencies
 	private static Economy vaultEconomy;
 	private static Permission vaultPermissions;
+	private static PowerRanksExpansion placeholderapiExpansion;
 	// Soft Depencencies
 	
 	File configFile;
@@ -83,7 +84,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.colorChar = "&";
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
 		this.configFileLoc = this.getDataFolder() + File.separator;
-		this.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
+		PowerRanks.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
 		PowerRanks.langFileLoc = this.configFileLoc + "lang.yml";
 		this.updatemsg = "";
 	}
@@ -105,11 +106,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
-		this.createDir(this.fileLoc);
+		this.createDir(PowerRanks.fileLoc);
 //		this.log.info("By: " + this.pdf.getAuthors().get(0));
 		this.configFile = new File(this.getDataFolder(), "config.yml");
-		this.ranksFile = new File(this.fileLoc, "Ranks.yml");
-		this.playersFile = new File(this.fileLoc, "Players.yml");
+		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
+		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
 		this.langFile = new File(this.getDataFolder(), "lang.yml");
 		this.config = (FileConfiguration) new YamlConfiguration();
 		this.ranks = (FileConfiguration) new YamlConfiguration();
@@ -127,8 +128,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			this.playerInjectPermissible(player);
 		}
 
-		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
@@ -184,15 +185,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	private void setupSoftDependencies() {
 		boolean has_vault = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault");
+		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && getConfigBool("plugin_hook.placeholderapi");
 
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 		if (has_vault) {
 			PowerRanks.log.info("Vault found!");
 			setupVaultEconomy();
-			setupVaultPermissions();
+			// setupVaultPermissions(); // TODO: Implement Vault permissions
+		}
+		
+		if (has_placeholderapi) {
+			PowerRanks.log.info("PlaceholderAPI found!");
+			PowerRanks.placeholderapiExpansion = new PowerRanksExpansion(this);
+			PowerRanks.placeholderapiExpansion.register();
 		}
 
-		if (!has_vault)
+		if (!has_vault && !has_placeholderapi)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
 
@@ -202,6 +210,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
         return PowerRanks.vaultEconomy != null;
 	}
 	
+	@SuppressWarnings("unused")
 	private boolean setupVaultPermissions() {
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
 		PowerRanks.vaultPermissions = rsp.getProvider();
@@ -230,8 +239,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void verifyConfig() {
-		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final File langFile = new File(PowerRanks.langFileLoc);
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -286,8 +295,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void forceUpdateConfigVersions() {
-		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final File langFile = new File(PowerRanks.langFileLoc);
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -396,8 +405,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void setupPermissions(Player player) {
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 
-		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
@@ -443,8 +452,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void removePermissions(Player player) {
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 
-		final File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
@@ -514,8 +523,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			playerTablistNameBackup.put(player, player.getPlayerListName());
 
 			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-			File rankFile = new File(String.valueOf(this.fileLoc) + "Ranks" + ".yml");
-			File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+			File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+			File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 			YamlConfiguration configYaml = new YamlConfiguration();
 			YamlConfiguration rankYaml = new YamlConfiguration();
 			YamlConfiguration playerYaml = new YamlConfiguration();
@@ -644,7 +653,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updatePlaytime(Player player, long join_time, long leave_time) {
-		File playerFile = new File(String.valueOf(this.fileLoc) + "Players" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
 			playerYaml.load(playerFile);
@@ -684,5 +693,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	
 	public static Permission getVaultPermissions() {
 		return vaultPermissions;
+	}
+	
+	public static PowerRanksExpansion getPlaceholderapiExpansion() {
+		return placeholderapiExpansion;
 	}
 }

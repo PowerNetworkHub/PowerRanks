@@ -3,7 +3,7 @@ version: 0.4 BETA
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
-softdepend: [Vault]
+softdepend: [Vault, PlaceholderAPI]
 website: 'http://dev.bukkit.org/bukkit-plugins/powerranks'
 commands:
   powerranks:

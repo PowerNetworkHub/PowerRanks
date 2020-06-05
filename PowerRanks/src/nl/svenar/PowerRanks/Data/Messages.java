@@ -2,6 +2,7 @@ package nl.svenar.PowerRanks.Data;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -1035,9 +1036,31 @@ public class Messages {
 			console.sendMessage(msg);
 	}
 
-	public static void messageStats(Player player) {
+	public static void messageStats(Player sender) {
+		Users users = new Users(null);
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
+		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
+		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
+		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
+		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
+		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 	
-	public static void messageStats(ConsoleCommandSender console) {
+	public static void messageStats(ConsoleCommandSender sender) {
+		Users users = new Users(null);
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
+		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
+		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
+		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
+		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
+		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 }

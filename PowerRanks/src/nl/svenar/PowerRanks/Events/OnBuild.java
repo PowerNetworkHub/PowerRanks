@@ -20,8 +20,8 @@ public class OnBuild implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerPlace(final BlockPlaceEvent e) {
 		final Player player = e.getPlayer();
-		final File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.m.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();
@@ -59,8 +59,8 @@ public class OnBuild implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerBreak(final BlockBreakEvent e) {
 		final Player player = e.getPlayer();
-		final File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final File configFile = new File(this.m.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
 		final YamlConfiguration playerYaml = new YamlConfiguration();

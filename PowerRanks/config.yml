@@ -45,6 +45,7 @@ signs:
   title_format: "&0[&b%plugin_name%&0]"
 plugin_hook:
   vault: false
+  placeholderapi: false
   
   
   

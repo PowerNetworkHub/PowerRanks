@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+
 import org.bukkit.event.Listener;
 
 public class Users implements Listener {
@@ -29,8 +30,8 @@ public class Users implements Listener {
 				Player target = Bukkit.getServer().getPlayer(t);
 
 				if (target != null) {
-					File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-					File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+					File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+					File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 					YamlConfiguration rankYaml = new YamlConfiguration();
 					YamlConfiguration playerYaml = new YamlConfiguration();
 					try {
@@ -50,8 +51,8 @@ public class Users implements Listener {
 						e1.printStackTrace();
 					}
 				} else {
-					File rankFile2 = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-					File playerFile2 = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+					File rankFile2 = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+					File playerFile2 = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 					YamlConfiguration rankYaml2 = new YamlConfiguration();
 					YamlConfiguration playerYaml2 = new YamlConfiguration();
 					try {
@@ -87,8 +88,8 @@ public class Users implements Listener {
 			Player target2 = Bukkit.getServer().getPlayer(t);
 
 			if (target2 != null) {
-				File rankFile2 = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-				File playerFile2 = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+				File rankFile2 = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+				File playerFile2 = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 				YamlConfiguration rankYaml2 = new YamlConfiguration();
 				YamlConfiguration playerYaml2 = new YamlConfiguration();
 				try {
@@ -108,8 +109,8 @@ public class Users implements Listener {
 					e2.printStackTrace();
 				}
 			} else {
-				File rankFile2 = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-				File playerFile2 = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+				File rankFile2 = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+				File playerFile2 = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 				YamlConfiguration rankYaml2 = new YamlConfiguration();
 				YamlConfiguration playerYaml2 = new YamlConfiguration();
 				try {
@@ -143,8 +144,8 @@ public class Users implements Listener {
 	}
 
 	public boolean setGroup(Player player, String rank) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		boolean success = false;
@@ -169,7 +170,7 @@ public class Users implements Listener {
 
 	public String getRanksConfigFieldString(String rank, String field) {
 		String value = "";
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -181,7 +182,7 @@ public class Users implements Listener {
 	}
 	
 	public boolean setRanksConfigFieldString(String rank, String field, String new_value) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -196,7 +197,7 @@ public class Users implements Listener {
 	
 	public int getRanksConfigFieldInt(String rank, String field) {
 		int value = -1;
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -208,7 +209,7 @@ public class Users implements Listener {
 	}
 	
 	public boolean setRanksConfigFieldInt(String rank, String field, int new_value) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -223,7 +224,7 @@ public class Users implements Listener {
 	
 	public boolean getRanksConfigFieldBoolean(String rank, String field) {
 		boolean value = false;
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -235,7 +236,7 @@ public class Users implements Listener {
 	}
 	
 	public boolean setRanksConfigFieldBoolean(String rank, String field, boolean new_value) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -251,7 +252,7 @@ public class Users implements Listener {
 	public String getGroup(String plr, String t) {
 		Player sender = (plr == null || plr == "API") ? null : Bukkit.getServer().getPlayer(plr);
 		Player target = Bukkit.getServer().getPlayer(t);
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		String group = "";
 		if (target != null) {
@@ -291,7 +292,7 @@ public class Users implements Listener {
 	}
 
 	public String getGroup(Player player) {
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		String group = null;
 		try {
@@ -305,7 +306,7 @@ public class Users implements Listener {
 
 	public Set<String> getGroups() {
 		ConfigurationSection ranks = null;
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -317,7 +318,7 @@ public class Users implements Listener {
 	}
 
 	public boolean addPermission(String rank, String permission) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
@@ -357,7 +358,7 @@ public class Users implements Listener {
 	}
 
 	public boolean removePermission(String rank, String permission) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -390,7 +391,7 @@ public class Users implements Listener {
 	}
 
 	public boolean addInheritance(String rank, String inheritance) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -411,7 +412,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setPrefix(String rank, String prefix) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -429,7 +430,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setSuffix(String rank, String suffix) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -447,7 +448,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setChatColor(String rank, String color) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -464,7 +465,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setNameColor(String rank, String color) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -482,7 +483,7 @@ public class Users implements Listener {
 	}
 
 	public boolean removeInheritance(String rank, String inheritance) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -503,7 +504,7 @@ public class Users implements Listener {
 	}
 
 	public boolean createRank(String rank) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -530,7 +531,7 @@ public class Users implements Listener {
 	}
 
 	public boolean deleteRank(String rank) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -546,7 +547,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setBuild(String rank, boolean enabled) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -562,8 +563,8 @@ public class Users implements Listener {
 	}
 
 	public boolean promote(String playername) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		Player player = Bukkit.getServer().getPlayer(playername);
@@ -622,8 +623,8 @@ public class Users implements Listener {
 	}
 
 	public boolean demote(String playername) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		Player player = Bukkit.getServer().getPlayer(playername);
@@ -678,8 +679,8 @@ public class Users implements Listener {
 	}
 
 	public boolean renameRank(String rank, String to) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
-		File playerFile = new File(String.valueOf(this.m.fileLoc) + "Players" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
@@ -733,7 +734,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setDefaultRank(String rankname) {
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -758,7 +759,7 @@ public class Users implements Listener {
 	public String getRankIgnoreCase(String rankname) {
 		String rank = rankname;
 
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -779,7 +780,7 @@ public class Users implements Listener {
 
 	public List<String> getPermissions(String rank) {
 		List<String> permissions = new ArrayList<String>();
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -793,7 +794,7 @@ public class Users implements Listener {
 
 	public List<String> getInheritances(String rank) {
 		List<String> inheritances = new ArrayList<String>();
-		File rankFile = new File(String.valueOf(this.m.fileLoc) + "Ranks" + ".yml");
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
@@ -803,5 +804,94 @@ public class Users implements Listener {
 		
 		inheritances = rankYaml.getStringList("Groups." + rank + ".inheritance");
 		return inheritances;
+	}
+
+	public Set<String> getCachedPlayers() {
+		ConfigurationSection players = null;
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playerYaml = new YamlConfiguration();
+		try {
+			playerYaml.load(playerFile);
+			players = playerYaml.getConfigurationSection("players");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return players.getKeys(false);
+	}
+
+	public String getPrefix(Player player) {
+		String prefix = "";
+		String rank = getGroup(player);
+		
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+		
+		try {
+            rankYaml.load(rankFile);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		prefix = (rankYaml.getString("Groups." + rank + ".chat.prefix") != null) ? rankYaml.getString("Groups." + rank + ".chat.prefix") : "";
+		
+		return prefix;
+	}
+	
+	public String getSuffix(Player player) {
+		String suffix = "";
+		String rank = getGroup(player);
+		
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+		
+		try {
+            rankYaml.load(rankFile);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		suffix = (rankYaml.getString("Groups." + rank + ".chat.suffix") != null) ? rankYaml.getString("Groups." + rank + ".chat.suffix") : "";
+		
+		return suffix;
+	}
+	
+	public String getChatColor(Player player) {
+		String color = "";
+		String rank = getGroup(player);
+		
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+		
+		try {
+            rankYaml.load(rankFile);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		color = (rankYaml.getString("Groups." + rank + ".chat.chatColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.chatColor") : "";
+		
+		return color;
+	}
+	
+	public String getNameColor(Player player) {
+		String color = "";
+		String rank = getGroup(player);
+		
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+		
+		try {
+            rankYaml.load(rankFile);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		color = (rankYaml.getString("Groups." + rank + ".chat.nameColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.nameColor") : "";
+		
+		return color;
 	}
 }
