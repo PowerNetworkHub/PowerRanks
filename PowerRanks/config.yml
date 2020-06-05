@@ -10,7 +10,7 @@
 # format: '[prefix] [format]'
 # --------------------
 # Build Modification
-# Enable or disable processing the `build` tag in Ranks.yml
+# Enable or disable processing the 'build' tag in Ranks.yml
 # --------------------
 # Tablist Modification
 # Change the player's name in the tablist
@@ -29,7 +29,8 @@
 # --------------------
 # Plugin hooks
 # Enable or disable the use of a certain soft-dependency.
-# Vault: used for '/pr rankup' and '/pr gui rankup'
+# Vault (Economy): used for '/pr rankup' and '/pr gui rankup'
+# PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # --------------------
 
 chat:
