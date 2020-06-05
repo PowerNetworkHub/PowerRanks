@@ -133,14 +133,14 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 							final String permission = args[2];
 							final boolean result = s.addPermission(rank2, permission);
 							if (result) {
-								if (rank2 == "*") {
-									Messages.messageCommandPermissionAdded(player, permission, rank2);
-								} else {
+								if (rank2.equals("*")) {
 									Messages.messageCommandPermissionAddedToAllRanks(player, permission);
+								} else {
+									Messages.messageCommandPermissionAdded(player, permission, rank2);
 								}
 							} else {
 								Messages.messageErrorAddingPermission(player, rank2, permission);
@@ -154,14 +154,14 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 							final String permission = args[2];
 							final boolean result = s.removePermission(rank2, permission);
 							if (result) {
 								if (rank2 == "*") {
-									Messages.messageCommandPermissionRemoved(player, permission, rank2);
-								} else {
 									Messages.messageCommandPermissionRemovedFromAllRanks(player, permission);
+								} else {
+									Messages.messageCommandPermissionRemoved(player, permission, rank2);
 								}
 							} else {
 								Messages.messageGroupNotFound(player, rank2);
@@ -406,17 +406,24 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-//				} else if (args[0].equalsIgnoreCase("gui")) {
-//					if (sender.hasPermission("powerranks.cmd.admin")) {
-//						PowerRanksGUI.openPowerRanksGUI(player);
-////						Messages.messageConfigVersionUpdated(player);
-//					} else {
-//						Messages.noPermission(player);
-//					}
+				} else if (args[0].equalsIgnoreCase("gui")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.MAIN, 0, "");
+					} else {
+						Messages.noPermission(player);
+					}
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
-						if (PowerRanks.getVaultEconomy() != null) PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
-						else Messages.messageBuyRankNotAvailable(player);
+						if (PowerRanks.getVaultEconomy() != null)
+							PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
+						else
+							Messages.messageBuyRankNotAvailable(player);
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("stats")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						Messages.messageStats(player);
 					} else {
 						Messages.noPermission(player);
 					}
@@ -471,14 +478,14 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (args.length == 3) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
 						final boolean result = s.addPermission(rank2, permission);
 						if (result) {
-							if (rank2 == "*") {
-								Messages.messageCommandPermissionAdded(console, permission, rank2);
-							} else {
+							if (rank2.equals("*")) {
 								Messages.messageCommandPermissionAddedToAllRanks(console, permission);
+							} else {
+								Messages.messageCommandPermissionAdded(console, permission, rank2);
 							}
 						} else {
 							Messages.messageErrorAddingPermission(console, rank2, permission);
@@ -488,14 +495,14 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (args.length == 3) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
 						final boolean result = s.removePermission(rank2, permission);
 						if (result) {
 							if (rank2 == "*") {
-								Messages.messageCommandPermissionRemoved(console, permission, rank2);
-							} else {
 								Messages.messageCommandPermissionRemovedFromAllRanks(console, permission);
+							} else {
+								Messages.messageCommandPermissionRemoved(console, permission, rank2);
 							}
 						} else {
 							Messages.messageGroupNotFound(console, rank2);
@@ -699,6 +706,8 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					this.m.forceUpdateConfigVersions();
 					Messages.messageConfigVersionUpdated(console);
+				} else if (args[0].equalsIgnoreCase("stats")) {
+					Messages.messageStats(console);
 				} else {
 					Messages.unknownCommand(console);
 				}
@@ -721,7 +730,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (args.length == 3) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
 						final boolean result = s.addPermission(rank2, permission);
 						if (result) {
@@ -734,7 +743,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (args.length == 3) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
 						final boolean result = s.removePermission(rank2, permission);
 						if (result) {

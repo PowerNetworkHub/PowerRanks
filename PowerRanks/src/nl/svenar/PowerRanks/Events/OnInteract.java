@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.Data.PowerRanksGUI;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class OnInteract implements Listener {
@@ -43,19 +44,37 @@ public class OnInteract implements Listener {
 
 		if (!sign_error) {
 			if (sign_command.equalsIgnoreCase("promote")) {
-				if (s.promote(player.getName()))
-					Messages.messageCommandPromoteSuccess(player, player.getName());
-				else
-					Messages.messageCommandPromoteError(player, player.getName());
+				if (player.hasPermission("powerranks.cmd.set")) {
+					if (s.promote(player.getName()))
+						Messages.messageCommandPromoteSuccess(player, player.getName());
+					else
+						Messages.messageCommandPromoteError(player, player.getName());
+				} else {
+					Messages.noPermission(player);
+				}
 			} else if (sign_command.equalsIgnoreCase("demote")) {
-				if (s.demote(player.getName()))
-					Messages.messageCommandDemoteSuccess(player, player.getName());
-				else
-					Messages.messageCommandDemoteError(player, player.getName());
+				if (player.hasPermission("powerranks.cmd.set")) {
+					if (s.demote(player.getName()))
+						Messages.messageCommandDemoteSuccess(player, player.getName());
+					else
+						Messages.messageCommandDemoteError(player, player.getName());
+				} else {
+					Messages.noPermission(player);
+				}
 			} else if (sign_command.equalsIgnoreCase("set")) {
-				s.setGroup(player, s.getRankIgnoreCase(sign_argument));
+				if (player.hasPermission("powerranks.cmd.set")) {
+					s.setGroup(player, s.getRankIgnoreCase(sign_argument));
+				} else {
+					Messages.noPermission(player);
+				}
 			} else if (sign_command.equalsIgnoreCase("check")) {
 				s.getGroup(player.getName(), player.getName());
+			} else if (sign_command.equalsIgnoreCase("gui")) {
+				if (player.hasPermission("powerranks.cmd.admin")) {
+					PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.MAIN, 0, "");
+				} else {
+					Messages.noPermission(player);
+				}
 			} else {
 				if (player.hasPermission("powerranks.cmd.admin")) {
 					Messages.messageSignUnknownCommand(player);

@@ -41,7 +41,7 @@ public class OnSignChanged implements Listener {
 				String sign_command = event.getLine(1);
 				String sign_argument = event.getLine(2);
 
-				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("check")) {
+				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("check") || sign_command.equalsIgnoreCase("gui")) {
 					Messages.messageSignCreated(event.getPlayer());
 				} else if (sign_command.equalsIgnoreCase("set")) {
 					Set<String> ranks = s.getGroups();

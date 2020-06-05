@@ -61,7 +61,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	
 	// Soft Depencencies
 	private static Economy vaultEconomy;
-	private static Permission vaultPermission;
+	private static Permission vaultPermissions;
 	// Soft Depencencies
 	
 	File configFile;
@@ -92,7 +92,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.main = this;
 
-		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
+//		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBuild(this), (Plugin) this);
@@ -106,7 +106,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
 		this.createDir(this.fileLoc);
-		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
 //		this.log.info("By: " + this.pdf.getAuthors().get(0));
 		this.configFile = new File(this.getDataFolder(), "config.yml");
 		this.ranksFile = new File(this.fileLoc, "Ranks.yml");
@@ -154,6 +153,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanksGUI.setPlugin(this);
 		PowerRanksGUI.setupGUI();
 
+		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
+
 		int pluginId = 7565;
 		@SuppressWarnings("unused")
 		Metrics metrics = new Metrics(this, pluginId);
@@ -177,7 +178,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		playerTablistNameBackup.clear();
 
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
-			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z]", ""));
+			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		}
 	}
 
@@ -188,7 +189,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (has_vault) {
 			PowerRanks.log.info("Vault found!");
 			setupVaultEconomy();
-			setupVaultPermisssions();
+			setupVaultPermissions();
 		}
 
 		if (!has_vault)
@@ -201,10 +202,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
         return PowerRanks.vaultEconomy != null;
 	}
 	
-	private boolean setupVaultPermisssions() {
+	private boolean setupVaultPermissions() {
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		PowerRanks.vaultPermission = rsp.getProvider();
-        return PowerRanks.vaultPermission != null;
+		PowerRanks.vaultPermissions = rsp.getProvider();
+        return PowerRanks.vaultPermissions != null;
 	}
 
 	private boolean getConfigBool(String path) {
@@ -679,5 +680,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static Economy getVaultEconomy() {
 		return vaultEconomy;
+	}
+	
+	public static Permission getVaultPermissions() {
+		return vaultPermissions;
 	}
 }

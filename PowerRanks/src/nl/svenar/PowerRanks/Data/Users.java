@@ -325,7 +325,7 @@ public class Users implements Listener {
 		
 		try {
 			rankYaml.load(rankFile);
-			if (rank == "*") {
+			if (!rank.equals("*")) {
 				if (rankYaml.get("Groups." + rank) != null) {
 					List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
 					if (!list.contains(permission)) {
@@ -361,7 +361,7 @@ public class Users implements Listener {
 		YamlConfiguration rankYaml = new YamlConfiguration();
 		try {
 			rankYaml.load(rankFile);
-			if (rank == "*") {
+			if (!rank.equals("*")) {
 				if (rankYaml.get("Groups." + rank) != null) {
 					List<String> list = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
 					list.remove(permission);

@@ -3,6 +3,7 @@ package nl.svenar.PowerRanks.Events;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -48,8 +49,9 @@ public class ChatTabExecutor implements TabCompleter {
 				list.add("setdefaultrank");
 				list.add("reload");
 				list.add("forceupdateconfigversion");
-				// list.add("gui");
+				list.add("gui");
 				list.add("rankup");
+				list.add("stats");
 			}
 
 			if (args.length == 2) {
@@ -59,6 +61,12 @@ public class ChatTabExecutor implements TabCompleter {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						list.add(rank);
+					}
+				}
+				
+				if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("promote") || args[0].equalsIgnoreCase("demote") || args[0].equalsIgnoreCase("check")) {
+					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+						list.add(player.getName());
 					}
 				}
 			}

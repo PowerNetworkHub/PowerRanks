@@ -1034,4 +1034,10 @@ public class Messages {
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
+
+	public static void messageStats(Player player) {
+	}
+	
+	public static void messageStats(ConsoleCommandSender console) {
+	}
 }

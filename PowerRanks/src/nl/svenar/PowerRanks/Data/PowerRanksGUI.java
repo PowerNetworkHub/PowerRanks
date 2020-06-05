@@ -3,7 +3,9 @@ package nl.svenar.PowerRanks.Data;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +34,66 @@ public class PowerRanksGUI {
 		}
 	}
 
+	public static enum MAIN_GUI_PAGE {
+		NONE(-1, "None"), MAIN(0, "Main"), CMD_SET_SELECT_USER(1, "Main>Set>Select user"), CMD_SET_SELECT_RANK(2, "Main>Set>Select user>Select rank"), CMD_CHECK_SELECT_USER(3, "Main>Check>Select user"),
+		CMD_PROMOTE_SELECT_USER(4, "Main>Promote>Select user"), CMD_DEMOTE_SELECT_USER(5, "Main>Demote>Select user"), CMD_SETCHATCOLOR_SELECT_RANK(6, "Main>Set chat color>Select rank"),
+		CMD_SETNAMECOLOR_SELECT_RANK(7, "Main>Set name color>Select rank"), CMD_SETCHATCOLOR_SELECT_COLOR(8, "Main>Set chat color>Select rank>Select color"), CMD_SETNAMECOLOR_SELECT_COLOR(9, "Main>Set name color>Select rank>Select color"),
+		CMD_SETCHATCOLOR_SELECT_SPECIAL(10, "Main>Set chat color>Select rank>Select color>Select special"), CMD_SETNAMECOLOR_SELECT_SPECIAL(11, "Main>Set name color>Select rank>Select color>Select special"),
+		CMD_ALLOWBUILD_SELECT_RANK(12, "Main>Allow build>Select rank"), CMD_ALLOWBUILD_YESNO(13, "Main>Allow build>Select rank>yes/no"), CMD_SETDEFAULTRANK_SELECT_RANK(14, "Main>Set default rank>Select rank");
+
+		final int id;
+		final String name;
+
+		private MAIN_GUI_PAGE(int id, String name) {
+			this.id = id;
+			this.name = name;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public MAIN_GUI_PAGE getFromName(String name) {
+			if (name.equalsIgnoreCase(MAIN.getName())) {
+				return MAIN;
+			} else if (name.equalsIgnoreCase(CMD_SET_SELECT_USER.getName())) {
+				return CMD_SET_SELECT_USER;
+			} else if (name.equalsIgnoreCase(CMD_SET_SELECT_RANK.getName())) {
+				return CMD_SET_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_CHECK_SELECT_USER.getName())) {
+				return CMD_CHECK_SELECT_USER;
+			} else if (name.equalsIgnoreCase(CMD_PROMOTE_SELECT_USER.getName())) {
+				return CMD_PROMOTE_SELECT_USER;
+			} else if (name.equalsIgnoreCase(CMD_DEMOTE_SELECT_USER.getName())) {
+				return CMD_DEMOTE_SELECT_USER;
+			} else if (name.equalsIgnoreCase(CMD_SETCHATCOLOR_SELECT_RANK.getName())) {
+				return CMD_SETCHATCOLOR_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_SETNAMECOLOR_SELECT_RANK.getName())) {
+				return CMD_SETNAMECOLOR_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_SETCHATCOLOR_SELECT_COLOR.getName())) {
+				return CMD_SETCHATCOLOR_SELECT_COLOR;
+			} else if (name.equalsIgnoreCase(CMD_SETNAMECOLOR_SELECT_COLOR.getName())) {
+				return CMD_SETNAMECOLOR_SELECT_COLOR;
+			} else if (name.equalsIgnoreCase(CMD_SETCHATCOLOR_SELECT_SPECIAL.getName())) {
+				return CMD_SETCHATCOLOR_SELECT_SPECIAL;
+			} else if (name.equalsIgnoreCase(CMD_SETNAMECOLOR_SELECT_SPECIAL.getName())) {
+				return CMD_SETNAMECOLOR_SELECT_SPECIAL;
+			} else if (name.equalsIgnoreCase(CMD_ALLOWBUILD_SELECT_RANK.getName())) {
+				return CMD_ALLOWBUILD_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_ALLOWBUILD_YESNO.getName())) {
+				return CMD_ALLOWBUILD_YESNO;
+			} else if (name.equalsIgnoreCase(CMD_SETDEFAULTRANK_SELECT_RANK.getName())) {
+				return CMD_SETDEFAULTRANK_SELECT_RANK;
+			} else {
+				return null;
+			}
+		}
+	}
+
 	public static void setPlugin(PowerRanks powerRanks) {
 		PowerRanksGUI.powerRanks = powerRanks;
 	}
@@ -56,18 +118,209 @@ public class PowerRanksGUI {
 		return item;
 	}
 
-	public static ItemStack createGuiHead(Player player) {
+	public static ItemStack createGuiHead(Player player, final String... lore) {
 		ItemStack head = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta headm = (SkullMeta) head.getItemMeta();
 		headm.setDisplayName(player.getName());
 		headm.setOwningPlayer(player);
+		headm.setLore(Arrays.asList(lore));
 		head.setItemMeta(headm);
 		return head;
 	}
 
-	public static void openPowerRanksGUI(Player player) {
-//		inventoryGUIMain.addItem(createGuiItem(Material.CAKE, "CAKE!", "Isn't it nice?", "", "A cake", "for you?"));
+	public static void openPowerRanksGUI(Player player, MAIN_GUI_PAGE menu, int page, String data) {
+		if (page < 0) {
+			openPowerRanksGUI(player, menu, page + 1, data);
+			return;
+		}
+
+		int num_items_on_page = inventoryGUIMain.getSize() - 9;
+		Users users = new Users(powerRanks);
+
+		for (int i = 0; i < inventoryGUIMain.getSize() - 1; i++) {
+			inventoryGUIMain.setItem(i, createEmptyGuiItem());
+		}
+
 		inventoryGUIMain.setItem(inventoryGUIMain.getSize() - 1, createGuiItem(Material.BARRIER, "Close"));
+		inventoryGUIMain.setItem(inventoryGUIMain.getSize() - 2, createGuiItem(Material.COMPASS, "Navigation", menu.getName(), "Page " + String.valueOf(page + 1), data, "Left click: next page", "Right click: previous page"));
+
+		if (menu.getId() == MAIN_GUI_PAGE.MAIN.getId()) {
+			if (page > 0) {
+				openPowerRanksGUI(player, menu, page - 1, data);
+				return;
+			}
+			inventoryGUIMain.addItem(createGuiItem(Material.DISPENSER, "/pr set", "Change the rank of a player."));
+			inventoryGUIMain.addItem(createGuiItem(Material.OBSERVER, "/pr check", "Check the current rank of a player."));
+			inventoryGUIMain.addItem(createGuiItem(Material.GREEN_WOOL, "/pr promote", "Promote a player."));
+			inventoryGUIMain.addItem(createGuiItem(Material.RED_WOOL, "/pr demote", "Demote a player."));
+			inventoryGUIMain.addItem(createGuiItem(Material.YELLOW_WOOL, "/pr setchatcolor", "Change the chat color of a rank."));
+			inventoryGUIMain.addItem(createGuiItem(Material.LIGHT_BLUE_WOOL, "/pr setnamecolor", "Change the name color of a rank."));
+			inventoryGUIMain.addItem(createGuiItem(Material.GRASS_BLOCK, "/pr enablebuild /pr disablebuild", "Allow building for a specific rank."));
+			inventoryGUIMain.addItem(createGuiItem(Material.STONE, "/pr setdefaultrank", "Set the default rank for new players."));
+
+			if (data.length() > 0) {
+				String[] data_split = data.split(":");
+
+				if (data_split[0].equalsIgnoreCase("setrank")) {
+					String playername = data_split[1];
+					String rankname = data_split[2];
+					users.setGroup(player, playername, users.getRankIgnoreCase(rankname));
+				}
+
+				if (data_split[0].equalsIgnoreCase("checkrank")) {
+					String playername = data_split[1];
+					users.getGroup(player.getName(), playername);
+				}
+
+				if (data_split[0].equalsIgnoreCase("promote")) {
+					String playername = data_split[1];
+					if (users.promote(playername)) {
+						Messages.messageCommandPromoteSuccess(player, playername);
+					} else {
+						Messages.messageCommandPromoteError(player, playername);
+					}
+				}
+
+				if (data_split[0].equalsIgnoreCase("demote")) {
+					String playername = data_split[1];
+					if (users.demote(playername)) {
+						Messages.messageCommandDemoteSuccess(player, playername);
+					} else {
+						Messages.messageCommandDemoteError(player, playername);
+					}
+				}
+
+				if (data_split[0].equalsIgnoreCase("setchatcolor")) {
+					String rankname = data_split[1];
+					String color = data_split.length >= 3 ? data_split[2] : "";
+					String special = data_split.length >= 4 ? data_split[3] : "";
+					users.setChatColor(users.getRankIgnoreCase(rankname), color + special);
+					Messages.messageCommandSetChatColor(player, color + special, rankname);
+				}
+
+				if (data_split[0].equalsIgnoreCase("setnamecolor")) {
+					String rankname = data_split[1];
+					String color = data_split.length >= 3 ? data_split[2] : "";
+					String special = data_split.length >= 4 ? data_split[3] : "";
+					users.setNameColor(users.getRankIgnoreCase(rankname), color + special);
+					Messages.messageCommandSetNameColor(player, color + special, rankname);
+				}
+
+				if (data_split[0].equalsIgnoreCase("allowbuild")) {
+					String rankname = data_split[1];
+					Boolean allow = data_split[2].equalsIgnoreCase("true");
+					users.setBuild(rankname, allow);
+					if (allow)
+						Messages.messageCommandBuildEnabled(player, rankname);
+					else
+						Messages.messageCommandBuildDisabled(player, rankname);
+				}
+
+				if (data_split[0].equalsIgnoreCase("setdefaultrank")) {
+					String rankname = data_split[1];
+					users.setDefaultRank(rankname);
+					Messages.messageCommandSetDefaultRankSuccess(player, rankname);
+				}
+
+				openPowerRanksGUI(player, menu, page, "");
+			}
+		}
+
+		if (menu.getId() == MAIN_GUI_PAGE.CMD_SET_SELECT_USER.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_CHECK_SELECT_USER.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_PROMOTE_SELECT_USER.getId()
+				|| menu.getId() == MAIN_GUI_PAGE.CMD_DEMOTE_SELECT_USER.getId()) {
+			Object[] online_players = Bukkit.getServer().getOnlinePlayers().toArray();
+
+			if (num_items_on_page * page > online_players.length) {
+				openPowerRanksGUI(player, menu, page - 1, data);
+				return;
+			}
+
+			for (int i = 0; i < num_items_on_page; i++) {
+				if (num_items_on_page * page + i < online_players.length) {
+					Player online_player = (Player) online_players[num_items_on_page * page + i];
+					String online_player_current_rank = users.getGroup(online_player);
+					inventoryGUIMain.addItem(createGuiHead(online_player, online_player_current_rank));
+				}
+			}
+		}
+
+		if (menu.getId() == MAIN_GUI_PAGE.CMD_SET_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETCHATCOLOR_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETNAMECOLOR_SELECT_RANK.getId()
+				|| menu.getId() == MAIN_GUI_PAGE.CMD_ALLOWBUILD_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETDEFAULTRANK_SELECT_RANK.getId()) {
+			Object[] ranks = users.getGroups().toArray();
+
+			if (num_items_on_page * page > ranks.length) {
+				openPowerRanksGUI(player, menu, page - 1, data);
+				return;
+			}
+
+			for (int i = 0; i < num_items_on_page; i++) {
+				if (num_items_on_page * page + i < ranks.length) {
+					String rank = (String) ranks[num_items_on_page * page + i];
+					if (users.getRanksConfigFieldString(rank, "gui.icon").length() > 0) {
+						Material icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+						if (icon != null)
+							inventoryGUIMain.addItem(createGuiItem(icon, rank));
+						else
+							PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+					} else {
+						PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
+					}
+				}
+			}
+
+		}
+
+		if (menu.getId() == MAIN_GUI_PAGE.CMD_SETNAMECOLOR_SELECT_COLOR.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETCHATCOLOR_SELECT_COLOR.getId()) {
+			if (page > 0) {
+				openPowerRanksGUI(player, menu, page - 1, data);
+				return;
+			}
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Black", "&0"), DyeColor.BLACK, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Dark Blue", "&1"), DyeColor.BLUE, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Dark Green", "&2"), DyeColor.GREEN, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Dark Turquoise", "&3"), DyeColor.CYAN, PatternType.BASE), DyeColor.BLACK, PatternType.GRADIENT));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Dark Red", "&4"), DyeColor.RED, PatternType.BASE), DyeColor.BLACK, PatternType.GRADIENT));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Purple", "&5"), DyeColor.PURPLE, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Orange", "&6"), DyeColor.ORANGE, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Light Gray", "&7"), DyeColor.LIGHT_GRAY, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Dark Gray", "&8"), DyeColor.GRAY, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Light Blue", "&9"), DyeColor.LIGHT_BLUE, PatternType.BASE), DyeColor.BLUE, PatternType.GRADIENT));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Light Green", "&a"), DyeColor.LIME, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Light Turquoise", "&b"), DyeColor.LIGHT_BLUE, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Red", "&c"), DyeColor.RED, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Magenta", "&d"), DyeColor.MAGENTA, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("Yellow", "&e"), DyeColor.YELLOW, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("White", "&f"), DyeColor.WHITE, PatternType.BASE));
+		}
+
+		if (menu.getId() == MAIN_GUI_PAGE.CMD_SETNAMECOLOR_SELECT_SPECIAL.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETCHATCOLOR_SELECT_SPECIAL.getId()) {
+			if (page > 0) {
+				openPowerRanksGUI(player, menu, page - 1, data);
+				return;
+			}
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.createEmpty("None", ""), DyeColor.WHITE, PatternType.BASE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Bold", "&l"), DyeColor.WHITE, PatternType.BASE), DyeColor.BLACK, PatternType.BORDER));
+			inventoryGUIMain.addItem(
+					BannerItem.addPattern(BannerItem.addPattern(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Underline", "&n"), DyeColor.WHITE, PatternType.BASE), DyeColor.BLACK, PatternType.HALF_HORIZONTAL_MIRROR),
+							DyeColor.WHITE, PatternType.STRIPE_BOTTOM), DyeColor.WHITE, PatternType.STRIPE_MIDDLE));
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Itallic", "&o"), DyeColor.WHITE, PatternType.BASE), DyeColor.BLACK, PatternType.STRIPE_DOWNLEFT));
+
+			inventoryGUIMain.addItem(BannerItem
+					.addPattern(BannerItem.addPattern(BannerItem.addPattern(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Magic", "&k"), DyeColor.WHITE, PatternType.BASE), DyeColor.BLACK, PatternType.STRIPE_DOWNLEFT),
+							DyeColor.BLACK, PatternType.TRIANGLE_BOTTOM), DyeColor.BLACK, PatternType.TRIANGLE_TOP), DyeColor.BLACK, PatternType.CIRCLE_MIDDLE));
+
+			inventoryGUIMain.addItem(BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Strike", "&m"), DyeColor.WHITE, PatternType.BASE), DyeColor.BLACK, PatternType.STRIPE_MIDDLE));
+		}
+
+		if (menu.getId() == MAIN_GUI_PAGE.CMD_ALLOWBUILD_YESNO.getId()) {
+			if (page > 0) {
+				openPowerRanksGUI(player, menu, page - 1, data);
+				return;
+			}
+			inventoryGUIMain.addItem(createGuiItem(Material.GREEN_WOOL, "Yes", "true"));
+			inventoryGUIMain.addItem(createGuiItem(Material.RED_WOOL, "No", "false"));
+		}
+
 		player.openInventory(getPowerRanksGUI());
 	}
 
@@ -82,7 +335,7 @@ public class PowerRanksGUI {
 		}
 		Object[] ranks = users.getGroups().toArray();
 		int num_rank_on_page = inventoryGUIShop.getSize() - 9;
-		
+
 		if (num_rank_on_page * page > ranks.length) {
 			openPowerRanksRankupGUI(player, page - 1);
 			return;
