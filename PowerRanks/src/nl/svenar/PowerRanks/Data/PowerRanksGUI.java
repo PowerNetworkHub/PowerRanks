@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.Data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
@@ -39,7 +40,9 @@ public class PowerRanksGUI {
 		CMD_PROMOTE_SELECT_USER(4, "Main>Promote>Select user"), CMD_DEMOTE_SELECT_USER(5, "Main>Demote>Select user"), CMD_SETCHATCOLOR_SELECT_RANK(6, "Main>Set chat color>Select rank"),
 		CMD_SETNAMECOLOR_SELECT_RANK(7, "Main>Set name color>Select rank"), CMD_SETCHATCOLOR_SELECT_COLOR(8, "Main>Set chat color>Select rank>Select color"), CMD_SETNAMECOLOR_SELECT_COLOR(9, "Main>Set name color>Select rank>Select color"),
 		CMD_SETCHATCOLOR_SELECT_SPECIAL(10, "Main>Set chat color>Select rank>Select color>Select special"), CMD_SETNAMECOLOR_SELECT_SPECIAL(11, "Main>Set name color>Select rank>Select color>Select special"),
-		CMD_ALLOWBUILD_SELECT_RANK(12, "Main>Allow build>Select rank"), CMD_ALLOWBUILD_YESNO(13, "Main>Allow build>Select rank>yes/no"), CMD_SETDEFAULTRANK_SELECT_RANK(14, "Main>Set default rank>Select rank");
+		CMD_ALLOWBUILD_SELECT_RANK(12, "Main>Allow build>Select rank"), CMD_ALLOWBUILD_YESNO(13, "Main>Allow build>Select rank>yes/no"), CMD_SETDEFAULTRANK_SELECT_RANK(14, "Main>Set default rank>Select rank"),
+		CMD_ADDINHERITANCE_SELECT_RANK(15, "Main>Add inheritance>Select rank"), CMD_DELINHERITANCE_SELECT_RANK(16, "Main>Delete inheritance>Select rank"),
+		CMD_ADDINHERITANCE_SELECT_RANK2(17, "Main>Add inheritance>Select rank>Select inheritance"), CMD_DELINHERITANCE_SELECT_RANK2(18, "Main>Delete inheritance>Select rank>Select inheritance");
 
 		final int id;
 		final String name;
@@ -88,6 +91,14 @@ public class PowerRanksGUI {
 				return CMD_ALLOWBUILD_YESNO;
 			} else if (name.equalsIgnoreCase(CMD_SETDEFAULTRANK_SELECT_RANK.getName())) {
 				return CMD_SETDEFAULTRANK_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_ADDINHERITANCE_SELECT_RANK.getName())) {
+				return CMD_ADDINHERITANCE_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_DELINHERITANCE_SELECT_RANK.getName())) {
+				return CMD_DELINHERITANCE_SELECT_RANK;
+			} else if (name.equalsIgnoreCase(CMD_ADDINHERITANCE_SELECT_RANK2.getName())) {
+				return CMD_ADDINHERITANCE_SELECT_RANK2;
+			} else if (name.equalsIgnoreCase(CMD_DELINHERITANCE_SELECT_RANK2.getName())) {
+				return CMD_DELINHERITANCE_SELECT_RANK2;
 			} else {
 				return null;
 			}
@@ -157,6 +168,8 @@ public class PowerRanksGUI {
 			inventoryGUIMain.addItem(createGuiItem(Material.LIGHT_BLUE_WOOL, "/pr setnamecolor", "Change the name color of a rank."));
 			inventoryGUIMain.addItem(createGuiItem(Material.GRASS_BLOCK, "/pr enablebuild /pr disablebuild", "Allow building for a specific rank."));
 			inventoryGUIMain.addItem(createGuiItem(Material.STONE, "/pr setdefaultrank", "Set the default rank for new players."));
+			inventoryGUIMain.addItem(createGuiItem(Material.DANDELION, "/pr addinheritance", "Add a inheritance to a rank."));
+			inventoryGUIMain.addItem(createGuiItem(Material.POPPY, "/pr delinheritance", "Remove a inheritance from a rank."));
 
 			if (data.length() > 0) {
 				String[] data_split = data.split(":");
@@ -222,6 +235,20 @@ public class PowerRanksGUI {
 					Messages.messageCommandSetDefaultRankSuccess(player, rankname);
 				}
 
+				if (data_split[0].equalsIgnoreCase("addinheritance")) {
+					String rankname = data_split[1];
+					String inheritance = data_split[2];
+					users.addInheritance(rankname, inheritance);
+					Messages.messageCommandInheritanceAdded(player, inheritance, rankname);
+				}
+
+				if (data_split[0].equalsIgnoreCase("removeinheritance")) {
+					String rankname = data_split[1];
+					String inheritance = data_split[2];
+					users.removeInheritance(rankname, inheritance);
+					Messages.messageCommandInheritanceRemoved(player, inheritance, rankname);
+				}
+
 				openPowerRanksGUI(player, menu, page, "");
 			}
 		}
@@ -245,8 +272,25 @@ public class PowerRanksGUI {
 		}
 
 		if (menu.getId() == MAIN_GUI_PAGE.CMD_SET_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETCHATCOLOR_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETNAMECOLOR_SELECT_RANK.getId()
-				|| menu.getId() == MAIN_GUI_PAGE.CMD_ALLOWBUILD_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETDEFAULTRANK_SELECT_RANK.getId()) {
+				|| menu.getId() == MAIN_GUI_PAGE.CMD_ALLOWBUILD_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_SETDEFAULTRANK_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK.getId()
+				|| menu.getId() == MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK2.getId() || menu.getId() == MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK2.getId()) {
 			Object[] ranks = users.getGroups().toArray();
+
+			if (menu.getId() == MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK2.getId()) {
+				ArrayList<String> ranks2 = new ArrayList<String>();
+				for (String rank : users.getGroups()) {
+					if (!rank.equalsIgnoreCase(data.split(":")[1]))
+						ranks2.add(rank);
+				}
+				for (String inheritance : users.getInheritances(data.split(":")[1])) {
+					if (ranks2.contains(inheritance)) ranks2.remove(inheritance);
+				}
+				ranks = ranks2.toArray();
+			}
+
+			if (menu.getId() == MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK2.getId()) {
+				ranks = users.getInheritances(data.split(":")[1]).toArray();
+			}
 
 			if (num_items_on_page * page > ranks.length) {
 				openPowerRanksGUI(player, menu, page - 1, data);

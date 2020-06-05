@@ -74,6 +74,14 @@ public class OnInventory implements Listener {
 						if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("/pr setdefaultrank")) {
 							PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.CMD_SETDEFAULTRANK_SELECT_RANK, 0, "setdefaultrank");
 						}
+						
+						if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("/pr addinheritance")) {
+							PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK, 0, "addinheritance");
+						}
+						
+						if (clickedItem.getItemMeta().getDisplayName().equalsIgnoreCase("/pr delinheritance")) {
+							PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK, 0, "removeinheritance");
+						}
 					}
 
 					if (current_menu.equalsIgnoreCase(PowerRanksGUI.MAIN_GUI_PAGE.CMD_SET_SELECT_USER.getName())) {
@@ -145,6 +153,30 @@ public class OnInventory implements Listener {
 					}
 					
 					if (current_menu.equalsIgnoreCase(PowerRanksGUI.MAIN_GUI_PAGE.CMD_SETDEFAULTRANK_SELECT_RANK.getName())) {
+						String rankname = clickedItem.getItemMeta().getDisplayName();
+						String data = inventory.getItem(inventory.getSize() - 2).getItemMeta().getLore().get(2);
+						PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.MAIN, 0, data + (data.length() > 0 ? ":" : "") + rankname);
+					}
+					
+					if (current_menu.equalsIgnoreCase(PowerRanksGUI.MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK.getName())) {
+						String rankname = clickedItem.getItemMeta().getDisplayName();
+						String data = inventory.getItem(inventory.getSize() - 2).getItemMeta().getLore().get(2);
+						PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK2, 0, data + (data.length() > 0 ? ":" : "") + rankname);
+					}
+					
+					if (current_menu.equalsIgnoreCase(PowerRanksGUI.MAIN_GUI_PAGE.CMD_ADDINHERITANCE_SELECT_RANK2.getName())) {
+						String rankname = clickedItem.getItemMeta().getDisplayName();
+						String data = inventory.getItem(inventory.getSize() - 2).getItemMeta().getLore().get(2);
+						PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.MAIN, 0, data + (data.length() > 0 ? ":" : "") + rankname);
+					}
+					
+					if (current_menu.equalsIgnoreCase(PowerRanksGUI.MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK.getName())) {
+						String rankname = clickedItem.getItemMeta().getDisplayName();
+						String data = inventory.getItem(inventory.getSize() - 2).getItemMeta().getLore().get(2);
+						PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK2, 0, data + (data.length() > 0 ? ":" : "") + rankname);
+					}
+					
+					if (current_menu.equalsIgnoreCase(PowerRanksGUI.MAIN_GUI_PAGE.CMD_DELINHERITANCE_SELECT_RANK2.getName())) {
 						String rankname = clickedItem.getItemMeta().getDisplayName();
 						String data = inventory.getItem(inventory.getSize() - 2).getItemMeta().getLore().get(2);
 						PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.MAIN, 0, data + (data.length() > 0 ? ":" : "") + rankname);
