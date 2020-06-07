@@ -27,7 +27,7 @@ public class OnSignChanged implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		if (Util.isPowerRanksSign(this.m, event.getLine(0))) {
 			if (event.getPlayer().hasPermission("powerranks.cmd.admin")) {
-				final File configFile = new File(String.valueOf(this.m.configFileLoc) + "config" + ".yml");
+				final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
 				final YamlConfiguration configYaml = new YamlConfiguration();
 				try {
 					configYaml.load(configFile);

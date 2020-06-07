@@ -33,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.metrics.Metrics;
+import nl.svenar.PowerRanks.update.UpdateChecker;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,7 +56,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String colorChar;
 	public String plp;
 	public static Logger log;
-	public String configFileLoc;
+	public static String configFileLoc;
 	public static String fileLoc;
 	public static String langFileLoc;
 	
@@ -83,9 +84,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.pdf = this.getDescription();
 		PowerRanks.colorChar = "&";
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
-		this.configFileLoc = this.getDataFolder() + File.separator;
+		PowerRanks.configFileLoc = this.getDataFolder() + File.separator;
 		PowerRanks.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
-		PowerRanks.langFileLoc = this.configFileLoc + "lang.yml";
+		PowerRanks.langFileLoc = PowerRanks.configFileLoc + "lang.yml";
 		this.updatemsg = "";
 	}
 

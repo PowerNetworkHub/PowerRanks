@@ -1,14 +1,16 @@
-package nl.svenar.PowerRanks;
+package nl.svenar.PowerRanks.update;
 
 import java.util.regex.Matcher;
 import java.net.URLConnection;
 import java.util.regex.Pattern;
+
+import nl.svenar.PowerRanks.PowerRanks;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class UpdateChecker
-{
+public class UpdateChecker {
     @SuppressWarnings("unused")
 	private PowerRanks plugin;
     private String plugin_url;

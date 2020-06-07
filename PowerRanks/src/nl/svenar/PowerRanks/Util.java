@@ -32,7 +32,7 @@ public class Util {
 	}
 	
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
-		final File configFile = new File(String.valueOf(main.configFileLoc) + "config" + ".yml");
+		final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
 			configYaml.load(configFile);
