@@ -11,6 +11,17 @@ commands:
   pr:
     description: Main Command
 permissions:
+  powerranks.cmd.*:
+    default: false
+    children:
+      powerranks.cmd.help: true
+      powerranks.cmd.check: true
+      powerranks.cmd.rankup: true
+      powerranks.cmd.reload: true
+      powerranks.cmd.set: true
+      powerranks.cmd.list: true
+      powerranks.cmd.create: true
+      powerranks.cmd.admin: true
   powerranks.cmd.help:
     default: true
   powerranks.cmd.check:

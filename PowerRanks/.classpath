@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/gson-2.8.6.jar"/>
 	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/Vault.jar"/>
 	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/PlaceholderAPI-2.10.6.jar"/>
+	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/NametagEdit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

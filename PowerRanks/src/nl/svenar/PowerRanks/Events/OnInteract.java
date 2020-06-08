@@ -75,6 +75,12 @@ public class OnInteract implements Listener {
 				} else {
 					Messages.noPermission(player);
 				}
+			} else if (sign_command.equalsIgnoreCase("rankup")) {
+				if (player.hasPermission("powerranks.cmd.rankup")) {
+					PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
+				} else {
+					Messages.noPermission(player);
+				}
 			} else {
 				if (player.hasPermission("powerranks.cmd.admin")) {
 					Messages.messageSignUnknownCommand(player);

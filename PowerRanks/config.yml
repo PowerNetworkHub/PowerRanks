@@ -32,6 +32,10 @@
 # Vault (Economy): used for '/pr rankup' and '/pr gui rankup'
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # --------------------
+# Updates
+# 'enable_update_checking' Enable or disable update checking.
+# 'automatic_download_updates' Attempt to automatically update PowerRanks.jar to the new version.
+# --------------------
 
 chat:
   enabled: true
@@ -47,7 +51,6 @@ signs:
 plugin_hook:
   vault: false
   placeholderapi: false
-  
-  
-  
-  
+updates:
+   enable_update_checking: true
+   automatic_download_updates: false
