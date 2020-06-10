@@ -208,7 +208,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
+						if (args.length == 2) {
+							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String prefix = "";
+							final boolean result = s.setPrefix(rank2, prefix);
+							if (result) {
+								Messages.messageCommandSetPrefix(player, prefix, rank2);
+							} else {
+								Messages.messageGroupNotFound(player, rank2);
+							}
+						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
@@ -225,7 +234,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
+						if (args.length == 2) {
+							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String suffix = "";
+							final boolean result = s.setSuffix(rank2, suffix);
+							if (result) {
+								Messages.messageCommandSetSuffix(player, suffix, rank2);
+							} else {
+								Messages.messageGroupNotFound(player, rank2);
+							}
+						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);
@@ -542,7 +560,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
+						if (args.length == 2) {
+							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String prefix = "";
+							final boolean result = s.setPrefix(rank2, prefix);
+							if (result) {
+								Messages.messageCommandSetPrefix(console, prefix, rank2);
+							} else {
+								Messages.messageGroupNotFound(console, rank2);
+							}
+						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
@@ -557,7 +584,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
+						if (args.length == 2) {
+							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String suffix = "";
+							final boolean result = s.setSuffix(rank2, suffix);
+							if (result) {
+								Messages.messageCommandSetSuffix(console, suffix, rank2);
+							} else {
+								Messages.messageGroupNotFound(console, rank2);
+							}
+						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);
@@ -786,7 +822,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
+						if (args.length == 2) {
+							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String prefix = "";
+							final boolean result = s.setPrefix(rank2, prefix);
+							if (result) {
+//								Messages.messageCommandSetPrefix(console, prefix, rank2);
+							} else {
+//								Messages.messageGroupNotFound(console, rank2);
+							}
+						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = args[2];
 							final boolean result = s.setPrefix(rank2, prefix);
@@ -801,7 +846,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
+						if (args.length == 2) {
+							final String rank2 = s.getRankIgnoreCase(args[1]);
+							final String suffix = "";
+							final boolean result = s.setSuffix(rank2, suffix);
+							if (result) {
+//								Messages.messageCommandSetSuffix(console, suffix, rank2);
+							} else {
+//								Messages.messageGroupNotFound(console, rank2);
+							}
+						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = args[2];
 							final boolean result = s.setSuffix(rank2, suffix);

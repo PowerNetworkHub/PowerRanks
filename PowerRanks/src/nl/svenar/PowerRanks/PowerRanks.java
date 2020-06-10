@@ -33,7 +33,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.metrics.Metrics;
-import nl.svenar.PowerRanks.update.UpdateChecker;
+import nl.svenar.PowerRanks.update.Updater;
+import nl.svenar.PowerRanks.update.Updater.UpdateResult;
+import nl.svenar.PowerRanks.update.Updater.UpdateType;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,6 +54,8 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 public class PowerRanks extends JavaPlugin implements Listener {
+	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
+
 	public static PluginDescriptionFile pdf;
 	public static String colorChar;
 	public String plp;
@@ -59,13 +63,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String configFileLoc;
 	public static String fileLoc;
 	public static String langFileLoc;
-	
+
 	// Soft Depencencies
 	private static Economy vaultEconomy;
 	private static Permission vaultPermissions;
 	private static PowerRanksExpansion placeholderapiExpansion;
 	// Soft Depencencies
-	
+
 	File configFile;
 	File ranksFile;
 	File playersFile;
@@ -74,7 +78,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	FileConfiguration ranks;
 	FileConfiguration players;
 	FileConfiguration lang;
-	protected UpdateChecker updatechecker;
 	public String updatemsg;
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
@@ -124,7 +127,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 		this.loadAllFiles();
 //		this.verifyConfig();
-		new UpdateChecker(this);
+
+		handle_update_checking();
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
@@ -152,7 +156,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		this.setupPermissions();
 		this.setupScoreboardTeams();
-		
+
 		PowerRanksGUI.setPlugin(this);
 		PowerRanksGUI.setupGUI();
 
@@ -195,7 +199,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			setupVaultEconomy();
 			// setupVaultPermissions(); // TODO: Implement Vault permissions
 		}
-		
+
 		if (has_placeholderapi) {
 			PowerRanks.log.info("PlaceholderAPI found!");
 			PowerRanks.placeholderapiExpansion = new PowerRanksExpansion(this);
@@ -209,14 +213,34 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private boolean setupVaultEconomy() {
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		PowerRanks.vaultEconomy = rsp.getProvider();
-        return PowerRanks.vaultEconomy != null;
+		return PowerRanks.vaultEconomy != null;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private boolean setupVaultPermissions() {
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
 		PowerRanks.vaultPermissions = rsp.getProvider();
-        return PowerRanks.vaultPermissions != null;
+		return PowerRanks.vaultPermissions != null;
+	}
+	
+	private void handle_update_checking() {
+		if (getConfigBool("updates.enable_update_checking")) {
+			PowerRanks.log.info("Checking for updates...");
+			Updater updater = new Updater(this, 79251, this.getFile(), getConfigBool("updates.automatic_download_updates") ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD, true);
+			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+				PowerRanks.log.info("------------------------------------");
+				PowerRanks.log.info("A new " + PowerRanks.pdf.getName() + " version is available!");
+				PowerRanks.log.info("Current version: " + PowerRanks.pdf.getVersion());
+				PowerRanks.log.info("New version: " + updater.getLatestName().replaceAll("[a-zA-Z\" ]", ""));
+				if (!getConfigBool("updates.automatic_download_updates"))
+					PowerRanks.log.info("Download the new version from: " + bukkit_dev_url_powerranks);
+				else
+					PowerRanks.log.info("Plugin will now be updated!");
+				PowerRanks.log.info("------------------------------------");
+			} else {
+				log.info("No new version available");
+			}
+		}
 	}
 
 	public boolean getConfigBool(String path) {
@@ -692,11 +716,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static Economy getVaultEconomy() {
 		return vaultEconomy;
 	}
-	
+
 	public static Permission getVaultPermissions() {
 		return vaultPermissions;
 	}
-	
+
 	public static PowerRanksExpansion getPlaceholderapiExpansion() {
 		return placeholderapiExpansion;
 	}

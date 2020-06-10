@@ -31,6 +31,7 @@
 # Enable or disable the use of a certain soft-dependency.
 # Vault (Economy): used for '/pr rankup' and '/pr gui rankup'
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
+# NametagEdit: Used for displaying the prefix and suffix in the players name above then head and for an alternative tablist
 # --------------------
 # Updates
 # 'enable_update_checking' Enable or disable update checking.
@@ -44,7 +45,7 @@ build_modification:
   enabled: true
 tablist_modification:
   enabled: true
-  format: '[prefix] [name]'
+  format: '[prefix] [name] [suffix]'
 signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"

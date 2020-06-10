@@ -38,12 +38,15 @@ public class OnChat implements Listener {
             final String suffix = (rankYaml.getString("Groups." + rank + ".chat.suffix") != null) ? rankYaml.getString("Groups." + rank + ".chat.suffix") : "";
             final String chatColor = (rankYaml.getString("Groups." + rank + ".chat.chatColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.chatColor") : "";
             final String nameColor = (rankYaml.getString("Groups." + rank + ".chat.nameColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.nameColor") : "";
-            format = Util.replaceAll(format, "[prefix]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), prefix, true) + ChatColor.RESET);
-            format = Util.replaceAll(format, " [suffix]", (suffix.length() > 0) ? (" " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true)) : PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
+            format = Util.replaceAll(format, " ", "");
+            format = Util.replaceAll(format, "[prefix]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), prefix, true) + ChatColor.RESET + (prefix.length() > 0 ? " " : ""));
+            format = Util.replaceAll(format, "[suffix]", (suffix.length() > 0) ? (" " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true)) : PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
             format = Util.replaceAll(format, "[player]", String.valueOf(nameColor) + "%1$s");
-            format = Util.replaceAll(format, "[msg]", String.valueOf(chatColor) + "%2$s");
+            format = Util.replaceAll(format, "[msg]", String.valueOf(chatColor) + " %2$s");
             format = Util.replaceAll(format, "[format]", e.getFormat());
             format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, false);
+//            format = format.replaceAll("^[ ]+", ""); // Remove leading spaces
+            player.sendMessage("'" + format + "'");
             if (configYaml.getBoolean("chat.enabled")) {
                 e.setFormat(format);
             }
