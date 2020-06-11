@@ -13,7 +13,7 @@ Groups:
          promote: ''
          demote: ''
       economy:
-         buyable: false
+         buyable: []
          cost: 0
       gui:
          icon: "stick"
@@ -30,7 +30,7 @@ Groups:
          promote: 'Admin'
          demote: ''
       economy:
-         buyable: false
+         buyable: []
          cost: 0
       gui:
          icon: "purpur block"
@@ -47,7 +47,7 @@ Groups:
          promote: 'Owner'
          demote: 'Moderator'
       economy:
-         buyable: false
+         buyable: []
          cost: 0
       gui:
          icon: "redstone"
@@ -64,7 +64,7 @@ Groups:
          promote: ''
          demote: 'Admin'
       economy:
-         buyable: false
+         buyable: []
          cost: 0
       gui:
          icon: "diamond"

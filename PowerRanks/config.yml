@@ -31,11 +31,11 @@
 # Enable or disable the use of a certain soft-dependency.
 # Vault (Economy): used for '/pr rankup' and '/pr gui rankup'
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
-# NametagEdit: Used for displaying the prefix and suffix in the players name above then head and for an alternative tablist
 # --------------------
 # Updates
 # 'enable_update_checking' Enable or disable update checking.
 # 'automatic_download_updates' Attempt to automatically update PowerRanks.jar to the new version.
+# 'automatic_update_config_files' Update the configuration files to the newest version.
 # --------------------
 
 chat:
@@ -55,3 +55,4 @@ plugin_hook:
 updates:
    enable_update_checking: true
    automatic_download_updates: false
+   automatic_update_config_files: true

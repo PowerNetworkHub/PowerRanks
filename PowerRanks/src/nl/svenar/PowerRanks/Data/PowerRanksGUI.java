@@ -2,6 +2,7 @@ package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
@@ -377,18 +378,18 @@ public class PowerRanksGUI {
 		for (int i = 0; i < inventoryGUIShop.getSize() - 1; i++) {
 			inventoryGUIShop.setItem(i, createEmptyGuiItem());
 		}
-		Object[] ranks = users.getGroups().toArray();
+		List<String> ranks = users.getBuyableRanks(users.getGroup(player));
 		int num_rank_on_page = inventoryGUIShop.getSize() - 9;
 
-		if (num_rank_on_page * page > ranks.length) {
+		if (num_rank_on_page * page > ranks.size()) {
 			openPowerRanksRankupGUI(player, page - 1);
 			return;
 		}
 
 		for (int i = 0; i < num_rank_on_page; i++) {
-			if (num_rank_on_page * page + i < ranks.length) {
-				String rank = (String) ranks[num_rank_on_page * page + i];
-				if (users.getRanksConfigFieldBoolean(rank, "economy.buyable") && !rank.equalsIgnoreCase(users.getGroup(player))) {
+			if (num_rank_on_page * page + i < ranks.size()) {
+				String rank = (String) ranks.get(num_rank_on_page * page + i);
+				if (!rank.equalsIgnoreCase(users.getGroup(player))) {
 					if (users.getRanksConfigFieldString(rank, "gui.icon").length() > 0) {
 						Material icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
 						int cost = users.getRanksConfigFieldInt(rank, "economy.cost");

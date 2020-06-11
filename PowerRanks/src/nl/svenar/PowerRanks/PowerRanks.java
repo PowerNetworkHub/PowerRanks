@@ -33,6 +33,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.metrics.Metrics;
+import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
 import nl.svenar.PowerRanks.update.Updater.UpdateType;
@@ -43,6 +44,7 @@ import java.io.File;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -128,7 +130,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.loadAllFiles();
 //		this.verifyConfig();
 
-		handle_update_checking();
+		if (handle_update_checking()) {
+			return;
+		}
+		
+		ConfigFilesUpdater.updateConfigFiles(this);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
@@ -211,8 +217,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	private boolean setupVaultEconomy() {
-		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-		PowerRanks.vaultEconomy = rsp.getProvider();
+		try {
+			RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+			PowerRanks.vaultEconomy = rsp.getProvider();
+		} catch (Exception e) {
+			PowerRanks.log.warning("Failed to load Vault Economy! Is an economy plugin present?");
+		}
 		return PowerRanks.vaultEconomy != null;
 	}
 
@@ -223,7 +233,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return PowerRanks.vaultPermissions != null;
 	}
 	
-	private void handle_update_checking() {
+	private boolean handle_update_checking() {
 		if (getConfigBool("updates.enable_update_checking")) {
 			PowerRanks.log.info("Checking for updates...");
 			Updater updater = new Updater(this, 79251, this.getFile(), getConfigBool("updates.automatic_download_updates") ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD, true);
@@ -240,7 +250,26 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			} else {
 				log.info("No new version available");
 			}
+			
+			if (updater.getResult() == UpdateResult.SUCCESS) {
+				PowerRanks.log.info("------------------------------------");
+				PowerRanks.log.info(PowerRanks.pdf.getName() + " updated successfully!");
+				PowerRanks.log.warning(PowerRanks.pdf.getName() + " will be disabled until the next server load!");
+				PowerRanks.log.info("------------------------------------");
+				
+				final PluginManager plg = Bukkit.getPluginManager();
+				final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
+				plg.disablePlugin(plgname);
+				return true;
+//				plg.enablePlugin(plgname);
+			}
+			
+			if (updater.getResult() == UpdateResult.FAIL_DOWNLOAD) {
+				PowerRanks.log.info("Update found but failed to download!");
+			}
 		}
+		
+		return false;
 	}
 
 	public boolean getConfigBool(String path) {
@@ -254,6 +283,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		val = configYaml.getBoolean(path);
+		return val;
+	}
+	
+	public boolean configContainsKey(String path) {
+		boolean val = false;
+		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		val = configYaml.isSet(path);
 		return val;
 	}
 
@@ -349,17 +392,24 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void printVersionError(String fileName) {
-		PowerRanks.log.warning("===------------------------------===");
-		PowerRanks.log.warning("              WARNING!");
-		PowerRanks.log.warning("Version mismatch detected in:");
-		PowerRanks.log.warning(fileName);
-		PowerRanks.log.warning(PowerRanks.pdf.getName() + " may not work with this config.");
-		PowerRanks.log.warning("Manual verification is required.");
-		PowerRanks.log.warning("To forcefuly get rid of this message with all its consequences use the following command:");
-		PowerRanks.log.warning("/pr forceupdateconfigversion");
-		PowerRanks.log.warning("Visit " + PowerRanks.pdf.getWebsite() + " for more info.");
-		PowerRanks.log.warning("===------------------------------===");
+	public void printVersionError(String fileName, boolean auto_update) {
+		if (!auto_update) {
+			PowerRanks.log.warning("===------------------------------===");
+			PowerRanks.log.warning("              WARNING!");
+			PowerRanks.log.warning("Version mismatch detected in:");
+			PowerRanks.log.warning(fileName);
+			PowerRanks.log.warning(PowerRanks.pdf.getName() + " may not work with this config.");
+			PowerRanks.log.warning("Manual verification is required.");
+			PowerRanks.log.warning("To forcefuly get rid of this message with all its consequences use the following command:");
+			PowerRanks.log.warning("/pr forceupdateconfigversion");
+			PowerRanks.log.warning("Visit " + PowerRanks.pdf.getWebsite() + " for more info.");
+			PowerRanks.log.warning("===------------------------------===");
+		} else {
+			PowerRanks.log.info("===------------------------------===");
+			PowerRanks.log.info("Version mismatch detected in: " + fileName);
+			PowerRanks.log.info("Automatically updating " + fileName);
+			PowerRanks.log.info("===------------------------------===");
+		}
 	}
 
 	private void copyFiles() throws Exception {
@@ -381,7 +431,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	private void copy(final InputStream in, final File file) {
+	public void copy(final InputStream in, final File file) {
 		try {
 			final OutputStream out = new FileOutputStream(file);
 			final byte[] buf = new byte[1024];

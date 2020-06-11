@@ -1,16 +1,18 @@
 # All PowerRanks messages can be changed here
 # Available options:
 # options starting with plugin_ are always available.
-# options starting with argument_ are available for certain commands only.
+# options starting with argument_ are available for certain commands only!
 # %plugin_name% | name of the plugin
 # %plugin_prefix% | see general.prefix
 # %argument_rank% | command argument rank name
+# %argument_target_rank% | command argument target rank name
 # %argument_sender% | command argument sender name
 # %argument_target% | command argument target name
 # %argument_permission% | command argument permission node
 # %argument_prefix% | command argument prefix
 # %argument_suffix% | command argument suffix
 # %argument_color% | command argument color
+# %argument_cost% | command argument cost
 
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
@@ -53,6 +55,12 @@ messages:
    buy_success: "%plugin_prefix% &aYou bought the rank '%argument_rank%'"
    buy_not_enough_money: "%plugin_prefix% &cInsufficient funds to buy the rank '%argument_rank%'"
    buy_not_available: "%plugin_prefix% &cBuying ranks is not available on this server."
+   buyable_rank_added: "%plugin_prefix% &aAdded buyable rank '%argument_target_rank%' to: %argument_rank%"
+   error_adding_buyable_rank: "%plugin_prefix% &cError adding buyable rank '%argument_target_rank%' to: %argument_rank%"
+   buyable_rank_removed: "%plugin_prefix% &aRemoved buyable rank '%argument_target_rank%' from: %argument_rank%"
+   error_removing_buyable_rank: "%plugin_prefix% &cError removing buyable rank '%argument_target_rank%' from: %argument_rank%"
+   buy_cost_set: "%plugin_prefix% &aChanged buy cost of rank '%argument_rank%' to: %argument_cost%"
+   error_setting_buy_cost: "%plugin_prefix% &cError changing buy cost of rank '%argument_rank%' to: %argument_cost%"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -74,6 +82,9 @@ commands:
    usage_command_promote: "%plugin_prefix% &c/pr promote <playerName>"
    usage_command_demote: "%plugin_prefix% &c/pr demote <playerName>"
    usage_command_listpermissions: "%plugin_prefix% &c/pr listpermissions <rankName>"
+   usage_command_add_buyable_rank: "%plugin_prefix% &c/pr addbuyablerank <rankName> <buyableRankName>"
+   usage_command_del_buyable_rank: "%plugin_prefix% &c/pr delbuyablerank <rankName> <buyableRankName>"
+   usage_command_set_cost: "%plugin_prefix% &c/pr setcost <rankName> <cost>"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
@@ -108,5 +119,8 @@ commands:
    - "&a/pr forceupdateconfigversion&2 - Update the version variable in all configuration files"
    - "&a/pr gui&2 - Show the commands GUI"
    - "&a/pr rankup&2 - Buy a rank"
+   - "&a/pr addbuyablerank <rank> <buyable_rank>&2 - Add a rank to the buyable list of a rank"
+   - "&a/pr delbuyablerank <rank> <buyable_rank>&2 - Remove a rank from the buyable list of a rank"
+   - "&a/pr setcost <rank> <cost>&2 - Set the buy cost of a rank"
    - "&a/pr stats&2 - Show stats about PowerRanks"
    - "&3--------------------------"

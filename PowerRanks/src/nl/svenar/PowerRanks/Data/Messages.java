@@ -12,7 +12,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 
 public class Messages {
-	
+
 	public static String getGeneralMessage(YamlConfiguration langYaml, String lang_config_line) {
 		String msg = "";
 
@@ -28,7 +28,7 @@ public class Messages {
 
 		return msg;
 	}
-	
+
 	public static void messageNoArgs(final Player player) {
 		player.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		player.sendMessage(ChatColor.GREEN + "/pr help" + ChatColor.DARK_GREEN + " - For the command list.");
@@ -936,12 +936,12 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageListPermissions(Player player) {
-		 YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_listpermissions");
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageListPermissions(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_listpermissions");
@@ -957,7 +957,7 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void messageErrorAddingPermission(ConsoleCommandSender console, String rank, String permission) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_adding_permission");
@@ -974,7 +974,7 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandPermissionAddedToAllRanks(ConsoleCommandSender console, String permission) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.permission_added_to_all_ranks");
@@ -982,7 +982,7 @@ public class Messages {
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandPermissionRemovedFromAllRanks(Player player, String permission) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.permission_removed_from_all_ranks");
@@ -990,7 +990,7 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandPermissionRemovedFromAllRanks(ConsoleCommandSender console, String permission) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.permission_removed_from_all_ranks");
@@ -998,7 +998,7 @@ public class Messages {
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
-	
+
 	public static void messageBuyRankSuccess(Player player, String rank) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_success");
@@ -1006,7 +1006,7 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void messageBuyRankError(Player player, String rank) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_not_enough_money");
@@ -1014,7 +1014,7 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void messageBuyRankNotAvailable(Player player) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_not_available");
@@ -1028,12 +1028,162 @@ public class Messages {
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
-	
+
 	public static void unknownCommand(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.unknown_command");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
+	}
+
+	public static void messageCommandAddbuyablerankSuccess(Player player, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_added");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandAddbuyablerankSuccess(ConsoleCommandSender sender, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_added");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandAddbuyablerankError(Player player, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_buyable_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandAddbuyablerankError(ConsoleCommandSender sender, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_buyable_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddbuyablerank(Player player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_buyable_rank");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddbuyablerank(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_buyable_rank");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommanddelbuyablerankkSuccess(Player player, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_removed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommanddelbuyablerankkSuccess(ConsoleCommandSender sender, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_removed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandDelbuyablerankError(Player player, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_removing_buyable_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandDelbuyablerankError(ConsoleCommandSender sender, String rankname, String rankname2) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_removing_buyable_rank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelbuyablerank(Player player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_del_buyable_rank");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelbuyablerank(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_del_buyable_rank");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetcostSuccess(Player player, String rankname, String cost) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buy_cost_set");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_cost%", cost);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandSetcostSuccess(ConsoleCommandSender sender, String rankname, String cost) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.buy_cost_set");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_cost%", cost);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetcostError(Player player, String rankname, String cost) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_setting_buy_cost");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_cost%", cost);
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandSetcostError(ConsoleCommandSender sender, String rankname, String cost) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_setting_buy_cost");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_cost%", cost);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageSetcost(Player player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_cost");
+		if (msg.length() > 0)
+			player.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageSetcost(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_cost");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
 	}
 
 	public static void messageStats(Player sender) {
@@ -1049,7 +1199,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
-	
+
 	public static void messageStats(ConsoleCommandSender sender) {
 		Users users = new Users(null);
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");

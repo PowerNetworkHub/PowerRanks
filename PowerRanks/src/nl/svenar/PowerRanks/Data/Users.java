@@ -180,7 +180,7 @@ public class Users implements Listener {
 		}
 		return value;
 	}
-	
+
 	public boolean setRanksConfigFieldString(String rank, String field, String new_value) {
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -194,7 +194,7 @@ public class Users implements Listener {
 		}
 		return false;
 	}
-	
+
 	public int getRanksConfigFieldInt(String rank, String field) {
 		int value = -1;
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -207,7 +207,7 @@ public class Users implements Listener {
 		}
 		return value;
 	}
-	
+
 	public boolean setRanksConfigFieldInt(String rank, String field, int new_value) {
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -221,7 +221,7 @@ public class Users implements Listener {
 		}
 		return false;
 	}
-	
+
 	public boolean getRanksConfigFieldBoolean(String rank, String field) {
 		boolean value = false;
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -234,7 +234,7 @@ public class Users implements Listener {
 		}
 		return value;
 	}
-	
+
 	public boolean setRanksConfigFieldBoolean(String rank, String field, boolean new_value) {
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -248,7 +248,7 @@ public class Users implements Listener {
 		}
 		return false;
 	}
-	
+
 	public String getGroup(String plr, String t) {
 		Player sender = (plr == null || plr == "API") ? null : Bukkit.getServer().getPlayer(plr);
 		Player target = Bukkit.getServer().getPlayer(t);
@@ -323,7 +323,7 @@ public class Users implements Listener {
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
 		}
-		
+
 		try {
 			rankYaml.load(rankFile);
 			if (!rank.equals("*")) {
@@ -371,7 +371,7 @@ public class Users implements Listener {
 					this.m.updatePlayersWithRank(this, rank);
 					return true;
 				}
-				
+
 			} else {
 				for (String r : getGroups()) {
 					if (rankYaml.get("Groups." + r) != null) {
@@ -787,7 +787,7 @@ public class Users implements Listener {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		permissions = rankYaml.getStringList("Groups." + rank + ".permissions");
 		return permissions;
 	}
@@ -801,7 +801,7 @@ public class Users implements Listener {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
+
 		inheritances = rankYaml.getStringList("Groups." + rank + ".inheritance");
 		return inheritances;
 	}
@@ -822,76 +822,163 @@ public class Users implements Listener {
 	public String getPrefix(Player player) {
 		String prefix = "";
 		String rank = getGroup(player);
-		
+
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
-		
+
 		try {
-            rankYaml.load(rankFile);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-		
+			rankYaml.load(rankFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		prefix = (rankYaml.getString("Groups." + rank + ".chat.prefix") != null) ? rankYaml.getString("Groups." + rank + ".chat.prefix") : "";
-		
+
 		return prefix;
 	}
-	
+
 	public String getSuffix(Player player) {
 		String suffix = "";
 		String rank = getGroup(player);
-		
+
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
-		
+
 		try {
-            rankYaml.load(rankFile);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-		
+			rankYaml.load(rankFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		suffix = (rankYaml.getString("Groups." + rank + ".chat.suffix") != null) ? rankYaml.getString("Groups." + rank + ".chat.suffix") : "";
-		
+
 		return suffix;
 	}
-	
+
 	public String getChatColor(Player player) {
 		String color = "";
 		String rank = getGroup(player);
-		
+
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
-		
+
 		try {
-            rankYaml.load(rankFile);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-		
+			rankYaml.load(rankFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		color = (rankYaml.getString("Groups." + rank + ".chat.chatColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.chatColor") : "";
-		
+
 		return color;
 	}
-	
+
 	public String getNameColor(Player player) {
 		String color = "";
 		String rank = getGroup(player);
-		
+
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
-		
+
 		try {
-            rankYaml.load(rankFile);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-		
+			rankYaml.load(rankFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		color = (rankYaml.getString("Groups." + rank + ".chat.nameColor") != null) ? rankYaml.getString("Groups." + rank + ".chat.nameColor") : "";
-		
+
 		return color;
+	}
+
+	public String getDefaultRanks() {
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		return rankYaml.getString("Default");
+	}
+
+	public boolean addBuyableRank(String rankname, String rankname2) {
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		rankname = getRankIgnoreCase(rankname);
+		rankname2 = getRankIgnoreCase(rankname2);
+		try {
+			rankYaml.load(rankFile);
+			if (rankYaml.get("Groups." + rankname) != null) {
+				List<String> list = (List<String>) rankYaml.getStringList("Groups." + rankname + ".economy.buyable");
+				if (!list.contains(rankname2)) {
+					list.add(rankname2);
+				}
+				rankYaml.set("Groups." + rankname + ".economy.buyable", (Object) list);
+				rankYaml.save(rankFile);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean delBuyableRank(String rankname, String rankname2) {
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		rankname = getRankIgnoreCase(rankname);
+		rankname2 = getRankIgnoreCase(rankname2);
+		try {
+			rankYaml.load(rankFile);
+			if (rankYaml.get("Groups." + rankname) != null) {
+				List<String> list = (List<String>) rankYaml.getStringList("Groups." + rankname + ".economy.buyable");
+				if (list.contains(rankname2)) {
+					list.remove(rankname2);
+				}
+				rankYaml.set("Groups." + rankname + ".economy.buyable", (Object) list);
+				rankYaml.save(rankFile);
+				this.m.updatePlayersWithRank(this, rankname);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public List<String> getBuyableRanks(String rank) {
+		List<String> ranks = new ArrayList<String>();
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		try {
+			rankYaml.load(rankFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		ranks = rankYaml.getStringList("Groups." + rank + ".economy.buyable");
+		return ranks;
+	}
+
+	public boolean setBuyCost(String rankname, String cost) {
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		rankname = getRankIgnoreCase(rankname);
+		if (!cost.chars().anyMatch(Character::isLetter)) {
+			try {
+				rankYaml.load(rankFile);
+				if (rankYaml.get("Groups." + rankname) != null) {
+					rankYaml.set("Groups." + rankname + ".economy.cost", Integer.parseInt(cost));
+					rankYaml.save(rankFile);
+					this.m.updatePlayersWithRank(this, rankname);
+					return true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 }

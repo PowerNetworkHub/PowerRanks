@@ -134,4 +134,18 @@ public class PowerRanksAPI {
 		boolean value = s.deleteRank(rank);
 		return value;
 	}
+	
+	public boolean addBuyableRank(String rank, String buyable_rank) {
+		boolean value = s.addBuyableRank(rank, buyable_rank);
+		return value;
+	}
+	
+	public boolean delBuyableRank(String rank, String buyable_rank) {
+		boolean value = s.delBuyableRank(rank, buyable_rank);
+		return value;
+	}
+	
+	public boolean setRankBuyCost(String rank, int cost) {
+		return s.setBuyCost(rank, String.valueOf(cost));
+	}
 }

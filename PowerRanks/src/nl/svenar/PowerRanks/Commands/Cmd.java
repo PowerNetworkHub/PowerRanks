@@ -445,6 +445,57 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("addbuyablerank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String rankname = s.getRankIgnoreCase(args[1]);
+							final String rankname2 = s.getRankIgnoreCase(args[2]);
+							final boolean success = s.addBuyableRank(rankname, rankname2);
+							if (success) {
+								Messages.messageCommandAddbuyablerankSuccess(player, rankname, rankname2);
+							} else {
+								Messages.messageCommandAddbuyablerankError(player, rankname, rankname2);
+							}
+						} else {
+							Messages.messageCommandUsageAddbuyablerank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("delbuyablerank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String rankname = s.getRankIgnoreCase(args[1]);
+							final String rankname2 = s.getRankIgnoreCase(args[2]);
+							final boolean success = s.delBuyableRank(rankname, rankname2);
+							if (success) {
+								Messages.messageCommanddelbuyablerankkSuccess(player, rankname, rankname2);
+							} else {
+								Messages.messageCommandDelbuyablerankError(player, rankname, rankname2);
+							}
+						} else {
+							Messages.messageCommandUsageDelbuyablerank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("setcost")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String rankname = s.getRankIgnoreCase(args[1]);
+							final String cost = s.getRankIgnoreCase(args[2]);
+							final boolean success = s.setBuyCost(rankname, cost);
+							if (success) {
+								Messages.messageCommandSetcostSuccess(player, rankname, cost);
+							} else {
+								Messages.messageCommandSetcostError(player, rankname, cost);
+							}
+						} else {
+							Messages.messageCommandUsageSetcost(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
 				} else {
 					Messages.unknownCommand(player);
 				}
@@ -744,6 +795,45 @@ public class Cmd implements CommandExecutor {
 					Messages.messageConfigVersionUpdated(console);
 				} else if (args[0].equalsIgnoreCase("stats")) {
 					Messages.messageStats(console);
+				} else if (args[0].equalsIgnoreCase("addbuyablerank")) {
+					if (args.length == 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						final String rankname2 = s.getRankIgnoreCase(args[2]);
+						final boolean success = s.addBuyableRank(rankname, rankname2);
+						if (success) {
+							Messages.messageCommandAddbuyablerankSuccess(console, rankname, rankname2);
+						} else {
+							Messages.messageCommandAddbuyablerankError(console, rankname, rankname2);
+						}
+					} else {
+						Messages.messageCommandUsageAddbuyablerank(console);
+					}
+				} else if (args[0].equalsIgnoreCase("delbuyablerank")) {
+					if (args.length == 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						final String rankname2 = s.getRankIgnoreCase(args[2]);
+						final boolean success = s.delBuyableRank(rankname, rankname2);
+						if (success) {
+							Messages.messageCommanddelbuyablerankkSuccess(console, rankname, rankname2);
+						} else {
+							Messages.messageCommandDelbuyablerankError(console, rankname, rankname2);
+						}
+					} else {
+						Messages.messageCommandUsageDelbuyablerank(console);
+					}
+				} else if (args[0].equalsIgnoreCase("setcost")) {
+					if (args.length == 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						final String cost = s.getRankIgnoreCase(args[2]);
+						final boolean success = s.setBuyCost(rankname, cost);
+						if (success) {
+							Messages.messageCommandSetcostSuccess(console, rankname, cost);
+						} else {
+							Messages.messageCommandSetcostError(console, rankname, cost);
+						}
+					} else {
+						Messages.messageCommandUsageSetcost(console);
+					}
 				} else {
 					Messages.unknownCommand(console);
 				}
@@ -1000,6 +1090,45 @@ public class Cmd implements CommandExecutor {
 						}
 					} else {
 //						Messages.messageCommandUsageDemote(console);
+					}
+				} else if (args[0].equalsIgnoreCase("addbuyablerank")) {
+					if (args.length == 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						final String rankname2 = s.getRankIgnoreCase(args[2]);
+						final boolean success = s.addBuyableRank(rankname, rankname2);
+						if (success) {
+//									Messages.messageCommandSetDefaultRankSuccess(console, rankname);
+						} else {
+//									Messages.messageCommandSetDefaultRankError(console, rankname);
+						}
+					} else {
+//								Messages.messageCommandUsageDemote(console);
+					}
+				} else if (args[0].equalsIgnoreCase("delbuyablerank")) {
+					if (args.length == 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						final String rankname2 = s.getRankIgnoreCase(args[2]);
+						final boolean success = s.delBuyableRank(rankname, rankname2);
+						if (success) {
+//											Messages.messageCommandSetDefaultRankSuccess(console, rankname);
+						} else {
+//											Messages.messageCommandSetDefaultRankError(console, rankname);
+						}
+					} else {
+//										Messages.messageCommandUsageDemote(console);
+					}
+				} else if (args[0].equalsIgnoreCase("setcost")) {
+					if (args.length == 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						final String cost = s.getRankIgnoreCase(args[2]);
+						final boolean success = s.setBuyCost(rankname, cost);
+						if (success) {
+//											Messages.messageCommandSetDefaultRankSuccess(console, rankname);
+						} else {
+//											Messages.messageCommandSetDefaultRankError(console, rankname);
+						}
+					} else {
+//										Messages.messageCommandUsageDemote(console);
 					}
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					this.m.forceUpdateConfigVersions();
