@@ -40,11 +40,12 @@ public class OnInteract implements Listener {
 		final Users s = new Users(this.m);
 		String sign_command = sign.getLine(1);
 		String sign_argument = sign.getLine(2);
+		String sign_argument2 = sign.getLine(3);
 		boolean sign_error = sign.getLine(3).toLowerCase().contains("error");
 
 		if (!sign_error) {
 			if (sign_command.equalsIgnoreCase("promote")) {
-				if (player.hasPermission("powerranks.cmd.set")) {
+				if (player.hasPermission("powerranks.signs.set")) {
 					if (s.promote(player.getName()))
 						Messages.messageCommandPromoteSuccess(player, player.getName());
 					else
@@ -53,7 +54,7 @@ public class OnInteract implements Listener {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("demote")) {
-				if (player.hasPermission("powerranks.cmd.set")) {
+				if (player.hasPermission("powerranks.signs.set")) {
 					if (s.demote(player.getName()))
 						Messages.messageCommandDemoteSuccess(player, player.getName());
 					else
@@ -62,27 +63,52 @@ public class OnInteract implements Listener {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("set")) {
-				if (player.hasPermission("powerranks.cmd.set")) {
+				if (player.hasPermission("powerranks.signs.set")) {
 					s.setGroup(player, s.getRankIgnoreCase(sign_argument));
 				} else {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("check")) {
-				s.getGroup(player.getName(), player.getName());
+				if (player.hasPermission("powerranks.signs.check")) {
+					s.getGroup(player.getName(), player.getName());
+				} else {
+					Messages.noPermission(player);
+				}
 			} else if (sign_command.equalsIgnoreCase("gui")) {
-				if (player.hasPermission("powerranks.cmd.admin")) {
+				if (player.hasPermission("powerranks.signs.admin")) {
 					PowerRanksGUI.openPowerRanksGUI(player, PowerRanksGUI.MAIN_GUI_PAGE.MAIN, 0, "");
 				} else {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
-				if (player.hasPermission("powerranks.cmd.rankup")) {
-					PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
+				if (player.hasPermission("powerranks.signs.rankup")) {
+					if (sign_argument.length() == 0) {
+						PowerRanksGUI.openPowerRanksRankupGUI(player, 0);
+					} else {
+						if (PowerRanks.getVaultEconomy() != null) {
+							if (sign_argument2.length() > 0) {
+								Users users = new Users(this.m);
+								int cost = Integer.parseInt(sign_argument2);
+								double player_balance = PowerRanks.getVaultEconomy().getBalance(player);
+								if (cost >= 0 && player_balance >= cost) {
+									PowerRanks.getVaultEconomy().withdrawPlayer(player, cost);
+									users.setGroup(player, users.getRankIgnoreCase(sign_argument));
+									Messages.messageBuyRankSuccess(player, sign_argument);
+								} else {
+									Messages.messageBuyRankError(player, sign_argument);
+								}
+							} else {
+								Messages.messageBuyRankError(player, sign_argument);
+							}
+						} else {
+							Messages.messageBuyRankNotAvailable(player);
+						}
+					}
 				} else {
 					Messages.noPermission(player);
 				}
 			} else {
-				if (player.hasPermission("powerranks.cmd.admin")) {
+				if (player.hasPermission("powerranks.signs.admin")) {
 					Messages.messageSignUnknownCommand(player);
 				}
 			}

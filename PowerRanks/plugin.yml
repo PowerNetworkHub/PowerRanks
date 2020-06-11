@@ -1,5 +1,5 @@
 name: PowerRanks
-version: 0.5 BETA
+version: 0.5
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
@@ -22,6 +22,14 @@ permissions:
       powerranks.cmd.list: true
       powerranks.cmd.create: true
       powerranks.cmd.admin: true
+  powerranks.signs.*:
+    default: false
+    children:
+      powerranks.signs.create: true
+      powerranks.signs.set: true
+      powerranks.signs.check: true
+      powerranks.signs.rankup: true
+      powerranks.signs.admin: true
   powerranks.cmd.help:
     default: true
   powerranks.cmd.check:
@@ -37,4 +45,14 @@ permissions:
   powerranks.cmd.create:
     default: op
   powerranks.cmd.admin:
+    default: op
+  powerranks.signs.create:
+    default: op
+  powerranks.signs.set:
+    default: op
+  powerranks.signs.check:
+    default: true
+  powerranks.signs.rankup:
+    default: true
+  powerranks.signs.admin:
     default: op

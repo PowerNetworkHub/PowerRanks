@@ -307,62 +307,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-//	public void verifyConfig() {
-//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-//		final File langFile = new File(PowerRanks.langFileLoc);
-//		final YamlConfiguration rankYaml = new YamlConfiguration();
-//		final YamlConfiguration playerYaml = new YamlConfiguration();
-//		final YamlConfiguration configYaml = new YamlConfiguration();
-//		final YamlConfiguration langYaml = new YamlConfiguration();
-//		try {
-//			rankYaml.load(rankFile);
-//			playerYaml.load(playerFile);
-//			configYaml.load(configFile);
-//			langYaml.load(langFile);
-//
-//			if (rankYaml.getString("version") == null) {
-//				rankYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-//			} else {
-//				if (!rankYaml.getString("version").equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
-//					printVersionError("Ranks.yml");
-//				}
-//			}
-//
-//			if (playerYaml.getString("version") == null) {
-//				playerYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-//			} else {
-//				if (!playerYaml.getString("version").equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
-//					printVersionError("Players.yml");
-//				}
-//			}
-//
-//			if (configYaml.getString("version") == null) {
-//				configYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-//			} else {
-//				if (!configYaml.getString("version").equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
-//					printVersionError("config.yml");
-//				}
-//			}
-//
-//			if (langYaml.getString("version") == null) {
-//				langYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-//			} else {
-//				if (!langYaml.getString("version").equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
-//					printVersionError("lang.yml");
-//				}
-//			}
-//
-//			rankYaml.save(rankFile);
-//			playerYaml.save(playerFile);
-//			configYaml.save(configFile);
-//			langYaml.save(langFile);
-//		} catch (Exception e2) {
-//			e2.printStackTrace();
-//		}
-//	}
-
 	public void forceUpdateConfigVersions() {
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");

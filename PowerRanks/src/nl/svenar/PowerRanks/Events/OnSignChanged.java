@@ -40,8 +40,9 @@ public class OnSignChanged implements Listener {
 				final Users s = new Users(this.m);
 				String sign_command = event.getLine(1);
 				String sign_argument = event.getLine(2);
+				String sign_argument2 = event.getLine(3);
 
-				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("check") || sign_command.equalsIgnoreCase("gui") || sign_command.equalsIgnoreCase("rankup")) {
+				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("check") || sign_command.equalsIgnoreCase("gui")) {
 					Messages.messageSignCreated(event.getPlayer());
 				} else if (sign_command.equalsIgnoreCase("set")) {
 					Set<String> ranks = s.getGroups();
@@ -57,6 +58,32 @@ public class OnSignChanged implements Listener {
 						event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
 					} else {
 						Messages.messageSignCreated(event.getPlayer());
+					}
+				} else if (sign_command.equalsIgnoreCase("rankup")) {
+					Set<String> ranks = s.getGroups();
+					boolean rank_exists = false;
+					for (String rank : ranks) {
+						if (rank.equalsIgnoreCase(sign_argument)) {
+							rank_exists = true;
+							break;
+						}
+					}
+					if (!rank_exists) {
+						Messages.messageGroupNotFound(event.getPlayer(), sign_argument);
+						event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
+					} else {
+						if (sign_argument2.length() > 0) {
+							if (!sign_argument2.chars().anyMatch(Character::isLetter)) {
+								Messages.messageSignCreated(event.getPlayer());
+							} else {
+								Messages.messageSignUnknownCommand(event.getPlayer());
+								event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
+							}
+						} else {
+							event.setLine(3, String.valueOf(s.getRankCost(s.getRankIgnoreCase(sign_argument))));
+							Messages.messageSignCreated(event.getPlayer());
+						}
+						
 					}
 				} else {
 					Messages.messageSignUnknownCommand(event.getPlayer());

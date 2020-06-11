@@ -947,7 +947,7 @@ public class Users implements Listener {
 		}
 		return false;
 	}
-	
+
 	public List<String> getBuyableRanks(String rank) {
 		List<String> ranks = new ArrayList<String>();
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -972,7 +972,6 @@ public class Users implements Listener {
 				if (rankYaml.get("Groups." + rankname) != null) {
 					rankYaml.set("Groups." + rankname + ".economy.cost", Integer.parseInt(cost));
 					rankYaml.save(rankFile);
-					this.m.updatePlayersWithRank(this, rankname);
 					return true;
 				}
 			} catch (Exception e) {
@@ -980,5 +979,20 @@ public class Users implements Listener {
 			}
 		}
 		return false;
+	}
+
+	public int getRankCost(String rankname) {
+		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration rankYaml = new YamlConfiguration();
+		int cost = 0;
+		try {
+			rankYaml.load(rankFile);
+			if (rankYaml.get("Groups." + rankname) != null) {
+				cost = rankYaml.getInt("Groups." + rankname + ".economy.cost");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cost;
 	}
 }
