@@ -127,12 +127,14 @@ public class ConfigFilesUpdater {
 				yamlConf.load(file);
 				yamlConf.set("version", null);
 				Users users = new Users(plugin);
-				for (String key : yamlConf.getConfigurationSection("players").getKeys(false)) {
-					if (yamlConf.isString("players." + key)) {
-						yamlConf.set("players." + key, null);
-						yamlConf.set("players." + key + ".rank", users.getDefaultRanks());
-						yamlConf.set("players." + key + ".name", "Unknown");
-						yamlConf.set("players." + key + ".playtime", 0);
+				if (yamlConf.contains("players")) {
+					for (String key : yamlConf.getConfigurationSection("players").getKeys(false)) {
+						if (yamlConf.isString("players." + key)) {
+							yamlConf.set("players." + key, null);
+							yamlConf.set("players." + key + ".rank", users.getDefaultRanks());
+							yamlConf.set("players." + key + ".name", "Unknown");
+							yamlConf.set("players." + key + ".playtime", 0);
+						}
 					}
 				}
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));

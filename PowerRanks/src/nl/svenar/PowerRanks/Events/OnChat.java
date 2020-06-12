@@ -46,7 +46,6 @@ public class OnChat implements Listener {
             format = Util.replaceAll(format, "[format]", e.getFormat());
             format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, false);
 //            format = format.replaceAll("^[ ]+", ""); // Remove leading spaces
-            player.sendMessage("'" + format + "'");
             if (configYaml.getBoolean("chat.enabled")) {
                 e.setFormat(format);
             }
