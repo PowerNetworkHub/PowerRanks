@@ -37,6 +37,7 @@ public class Users implements Listener {
 					try {
 						rankYaml.load(rankFile);
 						if (rankYaml.get("Groups." + rank) != null) {
+							this.m.removePermissions(player);
 							playerYaml.load(playerFile);
 							playerYaml.set("players." + target.getUniqueId() + ".rank", (Object) rank);
 							playerYaml.save(playerFile);
@@ -95,6 +96,7 @@ public class Users implements Listener {
 				try {
 					rankYaml2.load(rankFile2);
 					if (rankYaml2.get("Groups." + rank) != null) {
+						this.m.removePermissions(player);
 						playerYaml2.load(playerFile2);
 						playerYaml2.set("players." + target2.getUniqueId() + ".rank", (Object) rank);
 						playerYaml2.save(playerFile2);
@@ -152,6 +154,7 @@ public class Users implements Listener {
 		try {
 			rankYaml.load(rankFile);
 			if (rankYaml.get("Groups." + rank) != null) {
+				this.m.removePermissions(player);
 				playerYaml.load(playerFile);
 				playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rank);
 				playerYaml.save(playerFile);
@@ -994,5 +997,121 @@ public class Users implements Listener {
 			e.printStackTrace();
 		}
 		return cost;
+	}
+
+	public boolean addPlayerPermission(String target_player_name, String permission) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		if (permission.contains("/") || permission.contains(":")) {
+			return false;
+		}
+
+		Player target_player = Bukkit.getServer().getPlayer(target_player_name);
+
+		if (target_player != null) {
+			try {
+				playersYaml.load(playersFile);
+				if (playersYaml.get("players." + target_player.getUniqueId()) != null) {
+					List<String> list = (List<String>) playersYaml.getStringList("players." + target_player.getUniqueId() + ".permissions");
+					if (!list.contains(permission)) {
+						list.add(permission);
+						playersYaml.set("players." + target_player.getUniqueId() + ".permissions", (Object) list);
+					}
+					playersYaml.save(playersFile);
+					this.m.setupPermissions(target_player);
+					return true;
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			String uuid = "";
+			try {
+				playersYaml.load(playersFile);
+				for (String key : playersYaml.getConfigurationSection("players").getKeys(false)) {
+					if (playersYaml.getString("players." + key + ".name").equalsIgnoreCase(target_player_name)) {
+						uuid = key;
+					}
+				}
+
+				if (uuid.length() > 0) {
+					if (playersYaml.get("players." + uuid) != null) {
+						List<String> list = (List<String>) playersYaml.getStringList("players." + uuid + ".permissions");
+						if (!list.contains(permission)) {
+							list.add(permission);
+							playersYaml.set("players." + uuid + ".permissions", (Object) list);
+						}
+						playersYaml.save(playersFile);
+						return true;
+					} else {
+						return false;
+					}
+				} else
+					return false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean delPlayerPermission(String target_player_name, String permission) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		if (permission.contains("/") || permission.contains(":")) {
+			return false;
+		}
+
+		Player target_player = Bukkit.getServer().getPlayer(target_player_name);
+
+		if (target_player != null) {
+			try {
+				playersYaml.load(playersFile);
+				if (playersYaml.get("players." + target_player.getUniqueId()) != null) {
+					List<String> list = (List<String>) playersYaml.getStringList("players." + target_player.getUniqueId() + ".permissions");
+					if (list.contains(permission)) {
+						list.remove(permission);
+						playersYaml.set("players." + target_player.getUniqueId() + ".permissions", (Object) list);
+					}
+					playersYaml.save(playersFile);
+					this.m.setupPermissions(target_player);
+					return true;
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			String uuid = "";
+			try {
+				playersYaml.load(playersFile);
+				for (String key : playersYaml.getConfigurationSection("players").getKeys(false)) {
+					if (playersYaml.getString("players." + key + ".name").equalsIgnoreCase(target_player_name)) {
+						uuid = key;
+					}
+				}
+
+				if (uuid.length() > 0) {
+					if (playersYaml.get("players." + uuid) != null) {
+						List<String> list = (List<String>) playersYaml.getStringList("players." + uuid + ".permissions");
+						if (list.contains(permission)) {
+							list.remove(permission);
+							playersYaml.set("players." + uuid + ".permissions", (Object) list);
+						}
+						playersYaml.save(playersFile);
+						return true;
+					} else {
+						return false;
+					}
+				} else
+					return false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 }

@@ -1213,4 +1213,104 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
+
+	public static void messageCommandPlayerPermissionAdded(Player sender, String permission, String target_player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.player_permission_added");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandPlayerPermissionAdded(ConsoleCommandSender sender, String permission, String target_player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.player_permission_added");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorAddingPlayerPermission(Player sender, String target_player, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_player_permission");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorAddingPlayerPermission(ConsoleCommandSender sender, String target_player, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_player_permission");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddplayerperm(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_player_permission");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddplayerperm(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_player_permission");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandPlayerPermissionRemoved(Player sender, String permission, String target_player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.player_permission_removed");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandPlayerPermissionRemoved(ConsoleCommandSender sender, String permission, String target_player) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.player_permission_removed");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorRemovingPlayerPermission(Player sender, String target_player, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_removing_player_permission");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorRemovingPlayerPermission(ConsoleCommandSender sender, String target_player, String permission) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_removing_player_permission");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_permission%", permission);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelplayerperm(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_player_permission");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelplayerperm(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_player_permission");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
 }

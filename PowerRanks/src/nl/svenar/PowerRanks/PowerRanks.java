@@ -1,5 +1,7 @@
 package nl.svenar.PowerRanks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +59,7 @@ import net.milkbowl.vault.permission.Permission;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
+	public ArrayList<String> donation_urls = new ArrayList<String>(Arrays.asList("https://ko-fi.com/svenar", "https://patreon.com/svenar"));
 
 	public static PluginDescriptionFile pdf;
 	public static String colorChar;
@@ -66,11 +69,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String fileLoc;
 	public static String langFileLoc;
 
-	// Soft Depencencies
+	// Soft Dependencies
 	private static Economy vaultEconomy;
 	private static Permission vaultPermissions;
 	private static PowerRanksExpansion placeholderapiExpansion;
-	// Soft Depencencies
+	// Soft Dependencies
 
 	File configFile;
 	File ranksFile;
@@ -133,7 +136,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (handle_update_checking()) {
 			return;
 		}
-		
+
 		ConfigFilesUpdater.updateConfigFiles(this);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
@@ -167,6 +170,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanksGUI.setupGUI();
 
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
+		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
 
 		int pluginId = 7565;
 		@SuppressWarnings("unused")
@@ -232,7 +236,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.vaultPermissions = rsp.getProvider();
 		return PowerRanks.vaultPermissions != null;
 	}
-	
+
 	private boolean handle_update_checking() {
 		if (getConfigBool("updates.enable_update_checking")) {
 			PowerRanks.log.info("Checking for updates...");
@@ -250,25 +254,25 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			} else {
 				log.info("No new version available");
 			}
-			
+
 			if (updater.getResult() == UpdateResult.SUCCESS) {
 				PowerRanks.log.info("------------------------------------");
 				PowerRanks.log.info(PowerRanks.pdf.getName() + " updated successfully!");
 				PowerRanks.log.warning(PowerRanks.pdf.getName() + " will be disabled until the next server load!");
 				PowerRanks.log.info("------------------------------------");
-				
+
 				final PluginManager plg = Bukkit.getPluginManager();
 				final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
 				plg.disablePlugin(plgname);
 				return true;
 //				plg.enablePlugin(plgname);
 			}
-			
+
 			if (updater.getResult() == UpdateResult.FAIL_DOWNLOAD) {
 				PowerRanks.log.info("Update found but failed to download!");
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -285,7 +289,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		val = configYaml.getBoolean(path);
 		return val;
 	}
-	
+
 	public boolean configContainsKey(String path) {
 		boolean val = false;
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
@@ -464,6 +468,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			}
+
+			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") != null) {
+				List<String> permissions = (List<String>) playerYaml.getStringList("players." + player.getUniqueId() + ".permissions");
+				if (permissions != null) {
+					for (int j = 0; j < permissions.size(); j++) {
+						boolean enabled = !permissions.get(j).startsWith("-");
+						if (enabled) {
+							attachment.setPermission((String) permissions.get(j), true);
+						} else {
+							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
+						}
+					}
+				}
+			} else {
+				playerYaml.set("players." + player.getUniqueId() + ".permissions", "[]");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -499,6 +519,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						}
 					}
 				}
+			}
+
+			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") != null) {
+				List<String> permissions = (List<String>) rankYaml.getStringList("players." + player.getUniqueId() + ".permissions");
+				if (permissions != null) {
+					for (int j = 0; j < permissions.size(); j++) {
+						attachment.unsetPermission((String) permissions.get(j));
+					}
+				}
+			} else {
+				playerYaml.set("players." + player.getUniqueId() + ".permissions", "[]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

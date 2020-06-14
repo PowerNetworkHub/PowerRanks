@@ -496,6 +496,40 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
+					if (sender.hasPermission("powerranks.cmd.set")) {
+						if (args.length == 3) {
+							final String target_player = args[1];
+							final String permission = args[2];
+							final boolean result = s.addPlayerPermission(target_player, permission);
+							if (result) {
+								Messages.messageCommandPlayerPermissionAdded(player, permission, target_player);
+							} else {
+								Messages.messageErrorAddingPlayerPermission(player, target_player, permission);
+							}
+						} else {
+							Messages.messageCommandUsageAddplayerperm(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("delplayerperm")) {
+					if (sender.hasPermission("powerranks.cmd.set")) {
+						if (args.length == 3) {
+							final String target_player = args[1];
+							final String permission = args[2];
+							final boolean result = s.delPlayerPermission(target_player, permission);
+							if (result) {
+								Messages.messageCommandPlayerPermissionRemoved(player, permission, target_player);
+							} else {
+								Messages.messageErrorRemovingPlayerPermission(player, target_player, permission);
+							}
+						} else {
+							Messages.messageCommandUsageDelplayerperm(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
 				} else {
 					Messages.unknownCommand(player);
 				}
@@ -833,6 +867,32 @@ public class Cmd implements CommandExecutor {
 						}
 					} else {
 						Messages.messageCommandUsageSetcost(console);
+					}
+				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
+					if (args.length == 3) {
+						final String target_player = args[1];
+						final String permission = args[2];
+						final boolean result = s.addPlayerPermission(target_player, permission);
+						if (result) {
+							Messages.messageCommandPlayerPermissionAdded(console, permission, target_player);
+						} else {
+							Messages.messageErrorAddingPlayerPermission(console, target_player, permission);
+						}
+					} else {
+						Messages.messageCommandUsageAddplayerperm(console);
+					}
+				} else if (args[0].equalsIgnoreCase("delplayerperm")) {
+					if (args.length == 3) {
+						final String target_player = args[1];
+						final String permission = args[2];
+						final boolean result = s.delPlayerPermission(target_player, permission);
+						if (result) {
+							Messages.messageCommandPlayerPermissionRemoved(console, permission, target_player);
+						} else {
+							Messages.messageErrorRemovingPlayerPermission(console, target_player, permission);
+						}
+					} else {
+						Messages.messageCommandUsageDelplayerperm(console);
 					}
 				} else {
 					Messages.unknownCommand(console);

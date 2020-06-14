@@ -61,6 +61,10 @@ messages:
    error_removing_buyable_rank: "%plugin_prefix% &cError removing buyable rank '%argument_target_rank%' from: %argument_rank%"
    buy_cost_set: "%plugin_prefix% &aChanged buy cost of rank '%argument_rank%' to: %argument_cost%"
    error_setting_buy_cost: "%plugin_prefix% &cError changing buy cost of rank '%argument_rank%' to: %argument_cost%"
+   player_permission_added: "%plugin_prefix% &aPermission '%argument_permission%' added to player: %argument_target%"
+   player_permission_removed: "%plugin_prefix% &aPermission '%argument_permission%' removed from player: %argument_target%"
+   error_adding_player_permission: "%plugin_prefix% &c Error adding permission '%argument_permission%' to player: %argument_target%"
+   error_removing_player_permission: "%plugin_prefix% &cError removing permission '%argument_permission%' from player: %argument_target%"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -90,6 +94,8 @@ commands:
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
    reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"
    reload_plugin_done: "%plugin_prefix% &2%plugin_name% Reloaded (plugin)!"
+   usage_command_add_player_permission: "%plugin_prefix% &c/pr addplayerperm <player_name> <permission>"
+   usage_command_remove_player_permission: "%plugin_prefix% &c/pr delplayerperm <player_name> <permission>"
    help:
    - "&3--------&1%plugin_name%&3--------"
    - "&b[Optional] <Required>"
@@ -106,6 +112,8 @@ commands:
    - "&a/pr reload [config/plugin/all]&2 - Reload PowerRanks"
    - "&a/pr addperm <rank> <permission>&2 - Add a permission to a rank"
    - "&a/pr delperm <rank> <permission>&2 - Remove a permission from a rank"
+   - "&a/pr addplayerperm <playerName> <permission>&2 - Add a permission to a player"
+   - "&a/pr delplayerperm <playerName> <permission>&2 - Remove a permission from a player"
    - "&a/pr setprefix <rank> <prefix>&2 - Change the prefix of a rank"
    - "&a/pr setsuffix <rank> <suffix>&2 - Change the suffix of a rank"
    - "&a/pr setchatcolor <rank> <color>&2 - Change the chat color of a rank"

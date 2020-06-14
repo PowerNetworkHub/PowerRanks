@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,6 +36,10 @@ public class OnJoin implements Listener {
 			playerYaml.load(playerFile);
 			if (playerYaml.getString("players." + player.getUniqueId() + ".rank") == null) {
 				playerYaml.set("players." + player.getUniqueId() + ".rank", rankYaml.get("Default"));
+			}
+			
+			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") == null) {
+				playerYaml.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
 			}
 			playerYaml.set("players." + player.getUniqueId() + ".name", player.getName());
 			playerYaml.save(playerFile);
