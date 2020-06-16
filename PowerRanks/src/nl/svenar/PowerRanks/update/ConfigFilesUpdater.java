@@ -128,13 +128,16 @@ public class ConfigFilesUpdater {
 				yamlConf.set("version", null);
 				Users users = new Users(plugin);
 				if (yamlConf.contains("players")) {
-					for (String key : yamlConf.getConfigurationSection("players").getKeys(false)) {
-						if (yamlConf.isString("players." + key)) {
-							yamlConf.set("players." + key, null);
-							yamlConf.set("players." + key + ".rank", users.getDefaultRanks());
-							yamlConf.set("players." + key + ".name", "Unknown");
-							yamlConf.set("players." + key + ".playtime", 0);
+					try {
+						for (String key : yamlConf.getConfigurationSection("players").getKeys(false)) {
+							if (yamlConf.isString("players." + key)) {
+								yamlConf.set("players." + key, null);
+								yamlConf.set("players." + key + ".rank", users.getDefaultRanks());
+								yamlConf.set("players." + key + ".name", "Unknown");
+								yamlConf.set("players." + key + ".playtime", 0);
+							}
 						}
+					} catch (Exception e) {
 					}
 				}
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
@@ -171,10 +174,7 @@ public class ConfigFilesUpdater {
 			if (yamlConf.getString("version") == null) {
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
-				PowerRanks.log.info("===------------------------------===");
-				PowerRanks.log.info("Version mismatch detected in: " + fileName);
-				PowerRanks.log.info("Automatically updating " + fileName);
-				PowerRanks.log.info("===------------------------------===");
+				PowerRanks.log.info("Setting up file: " + fileName);
 				return !plugin.configContainsKey("updates.automatic_update_config_files") || plugin.getConfigBool("updates.automatic_update_config_files");
 			} else {
 				if (!yamlConf.getString("version").equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
