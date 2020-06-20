@@ -12,13 +12,13 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
-import nl.svenar.PowerRanks.gui.GUI;
+import nl.svenar.PowerRanks.gui.PowerRanksGUI_OLD;
 
-public class OnInteract implements Listener {
+public class OnInteract_OLD implements Listener {
 
 	PowerRanks m;
 
-	public OnInteract(PowerRanks m) {
+	public OnInteract_OLD(PowerRanks m) {
 		this.m = m;
 	}
 
@@ -76,14 +76,14 @@ public class OnInteract implements Listener {
 				}
 			} else if (sign_command.equalsIgnoreCase("gui")) {
 				if (player.hasPermission("powerranks.signs.admin")) {
-					GUI.openPowerRanksGUI(player, 0, "");
+					PowerRanksGUI_OLD.openPowerRanksGUI(player, PowerRanksGUI_OLD.MAIN_GUI_PAGE.MAIN, 0, "");
 				} else {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
 					if (sign_argument.length() == 0) {
-						GUI.openPowerRanksRankupGUI(player, 0);
+						PowerRanksGUI_OLD.openPowerRanksRankupGUI(player, 0);
 					} else {
 						if (PowerRanks.getVaultEconomy() != null) {
 							if (sign_argument2.length() > 0) {

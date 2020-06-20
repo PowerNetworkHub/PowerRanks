@@ -16,12 +16,12 @@ import org.bukkit.command.CommandExecutor;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
-import nl.svenar.PowerRanks.gui.GUI;
+import nl.svenar.PowerRanks.gui.PowerRanksGUI_OLD;
 
-public class Cmd implements CommandExecutor {
+public class Cmd_OLD implements CommandExecutor {
 	PowerRanks m;
 
-	public Cmd(PowerRanks m) {
+	public Cmd_OLD(PowerRanks m) {
 		this.m = m;
 	}
 
@@ -426,14 +426,14 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("gui")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
-						GUI.openPowerRanksGUI(player, 0, "");
+						PowerRanksGUI_OLD.openPowerRanksGUI(player, PowerRanksGUI_OLD.MAIN_GUI_PAGE.MAIN, 0, "");
 					} else {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
 						if (PowerRanks.getVaultEconomy() != null)
-							GUI.openPowerRanksRankupGUI(player, 0);
+							PowerRanksGUI_OLD.openPowerRanksRankupGUI(player, 0);
 						else
 							Messages.messageBuyRankNotAvailable(player);
 					} else {

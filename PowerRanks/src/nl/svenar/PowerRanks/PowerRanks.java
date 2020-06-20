@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bukkit.permissions.Permissible;
@@ -21,7 +20,6 @@ import org.bukkit.command.CommandExecutor;
 import nl.svenar.PowerRanks.Commands.Cmd;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
-import nl.svenar.PowerRanks.Data.PowerRanksGUI;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
@@ -34,6 +32,7 @@ import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.metrics.Metrics;
 import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 import nl.svenar.PowerRanks.update.Updater;
@@ -50,9 +49,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -164,10 +160,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		setupSoftDependencies();
 
 		this.setupPermissions();
-		this.setupScoreboardTeams();
+//		this.setupScoreboardTeams();
 
-		PowerRanksGUI.setPlugin(this);
-		PowerRanksGUI.setupGUI();
+		GUI.setPlugin(this);
+		GUI.setupGUI();
 
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
@@ -427,6 +423,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void setupPermissions(Player player) {
+		if (playerPermissionAttachment.containsKey(player.getName())) {
+			this.playerInjectPermissible(player);
+		}
+		
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -490,6 +490,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void removePermissions(Player player) {
+		if (playerPermissionAttachment.containsKey(player.getName())) {
+			this.playerInjectPermissible(player);
+		}
+		
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -549,23 +553,23 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PermissibleInjector.uninject(player);
 	}
 
-	private void setupScoreboardTeams() {
-		ScoreboardManager manager = Bukkit.getScoreboardManager();
-		Scoreboard board = manager.getNewScoreboard();
-		Users s = new Users(this);
-		Set<String> ranks = s.getGroups();
-		for (String rank : ranks) {
-			Team team = board.registerNewTeam(rank);
-			team.setPrefix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.prefix"), true));
-			team.setSuffix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.suffix"), true));
-
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (s.getGroup(player).equalsIgnoreCase(rank)) {
-					team.addEntry(player.getName());
-				}
-			}
-		}
-	}
+//	private void setupScoreboardTeams() {
+//		ScoreboardManager manager = Bukkit.getScoreboardManager();
+//		Scoreboard board = manager.getNewScoreboard();
+//		Users s = new Users(this);
+//		Set<String> ranks = s.getGroups();
+//		for (String rank : ranks) {
+//			Team team = board.registerNewTeam(rank);
+//			team.setPrefix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.prefix"), true));
+//			team.setSuffix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.suffix"), true));
+//
+//			for (Player player : Bukkit.getOnlinePlayers()) {
+//				if (s.getGroup(player).equalsIgnoreCase(rank)) {
+//					team.addEntry(player.getName());
+//				}
+//			}
+//		}
+//	}
 
 	public void updateTablistName(Player player) {
 		try {

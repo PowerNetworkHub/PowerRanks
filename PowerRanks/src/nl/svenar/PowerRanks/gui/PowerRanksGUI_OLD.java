@@ -1,4 +1,4 @@
-package nl.svenar.PowerRanks.Data;
+package nl.svenar.PowerRanks.gui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,8 +16,11 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.Data.BannerItem;
+import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.Data.Users;
 
-public class PowerRanksGUI {
+public class PowerRanksGUI_OLD {
 
 	private static Inventory inventoryGUIMain, inventoryGUIShop;
 	private static PowerRanks powerRanks;
@@ -107,7 +110,7 @@ public class PowerRanksGUI {
 	}
 
 	public static void setPlugin(PowerRanks powerRanks) {
-		PowerRanksGUI.powerRanks = powerRanks;
+		PowerRanksGUI_OLD.powerRanks = powerRanks;
 	}
 
 	public static void setupGUI() {

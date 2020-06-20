@@ -770,12 +770,16 @@ public class Users implements Listener {
 			e.printStackTrace();
 		}
 
-		ConfigurationSection ranks = rankYaml.getConfigurationSection("Groups");
-		for (String r : ranks.getKeys(false)) {
-			if (r.equalsIgnoreCase(rankname)) {
-				rank = r;
-				break;
+		try {
+			ConfigurationSection ranks = rankYaml.getConfigurationSection("Groups");
+			for (String r : ranks.getKeys(false)) {
+				if (r.equalsIgnoreCase(rankname)) {
+					rank = r;
+					break;
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return rank;
