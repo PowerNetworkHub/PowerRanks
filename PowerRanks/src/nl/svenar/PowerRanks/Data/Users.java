@@ -96,7 +96,7 @@ public class Users implements Listener {
 				try {
 					rankYaml2.load(rankFile2);
 					if (rankYaml2.get("Groups." + rank) != null) {
-						this.m.removePermissions(player);
+						this.m.removePermissions(target2);
 						playerYaml2.load(playerFile2);
 						playerYaml2.set("players." + target2.getUniqueId() + ".rank", (Object) rank);
 						playerYaml2.save(playerFile2);
@@ -829,6 +829,24 @@ public class Users implements Listener {
 	public String getPrefix(Player player) {
 		String prefix = "";
 		String rank = getGroup(player);
+
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+
+		try {
+			rankYaml.load(rankFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		prefix = (rankYaml.getString("Groups." + rank + ".chat.prefix") != null) ? rankYaml.getString("Groups." + rank + ".chat.prefix") : "";
+
+		return prefix;
+	}
+	
+	public String getPrefix(String rank) {
+		String prefix = "";
+		rank = this.getRankIgnoreCase(rank);
 
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();

@@ -163,7 +163,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 //		this.setupScoreboardTeams();
 
 		GUI.setPlugin(this);
-		GUI.setupGUI();
+//		GUI.setupGUI();
 
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
@@ -483,6 +483,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			} else {
 				playerYaml.set("players." + player.getUniqueId() + ".permissions", "[]");
+				playerYaml.save(playerFile);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -13,6 +13,7 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUI;
+import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
 
 public class OnInteract implements Listener {
 
@@ -76,14 +77,16 @@ public class OnInteract implements Listener {
 				}
 			} else if (sign_command.equalsIgnoreCase("gui")) {
 				if (player.hasPermission("powerranks.signs.admin")) {
-					GUI.openPowerRanksGUI(player, 0, "");
+//					GUI.openPowerRanksGUI(player, 0, "");
+					GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 				} else {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
 					if (sign_argument.length() == 0) {
-						GUI.openPowerRanksRankupGUI(player, 0);
+//						GUI.openPowerRanksRankupGUI(player, 0);
+						GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
 					} else {
 						if (PowerRanks.getVaultEconomy() != null) {
 							if (sign_argument2.length() > 0) {

@@ -17,6 +17,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUI;
+import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
 
 public class Cmd implements CommandExecutor {
 	PowerRanks m;
@@ -426,14 +427,16 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("gui")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
-						GUI.openPowerRanksGUI(player, 0, "");
+//						GUI.openPowerRanksGUI(player, 0, "");
+						GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 					} else {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
 						if (PowerRanks.getVaultEconomy() != null)
-							GUI.openPowerRanksRankupGUI(player, 0);
+//							GUI.openPowerRanksRankupGUI(player, 0);
+							GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
 						else
 							Messages.messageBuyRankNotAvailable(player);
 					} else {
