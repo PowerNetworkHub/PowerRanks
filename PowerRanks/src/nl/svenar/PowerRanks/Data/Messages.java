@@ -1086,7 +1086,7 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-	public static void messageCommanddelbuyablerankkSuccess(Player player, String rankname, String rankname2) {
+	public static void messageCommandDelbuyablerankSuccess(Player player, String rankname, String rankname2) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
@@ -1095,7 +1095,7 @@ public class Messages {
 			player.sendMessage(msg);
 	}
 
-	public static void messageCommanddelbuyablerankkSuccess(ConsoleCommandSender sender, String rankname, String rankname2) {
+	public static void messageCommandDelbuyablerankSuccess(ConsoleCommandSender sender, String rankname, String rankname2) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);

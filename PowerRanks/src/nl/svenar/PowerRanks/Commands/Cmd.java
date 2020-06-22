@@ -472,7 +472,7 @@ public class Cmd implements CommandExecutor {
 							final String rankname2 = s.getRankIgnoreCase(args[2]);
 							final boolean success = s.delBuyableRank(rankname, rankname2);
 							if (success) {
-								Messages.messageCommanddelbuyablerankkSuccess(player, rankname, rankname2);
+								Messages.messageCommandDelbuyablerankSuccess(player, rankname, rankname2);
 							} else {
 								Messages.messageCommandDelbuyablerankError(player, rankname, rankname2);
 							}
@@ -851,7 +851,7 @@ public class Cmd implements CommandExecutor {
 						final String rankname2 = s.getRankIgnoreCase(args[2]);
 						final boolean success = s.delBuyableRank(rankname, rankname2);
 						if (success) {
-							Messages.messageCommanddelbuyablerankkSuccess(console, rankname, rankname2);
+							Messages.messageCommandDelbuyablerankSuccess(console, rankname, rankname2);
 						} else {
 							Messages.messageCommandDelbuyablerankError(console, rankname, rankname2);
 						}
