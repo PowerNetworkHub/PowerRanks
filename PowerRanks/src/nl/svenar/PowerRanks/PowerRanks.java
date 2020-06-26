@@ -39,6 +39,7 @@ import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
 import nl.svenar.PowerRanks.update.Updater.UpdateType;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.io.File;
@@ -81,6 +82,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	FileConfiguration lang;
 	public String updatemsg;
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
+	public Map<Player, ArrayList<String>> playerDisallowedPermissions = new HashMap<Player, ArrayList<String>>();
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
 	public Map<Player, Long> playerLoginTime = new HashMap<Player, Long>();
 
@@ -423,11 +425,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void setupPermissions(Player player) {
-		if (playerPermissionAttachment.containsKey(player.getName())) {
+		if (!playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
 		}
-		
+
+//		if (!playerDisallowedPermissions.containsKey(player)) {
+		playerDisallowedPermissions.put(player, new ArrayList<String>());
+//		}
+
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
+		final String uuid = player.getUniqueId().toString();
 
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
@@ -439,15 +446,34 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			final String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			final List<String> GroupPermissions = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
 			final List<String> Inheritances = (List<String>) rankYaml.getStringList("Groups." + rank + ".inheritance");
+			final List<String> Subranks = new ArrayList<String>();
 
-			if (GroupPermissions != null) {
-				for (int i = 0; i < GroupPermissions.size(); i++) {
+			try {
+				ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
+				for (String r : subranks.getKeys(false)) {
+					if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+						Subranks.add(r);
+					}
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 
-					boolean enabled = !GroupPermissions.get(i).startsWith("-");
-					if (enabled) {
-						attachment.setPermission((String) GroupPermissions.get(i), true);
-					} else {
-						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
+			for (int i = 0; i < Subranks.size(); i++) {
+				List<String> permissions = (List<String>) rankYaml.getStringList("Groups." + Subranks.get(i) + ".permissions");
+				if (permissions != null) {
+					for (int j = 0; j < permissions.size(); j++) {
+
+						boolean enabled = !permissions.get(j).startsWith("-");
+						if (enabled) {
+							attachment.setPermission((String) permissions.get(j), true);
+							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
+						} else {
+							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
+							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
+						}
 					}
 				}
 			}
@@ -461,10 +487,30 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							boolean enabled = !Permissions.get(j).startsWith("-");
 							if (enabled) {
 								attachment.setPermission((String) Permissions.get(j), true);
+								if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(i)) && !Permissions.get(i).equals("*"))
+									playerDisallowedPermissions.get(player).remove((String) Permissions.get(i));
 							} else {
 								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
+								if (!playerDisallowedPermissions.get(player).contains((String) Permissions.get(i).replaceFirst("-", "")) && !Permissions.get(i).equals("*"))
+									playerDisallowedPermissions.get(player).add((String) Permissions.get(i).replaceFirst("-", ""));
 							}
 						}
+					}
+				}
+			}
+
+			if (GroupPermissions != null) {
+				for (int i = 0; i < GroupPermissions.size(); i++) {
+
+					boolean enabled = !GroupPermissions.get(i).startsWith("-");
+					if (enabled) {
+						attachment.setPermission((String) GroupPermissions.get(i), true);
+						if (playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+							playerDisallowedPermissions.get(player).remove((String) GroupPermissions.get(i));
+					} else {
+						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
+						if (!playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
+							playerDisallowedPermissions.get(player).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
 					}
 				}
 			}
@@ -472,12 +518,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") != null) {
 				List<String> permissions = (List<String>) playerYaml.getStringList("players." + player.getUniqueId() + ".permissions");
 				if (permissions != null) {
-					for (int j = 0; j < permissions.size(); j++) {
-						boolean enabled = !permissions.get(j).startsWith("-");
+					for (int i = 0; i < permissions.size(); i++) {
+						boolean enabled = !permissions.get(i).startsWith("-");
 						if (enabled) {
-							attachment.setPermission((String) permissions.get(j), true);
+							attachment.setPermission((String) permissions.get(i), true);
+							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+								playerDisallowedPermissions.get(player).remove((String) permissions.get(i));
 						} else {
-							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
+							attachment.setPermission((String) permissions.get(i).replaceFirst("-", ""), false);
+							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
+								playerDisallowedPermissions.get(player).add((String) permissions.get(i).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -494,9 +544,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
 		}
-		
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 
+//		if (!playerDisallowedPermissions.containsKey(player)) {
+		playerDisallowedPermissions.put(player, new ArrayList<String>());
+//		}
+
+		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
+		final String uuid = player.getUniqueId().toString();
+		
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -507,10 +562,43 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			final String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 			final List<String> GroupPermissions = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
 			final List<String> Inheritances = (List<String>) rankYaml.getStringList("Groups." + rank + ".inheritance");
+			final List<String> Subranks = new ArrayList<String>();
+
+			try {
+				ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
+				for (String r : subranks.getKeys(false)) {
+					if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+						Subranks.add(r);
+					}
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
+			for (int i = 0; i < Subranks.size(); i++) {
+				List<String> permissions = (List<String>) rankYaml.getStringList("Groups." + Subranks.get(i) + ".permissions");
+				if (permissions != null) {
+					for (int j = 0; j < permissions.size(); j++) {
+
+						boolean enabled = !permissions.get(j).startsWith("-");
+						if (enabled) {
+							attachment.setPermission((String) permissions.get(j), true);
+							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
+						} else {
+							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
+							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
+						}
+					}
+				}
+			}
 
 			if (GroupPermissions != null) {
 				for (int i = 0; i < GroupPermissions.size(); ++i) {
 					attachment.unsetPermission((String) GroupPermissions.get(i));
+//					if (playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+//						playerDisallowedPermissions.get(player).remove((String) GroupPermissions.get(i));
 				}
 			}
 
@@ -520,6 +608,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					if (Permissions != null) {
 						for (int j = 0; j < Permissions.size(); ++j) {
 							attachment.unsetPermission((String) Permissions.get(j));
+//							if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(i)) && !Permissions.get(i).equals("*"))
+//								playerDisallowedPermissions.get(player).remove((String) Permissions.get(i));
 							// attachment.unsetPermission((String) GroupPermissions.get(j));
 						}
 					}
@@ -529,8 +619,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") != null) {
 				List<String> permissions = (List<String>) rankYaml.getStringList("players." + player.getUniqueId() + ".permissions");
 				if (permissions != null) {
-					for (int j = 0; j < permissions.size(); j++) {
-						attachment.unsetPermission((String) permissions.get(j));
+					for (int i = 0; i < permissions.size(); i++) {
+						attachment.unsetPermission((String) permissions.get(i));
+//						if (playerDisallowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+//							playerDisallowedPermissions.get(player).remove((String) permissions.get(i));
 					}
 				}
 			} else {

@@ -113,9 +113,15 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 
 		if (identifier.equals("prefix"))
 			return users.getPrefix(player);
-
+		
 		if (identifier.equals("suffix"))
 			return users.getSuffix(player);
+		
+		if (identifier.equals("subrankprefix"))
+			return users.getSubrankprefixes(player);
+		
+		if (identifier.equals("subranksuffix"))
+			return users.getSubranksuffixes(player);
 		
 		if (identifier.equals("chatcolor"))
 			return users.getChatColor(player);

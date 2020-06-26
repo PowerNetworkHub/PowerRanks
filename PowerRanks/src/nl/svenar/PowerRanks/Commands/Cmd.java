@@ -100,6 +100,24 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("listsubranks")) {
+					if (sender.hasPermission("powerranks.cmd.list")) {
+						if (args.length == 2) {
+							if (Bukkit.getPlayer(args[1]) != null) {
+								List<String> subranks = s.getSubranks(args[1]);
+								sender.sendMessage("Subranks of " + Bukkit.getPlayer(args[1]).getName() + "(" + subranks.size() + "):");
+								for (String subrank : subranks) {
+									sender.sendMessage(subrank);
+								}
+							} else {
+								Messages.messagePlayerNotFound(player, args[1]);
+							}
+						} else {
+							Messages.messageCommandUsageListSubranks(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
 				} else if (args[0].equalsIgnoreCase("listpermissions")) {
 					if (sender.hasPermission("powerranks.cmd.list")) {
 						if (args.length == 2) {
@@ -169,6 +187,143 @@ public class Cmd implements CommandExecutor {
 							}
 						} else {
 							Messages.messageCommandUsageDelperm(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("addsubrank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.addSubrank(playername, subrank);
+							if (result) {
+								Messages.messageSuccessAddsubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorAddsubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageAddsubrank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("delsubrank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.removeSubrank(playername, subrank);
+							if (result) {
+								Messages.messageSuccessDelsubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorDelsubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDelsubrank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("enablesubrankprefix")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_prefix", true);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageEnablesubrankprefix(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("disablesubrankprefix")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_prefix", false);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDisablesubrankprefix(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("enablesubranksuffix")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_suffix", true);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageEnablesubranksuffix(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("disablesubranksuffix")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_suffix", false);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDisablesubranksuffix(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+					
+				} else if (args[0].equalsIgnoreCase("enablesubrankpermissions")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_permissions", true);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageEnablesubrankpermissions(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("disablesubrankpermissions")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_permissions", false);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDisablesubrankpermissions(player);
 						}
 					} else {
 						Messages.noPermission(player);
@@ -561,6 +716,20 @@ public class Cmd implements CommandExecutor {
 					for (String rank : ranks) {
 						console.sendMessage(rank);
 					}
+				} else if (args[0].equalsIgnoreCase("listsubranks")) {
+					if (args.length == 2) {
+						if (Bukkit.getPlayer(args[1]) != null) {
+							List<String> subranks = s.getSubranks(args[1]);
+							sender.sendMessage("Subranks of " + Bukkit.getPlayer(args[1]).getName() + "(" + subranks.size() + "):");
+							for (String subrank : subranks) {
+								console.sendMessage(subrank);
+							}
+						} else {
+							Messages.messagePlayerNotFound(console, args[1]);
+						}
+					} else {
+						Messages.messageCommandUsageListSubranks(console);
+					}
 				} else if (args[0].equalsIgnoreCase("listpermissions")) {
 					if (args.length == 2) {
 						if (s.getGroups().contains(s.getRankIgnoreCase(args[1]))) {
@@ -615,6 +784,32 @@ public class Cmd implements CommandExecutor {
 						}
 					} else {
 						Messages.messageCommandUsageDelperm(console);
+					}
+				} else if (args[0].equalsIgnoreCase("addsubrank")) {
+					if (args.length == 3) {
+						final String playername = args[1];
+						final String subrank = s.getRankIgnoreCase(args[2]);
+						final boolean result = s.addSubrank(playername, subrank);
+						if (result) {
+							Messages.messageSuccessAddsubrank(console, subrank, playername);
+						} else {
+							Messages.messageErrorAddsubrank(console, subrank, playername);
+						}
+					} else {
+						Messages.messageCommandUsageAddsubrank(console);
+					}
+				} else if (args[0].equalsIgnoreCase("delsubrank")) {
+					if (args.length == 3) {
+						final String playername = args[1];
+						final String subrank = s.getRankIgnoreCase(args[2]);
+						final boolean result = s.removeSubrank(playername, subrank);
+						if (result) {
+							Messages.messageSuccessDelsubrank(console, subrank, playername);
+						} else {
+							Messages.messageErrorDelsubrank(console, subrank, playername);
+						}
+					} else {
+						Messages.messageCommandUsageDelsubrank(console);
 					}
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {

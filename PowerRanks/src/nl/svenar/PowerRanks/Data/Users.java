@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
@@ -307,6 +308,37 @@ public class Users implements Listener {
 		return group;
 	}
 
+	public String getGroup(String playername) {
+		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playerYaml = new YamlConfiguration();
+		String group = null;
+		String uuid = "";
+		if (Bukkit.getServer().getPlayer(playername) != null)
+			uuid = Bukkit.getServer().getPlayer(playername).getUniqueId().toString();
+
+		try {
+			playerYaml.load(playerFile);
+
+			if (uuid.length() != 0) {
+				for (String key : playerYaml.getConfigurationSection("players").getKeys(false)) {
+					if (playerYaml.getString("players." + key + ".name").equalsIgnoreCase(playername)) {
+						uuid = key;
+					}
+				}
+			}
+
+			if (uuid.length() != 0) {
+				group = playerYaml.getString("players." + uuid + ".rank");
+			} else {
+				return "";
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return group;
+	}
+
 	public Set<String> getGroups() {
 		ConfigurationSection ranks = null;
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -512,18 +544,18 @@ public class Users implements Listener {
 		try {
 			rankYaml.load(rankFile);
 			if (rankYaml.get("Groups." + rank) == null) {
-				rankYaml.set("Groups." + rank + ".permissions", (Object) "[]");
-				rankYaml.set("Groups." + rank + ".inheritance", (Object) "[]");
-				rankYaml.set("Groups." + rank + ".build", (Object) true);
-				rankYaml.set("Groups." + rank + ".chat.prefix", (Object) ("[&7" + rank + "&r]"));
-				rankYaml.set("Groups." + rank + ".chat.suffix", (Object) "");
-				rankYaml.set("Groups." + rank + ".chat.chatColor", (Object) "&f");
-				rankYaml.set("Groups." + rank + ".chat.nameColor", (Object) "&f");
-				rankYaml.set("Groups." + rank + ".level.promote", (Object) "");
-				rankYaml.set("Groups." + rank + ".level.demote", (Object) "");
-				rankYaml.set("Groups." + rank + ".economy.buyable", (Object) false);
-				rankYaml.set("Groups." + rank + ".economy.cost", (Object) 0);
-				rankYaml.set("Groups." + rank + ".gui.icon", (Object) "stone");
+				rankYaml.set("Groups." + rank + ".permissions", new ArrayList<String>());
+				rankYaml.set("Groups." + rank + ".inheritance", new ArrayList<String>());
+				rankYaml.set("Groups." + rank + ".build", true);
+				rankYaml.set("Groups." + rank + ".chat.prefix", "[&7" + rank + "&r]");
+				rankYaml.set("Groups." + rank + ".chat.suffix", "");
+				rankYaml.set("Groups." + rank + ".chat.chatColor", "&f");
+				rankYaml.set("Groups." + rank + ".chat.nameColor", "&f");
+				rankYaml.set("Groups." + rank + ".level.promote", "");
+				rankYaml.set("Groups." + rank + ".level.demote", "");
+				rankYaml.set("Groups." + rank + ".economy.buyable", new ArrayList<String>());
+				rankYaml.set("Groups." + rank + ".economy.cost", 0);
+				rankYaml.set("Groups." + rank + ".gui.icon", "stone");
 				rankYaml.save(rankFile);
 				return true;
 			}
@@ -714,6 +746,14 @@ public class Users implements Listener {
 			rankYaml.set("Groups." + to + ".level.promote", rankYaml.get("Groups." + rank + ".level.promote"));
 			rankYaml.set("Groups." + to + ".level.demote", rankYaml.get("Groups." + rank + ".level.demote"));
 
+			List<String> listEconomyBuyable = (List<String>) rankYaml.getStringList("Groups." + to + ".economy.buyable");
+			for (String line : rankYaml.getStringList("Groups." + rank + ".economy.buyable")) {
+				listEconomyBuyable.add(line);
+			}
+			rankYaml.set("Groups." + to + ".economy.buyable", (Object) listEconomyBuyable);
+			rankYaml.set("Groups." + to + ".economy.cost", rankYaml.get("Groups." + rank + ".economy.cost"));
+			rankYaml.set("Groups." + to + ".gui.icon", rankYaml.get("Groups." + rank + ".gui.icon"));
+
 			ConfigurationSection players = playerYaml.getConfigurationSection("players");
 			for (String p : players.getKeys(false)) {
 				if (playerYaml.getString("players." + p + ".rank") != null) {
@@ -843,7 +883,7 @@ public class Users implements Listener {
 
 		return prefix;
 	}
-	
+
 	public String getPrefix(String rank) {
 		String prefix = "";
 		rank = this.getRankIgnoreCase(rank);
@@ -1135,5 +1175,206 @@ public class Users implements Listener {
 			}
 		}
 		return false;
+	}
+
+	public boolean addSubrank(String playername, String subrank) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			if (playersYaml.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) == null) {
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_prefix", true);
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_suffix", true);
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_permissions", true);
+			} else {
+				return false;
+			}
+
+			playersYaml.save(playersFile);
+			this.m.setupPermissions(player);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean removeSubrank(String playername, String subrank) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			if (playersYaml.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) != null) {
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank), null);
+			} else {
+				return false;
+			}
+
+			playersYaml.save(playersFile);
+			this.m.setupPermissions(player);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public List<String> getSubranks(String playername) {
+		List<String> ranks = new ArrayList<String>();
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return ranks;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			try {
+				ConfigurationSection subranks = playersYaml.getConfigurationSection("players." + uuid + ".subranks");
+				for (String r : subranks.getKeys(false)) {
+					ranks.add(getRankIgnoreCase(r));
+				}
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		return ranks;
+	}
+
+	public boolean changeSubrankField(String playername, String subrank, String field, boolean value) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			if (playersYaml.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) != null) {
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + "." + field, value);
+			} else {
+				return false;
+			}
+
+			playersYaml.save(playersFile);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public List<String> getPlayerPermissions(String playername) {
+		List<String> list = new ArrayList<String>();
+
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return list;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			if (playersYaml.get("players." + uuid + ".permissions") != null) {
+				list = (List<String>) playersYaml.getStringList("players." + uuid + ".permissions");
+			} else {
+				return list;
+			}
+
+			playersYaml.save(playersFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public String getSubrankprefixes(Player player) {
+		String values = "";
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+		String uuid = player.getUniqueId().toString();
+		try {
+			playersYaml.load(playersFile);
+			ranksYaml.load(ranksFile);
+
+			if (playersYaml.get("players." + uuid + ".subranks") != null) {
+				ConfigurationSection subranks = playersYaml.getConfigurationSection("players." + uuid + ".subranks");
+
+				for (String r : subranks.getKeys(false)) {
+					if (playersYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+						values += ChatColor.RESET
+								+ (ranksYaml.getString("Groups." + r + ".chat.prefix") != null && ranksYaml.getString("Groups." + r + ".chat.prefix").length() > 0 ? ranksYaml.getString("Groups." + r + ".chat.prefix") + " " : "");
+					}
+				}
+			}
+
+			playersYaml.save(playersFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return values;
+	}
+
+	public String getSubranksuffixes(Player player) {
+		String values = "";
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+		String uuid = player.getUniqueId().toString();
+		try {
+			playersYaml.load(playersFile);
+			ranksYaml.load(ranksFile);
+
+			if (playersYaml.get("players." + uuid + ".subranks") != null) {
+				ConfigurationSection subranks = playersYaml.getConfigurationSection("players." + uuid + ".subranks");
+
+				for (String r : subranks.getKeys(false)) {
+					if (playersYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+						values += ChatColor.RESET
+								+ (ranksYaml.getString("Groups." + r + ".chat.suffix") != null && ranksYaml.getString("Groups." + r + ".chat.suffix").length() > 0 ? ranksYaml.getString("Groups." + r + ".chat.suffix") + " " : "");
+					}
+				}
+			}
+
+			playersYaml.save(playersFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return values;
 	}
 }

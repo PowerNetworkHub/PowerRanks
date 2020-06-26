@@ -1,8 +1,10 @@
 # --------------------
 # Chat format
 # Available options:
-# [prefix] rank name
-# [suffix] suffix
+# [prefix] rank prefix
+# [suffix] rank 
+# [subprefix] player's subrank prefix
+# [subsuffix] player's subrank suffix
 # [player] player name
 # [msg] message player typed
 # [format] get the current chat format
@@ -29,7 +31,7 @@
 # --------------------
 # Plugin hooks
 # Enable or disable the use of a certain soft-dependency.
-# Vault (Economy): used for '/pr rankup' and '/pr gui rankup'
+# Vault (Economy): used for '/pr rankup'
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # --------------------
 # Updates
@@ -40,7 +42,7 @@
 
 chat:
   enabled: true
-  format: '[prefix] [player] [suffix]&r: [msg]'
+  format: '[prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
 build_modification:
   enabled: true
 tablist_modification:

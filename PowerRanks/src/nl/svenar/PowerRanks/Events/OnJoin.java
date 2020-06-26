@@ -41,6 +41,10 @@ public class OnJoin implements Listener {
 			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") == null) {
 				playerYaml.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
 			}
+			
+			if (playerYaml.getString("players." + player.getUniqueId() + ".subranks") == null) {
+				playerYaml.set("players." + player.getUniqueId() + ".subranks", "");
+			}
 			playerYaml.set("players." + player.getUniqueId() + ".name", player.getName());
 			playerYaml.save(playerFile);
 		} catch (Exception e2) {

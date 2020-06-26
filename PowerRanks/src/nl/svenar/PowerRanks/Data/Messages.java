@@ -1313,4 +1313,240 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
+
+	public static void messageSuccessAddsubrank(Player sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_adding_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageSuccessAddsubrank(ConsoleCommandSender sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_adding_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorAddsubrank(Player sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorAddsubrank(ConsoleCommandSender sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_adding_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageSuccessDelsubrank(Player sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_removing_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageSuccessDelsubrank(ConsoleCommandSender sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_removing_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorDelsubrank(Player sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_removing_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorDelsubrank(ConsoleCommandSender sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_removing_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddsubrank(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_subrank");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddsubrank(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_subrank");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelsubrank(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_subrank");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelsubrank(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_subrank");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageListSubranks(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_listsubranks");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageListSubranks(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_listsubranks");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageSuccessChangesubrank(Player sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_change_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+		
+	}
+	
+	public static void messageSuccessChangesubrank(ConsoleCommandSender sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_change_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+		
+	}
+
+	public static void messageErrorChangesubrank(Player sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_change_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageErrorChangesubrank(ConsoleCommandSender sender, String subrank, String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_change_subrank");
+		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
+		msg = Util.replaceAll(msg, "%argument_player%", playername);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+
+	public static void messageCommandUsageEnablesubrankprefix(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankprefix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageCommandUsageEnablesubrankprefix(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankprefix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+
+	public static void messageCommandUsageDisablesubrankprefix(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankprefix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageCommandUsageDisablesubrankprefix(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankprefix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+
+	public static void messageCommandUsageEnablesubranksuffix(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubranksuffix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageEnablesubranksuffix(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubranksuffix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDisablesubranksuffix(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubranksuffix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageDisablesubranksuffix(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubranksuffix");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageEnablesubrankpermissions(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankpermissions");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageEnablesubrankpermissions(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankpermissions");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDisablesubrankpermissions(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankpermissions");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageDisablesubrankpermissions(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankpermissions");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
 }

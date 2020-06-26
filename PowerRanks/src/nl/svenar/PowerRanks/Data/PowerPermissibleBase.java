@@ -15,11 +15,13 @@ import nl.svenar.PowerRanks.PowerRanks;
 public class PowerPermissibleBase extends PermissibleBase {
 	
     private Permissible oldPermissible = new PermissibleBase(null);
-//    private Main plugin;
+    private PowerRanks plugin;
+    private Player player;
     
-    public PowerPermissibleBase(Player p, PowerRanks main) {
-        super(p);
-//        this.plugin = main;
+    public PowerPermissibleBase(Player player, PowerRanks main) {
+        super(player);
+        this.player = player;
+        this.plugin = main;
     }
 
     public Permissible getOldPermissible() {
@@ -42,10 +44,11 @@ public class PowerPermissibleBase extends PermissibleBase {
     public boolean hasPermission(String permission) {
 //    	plugin.log.info("[hasPermission] " + permission + ": " + oldPermissible.hasPermission(permission));
         if (permission == null) {
-            throw new NullPointerException("permission");
+            throw new NullPointerException(permission);
         }
+        
 
-        return oldPermissible.hasPermission(permission) || oldPermissible.hasPermission("*");
+        return oldPermissible.hasPermission(permission) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission));
     }
 
     @Override
@@ -94,7 +97,7 @@ public class PowerPermissibleBase extends PermissibleBase {
     @Override
     public boolean isPermissionSet(String permission) {
 //    	plugin.log.info("[isPermissionSet] " + permission + ": " + (oldPermissible.isPermissionSet(permission)));
-        return oldPermissible.isPermissionSet(permission) || oldPermissible.hasPermission("*");
+        return oldPermissible.isPermissionSet(permission) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission));
     }
 
     @Override

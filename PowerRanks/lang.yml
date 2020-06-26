@@ -6,6 +6,7 @@
 # %plugin_prefix% | see general.prefix
 # %argument_rank% | command argument rank name
 # %argument_target_rank% | command argument target rank name
+# %argument_subrank% | command argument subrank
 # %argument_sender% | command argument sender name
 # %argument_target% | command argument target name
 # %argument_permission% | command argument permission node
@@ -44,6 +45,10 @@ messages:
    permission_removed: "%plugin_prefix% &aPermission '%argument_permission%' removed from rank: %argument_rank%"
    permission_added_to_all_ranks: "%plugin_prefix% &aPermission '%argument_permission%' added to all ranks."
    permission_removed_from_all_ranks: "%plugin_prefix% &aPermission '%argument_permission%' removed from all ranks."
+   success_adding_subrank: "%plugin_prefix% &aSubrank '%argument_subrank%' added to player: %argument_player%"
+   error_adding_subrank: "%plugin_prefix% &cError adding subrank '%argument_subrank%' to player: %argument_player%"
+   success_removing_subrank: "%plugin_prefix% &aSubrank '%argument_subrank%' removed from player: %argument_player%"
+   error_removing_subrank: "%plugin_prefix% &cError removing subrank '%argument_subrank%' from player: %argument_player%"
    rank_renamed: "%plugin_prefix% &aRank '%argument_rank%' renamed!"
    error_renaming_rank: "%plugin_prefix% &cError renaming rank '%argument_rank%'!"
    default_rank_changed: "%plugin_prefix% &aChanged default rank to: %argument_rank%"
@@ -65,6 +70,8 @@ messages:
    player_permission_removed: "%plugin_prefix% &aPermission '%argument_permission%' removed from player: %argument_target%"
    error_adding_player_permission: "%plugin_prefix% &c Error adding permission '%argument_permission%' to player: %argument_target%"
    error_removing_player_permission: "%plugin_prefix% &cError removing permission '%argument_permission%' from player: %argument_target%"
+   success_change_subrank: "%plugin_prefix% &aSubrank '%argument_subrank%' of player '%argument_player%' successfully changed."
+   error_change_subrank: "%plugin_prefix% &cError changing subrank '%argument_subrank%' of player '%argument_player%'."
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -73,6 +80,14 @@ commands:
    usage_command_check: "%plugin_prefix% &c/pr check [playername]"
    usage_command_add_permission: "%plugin_prefix% &c/pr addperm <rank> <permission>"
    usage_command_remove_permission: "%plugin_prefix% &c/pr delperm <rank> <permission>"
+   usage_command_add_subrank: "%plugin_prefix% &c/pr addsubrank <player> <rank>"
+   usage_command_remove_subrank: "%plugin_prefix% &c/pr delsubrank <player> <rank>"
+   usage_command_enablesubrankprefix: "%plugin_prefix% &c/pr enablesubrankprefix <player> <rank>"
+   usage_command_disablesubrankprefix: "%plugin_prefix% &c/pr disablesubrankprefix <player> <rank>"
+   usage_command_enablesubranksuffix: "%plugin_prefix% &c/pr enablesubranksuffix <player> <rank>"
+   usage_command_disablesubranksuffix: "%plugin_prefix% &c/pr disablesubranksuffix <player> <rank>"
+   usage_command_enablesubrankpermissions: "%plugin_prefix% &c/pr enablesubrankpermissions <player> <rank>"
+   usage_command_disablesubrankpermissions: "%plugin_prefix% &c/pr disablesubrankpermissions <player> <rank>"
    usage_command_add_inheritance: "%plugin_prefix% &c/pr addinheritance <rank> <inheritance>"
    usage_command_remove_inheritance: "%plugin_prefix% &c/pr delinheritance <rank> <inheritance>"
    usage_command_set_prefix: "%plugin_prefix% &c/pr setprefix <rank> <prefix>"
@@ -86,6 +101,7 @@ commands:
    usage_command_promote: "%plugin_prefix% &c/pr promote <playerName>"
    usage_command_demote: "%plugin_prefix% &c/pr demote <playerName>"
    usage_command_listpermissions: "%plugin_prefix% &c/pr listpermissions <rankName>"
+   usage_command_listsubranks: "%plugin_prefix% &c/pr listsubranks <playerName>"
    usage_command_add_buyable_rank: "%plugin_prefix% &c/pr addbuyablerank <rankName> <buyableRankName>"
    usage_command_del_buyable_rank: "%plugin_prefix% &c/pr delbuyablerank <rankName> <buyableRankName>"
    usage_command_set_cost: "%plugin_prefix% &c/pr setcost <rankName> <cost>"
@@ -106,14 +122,23 @@ commands:
    - "&a/pr setown <rankName>&2 - Set your own rank"
    - "&a/pr promote <playerName>&2 - Promote a player to the next rank"
    - "&a/pr demote <playerName>&2 - Demote a player to the previous rank"
-   - "&a/pr check <playerName>&2 - Check someone's rank"
+   - "&a/pr check [playerName]&2 - Check someone's rank"
    - "&a/pr listranks&2 - List all ranks"
    - "&a/pr listpermissions <rankName>&2 - List all permissions in a rank"
+   - "&a/pr listsubranks <playerName>&2 - List all subranks of a player"
    - "&a/pr reload [config/plugin/all]&2 - Reload PowerRanks"
    - "&a/pr addperm <rank> <permission>&2 - Add a permission to a rank"
    - "&a/pr delperm <rank> <permission>&2 - Remove a permission from a rank"
    - "&a/pr addplayerperm <playerName> <permission>&2 - Add a permission to a player"
    - "&a/pr delplayerperm <playerName> <permission>&2 - Remove a permission from a player"
+   - "&a/pr addsubrank <playerName> <rankName>&2 - Add a sub rank to a player"
+   - "&a/pr delsubrank <playerName> <rankName>&2 - Remove a sub rank from a player"
+   - "&a/pr enablesubrankprefix <playerName> <subrankName>&2 - Show the subranks prefix"
+   - "&a/pr disablesubrankprefix <playerName> <subrankName>&2 - Stop showing the subranks prefix"
+   - "&a/pr enablesubranksuffix <playerName> <subrankName>&2 - Show the subranks suffix"
+   - "&a/pr disablesubranksuffix <playerName> <subrankName>&2 - Stop showing the subranks suffix"
+   - "&a/pr enablesubrankpermissions <playerName> <subrankName>&2 - Use the subranks permissions"
+   - "&a/pr disablesubrankpermissions <playerName> <subrankName>&2 - Stop using the subranks permissions"
    - "&a/pr setprefix <rank> <prefix>&2 - Change the prefix of a rank"
    - "&a/pr setsuffix <rank> <suffix>&2 - Change the suffix of a rank"
    - "&a/pr setchatcolor <rank> <color>&2 - Change the chat color of a rank"
