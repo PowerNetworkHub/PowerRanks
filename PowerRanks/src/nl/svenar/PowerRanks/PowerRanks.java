@@ -449,10 +449,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			final List<String> Subranks = new ArrayList<String>();
 
 			try {
-				ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
-				for (String r : subranks.getKeys(false)) {
-					if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-						Subranks.add(r);
+				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
+					for (String r : subranks.getKeys(false)) {
+						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+							Subranks.add(r);
+						}
 					}
 				}
 			} catch (Exception e1) {
@@ -551,7 +553,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 		final String uuid = player.getUniqueId().toString();
-		
+
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();
@@ -565,10 +567,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			final List<String> Subranks = new ArrayList<String>();
 
 			try {
-				ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
-				for (String r : subranks.getKeys(false)) {
-					if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-						Subranks.add(r);
+				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
+					for (String r : subranks.getKeys(false)) {
+						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+							Subranks.add(r);
+						}
 					}
 				}
 			} catch (Exception e1) {

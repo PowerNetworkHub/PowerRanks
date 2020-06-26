@@ -1249,9 +1249,11 @@ public class Users implements Listener {
 			playersYaml.load(playersFile);
 
 			try {
-				ConfigurationSection subranks = playersYaml.getConfigurationSection("players." + uuid + ".subranks");
-				for (String r : subranks.getKeys(false)) {
-					ranks.add(getRankIgnoreCase(r));
+				if (playersYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					ConfigurationSection subranks = playersYaml.getConfigurationSection("players." + uuid + ".subranks");
+					for (String r : subranks.getKeys(false)) {
+						ranks.add(getRankIgnoreCase(r));
+					}
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();

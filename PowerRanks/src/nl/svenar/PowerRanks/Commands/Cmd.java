@@ -293,7 +293,7 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-					
+
 				} else if (args[0].equalsIgnoreCase("enablesubrankpermissions")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						if (args.length == 3) {
@@ -811,6 +811,85 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageDelsubrank(console);
 					}
+				} else if (args[0].equalsIgnoreCase("enablesubrankprefix")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_prefix", true);
+							if (result) {
+								Messages.messageSuccessChangesubrank(console, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(console, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageEnablesubrankprefix(console);
+						}
+				} else if (args[0].equalsIgnoreCase("disablesubrankprefix")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_prefix", false);
+							if (result) {
+								Messages.messageSuccessChangesubrank(console, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(console, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDisablesubrankprefix(console);
+						}
+				} else if (args[0].equalsIgnoreCase("enablesubranksuffix")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_suffix", true);
+							if (result) {
+								Messages.messageSuccessChangesubrank(console, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(console, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageEnablesubranksuffix(console);
+						}
+				} else if (args[0].equalsIgnoreCase("disablesubranksuffix")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_suffix", false);
+							if (result) {
+								Messages.messageSuccessChangesubrank(console, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(console, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDisablesubranksuffix(console);
+						}
+
+				} else if (args[0].equalsIgnoreCase("enablesubrankpermissions")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_permissions", true);
+							if (result) {
+								Messages.messageSuccessChangesubrank(console, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(console, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageEnablesubrankpermissions(console);
+						}
+				} else if (args[0].equalsIgnoreCase("disablesubrankpermissions")) {
+						if (args.length == 3) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final boolean result = s.changeSubrankField(playername, subrank, "use_permissions", false);
+							if (result) {
+								Messages.messageSuccessChangesubrank(console, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(console, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDisablesubrankpermissions(console);
+						}
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
