@@ -45,6 +45,7 @@ public class OnChat implements Listener {
 
 			String subprefix = "";
 			String subsuffix = "";
+			String usertag = "";
 
 			try {
 				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
@@ -81,7 +82,6 @@ public class OnChat implements Listener {
 				subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
 			}
 			
-			String usertag = "";
 			if (playerYaml.isSet("players." + uuid + ".usertag") && playerYaml.getString("players." + uuid + ".usertag").length() > 0) {
 				String tmp_usertag = playerYaml.getString("players." + uuid + ".usertag");
 				
