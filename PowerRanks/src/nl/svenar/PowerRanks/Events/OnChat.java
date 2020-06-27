@@ -81,10 +81,10 @@ public class OnChat implements Listener {
 			if (subsuffix.endsWith(" ")) {
 				subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
 			}
-			
+
 			if (playerYaml.isSet("players." + uuid + ".usertag") && playerYaml.getString("players." + uuid + ".usertag").length() > 0) {
 				String tmp_usertag = playerYaml.getString("players." + uuid + ".usertag");
-				
+
 				if (rankYaml.getConfigurationSection("Usertags") != null) {
 					ConfigurationSection tags = rankYaml.getConfigurationSection("Usertags");
 					for (String key : tags.getKeys(false)) {
@@ -106,10 +106,10 @@ public class OnChat implements Listener {
 			format = Util.replaceAll(format, "[msg]", String.valueOf(chatColor) + " %2$s");
 			format = Util.replaceAll(format, "[format]", e.getFormat());
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, false);
-			
+
 //			format = format.replaceAll("\\s+", " ");
 //          format = format.replaceAll("^[ ]+", ""); // Remove leading spaces
-			
+
 			if (configYaml.getBoolean("chat.enabled")) {
 				e.setFormat(format);
 			}

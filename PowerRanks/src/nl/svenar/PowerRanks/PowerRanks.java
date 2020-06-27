@@ -693,11 +693,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
 				String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
 				String namecolor = rankYaml.getString("Groups." + rank + ".chat.nameColor");
+				player.sendMessage("NameColor: " + namecolor);
+				player.sendMessage("NameColor: " + namecolor + " - " + player.getPlayerListName());
+				player.sendMessage("NameColor: " + chatColor(PowerRanks.colorChar.charAt(0), namecolor, false) + player.getPlayerListName());
 
-				format = Util.replaceAll(format, "[name]", chatColor(PowerRanks.colorChar.charAt(0), namecolor, false) + player.getPlayerListName());
-				format = Util.replaceAll(format, "[prefix]", chatColor(PowerRanks.colorChar.charAt(0), prefix, true));
-				format = Util.replaceAll(format, "[suffix]", chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
-//				format = Util.replaceAll(format, "&", "§");
+				format = format.replace("[name]", chatColor(PowerRanks.colorChar.charAt(0), namecolor, false) + player.getPlayerListName());
+				format = format.replace("[prefix]", chatColor(PowerRanks.colorChar.charAt(0), prefix, true));
+				format = format.replace("[suffix]", chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
+
 				player.setPlayerListName(format);
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();

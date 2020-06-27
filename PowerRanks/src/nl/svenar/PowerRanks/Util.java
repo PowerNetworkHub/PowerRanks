@@ -13,24 +13,28 @@ public class Util {
 
 	public static String replaceAll(String source, String key, String value) {
 		String[] split = source.split(Pattern.quote(key));
-		StringBuilder builder = new StringBuilder();
-		builder.append(split[0]);
-		for (int i = 1; i < split.length; ++i) {
-			builder.append(value);
-			builder.append(split[i]);
+		if (split.length > 0) {
+			StringBuilder builder = new StringBuilder();
+			builder.append(split[0]);
+			for (int i = 1; i < split.length; ++i) {
+				builder.append(value);
+				builder.append(split[i]);
+			}
+			while (source.endsWith(key)) {
+				builder.append(value);
+				source = source.substring(0, source.length() - key.length());
+			}
+			return builder.toString();
+		} else {
+			return source;
 		}
-		while (source.endsWith(key)) {
-			builder.append(value);
-			source = source.substring(0, source.length() - key.length());
-		}
-		return builder.toString();
 	}
 
 	public static boolean isPowerRanksSign(PowerRanks main, Sign sign) {
 		String sign_header = sign.getLine(0);
 		return isPowerRanksSign(main, sign_header);
 	}
-	
+
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
 		final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
