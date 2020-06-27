@@ -1,4 +1,5 @@
 Default: Member
+Usertags: ''
 Groups:
    Member:
       permissions: []
@@ -16,7 +17,7 @@ Groups:
          buyable: []
          cost: 0
       gui:
-         icon: "stick"
+         icon: stick
    Moderator:
       permissions: []
       inheritance: []
@@ -27,13 +28,13 @@ Groups:
          chatColor: '&f'
          nameColor: '&f'
       level:
-         promote: 'Admin'
+         promote: Admin
          demote: ''
       economy:
          buyable: []
          cost: 0
       gui:
-         icon: "purpur block"
+         icon: stone
    Admin:
       permissions: []
       inheritance: []
@@ -44,13 +45,13 @@ Groups:
          chatColor: '&f'
          nameColor: '&f'
       level:
-         promote: 'Owner'
-         demote: 'Moderator'
+         promote: Owner
+         demote: Moderator
       economy:
          buyable: []
          cost: 0
       gui:
-         icon: "redstone"
+         icon: redstone
    Owner:
       permissions: []
       inheritance: []
@@ -62,9 +63,9 @@ Groups:
          nameColor: '&f'
       level:
          promote: ''
-         demote: 'Admin'
+         demote: Admin
       economy:
          buyable: []
          cost: 0
       gui:
-         icon: "diamond"
+         icon: diamond
