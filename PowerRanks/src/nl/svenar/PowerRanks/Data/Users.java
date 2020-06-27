@@ -1379,4 +1379,132 @@ public class Users implements Listener {
 
 		return values;
 	}
+
+	public boolean createTag(String tag, String format) {
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+
+		try {
+			ranksYaml.load(ranksFile);
+
+			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+				boolean tagExists = false;
+				for (String key : tags.getKeys(false)) {
+					if (key.equalsIgnoreCase(tag)) {
+						tagExists = true;
+						break;
+					}
+				}
+
+				if (!tagExists) {
+					ranksYaml.set(tag, format);
+					ranksYaml.save(ranksFile);
+					return true;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean editTag(String tag, String format) {
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+
+		try {
+			ranksYaml.load(ranksFile);
+
+			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+				boolean tagExists = false;
+				for (String key : tags.getKeys(false)) {
+					if (key.equalsIgnoreCase(tag)) {
+						tagExists = true;
+						break;
+					}
+				}
+
+				if (tagExists) {
+					ranksYaml.set(tag, format);
+					ranksYaml.save(ranksFile);
+					return true;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean removeTag(String tag) {
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+
+		try {
+			ranksYaml.load(ranksFile);
+
+			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+				boolean tagExists = false;
+				for (String key : tags.getKeys(false)) {
+					if (key.equalsIgnoreCase(tag)) {
+						tagExists = true;
+						break;
+					}
+				}
+
+				if (tagExists) {
+					ranksYaml.set(tag, null);
+					ranksYaml.save(ranksFile);
+					return true;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean setTag(String playername, String tag) {
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+		
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			ranksYaml.load(ranksFile);
+			playersYaml.load(playersFile);
+
+			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+				boolean tagExists = false;
+				for (String key : tags.getKeys(false)) {
+					if (key.equalsIgnoreCase(tag)) {
+						tagExists = true;
+						break;
+					}
+				}
+
+				if (tagExists) {
+					playersYaml.set("players." + uuid + ".usertag", tag);
+					ranksYaml.save(ranksFile);
+					return true;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
