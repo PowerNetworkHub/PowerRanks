@@ -8,6 +8,7 @@
 # [player] player name
 # [msg] message player typed
 # [format] get the current chat format
+# [usertag] player's self-assigned tag
 # Example, use the current chat format and adding the rank's prefix:
 # format: '[prefix] [format]'
 # --------------------
@@ -23,7 +24,7 @@
 # --------------------
 # Signs
 # Set the player's rank using signs.
-# Available commands: promote, demote, set, check
+# Available commands: promote, demote, set, check, gui, rankup
 # Format:
 # Line 1: [PowerRanks]
 # Line 2: <command>
@@ -42,7 +43,7 @@
 
 chat:
   enabled: true
-  format: '[prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
+  format: '[usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
 build_modification:
   enabled: true
 tablist_modification:

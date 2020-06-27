@@ -80,19 +80,36 @@ public class OnChat implements Listener {
 			if (subsuffix.endsWith(" ")) {
 				subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
 			}
+			
+			String usertag = "";
+			if (playerYaml.isSet("players." + uuid + ".usertag") && playerYaml.getString("players." + uuid + ".usertag").length() > 0) {
+				String tmp_usertag = playerYaml.getString("players." + uuid + ".usertag");
+				
+				if (rankYaml.getConfigurationSection("Usertags") != null) {
+					ConfigurationSection tags = rankYaml.getConfigurationSection("Usertags");
+					for (String key : tags.getKeys(false)) {
+						if (key.equalsIgnoreCase(tmp_usertag)) {
+							usertag = rankYaml.getString("Usertags." + key) + ChatColor.RESET + " ";
+							break;
+						}
+					}
+				}
+			}
 
 			format = Util.replaceAll(format, " ", "");
 			format = Util.replaceAll(format, "[prefix]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), prefix, true) + ChatColor.RESET + (prefix.length() > 0 ? " " : ""));
 			format = Util.replaceAll(format, "[suffix]", (suffix.length() > 0) ? (" " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true)) : PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
-			format = Util.replaceAll(format, "[subprefix]", subprefix);
-			format = Util.replaceAll(format, "[subsuffix]", subsuffix);
+			format = Util.replaceAll(format, "[subprefix]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), subprefix, true));
+			format = Util.replaceAll(format, "[subsuffix]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), subsuffix, true));
+			format = Util.replaceAll(format, "[usertag]", PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), usertag, true));
 			format = Util.replaceAll(format, "[player]", String.valueOf(nameColor) + "%1$s");
 			format = Util.replaceAll(format, "[msg]", String.valueOf(chatColor) + " %2$s");
 			format = Util.replaceAll(format, "[format]", e.getFormat());
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, false);
+			
 //			format = format.replaceAll("\\s+", " ");
-
-//            format = format.replaceAll("^[ ]+", ""); // Remove leading spaces
+//          format = format.replaceAll("^[ ]+", ""); // Remove leading spaces
+			
 			if (configYaml.getBoolean("chat.enabled")) {
 				e.setFormat(format);
 			}

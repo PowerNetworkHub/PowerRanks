@@ -1380,7 +1380,7 @@ public class Users implements Listener {
 		return values;
 	}
 
-	public boolean createTag(String tag, String format) {
+	public boolean createUserTag(String tag, String format) {
 		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration ranksYaml = new YamlConfiguration();
 
@@ -1410,7 +1410,7 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean editTag(String tag, String format) {
+	public boolean editUserTag(String tag, String format) {
 		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration ranksYaml = new YamlConfiguration();
 
@@ -1440,7 +1440,7 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean removeTag(String tag) {
+	public boolean removeUserTag(String tag) {
 		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration ranksYaml = new YamlConfiguration();
 
@@ -1470,7 +1470,7 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean setTag(String playername, String tag) {
+	public boolean setUserTag(String playername, String tag) {
 		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration ranksYaml = new YamlConfiguration();
 		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
@@ -1506,5 +1506,24 @@ public class Users implements Listener {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public Set<String> getUserTags() {
+		Set<String> tags = null;
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+
+		try {
+			ranksYaml.load(ranksFile);
+
+			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+				ConfigurationSection tmp_tags = ranksYaml.getConfigurationSection("Usertags");
+				tags = tmp_tags.getKeys(false);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return tags;
 	}
 }
