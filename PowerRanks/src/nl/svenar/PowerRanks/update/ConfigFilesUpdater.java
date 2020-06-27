@@ -112,6 +112,9 @@ public class ConfigFilesUpdater {
 					}
 				}
 
+				if (!yamlConf.isSet("Usertags"))
+					yamlConf.set("Usertags", tmpYamlConf.get("Usertags"));
+
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
 			} catch (IOException | InvalidConfigurationException e) {
