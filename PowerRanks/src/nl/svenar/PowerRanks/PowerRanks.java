@@ -489,12 +489,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							boolean enabled = !Permissions.get(j).startsWith("-");
 							if (enabled) {
 								attachment.setPermission((String) Permissions.get(j), true);
-								if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(i)) && !Permissions.get(i).equals("*"))
-									playerDisallowedPermissions.get(player).remove((String) Permissions.get(i));
+								if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
+									playerDisallowedPermissions.get(player).remove((String) Permissions.get(j));
 							} else {
 								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
-								if (!playerDisallowedPermissions.get(player).contains((String) Permissions.get(i).replaceFirst("-", "")) && !Permissions.get(i).equals("*"))
-									playerDisallowedPermissions.get(player).add((String) Permissions.get(i).replaceFirst("-", ""));
+								if (!playerDisallowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
+									playerDisallowedPermissions.get(player).add((String) Permissions.get(j).replaceFirst("-", ""));
 							}
 						}
 					}

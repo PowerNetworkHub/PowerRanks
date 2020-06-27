@@ -30,8 +30,8 @@ public class OnInteract implements Listener {
 			Block block = event.getClickedBlock();
 //			PowerRanks.log.info(block.toString());
 //			PowerRanks.log.info(block.getState().toString());
-			System.out.println(block.getType());
-			System.out.println(block.getBlockData().getMaterial());
+//			System.out.println(block.getType());
+//			System.out.println(block.getBlockData().getMaterial());
 			if (block.getState() instanceof Sign) {
 				Sign sign = (Sign) block.getState();
 				if (Util.isPowerRanksSign(this.m, sign)) {

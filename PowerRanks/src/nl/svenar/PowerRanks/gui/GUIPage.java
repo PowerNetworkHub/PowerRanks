@@ -113,20 +113,24 @@ public class GUIPage {
 				if (num_rank_on_page * current_page + i < ranks.size()) {
 					String rank = (String) ranks.get(num_rank_on_page * current_page + i);
 					if (!rank.equalsIgnoreCase(users.getGroup(player))) {
-						if (users.getRanksConfigFieldString(rank, "gui.icon").length() > 0) {
-							Material icon = Material.BARRIER;
-							try {
-								icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
-							} catch (NoSuchMethodError e) {
-								icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+						try {
+							if (users.getRanksConfigFieldString(rank, "gui.icon").length() > 0) {
+								Material icon = Material.BARRIER;
+								try {
+									icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+								} catch (NoSuchMethodError e) {
+									icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+								}
+								int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
+								if (icon != null)
+									new_gui.setItem(i, createGuiItem(icon, rank, ChatColor.RESET + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), users.getPrefix(rank), true), "Cost: " + String.valueOf(cost)));
+								else
+									PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+							} else {
+								PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
 							}
-							int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
-							if (icon != null)
-								new_gui.setItem(i, createGuiItem(icon, rank, ChatColor.RESET + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), users.getPrefix(rank), true), "Cost: " + String.valueOf(cost)));
-							else
-								PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
-						} else {
-							PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
+						}catch (Exception e) {
+							PowerRanks.log.warning("[RANKUP] Rank '" + rank + "' not found!");
 						}
 					}
 				}
