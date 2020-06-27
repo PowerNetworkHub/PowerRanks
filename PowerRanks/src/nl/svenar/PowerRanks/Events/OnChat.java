@@ -47,17 +47,19 @@ public class OnChat implements Listener {
 			String subsuffix = "";
 
 			try {
-				ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
-				for (String r : subranks.getKeys(false)) {
-					if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-						subprefix += ChatColor.RESET
-								+ (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0 ? rankYaml.getString("Groups." + r + ".chat.prefix") + " " : "");
-					}
+				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
+					for (String r : subranks.getKeys(false)) {
+						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+							subprefix += ChatColor.RESET
+									+ (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0 ? rankYaml.getString("Groups." + r + ".chat.prefix") + " " : "");
+						}
 
-					if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-						subsuffix += ChatColor.RESET
-								+ (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0 ? rankYaml.getString("Groups." + r + ".chat.suffix") + " " : "");
+						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+							subsuffix += ChatColor.RESET
+									+ (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0 ? rankYaml.getString("Groups." + r + ".chat.suffix") + " " : "");
 
+						}
 					}
 				}
 			} catch (Exception e1) {
