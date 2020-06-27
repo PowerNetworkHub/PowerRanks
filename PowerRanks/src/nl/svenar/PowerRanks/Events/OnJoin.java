@@ -34,18 +34,24 @@ public class OnJoin implements Listener {
 		try {
 			rankYaml.load(rankFile);
 			playerYaml.load(playerFile);
+			
+			playerYaml.set("players." + player.getUniqueId() + ".name", player.getName());
+			
 			if (playerYaml.getString("players." + player.getUniqueId() + ".rank") == null) {
 				playerYaml.set("players." + player.getUniqueId() + ".rank", rankYaml.get("Default"));
 			}
-			
+
 			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") == null) {
 				playerYaml.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
 			}
-			
+
 			if (playerYaml.getString("players." + player.getUniqueId() + ".subranks") == null) {
 				playerYaml.set("players." + player.getUniqueId() + ".subranks", "");
 			}
-			playerYaml.set("players." + player.getUniqueId() + ".name", player.getName());
+			
+			if (!playerYaml.isSet("players." + player.getUniqueId() + ".usertag"))
+				playerYaml.set("players." + player.getUniqueId() + ".usertag", "");
+			
 			playerYaml.save(playerFile);
 		} catch (Exception e2) {
 			e2.printStackTrace();
@@ -70,7 +76,8 @@ public class OnJoin implements Listener {
 		long join_time = leave_time;
 		try {
 			join_time = this.m.playerLoginTime.get(player);
-		} catch (Exception e1) {}
+		} catch (Exception e1) {
+		}
 
 		this.m.updatePlaytime(player, join_time, leave_time);
 
