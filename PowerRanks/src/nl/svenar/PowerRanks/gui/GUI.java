@@ -25,10 +25,10 @@ public class GUI {
 		if (guis.get(player) == null || guis.get(player).getPageID().getID() != pageID.getID()) {
 			GUIPage new_gui = new GUIPage(powerRanks, player, pageID);
 			guis.put(player, new_gui);
-			player.openInventory(new_gui.getGUI());
+			if (new_gui.getGUI() != null) player.openInventory(new_gui.getGUI());
 		} else {
 			guis.get(player).gui = guis.get(player).setupGUI(guis.get(player).getPageID());
-			player.openInventory(guis.get(player).getGUI());
+			if (guis.get(player).getGUI() != null) player.openInventory(guis.get(player).getGUI());
 		}
 	}
 

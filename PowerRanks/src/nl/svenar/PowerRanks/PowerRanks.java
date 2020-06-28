@@ -673,6 +673,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			player.setPlayerListName(playerTablistNameBackup.get(player));
 
 			playerTablistNameBackup.put(player, player.getPlayerListName());
+			String uuid = player.getUniqueId().toString();
 
 			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 			File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
@@ -693,13 +694,54 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
 				String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
 				String namecolor = rankYaml.getString("Groups." + rank + ".chat.nameColor");
-				player.sendMessage("NameColor: " + namecolor);
-				player.sendMessage("NameColor: " + namecolor + " - " + player.getPlayerListName());
-				player.sendMessage("NameColor: " + chatColor(PowerRanks.colorChar.charAt(0), namecolor, false) + player.getPlayerListName());
 
+				String subprefix = "";
+				String subsuffix = "";
+
+				try {
+					if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
+						ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
+						for (String r : subranks.getKeys(false)) {
+							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+								subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0 ? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix") : "");
+							}
+
+							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+								subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0 ? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix") : "");
+
+							}
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+
+				subprefix = subprefix.trim();
+				subsuffix = subsuffix.trim();
+				
+//				if (subprefix.length() > 0)
+//					subprefix = subprefix + " ";
+//
+//				if (subsuffix.length() > 0)
+//					subsuffix = " " + subsuffix;
+
+				if (subsuffix.endsWith(" ")) {
+					subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
+				}
+
+				if (subsuffix.replaceAll(" ", "").length() == 0) {
+					subsuffix = "";
+				}
+//				format = format.replaceAll(" ", "");
 				format = format.replace("[name]", chatColor(PowerRanks.colorChar.charAt(0), namecolor, false) + player.getPlayerListName());
 				format = format.replace("[prefix]", chatColor(PowerRanks.colorChar.charAt(0), prefix, true));
 				format = format.replace("[suffix]", chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
+				format = format.replace("[subprefix]", chatColor(PowerRanks.colorChar.charAt(0), subprefix, true));
+				format = format.replace("[subsuffix]", chatColor(PowerRanks.colorChar.charAt(0), subsuffix, true));
+				
+				while (format.endsWith(" ")) {
+					format = format.substring(0, format.length() - 1);
+				}
 
 				player.setPlayerListName(format);
 			} catch (IOException | InvalidConfigurationException e) {

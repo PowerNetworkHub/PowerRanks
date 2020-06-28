@@ -149,6 +149,12 @@ commands:
    - "&a/pr disablebuild <rank>&2 - Disable building on a rank"
    - "&a/pr renamerank <from_rank> <to_rank>&2 - Rename a rank"
    - "&a/pr setdefaultrank <rank>&2 - Set the default rank for new players"
+   
+   - "&a/pr createusertag <tag> <text>&2 - Create a new user tag"
+   - "&a/pr editusertag <tag> <text>&2 - Edit a user tag"
+   - "&a/pr removeusertag <tag>&2 - Delete a user tag"
+   - "&a/pr setusertag <player> <tag>&2 - Assign a user tag"
+   
    - "&a/pr forceupdateconfigversion&2 - Update the version variable in all configuration files"
    - "&a/pr gui&2 - Show the commands GUI"
    - "&a/pr rankup&2 - Buy a rank"

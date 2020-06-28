@@ -20,6 +20,8 @@
 # Available options:
 # [prefix] rank name
 # [suffix] suffix
+# [subprefix] player's subrank prefix
+# [subsuffix] player's subrank suffix
 # [name] player name
 # --------------------
 # Signs
@@ -48,7 +50,7 @@ build_modification:
   enabled: true
 tablist_modification:
   enabled: true
-  format: '[prefix] [name] [suffix]'
+  format: '[prefix] [subprefix] [name] [subsuffix] [suffix]'
 signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"
