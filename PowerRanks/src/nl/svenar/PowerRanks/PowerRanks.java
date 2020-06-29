@@ -697,17 +697,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 				String subprefix = "";
 				String subsuffix = "";
+				String usertag = "";
 
 				try {
 					if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
 						ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
 						for (String r : subranks.getKeys(false)) {
 							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-								subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0 ? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix") : "");
+								subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0
+										? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix")
+										: "");
 							}
 
 							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-								subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0 ? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix") : "");
+								subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0
+										? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix")
+										: "");
 
 							}
 						}
@@ -718,12 +723,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 				subprefix = subprefix.trim();
 				subsuffix = subsuffix.trim();
-				
-//				if (subprefix.length() > 0)
-//					subprefix = subprefix + " ";
-//
-//				if (subsuffix.length() > 0)
-//					subsuffix = " " + subsuffix;
 
 				if (subsuffix.endsWith(" ")) {
 					subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
@@ -732,13 +731,28 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (subsuffix.replaceAll(" ", "").length() == 0) {
 					subsuffix = "";
 				}
-//				format = format.replaceAll(" ", "");
-				format = format.replace("[name]", chatColor(PowerRanks.colorChar.charAt(0), namecolor, false) + player.getPlayerListName());
-				format = format.replace("[prefix]", chatColor(PowerRanks.colorChar.charAt(0), prefix, true));
-				format = format.replace("[suffix]", chatColor(PowerRanks.colorChar.charAt(0), suffix, true));
-				format = format.replace("[subprefix]", chatColor(PowerRanks.colorChar.charAt(0), subprefix, true));
-				format = format.replace("[subsuffix]", chatColor(PowerRanks.colorChar.charAt(0), subsuffix, true));
-				
+
+				if (playerYaml.isSet("players." + uuid + ".usertag") && playerYaml.getString("players." + uuid + ".usertag").length() > 0) {
+					String tmp_usertag = playerYaml.getString("players." + uuid + ".usertag");
+
+					if (rankYaml.getConfigurationSection("Usertags") != null) {
+						ConfigurationSection tags = rankYaml.getConfigurationSection("Usertags");
+						for (String key : tags.getKeys(false)) {
+							if (key.equalsIgnoreCase(tmp_usertag)) {
+								usertag = rankYaml.getString("Usertags." + key) + ChatColor.RESET;
+								break;
+							}
+						}
+					}
+				}
+
+				format = Util.powerFormatter(format, Map.of("prefix", prefix, "suffix", suffix, "subprefix", subprefix, "subsuffix", subsuffix, "usertag", usertag, "player", namecolor + player.getPlayerListName())
+//								"msg", chatColor + "%2$s",
+//								"format", e.getFormat())
+						, '[', ']');
+
+				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+
 				while (format.endsWith(" ")) {
 					format = format.substring(0, format.length() - 1);
 				}
