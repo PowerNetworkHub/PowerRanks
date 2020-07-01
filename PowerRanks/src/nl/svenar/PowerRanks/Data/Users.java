@@ -1398,7 +1398,7 @@ public class Users implements Listener {
 				}
 
 				if (!tagExists) {
-					ranksYaml.set(tag, format);
+					ranksYaml.set("Usertags." + tag, format);
 					ranksYaml.save(ranksFile);
 					return true;
 				}
@@ -1428,7 +1428,7 @@ public class Users implements Listener {
 				}
 
 				if (tagExists) {
-					ranksYaml.set(tag, format);
+					ranksYaml.set("Usertags." + tag, format);
 					ranksYaml.save(ranksFile);
 					return true;
 				}
@@ -1458,7 +1458,7 @@ public class Users implements Listener {
 				}
 
 				if (tagExists) {
-					ranksYaml.set(tag, null);
+					ranksYaml.set("Usertags." + tag, null);
 					ranksYaml.save(ranksFile);
 					return true;
 				}
@@ -1497,7 +1497,7 @@ public class Users implements Listener {
 
 				if (tagExists) {
 					playersYaml.set("players." + uuid + ".usertag", tag);
-					ranksYaml.save(ranksFile);
+					playersYaml.save(playersFile);
 					return true;
 				}
 			}
@@ -1525,5 +1525,26 @@ public class Users implements Listener {
 			e.printStackTrace();
 		}
 		return tags;
+	}
+	
+	public String getUserTagValue(String usertag) {
+		String value = "";
+		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		YamlConfiguration ranksYaml = new YamlConfiguration();
+		
+		try {
+			ranksYaml.load(ranksFile);
+
+			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+				if (ranksYaml.isSet("Usertags." + usertag)) {
+					value = ranksYaml.getString("Usertags." + usertag);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return value;
 	}
 }

@@ -50,7 +50,7 @@ public class Messages {
 		console.sendMessage(ChatColor.DARK_GREEN + "Support me on: " + ChatColor.YELLOW + "https://ko-fi.com/svenar");
 		console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
-	
+
 	public static void messageStats(Player sender) {
 		Users users = new Users(null);
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
@@ -1420,7 +1420,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageListSubranks(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_listsubranks");
@@ -1435,9 +1435,9 @@ public class Messages {
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
-		
+
 	}
-	
+
 	public static void messageSuccessChangesubrank(ConsoleCommandSender sender, String subrank, String playername) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_change_subrank");
@@ -1445,7 +1445,7 @@ public class Messages {
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
-		
+
 	}
 
 	public static void messageErrorChangesubrank(Player sender, String subrank, String playername) {
@@ -1454,44 +1454,44 @@ public class Messages {
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageErrorChangesubrank(ConsoleCommandSender sender, String subrank, String playername) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_change_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageEnablesubrankprefix(Player sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankprefix");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageEnablesubrankprefix(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankprefix");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDisablesubrankprefix(Player sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankprefix");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageDisablesubrankprefix(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankprefix");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageEnablesubranksuffix(Player sender) {
@@ -1500,7 +1500,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageEnablesubranksuffix(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubranksuffix");
@@ -1514,7 +1514,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageDisablesubranksuffix(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubranksuffix");
@@ -1528,7 +1528,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageEnablesubrankpermissions(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankpermissions");
@@ -1542,10 +1542,253 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageDisablesubrankpermissions(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankpermissions");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public static void messageCommandUsageCreateusertag(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_create_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageCreateusertag(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_create_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageEditusertag(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_edit_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageEditusertag(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_edit_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageRemoveusertag(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageRemoveusertag(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageSetusertag(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageSetusertag(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_usertag");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageListusertags(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_list_usertags");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageListusertags(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_list_usertags");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	public static void messageCommandCreateusertagSuccess(Player sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_create_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandCreateusertagSuccess(ConsoleCommandSender sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_create_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandCreateusertagError(Player sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_create_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandCreateusertagError(ConsoleCommandSender sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_create_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandEditusertagSuccess(Player sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_edit_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandEditusertagSuccess(ConsoleCommandSender sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_edit_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandEditusertagError(Player sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_edit_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandEditusertagError(ConsoleCommandSender sender, String tag, String text) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_edit_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandRemoveusertagSuccess(Player sender, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_remove_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandRemoveusertagSuccess(ConsoleCommandSender sender, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_remove_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandRemoveusertagError(Player sender, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_remove_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandRemoveusertagError(ConsoleCommandSender sender, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_remove_usertag");
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetusertagSuccess(Player sender, String playername, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_usertag");
+		msg = Util.replaceAll(msg, "%argument_target%", playername);
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetusertagSuccess(ConsoleCommandSender sender, String playername, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_usertag");
+		msg = Util.replaceAll(msg, "%argument_target%", playername);
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetusertagError(Player sender, String playername, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_usertag");
+		msg = Util.replaceAll(msg, "%argument_target%", playername);
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetusertagError(ConsoleCommandSender sender, String playername, String tag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_usertag");
+		msg = Util.replaceAll(msg, "%argument_target%", playername);
+		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
