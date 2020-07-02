@@ -1648,6 +1648,33 @@ public class Cmd implements CommandExecutor {
 					s.delPlayerPermission(target_player, permission);
 				}
 			}
+			
+		} else if (args[0].equalsIgnoreCase("createusertag")) {
+			if (args.length == 3) {
+				final String tag = args[1];
+				final String text = args[2];
+				s.createUserTag(tag, text);
+			}
+
+		} else if (args[0].equalsIgnoreCase("editusertag")) {
+			if (args.length == 3) {
+				final String tag = args[1];
+				final String text = args[2];
+				s.editUserTag(tag, text);
+			}
+
+		} else if (args[0].equalsIgnoreCase("removeusertag")) {
+			if (args.length == 3) {
+				final String tag = args[1];
+				s.removeUserTag(tag);
+			}
+
+		} else if (args[0].equalsIgnoreCase("setusertag")) {
+			if (args.length == 3) {
+				final String player = args[1];
+				final String tag = args[2];
+				s.setUserTag(player, tag);
+			}
 		}
 		return false;
 	}
