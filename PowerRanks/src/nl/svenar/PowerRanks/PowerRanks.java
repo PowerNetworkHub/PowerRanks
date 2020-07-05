@@ -51,6 +51,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.collect.ImmutableMap;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -746,10 +748,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 
-				format = Util.powerFormatter(format, Map.of("prefix", prefix, "suffix", suffix, "subprefix", subprefix, "subsuffix", subsuffix, "usertag", usertag, "player", namecolor + player.getPlayerListName())
-//								"msg", chatColor + "%2$s",
-//								"format", e.getFormat())
-						, '[', ']');
+				if (format.contains("[name]")) {
+					String tmp_format = configYaml.getString("tablist_modification.format");
+					tmp_format = tmp_format.replace("[name]", "[player]");
+					configYaml.set("tablist_modification.format", tmp_format);
+					configYaml.save(configFile);
+					format = tmp_format;
+				}
+
+				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
+						.put("player", namecolor + player.getPlayerListName()).build(), '[', ']');
 
 				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
 

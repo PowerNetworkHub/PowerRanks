@@ -1,7 +1,6 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
-import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import com.google.common.collect.ImmutableMap;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
@@ -94,16 +95,29 @@ public class OnChat implements Listener {
 				}
 			}
 
-			format = Util.powerFormatter(format,
-					Map.of(
-							"prefix", prefix,
-							"suffix", suffix,
-							"subprefix", subprefix,
-							"subsuffix", subsuffix,
-							"usertag", usertag,
-							"player", nameColor + "%1$s",
-							"msg", chatColor + "%2$s",
-							"format", e.getFormat())
+//			format = Util.powerFormatter(format,
+//					Map.of(
+//							"prefix", prefix,
+//							"suffix", suffix,
+//							"subprefix", subprefix,
+//							"subsuffix", subsuffix,
+//							"usertag", usertag,
+//							"player", nameColor + "%1$s",
+//							"msg", chatColor + "%2$s",
+//							"format", e.getFormat())
+//					, '[', ']');
+			
+			format = Util.powerFormatter(format, 
+					ImmutableMap.<String, String>builder()
+				    .put("prefix", prefix)
+				    .put("suffix", suffix)
+				    .put("subprefix", subprefix)
+				    .put("subsuffix", subsuffix)
+				    .put("usertag", usertag)
+				    .put("player", nameColor + "%1$s")
+				    .put("msg", chatColor + "%2$s")
+				    .put("format", e.getFormat())
+				    .build()
 					, '[', ']');
 
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);

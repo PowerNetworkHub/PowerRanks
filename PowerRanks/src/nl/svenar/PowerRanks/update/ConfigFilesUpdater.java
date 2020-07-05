@@ -99,10 +99,13 @@ public class ConfigFilesUpdater {
 							}
 							if (tmpYamlConf.isList(tmp_field)) {
 								List<String> list = new ArrayList<String>();
-								for (String line : tmpYamlConf.getStringList(tmp_field)) {
-									list.add(line);
-								}
-								yamlConf.set(field, (Object) list);
+//								for (String line : tmpYamlConf.getStringList(tmp_field)) {
+//									list.add(line);
+//								}
+//								yamlConf.set(field, (Object) list);
+								
+								yamlConf.set(field, list);
+								System.arraycopy(tmpYamlConf.getStringList(tmp_field), 0, list, 0, tmpYamlConf.getStringList(tmp_field).size());
 							}
 						}
 						if ((tmpYamlConf.isBoolean(tmp_field) != yamlConf.isBoolean(field)) || (tmpYamlConf.isList(tmp_field) != yamlConf.isList(field)) || (tmpYamlConf.isString(tmp_field) != yamlConf.isString(field))

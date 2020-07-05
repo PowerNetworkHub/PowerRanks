@@ -772,6 +772,35 @@ public class Cmd implements CommandExecutor {
 						Messages.messageCommandUsageSetusertag(player);
 					}
 
+				} else if (args[0].equalsIgnoreCase("clearusertag")) {
+					if (args.length == 1) {
+						if (sender.hasPermission("powerranks.cmd.usertag")) {
+							final String playername = player.getName();
+							final boolean result = s.clearUserTag(playername);
+							if (result) {
+								Messages.messageCommandClearusertagSuccess(player, playername);
+							} else {
+								Messages.messageCommandClearusertagError(player, playername);
+							}
+						} else {
+							Messages.noPermission(player);
+						}
+					} else if (args.length == 2) {
+						if (sender.hasPermission("powerranks.cmd.admin")) {
+							final String playername = args[1];
+							final boolean result = s.clearUserTag(playername);
+							if (result) {
+								Messages.messageCommandClearusertagSuccess(player, playername);
+							} else {
+								Messages.messageCommandClearusertagError(player, playername);
+							}
+						} else {
+							Messages.noPermission(player);
+						}
+					} else {
+						Messages.messageCommandUsageSetusertag(player);
+					}
+
 				} else if (args[0].equalsIgnoreCase("listusertags")) {
 					if (sender.hasPermission("powerranks.cmd.usertag")) {
 						if (args.length == 1) {
@@ -782,6 +811,48 @@ public class Cmd implements CommandExecutor {
 							}
 						} else {
 							Messages.messageCommandUsageListusertags(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("setpromoterank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String rankname = args[1];
+							final String tag = args[2];
+						} else {
+							Messages.messageCommandUsageSetpromoterank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("setdemoterank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 3) {
+							final String rankname = args[1];
+							final String tag = args[2];
+						} else {
+							Messages.messageCommandUsageSetdemoterank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("clearpromoterank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 2) {
+							final String rankname = args[1];
+						} else {
+							Messages.messageCommandUsageClearpromoterank(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("cleardemoterank")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 2) {
+							final String rankname = args[1];
+						} else {
+							Messages.messageCommandUsageCleardemoterank(player);
 						}
 					} else {
 						Messages.noPermission(player);
@@ -1325,6 +1396,19 @@ public class Cmd implements CommandExecutor {
 						Messages.messageCommandUsageSetusertag(console);
 					}
 
+				} else if (args[0].equalsIgnoreCase("clearusertag")) {
+					if (args.length == 2) {
+						final String player = args[1];
+						final boolean result = s.clearUserTag(player);
+						if (result) {
+							Messages.messageCommandClearusertagSuccess(console, player);
+						} else {
+							Messages.messageCommandClearusertagError(console, player);
+						}
+					} else {
+						Messages.messageCommandUsageSetusertag(console);
+					}
+
 				} else if (args[0].equalsIgnoreCase("listusertags")) {
 					if (args.length == 1) {
 						Set<String> tags = s.getUserTags();
@@ -1648,7 +1732,7 @@ public class Cmd implements CommandExecutor {
 					s.delPlayerPermission(target_player, permission);
 				}
 			}
-			
+
 		} else if (args[0].equalsIgnoreCase("createusertag")) {
 			if (args.length == 3) {
 				final String tag = args[1];

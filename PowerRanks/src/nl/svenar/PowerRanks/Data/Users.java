@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.command.ConsoleCommandSender;
@@ -1388,13 +1389,16 @@ public class Users implements Listener {
 			ranksYaml.load(ranksFile);
 
 			if (ranksYaml.getConfigurationSection("Usertags") != null) {
-				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
 				boolean tagExists = false;
-				for (String key : tags.getKeys(false)) {
-					if (key.equalsIgnoreCase(tag)) {
-						tagExists = true;
-						break;
+				try {
+					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+					for (String key : tags.getKeys(false)) {
+						if (key.equalsIgnoreCase(tag)) {
+							tagExists = true;
+							break;
+						}
 					}
+				} catch (Exception e) {
 				}
 
 				if (!tagExists) {
@@ -1418,19 +1422,22 @@ public class Users implements Listener {
 			ranksYaml.load(ranksFile);
 
 			if (ranksYaml.getConfigurationSection("Usertags") != null) {
-				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
-				boolean tagExists = false;
-				for (String key : tags.getKeys(false)) {
-					if (key.equalsIgnoreCase(tag)) {
-						tagExists = true;
-						break;
+				try {
+					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+					boolean tagExists = false;
+					for (String key : tags.getKeys(false)) {
+						if (key.equalsIgnoreCase(tag)) {
+							tagExists = true;
+							break;
+						}
 					}
-				}
-
-				if (tagExists) {
-					ranksYaml.set("Usertags." + tag, format);
-					ranksYaml.save(ranksFile);
-					return true;
+	
+					if (tagExists) {
+						ranksYaml.set("Usertags." + tag, format);
+						ranksYaml.save(ranksFile);
+						return true;
+					}
+				} catch (Exception e) {
 				}
 			}
 
@@ -1448,19 +1455,22 @@ public class Users implements Listener {
 			ranksYaml.load(ranksFile);
 
 			if (ranksYaml.getConfigurationSection("Usertags") != null) {
-				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
-				boolean tagExists = false;
-				for (String key : tags.getKeys(false)) {
-					if (key.equalsIgnoreCase(tag)) {
-						tagExists = true;
-						break;
+				try {
+					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+					boolean tagExists = false;
+					for (String key : tags.getKeys(false)) {
+						if (key.equalsIgnoreCase(tag)) {
+							tagExists = true;
+							break;
+						}
 					}
-				}
-
-				if (tagExists) {
-					ranksYaml.set("Usertags." + tag, null);
-					ranksYaml.save(ranksFile);
-					return true;
+	
+					if (tagExists) {
+						ranksYaml.set("Usertags." + tag, null);
+						ranksYaml.save(ranksFile);
+						return true;
+					}
+				} catch (Exception e) {
 				}
 			}
 
@@ -1478,7 +1488,7 @@ public class Users implements Listener {
 		Player player = Bukkit.getServer().getPlayer(playername);
 		if (player == null)
 			return false;
-		
+
 		String uuid = player.getUniqueId().toString();
 
 		try {
@@ -1486,19 +1496,22 @@ public class Users implements Listener {
 			playersYaml.load(playersFile);
 
 			if (ranksYaml.getConfigurationSection("Usertags") != null) {
-				ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
-				boolean tagExists = false;
-				for (String key : tags.getKeys(false)) {
-					if (key.equalsIgnoreCase(tag)) {
-						tagExists = true;
-						break;
+				try {
+					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+					boolean tagExists = false;
+					for (String key : tags.getKeys(false)) {
+						if (key.equalsIgnoreCase(tag)) {
+							tagExists = true;
+							break;
+						}
 					}
-				}
-
-				if (tagExists) {
-					playersYaml.set("players." + uuid + ".usertag", tag);
-					playersYaml.save(playersFile);
-					return true;
+	
+					if (tagExists) {
+						playersYaml.set("players." + uuid + ".usertag", tag);
+						playersYaml.save(playersFile);
+						return true;
+					}
+				} catch (Exception e) {
 				}
 			}
 
@@ -1507,9 +1520,9 @@ public class Users implements Listener {
 		}
 		return false;
 	}
-	
+
 	public Set<String> getUserTags() {
-		Set<String> tags = null;
+		Set<String> tags = new HashSet<String>();
 		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration ranksYaml = new YamlConfiguration();
 
@@ -1517,8 +1530,11 @@ public class Users implements Listener {
 			ranksYaml.load(ranksFile);
 
 			if (ranksYaml.getConfigurationSection("Usertags") != null) {
-				ConfigurationSection tmp_tags = ranksYaml.getConfigurationSection("Usertags");
-				tags = tmp_tags.getKeys(false);
+				try {
+					ConfigurationSection tmp_tags = ranksYaml.getConfigurationSection("Usertags");
+					tags = tmp_tags.getKeys(false);
+				} catch (Exception e) {
+				}
 			}
 
 		} catch (Exception e) {
@@ -1526,12 +1542,12 @@ public class Users implements Listener {
 		}
 		return tags;
 	}
-	
+
 	public String getUserTagValue(String usertag) {
 		String value = "";
 		File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		YamlConfiguration ranksYaml = new YamlConfiguration();
-		
+
 		try {
 			ranksYaml.load(ranksFile);
 
@@ -1544,7 +1560,29 @@ public class Users implements Listener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return value;
+	}
+
+	public boolean clearUserTag(String playername) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			playersYaml.set("players." + uuid + ".usertag", "");
+			playersYaml.save(playersFile);
+			return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

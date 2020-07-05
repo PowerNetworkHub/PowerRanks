@@ -50,7 +50,7 @@ build_modification:
   enabled: true
 tablist_modification:
   enabled: true
-  format: '[prefix] [subprefix] [name] [subsuffix] [suffix]'
+  format: '[prefix] [subprefix] [player] [subsuffix] [suffix]'
 signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"
