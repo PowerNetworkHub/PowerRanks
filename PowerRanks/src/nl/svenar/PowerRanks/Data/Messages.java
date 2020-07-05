@@ -1551,26 +1551,6 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	public static void messageCommandUsageCreateusertag(Player sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
@@ -1627,7 +1607,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageClearusertag(Player sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_clear_usertag");
@@ -1655,7 +1635,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandCreateusertagSuccess(Player sender, String tag, String text) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_create_usertag");
@@ -1795,7 +1775,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandClearusertagSuccess(Player sender, String playername) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_clear_usertag");
@@ -1834,7 +1814,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageSetpromoterank(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_promoterank");
@@ -1848,7 +1828,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageSetdemoterank(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_demoterank");
@@ -1862,7 +1842,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageClearpromoterank(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_clear_promoterank");
@@ -1876,11 +1856,147 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageCleardemoterank(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_clear_demoterank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetpromoterankSuccess(Player sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetpromoterankSuccess(ConsoleCommandSender sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetpromoterankError(Player sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetpromoterankError(ConsoleCommandSender sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetdemoterankSuccess(Player sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetdemoterankSuccess(ConsoleCommandSender sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetdemoterankError(Player sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandSetdemoterankError(ConsoleCommandSender sender, String rankname, String promote_rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandClearpromoterankSuccess(Player sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_clear_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandClearpromoterankSuccess(ConsoleCommandSender sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_clear_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandClearpromoterankError(Player sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_clear_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageCommandClearpromoterankError(ConsoleCommandSender sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_clear_promoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageCommandCleardemoterankSuccess(Player sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_clear_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandCleardemoterankSuccess(ConsoleCommandSender sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_clear_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandCleardemoterankError(Player sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_clear_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageCommandCleardemoterankError(ConsoleCommandSender sender, String rankname) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_clear_demoterank");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
 	}
 }

@@ -819,7 +819,12 @@ public class Cmd implements CommandExecutor {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						if (args.length == 3) {
 							final String rankname = args[1];
-							final String tag = args[2];
+							final String promote_rank = args[2];
+							if (s.setPromoteRank(rankname, promote_rank)) {
+								Messages.messageCommandSetpromoterankSuccess(player, rankname, promote_rank);
+							} else {
+								 Messages.messageCommandSetpromoterankError(player, rankname, promote_rank);
+							}
 						} else {
 							Messages.messageCommandUsageSetpromoterank(player);
 						}
@@ -830,7 +835,12 @@ public class Cmd implements CommandExecutor {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						if (args.length == 3) {
 							final String rankname = args[1];
-							final String tag = args[2];
+							final String promote_rank = args[2];
+							if (s.setDemoteRank(rankname, promote_rank)) {
+								Messages.messageCommandSetdemoterankSuccess(player, rankname, promote_rank);
+							} else {
+								 Messages.messageCommandSetdemoterankError(player, rankname, promote_rank);
+							}
 						} else {
 							Messages.messageCommandUsageSetdemoterank(player);
 						}
@@ -841,6 +851,11 @@ public class Cmd implements CommandExecutor {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						if (args.length == 2) {
 							final String rankname = args[1];
+							if (s.clearPromoteRank(rankname)) {
+								Messages.messageCommandClearpromoterankSuccess(player, rankname);
+							} else {
+								 Messages.messageCommandClearpromoterankError(player, rankname);
+							}
 						} else {
 							Messages.messageCommandUsageClearpromoterank(player);
 						}
@@ -851,6 +866,11 @@ public class Cmd implements CommandExecutor {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
 						if (args.length == 2) {
 							final String rankname = args[1];
+							if (s.clearDemoteRank(rankname)) {
+								Messages.messageCommandCleardemoterankSuccess(player, rankname);
+							} else {
+								 Messages.messageCommandCleardemoterankError(player, rankname);
+							}
 						} else {
 							Messages.messageCommandUsageCleardemoterank(player);
 						}

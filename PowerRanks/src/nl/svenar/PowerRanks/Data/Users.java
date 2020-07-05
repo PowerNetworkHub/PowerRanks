@@ -1388,18 +1388,27 @@ public class Users implements Listener {
 		try {
 			ranksYaml.load(ranksFile);
 
-			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+			if (ranksYaml.isSet("Usertags")) {
 				boolean tagExists = false;
-				try {
-					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
-					for (String key : tags.getKeys(false)) {
-						if (key.equalsIgnoreCase(tag)) {
-							tagExists = true;
-							break;
+				if (!ranksYaml.isString("Usertags")) {
+					try {
+						ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
+						for (String key : tags.getKeys(false)) {
+							if (key.equalsIgnoreCase(tag)) {
+								tagExists = true;
+								break;
+							}
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
+				} else {
+					ranksYaml.set("Usertags", null);
+					ranksYaml.set("Usertags." + tag, format);
+					ranksYaml.save(ranksFile);
 				}
+
+				PowerRanks.log.info("tagExists: " + tagExists);
 
 				if (!tagExists) {
 					ranksYaml.set("Usertags." + tag, format);
@@ -1421,7 +1430,7 @@ public class Users implements Listener {
 		try {
 			ranksYaml.load(ranksFile);
 
-			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+			if (ranksYaml.isSet("Usertags")) {
 				try {
 					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
 					boolean tagExists = false;
@@ -1431,7 +1440,7 @@ public class Users implements Listener {
 							break;
 						}
 					}
-	
+
 					if (tagExists) {
 						ranksYaml.set("Usertags." + tag, format);
 						ranksYaml.save(ranksFile);
@@ -1454,7 +1463,7 @@ public class Users implements Listener {
 		try {
 			ranksYaml.load(ranksFile);
 
-			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+			if (ranksYaml.isSet("Usertags")) {
 				try {
 					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
 					boolean tagExists = false;
@@ -1464,7 +1473,7 @@ public class Users implements Listener {
 							break;
 						}
 					}
-	
+
 					if (tagExists) {
 						ranksYaml.set("Usertags." + tag, null);
 						ranksYaml.save(ranksFile);
@@ -1495,7 +1504,7 @@ public class Users implements Listener {
 			ranksYaml.load(ranksFile);
 			playersYaml.load(playersFile);
 
-			if (ranksYaml.getConfigurationSection("Usertags") != null) {
+			if (ranksYaml.isSet("Usertags")) {
 				try {
 					ConfigurationSection tags = ranksYaml.getConfigurationSection("Usertags");
 					boolean tagExists = false;
@@ -1505,7 +1514,7 @@ public class Users implements Listener {
 							break;
 						}
 					}
-	
+
 					if (tagExists) {
 						playersYaml.set("players." + uuid + ".usertag", tag);
 						playersYaml.save(playersFile);
@@ -1584,5 +1593,21 @@ public class Users implements Listener {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public boolean setPromoteRank(String rank, String promote_rank) {
+		return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.promote", promote_rank);
+	}
+
+	public boolean setDemoteRank(String rank, String promote_rank) {
+		return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote", promote_rank);
+	}
+
+	public boolean clearPromoteRank(String rank) {
+		return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.promote", "");
+	}
+
+	public boolean clearDemoteRank(String rank) {
+		return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote", "");
 	}
 }

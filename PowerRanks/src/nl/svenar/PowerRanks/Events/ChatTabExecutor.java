@@ -74,6 +74,11 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("removeusertag");
 				commands_list.add("setusertag");
 				commands_list.add("listusertags");
+				commands_list.add("clearusertag");
+				commands_list.add("setpromoterank");
+				commands_list.add("setdemoterank");
+				commands_list.add("clearpromoterank");
+				commands_list.add("cleardemoterank");
 
 				for (String command : commands_list) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -85,7 +90,8 @@ public class ChatTabExecutor implements TabCompleter {
 				if (args[0].equalsIgnoreCase("setown") || args[0].equalsIgnoreCase("addperm") || args[0].equalsIgnoreCase("delperm") || args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
 						|| args[0].equalsIgnoreCase("enablebuild") || args[0].equalsIgnoreCase("disablebuild") || args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
-						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank")) {
+						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
+						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))
@@ -94,15 +100,15 @@ public class ChatTabExecutor implements TabCompleter {
 				}
 
 				if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("promote") || args[0].equalsIgnoreCase("demote") || args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("addsubrank")
-						|| args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("listsubranks") || args[0].equalsIgnoreCase("addplayerperm") || args[0].equalsIgnoreCase("delplayerperm") || args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix")
-						|| args[0].equalsIgnoreCase("enablesubranksuffix") || args[0].equalsIgnoreCase("disablesubranksuffix") || args[0].equalsIgnoreCase("enablesubrankpermissions")
-						|| args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("setusertag")) {
+						|| args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("listsubranks") || args[0].equalsIgnoreCase("addplayerperm") || args[0].equalsIgnoreCase("delplayerperm")
+						|| args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix") || args[0].equalsIgnoreCase("enablesubranksuffix") || args[0].equalsIgnoreCase("disablesubranksuffix")
+						|| args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("setusertag") || args[0].equalsIgnoreCase("clearusertag")) {
 					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 						if (player.getName().toLowerCase().contains(args[1].toLowerCase()))
 							list.add(player.getName());
 					}
 				}
-				
+
 				if (args[0].equalsIgnoreCase("setusertag") || args[0].equalsIgnoreCase("editusertag") || args[0].equalsIgnoreCase("removeusertag")) {
 					Users s = new Users(this.m);
 					for (String tag : s.getUserTags()) {
@@ -113,14 +119,14 @@ public class ChatTabExecutor implements TabCompleter {
 			}
 
 			if (args.length == 3) {
-				if (args[0].equalsIgnoreCase("set")) {
+				if (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[2].toLowerCase()))
 							list.add(rank);
 					}
 				}
-				
+
 				if (args[0].equalsIgnoreCase("setusertag")) {
 					Users s = new Users(this.m);
 					for (String tag : s.getUserTags()) {
@@ -162,7 +168,7 @@ public class ChatTabExecutor implements TabCompleter {
 							list.add(perm);
 					}
 				}
-				
+
 				if (args[0].equalsIgnoreCase("delplayerperm")) {
 					Users s = new Users(this.m);
 					for (String perm : s.getPlayerPermissions(args[1])) {

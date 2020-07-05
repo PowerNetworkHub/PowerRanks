@@ -84,6 +84,18 @@ messages:
    error_set_usertag: "%plugin_prefix% &cError changing %argument_target%'s usertag to: %argument_usertag_tag%"
    success_clear_usertag: "%plugin_prefix% &aCleared %argument_target%'s usertag!"
    error_clear_usertag: "%plugin_prefix% &cError clearing %argument_target%'s usertag!"
+   success_set_promoterank: "%plugin_prefix% &aChanged the promote rank to '%argument_target_rank%' on rank: %argument_rank%"
+   error_set_promoterank: "%plugin_prefix% &cError changing the promote rank to '%argument_target_rank%' on rank: %argument_rank%"
+   success_set_demoterank: "%plugin_prefix% &aChanged the demote rank to '%argument_target_rank%' on rank: %argument_rank%"
+   error_set_demoterank: "%plugin_prefix% &cError changing the demote rank to '%argument_target_rank%' on rank: %argument_rank%"
+   
+   success_clear_promoterank: "%plugin_prefix% &aCleared the promote rank on rank: %argument_rank%"
+   
+   error_clear_promoterank: "%plugin_prefix% &cError clearing the promote rank on rank: %argument_rank%"
+   
+   success_clear_demoterank: "%plugin_prefix% &aCleared the demote rank on rank: %argument_rank%"
+   
+   error_clear_demoterank: "%plugin_prefix% &cError clearing the demote rank on rank: %argument_rank%"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -144,6 +156,10 @@ commands:
    - "&a/pr setown <rankName>&2 - Set your own rank"
    - "&a/pr promote <playerName>&2 - Promote a player to the next rank"
    - "&a/pr demote <playerName>&2 - Demote a player to the previous rank"
+   - "&a/pr setpromoterank <rankName> <promoteRankName>&2 - Change the rank to promote to"
+   - "&a/pr setdemoterank <rankName> <demoteRankName>&2 - Change the rank to demote to"
+   - "&a/pr clearpromoterank <rankName>&2 - Clear the promote rank"
+   - "&a/pr cleardemoterank <rankName>&2 - Clear the demote rank"
    - "&a/pr check [playerName]&2 - Check someone's rank"
    - "&a/pr listranks&2 - List all ranks"
    - "&a/pr listpermissions <rankName>&2 - List all permissions in a rank"
