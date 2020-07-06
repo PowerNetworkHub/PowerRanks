@@ -63,6 +63,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + ChatColor.DARK_GREEN + (PowerRanks.plugin_hook_deluxetags ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
@@ -78,6 +79,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + ChatColor.DARK_GREEN + (PowerRanks.plugin_hook_deluxetags ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
@@ -1943,7 +1945,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandClearpromoterankSuccess(ConsoleCommandSender sender, String rankname) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_clear_promoterank");
@@ -1957,17 +1959,17 @@ public class Messages {
 		String msg = getGeneralMessage(langYaml, "messages.error_clear_promoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandClearpromoterankError(ConsoleCommandSender sender, String rankname) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_clear_promoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandCleardemoterankSuccess(Player sender, String rankname) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_clear_demoterank");
@@ -1975,7 +1977,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandCleardemoterankSuccess(ConsoleCommandSender sender, String rankname) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_clear_demoterank");
@@ -1989,14 +1991,36 @@ public class Messages {
 		String msg = getGeneralMessage(langYaml, "messages.error_clear_demoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandCleardemoterankError(ConsoleCommandSender sender, String rankname) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_clear_demoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
+	}
+
+	public static void messageUsertagsDisabled(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String external_plugin_name = "None";
+		if (PowerRanks.plugin_hook_deluxetags)
+			external_plugin_name = "DeluxeTags";
+		String msg = getGeneralMessage(langYaml, "messages.error_usertags_disable_use_external_plugin");
+		msg = Util.replaceAll(msg, "%argument_external_plugin%", external_plugin_name); // external_plugin
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageUsertagsDisabled(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String external_plugin_name = "None";
+		if (PowerRanks.plugin_hook_deluxetags)
+			external_plugin_name = "DeluxeTags";
+		String msg = getGeneralMessage(langYaml, "messages.error_usertags_disable_use_external_plugin");
+		msg = Util.replaceAll(msg, "%argument_external_plugin%", external_plugin_name); // external_plugin
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
 	}
 }

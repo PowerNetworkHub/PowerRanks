@@ -16,7 +16,7 @@
 # %argument_cost% | command argument cost
 # %argument_usertag_tag% | command argument usertag tag
 # %argument_usertag_text% | command argument usertag text
-
+# %argument_external_plugin% | command argument external plugin name
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
 
@@ -88,14 +88,11 @@ messages:
    error_set_promoterank: "%plugin_prefix% &cError changing the promote rank to '%argument_target_rank%' on rank: %argument_rank%"
    success_set_demoterank: "%plugin_prefix% &aChanged the demote rank to '%argument_target_rank%' on rank: %argument_rank%"
    error_set_demoterank: "%plugin_prefix% &cError changing the demote rank to '%argument_target_rank%' on rank: %argument_rank%"
-   
    success_clear_promoterank: "%plugin_prefix% &aCleared the promote rank on rank: %argument_rank%"
-   
    error_clear_promoterank: "%plugin_prefix% &cError clearing the promote rank on rank: %argument_rank%"
-   
    success_clear_demoterank: "%plugin_prefix% &aCleared the demote rank on rank: %argument_rank%"
-   
    error_clear_demoterank: "%plugin_prefix% &cError clearing the demote rank on rank: %argument_rank%"
+   error_usertags_disable_use_external_plugin: "%plugin_prefix% &cUsertags disabled, use %argument_external_plugin% instead"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"

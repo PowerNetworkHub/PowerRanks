@@ -53,6 +53,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.ImmutableMap;
 
+import me.clip.deluxetags.DeluxeTag;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -72,6 +73,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private static Economy vaultEconomy;
 	private static Permission vaultPermissions;
 	private static PowerRanksExpansion placeholderapiExpansion;
+	public static boolean plugin_hook_deluxetags = false;
 	// Soft Dependencies
 
 	File configFile;
@@ -101,6 +103,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.main = this;
+
+//		DeluxeTags.
+//		DeluxeTag.
 
 //		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
@@ -202,6 +207,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private void setupSoftDependencies() {
 		boolean has_vault = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault");
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && getConfigBool("plugin_hook.placeholderapi");
+		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null && getConfigBool("plugin_hook.deluxetags");
 
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 		if (has_vault) {
@@ -216,7 +222,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.placeholderapiExpansion.register();
 		}
 
-		if (!has_vault && !has_placeholderapi)
+		if (has_deluxetags) {
+			PowerRanks.log.info("DeluxeTags found!");
+			plugin_hook_deluxetags = true;
+		}
+
+		if (!has_vault && !has_placeholderapi && !has_deluxetags)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
 
@@ -756,8 +767,49 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					format = tmp_format;
 				}
 
+				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+						.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", namecolor + player.getPlayerListName()).build(), '[', ']');
+
+				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+
+				while (format.endsWith(" ")) {
+					format = format.substring(0, format.length() - 1);
+				}
+
+				player.setPlayerListName(format);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor) {
+		try {
+			player.setPlayerListName(playerTablistNameBackup.get(player));
+
+			playerTablistNameBackup.put(player, player.getPlayerListName());
+
+			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+			YamlConfiguration configYaml = new YamlConfiguration();
+			try {
+				configYaml.load(configFile);
+				if (!configYaml.getBoolean("tablist_modification.enabled"))
+					return;
+
+				String format = configYaml.getString("tablist_modification.format");
+
+				if (format.contains("[name]")) {
+					String tmp_format = configYaml.getString("tablist_modification.format");
+					tmp_format = tmp_format.replace("[name]", "[player]");
+					configYaml.set("tablist_modification.format", tmp_format);
+					configYaml.save(configFile);
+					format = tmp_format;
+				}
+
 				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
-						.put("player", namecolor + player.getPlayerListName()).build(), '[', ']');
+						.put("player", nameColor + player.getPlayerListName()).build(), '[', ']');
 
 				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
 

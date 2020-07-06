@@ -689,131 +689,155 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("createusertag")) {
-					if (sender.hasPermission("powerranks.cmd.admin")) {
-						if (args.length == 3) {
-							final String tag = args[1];
-							final String text = args[2];
-							final boolean result = s.createUserTag(tag, text);
-							if (result) {
-								Messages.messageCommandCreateusertagSuccess(player, tag, text);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (sender.hasPermission("powerranks.cmd.admin")) {
+							if (args.length == 3) {
+								final String tag = args[1];
+								final String text = args[2];
+								final boolean result = s.createUserTag(tag, text);
+								if (result) {
+									Messages.messageCommandCreateusertagSuccess(player, tag, text);
+								} else {
+									Messages.messageCommandCreateusertagError(player, tag, text);
+								}
 							} else {
-								Messages.messageCommandCreateusertagError(player, tag, text);
+								Messages.messageCommandUsageCreateusertag(player);
 							}
 						} else {
-							Messages.messageCommandUsageCreateusertag(player);
+							Messages.noPermission(player);
 						}
 					} else {
-						Messages.noPermission(player);
+						Messages.messageUsertagsDisabled(player);
 					}
 
 				} else if (args[0].equalsIgnoreCase("editusertag")) {
-					if (sender.hasPermission("powerranks.cmd.admin")) {
-						if (args.length == 3) {
-							final String tag = args[1];
-							final String text = args[2];
-							final boolean result = s.editUserTag(tag, text);
-							if (result) {
-								Messages.messageCommandEditusertagSuccess(player, tag, text);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (sender.hasPermission("powerranks.cmd.admin")) {
+							if (args.length == 3) {
+								final String tag = args[1];
+								final String text = args[2];
+								final boolean result = s.editUserTag(tag, text);
+								if (result) {
+									Messages.messageCommandEditusertagSuccess(player, tag, text);
+								} else {
+									Messages.messageCommandEditusertagError(player, tag, text);
+								}
 							} else {
-								Messages.messageCommandEditusertagError(player, tag, text);
+								Messages.messageCommandUsageEditusertag(player);
 							}
 						} else {
-							Messages.messageCommandUsageEditusertag(player);
+							Messages.noPermission(player);
 						}
 					} else {
-						Messages.noPermission(player);
+						Messages.messageUsertagsDisabled(player);
 					}
 
 				} else if (args[0].equalsIgnoreCase("removeusertag")) {
-					if (sender.hasPermission("powerranks.cmd.admin")) {
-						if (args.length == 3) {
-							final String tag = args[1];
-							final boolean result = s.removeUserTag(tag);
-							if (result) {
-								Messages.messageCommandRemoveusertagSuccess(player, tag);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (sender.hasPermission("powerranks.cmd.admin")) {
+							if (args.length == 3) {
+								final String tag = args[1];
+								final boolean result = s.removeUserTag(tag);
+								if (result) {
+									Messages.messageCommandRemoveusertagSuccess(player, tag);
+								} else {
+									Messages.messageCommandRemoveusertagError(player, tag);
+								}
 							} else {
-								Messages.messageCommandRemoveusertagError(player, tag);
+								Messages.messageCommandUsageRemoveusertag(player);
 							}
 						} else {
-							Messages.messageCommandUsageRemoveusertag(player);
+							Messages.noPermission(player);
 						}
 					} else {
-						Messages.noPermission(player);
+						Messages.messageUsertagsDisabled(player);
 					}
 
 				} else if (args[0].equalsIgnoreCase("setusertag")) {
-					if (args.length == 2) {
-						if (sender.hasPermission("powerranks.cmd.usertag")) {
-							final String playername = player.getName();
-							final String tag = args[1];
-							final boolean result = s.setUserTag(playername, tag);
-							if (result) {
-								Messages.messageCommandSetusertagSuccess(player, playername, tag);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 2) {
+							if (sender.hasPermission("powerranks.cmd.usertag")) {
+								final String playername = player.getName();
+								final String tag = args[1];
+								final boolean result = s.setUserTag(playername, tag);
+								if (result) {
+									Messages.messageCommandSetusertagSuccess(player, playername, tag);
+								} else {
+									Messages.messageCommandSetusertagError(player, playername, tag);
+								}
 							} else {
-								Messages.messageCommandSetusertagError(player, playername, tag);
+								Messages.noPermission(player);
+							}
+						} else if (args.length == 3) {
+							if (sender.hasPermission("powerranks.cmd.admin")) {
+								final String playername = args[1];
+								final String tag = args[2];
+								final boolean result = s.setUserTag(playername, tag);
+								if (result) {
+									Messages.messageCommandSetusertagSuccess(player, playername, tag);
+								} else {
+									Messages.messageCommandSetusertagError(player, playername, tag);
+								}
+							} else {
+								Messages.noPermission(player);
 							}
 						} else {
-							Messages.noPermission(player);
-						}
-					} else if (args.length == 3) {
-						if (sender.hasPermission("powerranks.cmd.admin")) {
-							final String playername = args[1];
-							final String tag = args[2];
-							final boolean result = s.setUserTag(playername, tag);
-							if (result) {
-								Messages.messageCommandSetusertagSuccess(player, playername, tag);
-							} else {
-								Messages.messageCommandSetusertagError(player, playername, tag);
-							}
-						} else {
-							Messages.noPermission(player);
+							Messages.messageCommandUsageSetusertag(player);
 						}
 					} else {
-						Messages.messageCommandUsageSetusertag(player);
+						Messages.messageUsertagsDisabled(player);
 					}
 
 				} else if (args[0].equalsIgnoreCase("clearusertag")) {
-					if (args.length == 1) {
-						if (sender.hasPermission("powerranks.cmd.usertag")) {
-							final String playername = player.getName();
-							final boolean result = s.clearUserTag(playername);
-							if (result) {
-								Messages.messageCommandClearusertagSuccess(player, playername);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 1) {
+							if (sender.hasPermission("powerranks.cmd.usertag")) {
+								final String playername = player.getName();
+								final boolean result = s.clearUserTag(playername);
+								if (result) {
+									Messages.messageCommandClearusertagSuccess(player, playername);
+								} else {
+									Messages.messageCommandClearusertagError(player, playername);
+								}
 							} else {
-								Messages.messageCommandClearusertagError(player, playername);
+								Messages.noPermission(player);
+							}
+						} else if (args.length == 2) {
+							if (sender.hasPermission("powerranks.cmd.admin")) {
+								final String playername = args[1];
+								final boolean result = s.clearUserTag(playername);
+								if (result) {
+									Messages.messageCommandClearusertagSuccess(player, playername);
+								} else {
+									Messages.messageCommandClearusertagError(player, playername);
+								}
+							} else {
+								Messages.noPermission(player);
 							}
 						} else {
-							Messages.noPermission(player);
-						}
-					} else if (args.length == 2) {
-						if (sender.hasPermission("powerranks.cmd.admin")) {
-							final String playername = args[1];
-							final boolean result = s.clearUserTag(playername);
-							if (result) {
-								Messages.messageCommandClearusertagSuccess(player, playername);
-							} else {
-								Messages.messageCommandClearusertagError(player, playername);
-							}
-						} else {
-							Messages.noPermission(player);
+							Messages.messageCommandUsageSetusertag(player);
 						}
 					} else {
-						Messages.messageCommandUsageSetusertag(player);
+						Messages.messageUsertagsDisabled(player);
 					}
 
 				} else if (args[0].equalsIgnoreCase("listusertags")) {
-					if (sender.hasPermission("powerranks.cmd.usertag")) {
-						if (args.length == 1) {
-							Set<String> tags = s.getUserTags();
-							player.sendMessage("Usertags(" + tags.size() + "):");
-							for (String tag : tags) {
-								player.sendMessage(tag + " - " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), s.getUserTagValue(tag), true));
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (sender.hasPermission("powerranks.cmd.usertag")) {
+							if (args.length == 1) {
+								Set<String> tags = s.getUserTags();
+								player.sendMessage("Usertags(" + tags.size() + "):");
+								for (String tag : tags) {
+									player.sendMessage(tag + " - " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), s.getUserTagValue(tag), true));
+								}
+							} else {
+								Messages.messageCommandUsageListusertags(player);
 							}
 						} else {
-							Messages.messageCommandUsageListusertags(player);
+							Messages.noPermission(player);
 						}
 					} else {
-						Messages.noPermission(player);
+						Messages.messageUsertagsDisabled(player);
 					}
 				} else if (args[0].equalsIgnoreCase("setpromoterank")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
@@ -823,7 +847,7 @@ public class Cmd implements CommandExecutor {
 							if (s.setPromoteRank(rankname, promote_rank)) {
 								Messages.messageCommandSetpromoterankSuccess(player, rankname, promote_rank);
 							} else {
-								 Messages.messageCommandSetpromoterankError(player, rankname, promote_rank);
+								Messages.messageCommandSetpromoterankError(player, rankname, promote_rank);
 							}
 						} else {
 							Messages.messageCommandUsageSetpromoterank(player);
@@ -839,7 +863,7 @@ public class Cmd implements CommandExecutor {
 							if (s.setDemoteRank(rankname, promote_rank)) {
 								Messages.messageCommandSetdemoterankSuccess(player, rankname, promote_rank);
 							} else {
-								 Messages.messageCommandSetdemoterankError(player, rankname, promote_rank);
+								Messages.messageCommandSetdemoterankError(player, rankname, promote_rank);
 							}
 						} else {
 							Messages.messageCommandUsageSetdemoterank(player);
@@ -854,7 +878,7 @@ public class Cmd implements CommandExecutor {
 							if (s.clearPromoteRank(rankname)) {
 								Messages.messageCommandClearpromoterankSuccess(player, rankname);
 							} else {
-								 Messages.messageCommandClearpromoterankError(player, rankname);
+								Messages.messageCommandClearpromoterankError(player, rankname);
 							}
 						} else {
 							Messages.messageCommandUsageClearpromoterank(player);
@@ -869,7 +893,7 @@ public class Cmd implements CommandExecutor {
 							if (s.clearDemoteRank(rankname)) {
 								Messages.messageCommandCleardemoterankSuccess(player, rankname);
 							} else {
-								 Messages.messageCommandCleardemoterankError(player, rankname);
+								Messages.messageCommandCleardemoterankError(player, rankname);
 							}
 						} else {
 							Messages.messageCommandUsageCleardemoterank(player);
@@ -1362,82 +1386,101 @@ public class Cmd implements CommandExecutor {
 						Messages.messageCommandUsageDelplayerperm(console);
 					}
 				} else if (args[0].equalsIgnoreCase("createusertag")) {
-					if (args.length == 3) {
-						final String tag = args[1];
-						final String text = args[2];
-						final boolean result = s.createUserTag(tag, text);
-						if (result) {
-							Messages.messageCommandCreateusertagSuccess(console, tag, text);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 3) {
+							final String tag = args[1];
+							final String text = args[2];
+							final boolean result = s.createUserTag(tag, text);
+							if (result) {
+								Messages.messageCommandCreateusertagSuccess(console, tag, text);
+							} else {
+								Messages.messageCommandCreateusertagError(console, tag, text);
+							}
 						} else {
-							Messages.messageCommandCreateusertagError(console, tag, text);
+							Messages.messageCommandUsageCreateusertag(console);
 						}
 					} else {
-						Messages.messageCommandUsageCreateusertag(console);
+						Messages.messageUsertagsDisabled(console);
 					}
-
 				} else if (args[0].equalsIgnoreCase("editusertag")) {
-					if (args.length == 3) {
-						final String tag = args[1];
-						final String text = args[2];
-						final boolean result = s.editUserTag(tag, text);
-						if (result) {
-							Messages.messageCommandEditusertagSuccess(console, tag, text);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 3) {
+							final String tag = args[1];
+							final String text = args[2];
+							final boolean result = s.editUserTag(tag, text);
+							if (result) {
+								Messages.messageCommandEditusertagSuccess(console, tag, text);
+							} else {
+								Messages.messageCommandEditusertagError(console, tag, text);
+							}
 						} else {
-							Messages.messageCommandEditusertagError(console, tag, text);
+							Messages.messageCommandUsageEditusertag(console);
 						}
 					} else {
-						Messages.messageCommandUsageEditusertag(console);
+						Messages.messageUsertagsDisabled(console);
 					}
-
 				} else if (args[0].equalsIgnoreCase("removeusertag")) {
-					if (args.length == 3) {
-						final String tag = args[1];
-						final boolean result = s.removeUserTag(tag);
-						if (result) {
-							Messages.messageCommandRemoveusertagSuccess(console, tag);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 3) {
+							final String tag = args[1];
+							final boolean result = s.removeUserTag(tag);
+							if (result) {
+								Messages.messageCommandRemoveusertagSuccess(console, tag);
+							} else {
+								Messages.messageCommandRemoveusertagError(console, tag);
+							}
 						} else {
-							Messages.messageCommandRemoveusertagError(console, tag);
+							Messages.messageCommandUsageRemoveusertag(console);
 						}
 					} else {
-						Messages.messageCommandUsageRemoveusertag(console);
+						Messages.messageUsertagsDisabled(console);
 					}
-
 				} else if (args[0].equalsIgnoreCase("setusertag")) {
-					if (args.length == 3) {
-						final String player = args[1];
-						final String tag = args[2];
-						final boolean result = s.setUserTag(player, tag);
-						if (result) {
-							Messages.messageCommandSetusertagSuccess(console, player, tag);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 3) {
+							final String player = args[1];
+							final String tag = args[2];
+							final boolean result = s.setUserTag(player, tag);
+							if (result) {
+								Messages.messageCommandSetusertagSuccess(console, player, tag);
+							} else {
+								Messages.messageCommandSetusertagError(console, player, tag);
+							}
 						} else {
-							Messages.messageCommandSetusertagError(console, player, tag);
+							Messages.messageCommandUsageSetusertag(console);
 						}
 					} else {
-						Messages.messageCommandUsageSetusertag(console);
+						Messages.messageUsertagsDisabled(console);
 					}
-
 				} else if (args[0].equalsIgnoreCase("clearusertag")) {
-					if (args.length == 2) {
-						final String player = args[1];
-						final boolean result = s.clearUserTag(player);
-						if (result) {
-							Messages.messageCommandClearusertagSuccess(console, player);
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 2) {
+							final String player = args[1];
+							final boolean result = s.clearUserTag(player);
+							if (result) {
+								Messages.messageCommandClearusertagSuccess(console, player);
+							} else {
+								Messages.messageCommandClearusertagError(console, player);
+							}
 						} else {
-							Messages.messageCommandClearusertagError(console, player);
+							Messages.messageCommandUsageSetusertag(console);
 						}
 					} else {
-						Messages.messageCommandUsageSetusertag(console);
+						Messages.messageUsertagsDisabled(console);
 					}
-
 				} else if (args[0].equalsIgnoreCase("listusertags")) {
-					if (args.length == 1) {
-						Set<String> tags = s.getUserTags();
-						console.sendMessage("Usertags(" + tags.size() + "):");
-						for (String tag : tags) {
-							console.sendMessage(tag + " - " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), s.getUserTagValue(tag), true));
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						if (args.length == 1) {
+							Set<String> tags = s.getUserTags();
+							console.sendMessage("Usertags(" + tags.size() + "):");
+							for (String tag : tags) {
+								console.sendMessage(tag + " - " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), s.getUserTagValue(tag), true));
+							}
+						} else {
+							Messages.messageCommandUsageListusertags(console);
 						}
 					} else {
-						Messages.messageCommandUsageListusertags(console);
+						Messages.messageUsertagsDisabled(console);
 					}
 				} else {
 					Messages.unknownCommand(console);

@@ -12,6 +12,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.google.common.collect.ImmutableMap;
 
+import me.clip.deluxetags.DeluxeTag;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 
@@ -94,18 +95,6 @@ public class OnChat implements Listener {
 					}
 				}
 			}
-
-//			format = Util.powerFormatter(format,
-//					Map.of(
-//							"prefix", prefix,
-//							"suffix", suffix,
-//							"subprefix", subprefix,
-//							"subsuffix", subsuffix,
-//							"usertag", usertag,
-//							"player", nameColor + "%1$s",
-//							"msg", chatColor + "%2$s",
-//							"format", e.getFormat())
-//					, '[', ']');
 			
 			format = Util.powerFormatter(format, 
 					ImmutableMap.<String, String>builder()
@@ -113,7 +102,7 @@ public class OnChat implements Listener {
 				    .put("suffix", suffix)
 				    .put("subprefix", subprefix)
 				    .put("subsuffix", subsuffix)
-				    .put("usertag", usertag)
+				    .put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
 				    .put("player", nameColor + "%1$s")
 				    .put("msg", chatColor + "%2$s")
 				    .put("format", e.getFormat())
@@ -121,7 +110,8 @@ public class OnChat implements Listener {
 					, '[', ']');
 
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
-
+			this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
+			
 			if (configYaml.getBoolean("chat.enabled")) {
 				e.setFormat(format);
 			}
