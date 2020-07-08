@@ -3,6 +3,7 @@ package nl.svenar.PowerRanks.Events;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map.Entry;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -12,6 +13,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.addons.PowerRanksAddon;
+import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
 public class OnJoin implements Listener {
 	PowerRanks m;
@@ -62,6 +65,11 @@ public class OnJoin implements Listener {
 
 		long time = new Date().getTime();
 		this.m.playerLoginTime.put(player, time);
+		
+		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+			prAddon.getValue().onPlayerJoin(prPlayer);
+		}
 	}
 
 	@EventHandler

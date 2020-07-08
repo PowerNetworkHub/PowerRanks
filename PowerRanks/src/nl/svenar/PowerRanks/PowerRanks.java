@@ -27,6 +27,7 @@ import nl.svenar.PowerRanks.Events.OnInteract;
 import nl.svenar.PowerRanks.Events.OnInventory;
 import nl.svenar.PowerRanks.Events.OnJoin;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
+import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
 import org.bukkit.plugin.Plugin;
@@ -62,6 +63,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public ArrayList<String> donation_urls = new ArrayList<String>(Arrays.asList("https://ko-fi.com/svenar", "https://patreon.com/svenar"));
 
 	public static PluginDescriptionFile pdf;
+	public AddonsManager addonsManager;
 	public static String colorChar;
 	public String plp;
 	public static Logger log;
@@ -103,9 +105,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.main = this;
-
-//		DeluxeTags.
-//		DeluxeTag.
 
 //		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
@@ -173,6 +172,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		GUI.setPlugin(this);
 //		GUI.setupGUI();
+		
+		PowerRanks.log.info("Loading add-on manager");
+		addonsManager = new AddonsManager();
+		addonsManager.setup();
+		PowerRanks.log.info("Add-on manager loaded!");
 
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
