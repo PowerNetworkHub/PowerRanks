@@ -148,4 +148,24 @@ public class PowerRanksAPI {
 	public boolean setRankBuyCost(String rank, int cost) {
 		return s.setBuyCost(rank, String.valueOf(cost));
 	}
+	
+	public List<String> getSubranks(Player player) {
+		return s.getSubranks(player.getName());
+	}
+	
+	public boolean addSubrank(Player player, String rank) {
+		return s.addSubrank(player.getName(), rank);
+	}
+	
+	public boolean removeSubrank(Player player, String rank) {
+		return s.removeSubrank(player.getName(), rank);
+	}
+	
+	public String getPlayerSubrankPrefixes(Player player) {
+		return s.getSubrankprefixes(player);
+	}
+	
+	public String getPlayerSubrankSuffixes(Player player) {
+		return s.getSubranksuffixes(player);
+	}
 }
