@@ -33,7 +33,7 @@ public abstract class PowerRanksAddon {
 	// ex. return "1.0";
 	public abstract String getVersion();
 
-	// The addon's version
+	// The minimal requires PowerRanks version
 	// ex. return "1.0";
 	public abstract String minimalPowerRanksVersion();
 
