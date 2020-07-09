@@ -173,10 +173,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		GUI.setPlugin(this);
 //		GUI.setupGUI();
 		
-		PowerRanks.log.info("Loading add-on manager");
+		PowerRanks.log.info("----------------------");
+		PowerRanks.log.info("Loading add-ons");
 		addonsManager = new AddonsManager();
 		addonsManager.setup();
-		PowerRanks.log.info("Add-on manager loaded!");
+		PowerRanks.log.info("----------------------");
 
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));

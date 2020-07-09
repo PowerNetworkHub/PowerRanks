@@ -71,7 +71,7 @@ public class AddonsManager {
 				addonCount++;
 		}
 
-		PowerRanks.log.info("Found " + addonCount + " add-on(s)!");
+		PowerRanks.log.info("Loaded " + addonCount + " add-on(s)!");
 	}
 
 	private boolean isJar(File path) {
