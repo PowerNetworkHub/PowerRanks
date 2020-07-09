@@ -89,5 +89,9 @@ public class OnJoin implements Listener {
 
 		this.m.updatePlaytime(player, join_time, leave_time);
 
+		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+			prAddon.getValue().onPlayerLeave(prPlayer);
+		}
 	}
 }

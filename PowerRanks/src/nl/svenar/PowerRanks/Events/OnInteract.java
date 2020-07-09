@@ -65,7 +65,7 @@ public class OnInteract implements Listener {
 				}
 			} else if (sign_command.equalsIgnoreCase("set")) {
 				if (player.hasPermission("powerranks.signs.set")) {
-					s.setGroup(player, s.getRankIgnoreCase(sign_argument));
+					s.setGroup(player, s.getRankIgnoreCase(sign_argument), true);
 				} else {
 					Messages.noPermission(player);
 				}
@@ -95,7 +95,7 @@ public class OnInteract implements Listener {
 								double player_balance = PowerRanks.getVaultEconomy().getBalance(player);
 								if (cost >= 0 && player_balance >= cost) {
 									PowerRanks.getVaultEconomy().withdrawPlayer(player, cost);
-									users.setGroup(player, users.getRankIgnoreCase(sign_argument));
+									users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
 									Messages.messageBuyRankSuccess(player, sign_argument);
 								} else {
 									Messages.messageBuyRankError(player, sign_argument);

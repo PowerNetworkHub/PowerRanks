@@ -1,7 +1,9 @@
 package nl.svenar.PowerRanks.Commands;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -16,6 +18,8 @@ import org.bukkit.command.CommandExecutor;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.addons.PowerRanksAddon;
+import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
 
@@ -70,20 +74,20 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-				} else if (args[0].equalsIgnoreCase("set")) {
+				} else if (args[0].equalsIgnoreCase("setrank")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
-							s.setGroup((Player) sender, args[1], s.getRankIgnoreCase(args[2]));
+							s.setGroup((Player) sender, args[1], s.getRankIgnoreCase(args[2]), true);
 						} else {
 							Messages.messageCommandUsageSet(player);
 						}
 					} else {
 						Messages.noPermission(player);
 					}
-				} else if (args[0].equalsIgnoreCase("setown")) {
+				} else if (args[0].equalsIgnoreCase("setownrank")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
-							s.setGroup((Player) sender, sender.getName(), s.getRankIgnoreCase(args[1]));
+							s.setGroup((Player) sender, sender.getName(), s.getRankIgnoreCase(args[1]), true);
 						} else {
 							Messages.messageCommandUsageSetown(player);
 						}
@@ -903,7 +907,15 @@ public class Cmd implements CommandExecutor {
 					}
 
 				} else {
-					Messages.unknownCommand(player);
+					boolean addonCommandFound = false;
+					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+						if (prAddon.getValue().onPowerRanksCommand(prPlayer, true, args[0], args)) {
+							addonCommandFound = true;
+						}
+					}
+					if (!addonCommandFound)
+						Messages.unknownCommand(player);
 				}
 			}
 		} else if (sender instanceof ConsoleCommandSender) {
@@ -918,9 +930,9 @@ public class Cmd implements CommandExecutor {
 					plg.enablePlugin(plgname);
 				} else if (args[0].equalsIgnoreCase("help")) {
 					Messages.helpMenu(console);
-				} else if (args[0].equalsIgnoreCase("set")) {
+				} else if (args[0].equalsIgnoreCase("setrank")) {
 					if (args.length == 3) {
-						s.setGroup(null, args[1], s.getRankIgnoreCase(args[2]));
+						s.setGroup(null, args[1], s.getRankIgnoreCase(args[2]), true);
 					} else {
 						Messages.messageCommandUsageSet(console);
 					}
@@ -1483,64 +1495,48 @@ public class Cmd implements CommandExecutor {
 						Messages.messageUsertagsDisabled(console);
 					}
 				} else {
-					Messages.unknownCommand(console);
+					boolean addonCommandFound = false;
+					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, "CONSOLE");
+						if (prAddon.getValue().onPowerRanksCommand(prPlayer, false, args[0], args)) {
+							addonCommandFound = true;
+						}
+					}
+					if (!addonCommandFound)
+						Messages.unknownCommand(console);
 				}
 			}
 		} else if (sender instanceof CraftBlockCommandSender) {
-//			final CraftBlockCommandSender console = (CraftBlockCommandSender) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
-//					Messages.messageNoArgs(console);
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					final PluginManager plg = Bukkit.getPluginManager();
 					final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
 					plg.disablePlugin(plgname);
 					plg.enablePlugin(plgname);
-				} else if (args[0].equalsIgnoreCase("set")) {
+				} else if (args[0].equalsIgnoreCase("setrank")) {
 					if (args.length == 3) {
-						s.setGroup(null, args[1], s.getRankIgnoreCase(args[2]));
+						s.setGroup(null, args[1], s.getRankIgnoreCase(args[2]), true);
 					} else {
-//						Messages.messageCommandUsageSet(console);
 					}
 				} else if (args[0].equalsIgnoreCase("addperm")) {
 					if (args.length == 3) {
 						final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
-						final boolean result = s.addPermission(rank2, permission);
-						if (result) {
-//							Messages.messageCommandPermissionAdded(console, permission, rank2);
-						} else {
-//							Messages.messageGroupNotFound(console, rank2);
-						}
-					} else {
-//						Messages.messageCommandUsageAddperm(console);
+						s.addPermission(rank2, permission);
 					}
 				} else if (args[0].equalsIgnoreCase("delperm")) {
 					if (args.length == 3) {
 						final String rank2 = args[1].equals("*") ? args[1] : s.getRankIgnoreCase(args[1]);
 						final String permission = args[2];
-						final boolean result = s.removePermission(rank2, permission);
-						if (result) {
-//							Messages.messageCommandPermissionRemoved(console, permission, rank2);
-						} else {
-//							Messages.messageGroupNotFound(console, rank2);
-						}
-					} else {
-//						Messages.messageCommandUsageDelperm(console);
+						s.removePermission(rank2, permission);
 					}
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String inheritance = args[2];
-							final boolean result = s.addInheritance(rank2, inheritance);
-							if (result) {
-//								Messages.messageCommandInheritanceAdded(console, inheritance, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageAddInheritance(console);
+							s.addInheritance(rank2, inheritance);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
@@ -1548,14 +1544,7 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String inheritance = args[2];
-							final boolean result = s.removeInheritance(rank2, inheritance);
-							if (result) {
-//								Messages.messageCommandInheritanceRemoved(console, inheritance, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageRemoveInheritance(console);
+							s.removeInheritance(rank2, inheritance);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
@@ -1563,23 +1552,11 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = "";
-							final boolean result = s.setPrefix(rank2, prefix);
-							if (result) {
-//								Messages.messageCommandSetPrefix(console, prefix, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
+							s.setPrefix(rank2, prefix);
 						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = args[2];
-							final boolean result = s.setPrefix(rank2, prefix);
-							if (result) {
-//								Messages.messageCommandSetPrefix(console, prefix, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageSetPrefix(console);
+							s.setPrefix(rank2, prefix);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
@@ -1587,23 +1564,11 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = "";
-							final boolean result = s.setSuffix(rank2, suffix);
-							if (result) {
-//								Messages.messageCommandSetSuffix(console, suffix, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
+							s.setSuffix(rank2, suffix);
 						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = args[2];
-							final boolean result = s.setSuffix(rank2, suffix);
-							if (result) {
-//								Messages.messageCommandSetSuffix(console, suffix, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageSetSuffix(console);
+							s.setSuffix(rank2, suffix);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
@@ -1611,14 +1576,7 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
-							final boolean result = s.setChatColor(rank2, color);
-							if (result) {
-//								Messages.messageCommandSetChatColor(console, color, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageSetChatColor(console);
+							s.setChatColor(rank2, color);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
@@ -1626,201 +1584,116 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
-							final boolean result = s.setNameColor(rank2, color);
-							if (result) {
-//								Messages.messageCommandSetNameColor(console, color, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageSetNameColor(console);
+							s.setNameColor(rank2, color);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("createrank")) {
 					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.createRank(rank2);
-							if (success) {
-//								Messages.messageCommandCreateRankSuccess(console, rank2);
-							} else {
-//								Messages.messageCommandCreateRankError(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageCreateRank(console);
+							s.createRank(rank2);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
 					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.deleteRank(rank2);
-							if (success) {
-//								Messages.messageCommandDeleteRankSuccess(console, rank2);
-							} else {
-//								Messages.messageCommandDeleteRankError(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageDeleteRank(console);
+							s.deleteRank(rank2);
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.setBuild(rank2, true);
-							if (success) {
-//								Messages.messageCommandBuildEnabled(console, rank2);
-							} else {
-//								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else {
-//							Messages.messageCommandUsageEnableBuild(console);
+							s.setBuild(rank2, true);
 						}
 					}
-				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
+				} else if (args[0].equalsIgnoreCase("disablebuild")) {
 					if (args.length == 2) {
 						final String rank2 = s.getRankIgnoreCase(args[1]);
-						final boolean success = s.setBuild(rank2, false);
-						if (success) {
-//							Messages.messageCommandBuildDisabled(console, rank2);
-						} else {
-//							Messages.messageGroupNotFound(console, rank2);
-						}
-					} else {
-//						Messages.messageCommandUsageDisableBuild(console);
+						s.setBuild(rank2, false);
 					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (args.length == 2) {
 						final String playername = args[1];
-						final boolean success = s.promote(playername);
-						if (success) {
-//							Messages.messageCommandPromoteSuccess(console, playername);
-						} else {
-//							Messages.messageCommandPromoteError(console, playername);
-						}
-					} else {
-//						Messages.messageCommandUsagePromote(console);
+						s.promote(playername);
 					}
 				} else if (args[0].equalsIgnoreCase("demote")) {
 					if (args.length == 2) {
 						final String playername = args[1];
-						final boolean success = s.demote(playername);
-						if (success) {
-//							Messages.messageCommandDemoteSuccess(console, playername);
-						} else {
-//							Messages.messageCommandDemoteError(console, playername);
-						}
-					} else {
-//						Messages.messageCommandUsageDemote(console);
+						s.demote(playername);
 					}
 				} else if (args[0].equalsIgnoreCase("renamerank")) {
 					if (args.length == 3) {
 						final String from = s.getRankIgnoreCase(args[1]);
 						final String to = args[2];
-						final boolean success = s.renameRank(from, to);
-						if (success) {
-//							Messages.messageCommandRenameRankSuccess(console, from);
-						} else {
-//							Messages.messageCommandRenameRankError(console, from);
-						}
-					} else {
-//						Messages.messageCommandUsageDemote(console);
+						s.renameRank(from, to);
 					}
 				} else if (args[0].equalsIgnoreCase("setdefaultrank")) {
 					if (args.length == 2) {
 						final String rankname = s.getRankIgnoreCase(args[1]);
-						final boolean success = s.setDefaultRank(rankname);
-						if (success) {
-//							Messages.messageCommandSetDefaultRankSuccess(console, rankname);
-						} else {
-//							Messages.messageCommandSetDefaultRankError(console, rankname);
-						}
-					} else {
-//						Messages.messageCommandUsageDemote(console);
+						s.setDefaultRank(rankname);
 					}
 				} else if (args[0].equalsIgnoreCase("addbuyablerank")) {
 					if (args.length == 3) {
 						final String rankname = s.getRankIgnoreCase(args[1]);
 						final String rankname2 = s.getRankIgnoreCase(args[2]);
-						final boolean success = s.addBuyableRank(rankname, rankname2);
-						if (success) {
-//									Messages.messageCommandSetDefaultRankSuccess(console, rankname);
-						} else {
-//									Messages.messageCommandSetDefaultRankError(console, rankname);
-						}
-					} else {
-//								Messages.messageCommandUsageDemote(console);
+						s.addBuyableRank(rankname, rankname2);
 					}
 				} else if (args[0].equalsIgnoreCase("delbuyablerank")) {
 					if (args.length == 3) {
 						final String rankname = s.getRankIgnoreCase(args[1]);
 						final String rankname2 = s.getRankIgnoreCase(args[2]);
-						final boolean success = s.delBuyableRank(rankname, rankname2);
-						if (success) {
-//											Messages.messageCommandSetDefaultRankSuccess(console, rankname);
-						} else {
-//											Messages.messageCommandSetDefaultRankError(console, rankname);
-						}
-					} else {
-//										Messages.messageCommandUsageDemote(console);
+						s.delBuyableRank(rankname, rankname2);
 					}
 				} else if (args[0].equalsIgnoreCase("setcost")) {
 					if (args.length == 3) {
 						final String rankname = s.getRankIgnoreCase(args[1]);
 						final String cost = s.getRankIgnoreCase(args[2]);
-						final boolean success = s.setBuyCost(rankname, cost);
-						if (success) {
-//											Messages.messageCommandSetDefaultRankSuccess(console, rankname);
-						} else {
-//											Messages.messageCommandSetDefaultRankError(console, rankname);
-						}
-					} else {
-//										Messages.messageCommandUsageDemote(console);
+						s.setBuyCost(rankname, cost);
 					}
 				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
 					this.m.forceUpdateConfigVersions();
-//					Messages.messageConfigVersionUpdated(console);
 				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
 					if (args.length == 3) {
 						final String target_player = args[1];
 						final String permission = args[2];
 						s.addPlayerPermission(target_player, permission);
 					}
+				} else if (args[0].equalsIgnoreCase("delplayerperm")) {
+					if (args.length == 3) {
+						final String target_player = args[1];
+						final String permission = args[2];
+						s.delPlayerPermission(target_player, permission);
+					}
+
+				} else if (args[0].equalsIgnoreCase("createusertag")) {
+					if (args.length == 3) {
+						final String tag = args[1];
+						final String text = args[2];
+						s.createUserTag(tag, text);
+					}
+
+				} else if (args[0].equalsIgnoreCase("editusertag")) {
+					if (args.length == 3) {
+						final String tag = args[1];
+						final String text = args[2];
+						s.editUserTag(tag, text);
+					}
+
+				} else if (args[0].equalsIgnoreCase("removeusertag")) {
+					if (args.length == 3) {
+						final String tag = args[1];
+						s.removeUserTag(tag);
+					}
+
+				} else if (args[0].equalsIgnoreCase("setusertag")) {
+					if (args.length == 3) {
+						final String player = args[1];
+						final String tag = args[2];
+						s.setUserTag(player, tag);
+					}
 				}
-			} else if (args[0].equalsIgnoreCase("delplayerperm")) {
-				if (args.length == 3) {
-					final String target_player = args[1];
-					final String permission = args[2];
-					s.delPlayerPermission(target_player, permission);
-				}
-			}
-
-		} else if (args[0].equalsIgnoreCase("createusertag")) {
-			if (args.length == 3) {
-				final String tag = args[1];
-				final String text = args[2];
-				s.createUserTag(tag, text);
-			}
-
-		} else if (args[0].equalsIgnoreCase("editusertag")) {
-			if (args.length == 3) {
-				final String tag = args[1];
-				final String text = args[2];
-				s.editUserTag(tag, text);
-			}
-
-		} else if (args[0].equalsIgnoreCase("removeusertag")) {
-			if (args.length == 3) {
-				final String tag = args[1];
-				s.removeUserTag(tag);
-			}
-
-		} else if (args[0].equalsIgnoreCase("setusertag")) {
-			if (args.length == 3) {
-				final String player = args[1];
-				final String tag = args[2];
-				s.setUserTag(player, tag);
 			}
 		}
 		return false;

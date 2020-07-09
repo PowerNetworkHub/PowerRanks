@@ -1,6 +1,8 @@
 package nl.svenar.PowerRanks.Data;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.addons.AddonsManager;
 
 public class Messages {
 
@@ -53,12 +56,20 @@ public class Messages {
 
 	public static void messageStats(Player sender) {
 		Users users = new Users(null);
+		
+		int addonCount = 0;
+		for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
+			if (prAddon.getValue() == true)
+				addonCount++;
+		}
+		
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
 		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
 		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
+		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
@@ -69,12 +80,20 @@ public class Messages {
 
 	public static void messageStats(ConsoleCommandSender sender) {
 		Users users = new Users(null);
+		
+		int addonCount = 0;
+		for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
+			if (prAddon.getValue() == true)
+				addonCount++;
+		}
+		
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
 		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
 		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
+		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
@@ -335,28 +354,28 @@ public class Messages {
 
 	public static void messageCommandUsageSet(Player player) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set");
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_setrank");
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSet(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set");
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_setrank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetown(Player player) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_setown");
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_setownrank");
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetown(ConsoleCommandSender console) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_setown");
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_setownrank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}

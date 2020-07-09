@@ -17,6 +17,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import nl.svenar.PowerRanks.Util;
+
 /**
  * Check for updates on BukkitDev for a given plugin, and download the updates
  * if needed.
@@ -670,22 +672,7 @@ public class Updater {
 	 */
 	public boolean shouldUpdate(String localVersion, String remoteVersion) {
 //		return !localVersion.equalsIgnoreCase(remoteVersion);
-		return calculateVersionFromString(remoteVersion) > calculateVersionFromString(localVersion);
-	}
-
-	private int calculateVersionFromString(String input) {
-		int output = 0;
-		input = input.replaceAll("[a-zA-Z ]", "");
-		String[] input_split = input.split("\\.");
-		String calcString = "1";
-		for (int i = input_split.length - 1; i >= 0; i--) {
-			if (input_split[i].length() != 0) {
-				int num = Integer.parseInt(input_split[i]) * Integer.parseInt(calcString);
-				calcString += "0";
-				output += num;
-			}
-		}
-		return output;
+		return Util.calculateVersionFromString(remoteVersion) > Util.calculateVersionFromString(localVersion);
 	}
 
 	/**

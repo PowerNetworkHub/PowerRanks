@@ -76,7 +76,7 @@ public class GUI {
 				double player_balance = PowerRanks.getVaultEconomy().getBalance(player);
 				if (cost >= 0 && player_balance >= cost) {
 					PowerRanks.getVaultEconomy().withdrawPlayer(player, cost);
-					users.setGroup(player, rankname);
+					users.setGroup(player, rankname, true);
 					Messages.messageBuyRankSuccess(player, rankname);
 				} else {
 					Messages.messageBuyRankError(player, rankname);
@@ -149,7 +149,7 @@ public class GUI {
 				Users users = new Users(powerRanks);
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
 				String playername = gui.getData(player.getName() + ":playername");
-				users.setGroup(Bukkit.getPlayer(playername), rankname);
+				users.setGroup(Bukkit.getPlayer(playername), rankname, true);
 				closeGUI(player);
 			}
 		}

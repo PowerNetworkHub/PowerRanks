@@ -23,7 +23,7 @@ public class PowerRanksAPI {
 	}
 	
 	public boolean setPlayerRank(Player player, String rank) {
-		boolean success = s.setGroup(player, s.getRankIgnoreCase(rank));
+		boolean success = s.setGroup(player, s.getRankIgnoreCase(rank), true);
 		return success;
 	}
 	

@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,6 +16,8 @@ import com.google.common.collect.ImmutableMap;
 import me.clip.deluxetags.DeluxeTag;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.addons.PowerRanksAddon;
+import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
 public class OnChat implements Listener {
 
@@ -113,6 +116,11 @@ public class OnChat implements Listener {
 			this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
 			
 			if (configYaml.getBoolean("chat.enabled")) {
+				for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+					PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+					format = prAddon.getValue().onPlayerChat(prPlayer, format, e.getMessage());
+				}
+				
 				e.setFormat(format);
 			}
 		} catch (Exception e2) {

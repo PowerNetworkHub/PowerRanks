@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Util;
 
 public class AddonsManager {
 
-	HashMap<File, Boolean> loadedAddons = new HashMap<File, Boolean>(); // file_path, is_loaded
+	public static HashMap<File, Boolean> loadedAddons = new HashMap<File, Boolean>(); // file_path, is_loaded
 	public HashMap<File, PowerRanksAddon> addonClasses = new HashMap<File, PowerRanksAddon>(); // file_path, PowerRanksAddon
 
 	public AddonsManager() {
@@ -52,6 +53,18 @@ public class AddonsManager {
 			}
 		}
 
+		for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
+			if (Util.calculateVersionFromString(prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", "")) >= Util.calculateVersionFromString(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
+				PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " v" + prAddon.getValue().getVersion() + " by: " + prAddon.getValue().getAuthor() + " loaded!");
+				prAddon.getValue().setup();
+			} else {
+				PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " requires PowerRanks v" + prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", "") + " or higher");
+				addonClasses.remove(prAddon.getKey());
+				loadedAddons.put(prAddon.getKey(), false);
+				
+			}
+		}
+
 		int addonCount = 0;
 		for (Entry<File, Boolean> prAddon : loadedAddons.entrySet()) {
 			if (prAddon.getValue() == true)
@@ -59,11 +72,6 @@ public class AddonsManager {
 		}
 
 		PowerRanks.log.info("Found " + addonCount + " add-on(s)!");
-		
-		for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
-			PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " v" + prAddon.getValue().getVersion() + " by: " + prAddon.getValue().getAuthor() + " loaded!");
-		}
-
 	}
 
 	private boolean isJar(File path) {

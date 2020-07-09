@@ -104,4 +104,31 @@ public class Util {
 	public static Class<?> obcClass(String className) throws ClassNotFoundException {
 		return Class.forName(obc(className));
 	}
+	
+	public static int calculateVersionFromString(String input) {
+		int output = 0;
+		input = input.replaceAll("[a-zA-Z ]", "");
+		String[] input_split = input.split("\\.");
+//		String calcString = "1";
+//		for (int i = input_split.length - 1; i >= 0; i--) {
+//			if (input_split[i].length() != 0) {
+//				int num = Integer.parseInt(input_split[i]) * Integer.parseInt(calcString);
+//				calcString += "0";
+//				output += num;
+//			}
+//		}
+		
+		String calcString = "1000000";
+		for (int i = 0; i < input_split.length; i++) {
+			if (input_split[i].length() != 0) {
+				int num = Integer.parseInt(input_split[i]) * Integer.parseInt(calcString);
+				if (calcString.charAt(calcString.length() - 1) == '0') {
+					calcString = calcString.substring(0, calcString.length() - 1);
+				}
+				output += num;
+			}
+		}
+		
+		return output;
+	}
 }
