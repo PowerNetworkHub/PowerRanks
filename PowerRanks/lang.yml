@@ -148,8 +148,6 @@ commands:
    reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"
    reload_plugin_done: "%plugin_prefix% &2%plugin_name% Reloaded (plugin)!"
    help:
-   - "&3--------&1%plugin_name%&3--------"
-   - "&b[Optional] <Required>"
    - "&a/pr help&2 - Shows this menu"
    - "&a/pr createrank <rankName>&2 - Create a new rank"
    - "&a/pr deleterank <rankName>&2 - Delete a rank"
@@ -201,4 +199,3 @@ commands:
    - "&a/pr delbuyablerank <rank> <buyable_rank>&2 - Remove a rank from the buyable list of a rank"
    - "&a/pr setcost <rank> <cost>&2 - Set the buy cost of a rank"
    - "&a/pr stats&2 - Show stats about PowerRanks"
-   - "&3--------------------------"

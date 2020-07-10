@@ -38,9 +38,14 @@ public class Cmd implements CommandExecutor {
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
 					Messages.messageNoArgs(player);
-				} else if (args.length == 1 && args[0].equalsIgnoreCase("help")) {
+				} else if (args[0].equalsIgnoreCase("help")) {
 					if (sender.hasPermission("powerranks.cmd.help")) {
-						Messages.helpMenu(player);
+						if (args.length == 1) {
+							Messages.helpMenu(player);
+						} else if (args.length == 2) {
+							int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
+							Messages.helpMenu(player, page);
+						}
 					} else {
 						Messages.noPermission(player);
 					}

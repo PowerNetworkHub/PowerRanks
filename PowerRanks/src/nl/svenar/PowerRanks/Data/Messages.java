@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -15,7 +16,8 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 
 public class Messages {
-
+	private PowerRanks powerRanks = null;
+	
 	public static String getGeneralMessage(YamlConfiguration langYaml, String lang_config_line) {
 		String msg = "";
 
@@ -56,13 +58,13 @@ public class Messages {
 
 	public static void messageStats(Player sender) {
 		Users users = new Users(null);
-		
+
 		int addonCount = 0;
 		for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
 			if (prAddon.getValue() == true)
 				addonCount++;
 		}
-		
+
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
@@ -80,13 +82,13 @@ public class Messages {
 
 	public static void messageStats(ConsoleCommandSender sender) {
 		Users users = new Users(null);
-		
+
 		int addonCount = 0;
 		for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
 			if (prAddon.getValue() == true)
 				addonCount++;
 		}
-		
+
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
@@ -103,18 +105,47 @@ public class Messages {
 	}
 
 	public static void helpMenu(final Player player) {
+		helpMenu(player, 0);
+	}
+
+	public static void helpMenu(final Player sender, int page) {
+		if (page < 0)
+			page = 0;
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 
 		List<String> lines = (List<String>) langYaml.getStringList("commands.help");
+		int lines_per_page = 5;
+		if (page > lines.size() / lines_per_page)
+			page = lines.size() / lines_per_page;
+
 		if (lines != null) {
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
+			sender.sendMessage(ChatColor.DARK_AQUA + "Page: " + page + "[<] [>]");
+
+			String page_celector_tellraw = "/tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + page
+					+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
+					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
+					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
+					+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
+					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
+					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1) + "\"}}]";
+
+			if (powerRanks != null)
+				PowerRanks.getServer().dispatchCommand((CommandSender) PowerRanks.getServer().getConsoleSender(), page_celector_tellraw);
+
 			String prefix = langYaml.getString("general.prefix");
-			for (String line : lines) {
-				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
-				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
-				String msg = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), line, true);
-				if (msg.length() > 0)
-					player.sendMessage(msg);
+			for (int i = 0; i < lines_per_page; i++) {
+				if (lines_per_page * page + i < lines.size()) {
+					String line = lines.get(lines_per_page * page + i);
+					line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+					line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+					String msg = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), line, true);
+					if (msg.length() > 0)
+						sender.sendMessage(msg);
+				}
 			}
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
 	}
 
@@ -2047,14 +2078,14 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_addoninfo");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageAddoninfo(ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_addoninfo");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandErrorAddonNotFound(Player sender, String addon_name) {
@@ -2064,7 +2095,7 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandErrorAddonNotFound(ConsoleCommandSender sender, String addon_name) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_addon_not_found");
