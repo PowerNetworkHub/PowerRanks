@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
@@ -26,6 +28,7 @@ import nl.svenar.PowerRanks.Events.OnChat;
 import nl.svenar.PowerRanks.Events.OnInteract;
 import nl.svenar.PowerRanks.Events.OnInventory;
 import nl.svenar.PowerRanks.Events.OnJoin;
+import nl.svenar.PowerRanks.Events.OnMove;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
@@ -113,6 +116,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInventory(this), (Plugin) this);
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnMove(this), (Plugin) this);
 
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
@@ -172,7 +176,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		GUI.setPlugin(this);
 //		GUI.setupGUI();
-		
+
 		PowerRanks.log.info("----------------------");
 		PowerRanks.log.info("Loading add-ons");
 		addonsManager = new AddonsManager();
@@ -450,6 +454,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 //		if (!playerDisallowedPermissions.containsKey(player)) {
 		playerDisallowedPermissions.put(player, new ArrayList<String>());
 //		}
+		clearPermissions(player);
 
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 		final String uuid = player.getUniqueId().toString();
@@ -652,6 +657,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void clearPermissions(Player player) {
+		if (playerPermissionAttachment.containsKey(player.getName())) {
+			this.playerInjectPermissible(player);
+		}
+
+		playerDisallowedPermissions.put(player, new ArrayList<String>());
+
+		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
+
+		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
+			attachment.unsetPermission(perm.getPermission());
 		}
 	}
 

@@ -17,6 +17,8 @@
 # %argument_usertag_tag% | command argument usertag tag
 # %argument_usertag_text% | command argument usertag text
 # %argument_external_plugin% | command argument external plugin name
+# %argument_addon% | command argument addon name
+
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
 
@@ -93,6 +95,7 @@ messages:
    success_clear_demoterank: "%plugin_prefix% &aCleared the demote rank on rank: %argument_rank%"
    error_clear_demoterank: "%plugin_prefix% &cError clearing the demote rank on rank: %argument_rank%"
    error_usertags_disable_use_external_plugin: "%plugin_prefix% &cUsertags disabled, use %argument_external_plugin% instead"
+   error_addon_not_found: "%plugin_prefix% &cError addon with name '%argument_addon%' not found!"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -138,6 +141,7 @@ commands:
    usage_command_set_demoterank: "%plugin_prefix% &c/pr setdemoterank <rank> <promoteRank>"
    usage_command_clear_promoterank: "%plugin_prefix% &c/pr clearpromoterank <rank>"
    usage_command_clear_demoterank: "%plugin_prefix% &c/pr cleardemoterank <rank>"
+   usage_command_addoninfo: "%plugin_prefix% &c/pr addoninfo <addon_name>"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"

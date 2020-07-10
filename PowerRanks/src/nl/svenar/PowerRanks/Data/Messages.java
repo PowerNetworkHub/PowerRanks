@@ -2042,4 +2042,34 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
+
+	public static void messageCommandUsageAddoninfo(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_addoninfo");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+	
+	public static void messageCommandUsageAddoninfo(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_addoninfo");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+
+	public static void messageCommandErrorAddonNotFound(Player sender, String addon_name) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_addon_not_found");
+		msg = Util.replaceAll(msg, "%argument_addon%", addon_name);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandErrorAddonNotFound(ConsoleCommandSender sender, String addon_name) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_addon_not_found");
+		msg = Util.replaceAll(msg, "%argument_addon%", addon_name);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
 }

@@ -1,7 +1,9 @@
 package nl.svenar.PowerRanks.Events;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -12,10 +14,12 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 
 public class ChatTabExecutor implements TabCompleter {
 
 	private PowerRanks m;
+	private static ArrayList<String> addon_commands = new ArrayList<String>();
 
 	public ChatTabExecutor(PowerRanks m) {
 		this.m = m;
@@ -79,6 +83,12 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("setdemoterank");
 				commands_list.add("clearpromoterank");
 				commands_list.add("cleardemoterank");
+				commands_list.add("addoninfo");
+
+				for (String command : addon_commands) {
+					if (command.toLowerCase().contains(args[0].toLowerCase()))
+						commands_list.add(command);
+				}
 
 				for (String command : commands_list) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -91,7 +101,7 @@ public class ChatTabExecutor implements TabCompleter {
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
 						|| args[0].equalsIgnoreCase("enablebuild") || args[0].equalsIgnoreCase("disablebuild") || args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
 						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
-						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank")) {
+						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))
@@ -114,6 +124,12 @@ public class ChatTabExecutor implements TabCompleter {
 					for (String tag : s.getUserTags()) {
 						if (tag.toLowerCase().contains(args[1].toLowerCase()))
 							list.add(tag);
+					}
+				}
+				
+				if (args[0].equalsIgnoreCase("addoninfo")) {
+					for (Entry<File, PowerRanksAddon> addon : this.m.addonsManager.addonClasses.entrySet()) {
+						list.add(addon.getValue().getIdentifier());
 					}
 				}
 			}
@@ -226,4 +242,8 @@ public class ChatTabExecutor implements TabCompleter {
 		return null;
 	}
 
+	public static void addAddonCommand(String command) {
+		if (!addon_commands.contains(command.toLowerCase()))
+			addon_commands.add(command.toLowerCase());
+	}
 }

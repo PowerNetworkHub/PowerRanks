@@ -123,4 +123,49 @@ public class PowerRanksConfig {
 		YamlConfiguration config = loadConfigFile();
 		return config != null ? config.getFloatList(field) : null;
 	}
+	
+	public boolean isString(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isString(field) : null;
+	}
+	
+	public boolean isBoolean(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isBoolean(field) : null;
+	}
+	
+	public boolean isConfigurationSection(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isConfigurationSection(field) : null;
+	}
+	
+	public boolean isColor(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isColor(field) : null;
+	}
+	
+	public boolean isDouble(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isDouble(field) : null;
+	}
+	
+	public boolean isInt(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isInt(field) : null;
+	}
+	
+	public boolean isList(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isList(field) : null;
+	}
+	
+	public boolean isLocation(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isLocation(field) : null;
+	}
+	
+	public boolean isLong(String field) {
+		YamlConfiguration config = loadConfigFile();
+		return config != null ? config.isLong(field) : null;
+	}
 }

@@ -1,13 +1,18 @@
 package nl.svenar.PowerRanks.addons;
 
+import java.util.ArrayList;
+
+import nl.svenar.PowerRanks.Events.ChatTabExecutor;
+
 public abstract class PowerRanksAddon {
 
 	private PowerRanksConfig powerranksConfig = null;
+	private ArrayList<String> registeredCommands = new ArrayList<String>();
+	private ArrayList<String> registeredPermissions = new ArrayList<String>();
+
 	public enum RankChangeCause {
-		  SET,
-		  PROMOTE,
-		  DEMOTE
-		}
+		SET, PROMOTE, DEMOTE
+	}
 
 	// Create a configuration file with the same name as the add-on (identifier) if
 	// it does not exist yet
@@ -19,6 +24,31 @@ public abstract class PowerRanksAddon {
 	// returns null if no configuration file is loaded yet using createConfigfile()
 	public final PowerRanksConfig getConfig() {
 		return powerranksConfig;
+	}
+
+	// Register custom commands for auto complete in the chat
+	// Used for chat auto-complete and /pr addoninfo <addon_name>
+	public final void registerCommandAutocomplete(String command) {
+		ChatTabExecutor.addAddonCommand(command);
+		if (!registeredCommands.contains(command.toLowerCase()))
+			registeredCommands.add(command.toLowerCase());
+	}
+
+	// Register custom permissions for the add-on
+	// Used for /pr addoninfo <addon_name>
+	public final void registerPermission(String permission) {
+		if (!registeredPermissions.contains(permission.toLowerCase()))
+			registeredPermissions.add(permission.toLowerCase());
+	}
+
+	// Get the list of registered commands
+	public final ArrayList<String> getRegisteredCommands() {
+		return registeredCommands;
+	}
+
+	// Get the list of registered permissions
+	public final ArrayList<String> getRegisteredPermissions() {
+		return registeredPermissions;
 	}
 
 	// The author's name
@@ -46,6 +76,13 @@ public abstract class PowerRanksAddon {
 
 	// Called when a player leaves the server
 	public void onPlayerLeave(PowerRanksPlayer prPlayer) {
+	}
+
+	// Player movement handler
+	// Executed when a player has moved
+	// return true to cancel the event
+	public boolean onPlayerMove(PowerRanksPlayer prPlayer) {
+		return false;
 	}
 
 	// Called when a player's rank changes

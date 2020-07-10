@@ -10,6 +10,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.craftbukkit.v1_15_R1.command.CraftBlockCommandSender;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,7 +33,7 @@ public class Cmd implements CommandExecutor {
 
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		final Users s = new Users(this.m);
-		if (sender instanceof Player) {
+		if (sender instanceof Player) { // TODO nothing todo just easy navigation
 			final Player player = (Player) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
@@ -906,6 +907,39 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 
+				} else if (args[0].equalsIgnoreCase("addoninfo")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 2) {
+							final String addon_name = args[1];
+							PowerRanksAddon addon = null;
+							for (Entry<File, PowerRanksAddon> a : this.m.addonsManager.addonClasses.entrySet()) {
+								if (a.getValue().getIdentifier().equalsIgnoreCase(addon_name))
+									addon = a.getValue();
+							}
+							if (addon != null) {
+								player.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+								player.sendMessage(ChatColor.DARK_GREEN + "Add-on name: " + ChatColor.GREEN + addon.getIdentifier());
+								player.sendMessage(ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + addon.getAuthor());
+								player.sendMessage(ChatColor.DARK_GREEN + "Version: " + ChatColor.GREEN + addon.getVersion());
+								player.sendMessage(ChatColor.DARK_GREEN + "Registered Commands:");
+								for (String command : addon.getRegisteredCommands()) {
+									player.sendMessage(ChatColor.GREEN + "- /pr " + command);
+								}
+								player.sendMessage(ChatColor.DARK_GREEN + "Registered Permissions:");
+								for (String permission : addon.getRegisteredPermissions()) {
+									player.sendMessage(ChatColor.GREEN + "- " + permission);
+								}
+								player.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+							} else {
+								Messages.messageCommandErrorAddonNotFound(player, addon_name);
+							}
+						} else {
+							Messages.messageCommandUsageAddoninfo(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -918,7 +952,7 @@ public class Cmd implements CommandExecutor {
 						Messages.unknownCommand(player);
 				}
 			}
-		} else if (sender instanceof ConsoleCommandSender) {
+		} else if (sender instanceof ConsoleCommandSender) { // TODO nothing todo just easy navigation
 			final ConsoleCommandSender console = (ConsoleCommandSender) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
@@ -1506,7 +1540,7 @@ public class Cmd implements CommandExecutor {
 						Messages.unknownCommand(console);
 				}
 			}
-		} else if (sender instanceof CraftBlockCommandSender) {
+		} else if (sender instanceof CraftBlockCommandSender) { // TODO nothing todo just easy navigation
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
 				} else if (args[0].equalsIgnoreCase("reload")) {
