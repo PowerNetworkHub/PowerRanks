@@ -153,19 +153,22 @@ public class Messages {
 		}
 	}
 
-	public static void helpMenu(final ConsoleCommandSender console) {
+	public static void helpMenu(final ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 
 		List<String> lines = (List<String>) langYaml.getStringList("commands.help");
 		if (lines != null) {
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = langYaml.getString("general.prefix");
 			for (String line : lines) {
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 				String msg = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), line, true);
 				if (msg.length() > 0)
-					console.sendMessage(msg);
+					sender.sendMessage(msg);
 			}
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
 	}
 

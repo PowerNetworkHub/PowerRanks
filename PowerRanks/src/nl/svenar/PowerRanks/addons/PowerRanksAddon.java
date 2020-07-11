@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.addons;
 
 import java.util.ArrayList;
 
+import org.bukkit.World;
+
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
 public abstract class PowerRanksAddon {
@@ -102,5 +104,10 @@ public abstract class PowerRanksAddon {
 	// message will display, by default it should return false
 	public boolean onPowerRanksCommand(PowerRanksPlayer prPlayer, boolean sendAsPlayer, String command, String[] arguments) {
 		return false;
+	}
+
+	// Player world change handler
+	// Executed when a player has entered a different world
+	public void onPlayerWorldChange(PowerRanksPlayer prPlayer, World world, World world2) {
 	}
 }

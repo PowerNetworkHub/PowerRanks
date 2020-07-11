@@ -55,6 +55,7 @@ public class ConfigFilesUpdater {
 				tmpYamlConf.load(tmpFile);
 				yamlConf.load(file);
 				yamlConf.set("version", null);
+				yamlConf.set("commands.help", null);
 				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(false)) {
 					for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
 						String field = key + "." + key2;
