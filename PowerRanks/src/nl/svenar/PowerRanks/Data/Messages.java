@@ -16,8 +16,12 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 
 public class Messages {
-	private PowerRanks powerRanks = null;
-	
+	private static PowerRanks powerRanks = null;
+
+	public Messages(PowerRanks powerRanks) {
+		Messages.powerRanks = powerRanks;
+	}
+
 	public static String getGeneralMessage(YamlConfiguration langYaml, String lang_config_line) {
 		String msg = "";
 
@@ -121,9 +125,9 @@ public class Messages {
 		if (lines != null) {
 			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
-			sender.sendMessage(ChatColor.DARK_AQUA + "Page: " + page + "[<] [>]");
+//			sender.sendMessage(ChatColor.DARK_AQUA + "Page: " + page + "[<] [>]");
 
-			String page_celector_tellraw = "/tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + page
+			String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + page
 					+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
 					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
 					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
@@ -131,8 +135,8 @@ public class Messages {
 					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
 					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1) + "\"}}]";
 
-			if (powerRanks != null)
-				PowerRanks.getServer().dispatchCommand((CommandSender) PowerRanks.getServer().getConsoleSender(), page_celector_tellraw);
+			if (Messages.powerRanks != null)
+				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
 
 			String prefix = langYaml.getString("general.prefix");
 			for (int i = 0; i < lines_per_page; i++) {

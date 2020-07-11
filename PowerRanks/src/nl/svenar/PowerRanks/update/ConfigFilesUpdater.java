@@ -103,9 +103,12 @@ public class ConfigFilesUpdater {
 //									list.add(line);
 //								}
 //								yamlConf.set(field, (Object) list);
-								
+
+								try {
+									System.arraycopy(tmpYamlConf.getStringList(tmp_field), 0, list, 0, tmpYamlConf.getStringList(tmp_field).size());
+								} catch (Exception e) {
+								}
 								yamlConf.set(field, list);
-								System.arraycopy(tmpYamlConf.getStringList(tmp_field), 0, list, 0, tmpYamlConf.getStringList(tmp_field).size());
 							}
 						}
 						if ((tmpYamlConf.isBoolean(tmp_field) != yamlConf.isBoolean(field)) || (tmpYamlConf.isList(tmp_field) != yamlConf.isList(field)) || (tmpYamlConf.isString(tmp_field) != yamlConf.isString(field))

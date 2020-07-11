@@ -148,7 +148,7 @@ commands:
    reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"
    reload_plugin_done: "%plugin_prefix% &2%plugin_name% Reloaded (plugin)!"
    help:
-   - "&a/pr help&2 - Shows this menu"
+   - "&a/pr help [page_number]&2 - Shows this menu"
    - "&a/pr createrank <rankName>&2 - Create a new rank"
    - "&a/pr deleterank <rankName>&2 - Delete a rank"
    - "&a/pr setrank <playerName> <rankName>&2 - Set someone's rank"
