@@ -31,6 +31,7 @@ import nl.svenar.PowerRanks.Events.OnInventory;
 import nl.svenar.PowerRanks.Events.OnJoin;
 import nl.svenar.PowerRanks.Events.OnMove;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
+import nl.svenar.PowerRanks.Events.OnWorldChange;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
@@ -118,12 +119,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInventory(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnMove(this), (Plugin) this);
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnWorldChange(this), (Plugin) this);
 
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
-		
+
 		new Messages(this);
 
 		this.createDir(PowerRanks.fileLoc);
@@ -478,8 +480,28 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
 					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
 					for (String r : subranks.getKeys(false)) {
-						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-							Subranks.add(r);
+						boolean in_world = false;
+						if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
+							in_world = true;
+
+							ArrayList<String> default_worlds = new ArrayList<String>();
+							default_worlds.add("All");
+							playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+							playerYaml.save(playerFile);
+						}
+
+						String player_current_world = player.getWorld().getName();
+						List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+						for (String world : worlds) {
+							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+								in_world = true;
+							}
+						}
+
+						if (in_world) {
+							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+								Subranks.add(r);
+							}
 						}
 					}
 				}
@@ -596,8 +618,28 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
 					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
 					for (String r : subranks.getKeys(false)) {
-						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-							Subranks.add(r);
+						boolean in_world = false;
+						if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
+							in_world = true;
+
+							ArrayList<String> default_worlds = new ArrayList<String>();
+							default_worlds.add("All");
+							playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+							playerYaml.save(playerFile);
+						}
+
+						String player_current_world = player.getWorld().getName();
+						List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+						for (String world : worlds) {
+							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+								in_world = true;
+							}
+						}
+
+						if (in_world) {
+							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+								Subranks.add(r);
+							}
 						}
 					}
 				}
@@ -743,17 +785,37 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
 						ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
 						for (String r : subranks.getKeys(false)) {
-							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-								subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0
-										? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix")
-										: "");
+							boolean in_world = false;
+							if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
+								in_world = true;
+
+								ArrayList<String> default_worlds = new ArrayList<String>();
+								default_worlds.add("All");
+								playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+								playerYaml.save(playerFile);
 							}
 
-							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-								subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0
-										? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix")
-										: "");
+							String player_current_world = player.getWorld().getName();
+							List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+							for (String world : worlds) {
+								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+									in_world = true;
+								}
+							}
 
+							if (in_world) {
+								if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+									subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0
+											? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix") + " "
+											: "");
+								}
+
+								if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+									subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0
+											? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix") + " "
+											: "");
+
+								}
 							}
 						}
 					}

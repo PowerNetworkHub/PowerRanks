@@ -1,6 +1,8 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -56,17 +58,37 @@ public class OnChat implements Listener {
 				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
 					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
 					for (String r : subranks.getKeys(false)) {
-						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-							subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0
-									? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix")
-									: "");
+						boolean in_world = false;
+						if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
+							in_world = true;
+							
+							ArrayList<String> default_worlds = new ArrayList<String>();
+							default_worlds.add("All");
+							playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+							playerYaml.save(playerFile);
 						}
 
-						if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-							subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0
-									? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix")
-									: "");
+						String player_current_world = player.getWorld().getName();
+						List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+						for (String world : worlds) {
+							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+								in_world = true;
+							}
+						}
+						
+						if (in_world) {
+							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+								subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0
+										? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix") + " "
+										: "");
+							}
 
+							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+								subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0
+										? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix") + " "
+										: "");
+
+							}
 						}
 					}
 				}
@@ -84,7 +106,7 @@ public class OnChat implements Listener {
 			if (subsuffix.replaceAll(" ", "").length() == 0) {
 				subsuffix = "";
 			}
-			
+
 			if (playerYaml.isSet("players." + uuid + ".usertag") && playerYaml.getString("players." + uuid + ".usertag").length() > 0) {
 				String tmp_usertag = playerYaml.getString("players." + uuid + ".usertag");
 
@@ -98,29 +120,21 @@ public class OnChat implements Listener {
 					}
 				}
 			}
-			
-			format = Util.powerFormatter(format, 
-					ImmutableMap.<String, String>builder()
-				    .put("prefix", prefix)
-				    .put("suffix", suffix)
-				    .put("subprefix", subprefix)
-				    .put("subsuffix", subsuffix)
-				    .put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
-				    .put("player", nameColor + "%1$s")
-				    .put("msg", chatColor + "%2$s")
-				    .put("format", e.getFormat())
-				    .build()
-					, '[', ']');
+
+			format = Util.powerFormatter(format,
+					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", nameColor + "%1$s").put("msg", chatColor + "%2$s").put("format", e.getFormat()).build(),
+					'[', ']');
 
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
 			this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
-			
+
 			if (configYaml.getBoolean("chat.enabled")) {
 				for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 					PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 					format = prAddon.getValue().onPlayerChat(prPlayer, format, e.getMessage());
 				}
-				
+
 				e.setFormat(format);
 			}
 		} catch (Exception e2) {

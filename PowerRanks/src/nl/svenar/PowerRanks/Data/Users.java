@@ -1258,11 +1258,14 @@ public class Users implements Listener {
 
 		try {
 			playersYaml.load(playersFile);
-
+			ArrayList<String> default_worlds = new ArrayList<String>();
+			default_worlds.add("All");
+			
 			if (playersYaml.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) == null) {
 				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_prefix", true);
 				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_suffix", true);
 				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_permissions", true);
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".worlds", default_worlds);
 			} else {
 				return false;
 			}

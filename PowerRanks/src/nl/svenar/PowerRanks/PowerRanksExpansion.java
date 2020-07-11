@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -112,16 +113,16 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			return users.getGroup(player);
 
 		if (identifier.equals("prefix"))
-			return users.getPrefix(player);
+			return users.getPrefix(player) + ChatColor.RESET;
 		
 		if (identifier.equals("suffix"))
-			return users.getSuffix(player);
+			return ChatColor.RESET + users.getSuffix(player);
 		
 		if (identifier.equals("subrankprefix"))
-			return users.getSubrankprefixes(player);
+			return users.getSubrankprefixes(player) + ChatColor.RESET;
 		
 		if (identifier.equals("subranksuffix"))
-			return users.getSubranksuffixes(player);
+			return ChatColor.RESET + users.getSubranksuffixes(player);
 		
 		if (identifier.equals("chatcolor"))
 			return users.getChatColor(player);
