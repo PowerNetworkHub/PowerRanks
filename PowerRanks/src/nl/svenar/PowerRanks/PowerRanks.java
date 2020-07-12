@@ -19,6 +19,10 @@ import java.io.InputStream;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.CommandExecutor;
+
+import nl.svenar.PowerRanks.Cache.CachedConfig;
+import nl.svenar.PowerRanks.Cache.CachedPlayers;
+import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Commands.Cmd;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
@@ -144,6 +148,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		this.loadAllFiles();
+
+		new CachedConfig(this);
+		new CachedPlayers(this);
+		new CachedRanks(this);
 //		this.verifyConfig();
 
 		if (handle_update_checking()) {
@@ -451,6 +459,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setupPermissions(Player player) {
 		if (!playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
@@ -464,43 +473,45 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 		final String uuid = player.getUniqueId().toString();
 
-		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final YamlConfiguration rankYaml = new YamlConfiguration();
-		final YamlConfiguration playerYaml = new YamlConfiguration();
+//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		final YamlConfiguration rankYaml = new YamlConfiguration();
+//		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
-			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
-			final String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-			final List<String> GroupPermissions = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
-			final List<String> Inheritances = (List<String>) rankYaml.getStringList("Groups." + rank + ".inheritance");
+//			rankYaml.load(rankFile);
+//			playerYaml.load(playerFile);
+			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
+			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
 			final List<String> Subranks = new ArrayList<String>();
 
 			try {
-				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
-					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
-					for (String r : subranks.getKeys(false)) {
-						boolean in_world = false;
-						if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
-							in_world = true;
+				if (CachedPlayers.contains("players." + uuid + ".subranks")) {
 
-							ArrayList<String> default_worlds = new ArrayList<String>();
-							default_worlds.add("All");
-							playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
-							playerYaml.save(playerFile);
-						}
-
-						String player_current_world = player.getWorld().getName();
-						List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-						for (String world : worlds) {
-							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+					ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+					if (subranks != null) {
+						for (String r : subranks.getKeys(false)) {
+							boolean in_world = false;
+							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
 								in_world = true;
-							}
-						}
 
-						if (in_world) {
-							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-								Subranks.add(r);
+								ArrayList<String> default_worlds = new ArrayList<String>();
+								default_worlds.add("All");
+								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+							}
+
+							String player_current_world = player.getWorld().getName();
+							List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+							for (String world : worlds) {
+								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+									in_world = true;
+								}
+							}
+
+							if (in_world) {
+								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+									Subranks.add(r);
+								}
 							}
 						}
 					}
@@ -510,7 +521,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			for (int i = 0; i < Subranks.size(); i++) {
-				List<String> permissions = (List<String>) rankYaml.getStringList("Groups." + Subranks.get(i) + ".permissions");
+				List<String> permissions = (List<String>) CachedRanks.get("Groups." + Subranks.get(i) + ".permissions");
 				if (permissions != null) {
 					for (int j = 0; j < permissions.size(); j++) {
 
@@ -530,7 +541,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			if (Inheritances != null) {
 				for (int i = 0; i < Inheritances.size(); i++) {
-					List<String> Permissions = (List<String>) rankYaml.getStringList("Groups." + Inheritances.get(i) + ".permissions");
+					List<String> Permissions = (List<String>) CachedRanks.get("Groups." + Inheritances.get(i) + ".permissions");
 					if (Permissions != null) {
 						for (int j = 0; j < Permissions.size(); j++) {
 
@@ -565,8 +576,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") != null) {
-				List<String> permissions = (List<String>) playerYaml.getStringList("players." + player.getUniqueId() + ".permissions");
+			if (CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
+				List<String> permissions = CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions");
 				if (permissions != null) {
 					for (int i = 0; i < permissions.size(); i++) {
 						boolean enabled = !permissions.get(i).startsWith("-");
@@ -582,8 +593,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			} else {
-				playerYaml.set("players." + player.getUniqueId() + ".permissions", "[]");
-				playerYaml.save(playerFile);
+				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -602,43 +612,44 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 		final String uuid = player.getUniqueId().toString();
 
-		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final YamlConfiguration rankYaml = new YamlConfiguration();
-		final YamlConfiguration playerYaml = new YamlConfiguration();
+//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		final YamlConfiguration rankYaml = new YamlConfiguration();
+//		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
-			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
-			final String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-			final List<String> GroupPermissions = (List<String>) rankYaml.getStringList("Groups." + rank + ".permissions");
-			final List<String> Inheritances = (List<String>) rankYaml.getStringList("Groups." + rank + ".inheritance");
+//			rankYaml.load(rankFile);
+//			playerYaml.load(playerFile);
+			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
+			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
 			final List<String> Subranks = new ArrayList<String>();
 
 			try {
-				if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
-					ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
-					for (String r : subranks.getKeys(false)) {
-						boolean in_world = false;
-						if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
-							in_world = true;
-
-							ArrayList<String> default_worlds = new ArrayList<String>();
-							default_worlds.add("All");
-							playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
-							playerYaml.save(playerFile);
-						}
-
-						String player_current_world = player.getWorld().getName();
-						List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-						for (String world : worlds) {
-							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+					if (subranks != null) {
+						for (String r : subranks.getKeys(false)) {
+							boolean in_world = false;
+							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
 								in_world = true;
-							}
-						}
 
-						if (in_world) {
-							if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-								Subranks.add(r);
+								ArrayList<String> default_worlds = new ArrayList<String>();
+								default_worlds.add("All");
+								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+							}
+
+							String player_current_world = player.getWorld().getName();
+							List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+							for (String world : worlds) {
+								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+									in_world = true;
+								}
+							}
+
+							if (in_world) {
+								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+									Subranks.add(r);
+								}
 							}
 						}
 					}
@@ -648,7 +659,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			for (int i = 0; i < Subranks.size(); i++) {
-				List<String> permissions = (List<String>) rankYaml.getStringList("Groups." + Subranks.get(i) + ".permissions");
+				List<String> permissions = CachedRanks.getStringList("Groups." + Subranks.get(i) + ".permissions");
 				if (permissions != null) {
 					for (int j = 0; j < permissions.size(); j++) {
 
@@ -676,7 +687,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			if (Inheritances != null) {
 				for (int i = 0; i < Inheritances.size(); ++i) {
-					final List<String> Permissions = (List<String>) rankYaml.getStringList("Groups." + Inheritances.get(i) + ".permissions");
+					final List<String> Permissions = (List<String>) CachedRanks.getStringList("Groups." + Inheritances.get(i) + ".permissions");
 					if (Permissions != null) {
 						for (int j = 0; j < Permissions.size(); ++j) {
 							attachment.unsetPermission((String) Permissions.get(j));
@@ -688,8 +699,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") != null) {
-				List<String> permissions = (List<String>) rankYaml.getStringList("players." + player.getUniqueId() + ".permissions");
+			if (CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
+				List<String> permissions = (List<String>) CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions");
 				if (permissions != null) {
 					for (int i = 0; i < permissions.size(); i++) {
 						attachment.unsetPermission((String) permissions.get(i));
@@ -698,7 +709,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			} else {
-				playerYaml.set("players." + player.getUniqueId() + ".permissions", "[]");
+				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -757,118 +768,109 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			playerTablistNameBackup.put(player, player.getPlayerListName());
 			String uuid = player.getUniqueId().toString();
 
-			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-			File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-			File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-			YamlConfiguration configYaml = new YamlConfiguration();
-			YamlConfiguration rankYaml = new YamlConfiguration();
-			YamlConfiguration playerYaml = new YamlConfiguration();
+//			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+//			File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+//			File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//			YamlConfiguration configYaml = new YamlConfiguration();
+//			YamlConfiguration rankYaml = new YamlConfiguration();
+//			YamlConfiguration playerYaml = new YamlConfiguration();
+//				configYaml.load(configFile);
+			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
+				return;
+
+			String format = CachedConfig.getString("tablist_modification.format");
+			String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+			String prefix = CachedRanks.getString("Groups." + rank + ".chat.prefix");
+			String suffix = CachedRanks.getString("Groups." + rank + ".chat.suffix");
+			String namecolor = CachedRanks.getString("Groups." + rank + ".chat.nameColor");
+
+			String subprefix = "";
+			String subsuffix = "";
+			String usertag = "";
+
 			try {
-				configYaml.load(configFile);
-				if (!configYaml.getBoolean("tablist_modification.enabled"))
-					return;
+				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+					for (String r : subranks.getKeys(false)) {
+						boolean in_world = false;
+						if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
+							in_world = true;
 
-				rankYaml.load(rankFile);
-				playerYaml.load(playerFile);
+							ArrayList<String> default_worlds = new ArrayList<String>();
+							default_worlds.add("All");
+							CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+						}
 
-				String format = configYaml.getString("tablist_modification.format");
-				String rank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-				String prefix = rankYaml.getString("Groups." + rank + ".chat.prefix");
-				String suffix = rankYaml.getString("Groups." + rank + ".chat.suffix");
-				String namecolor = rankYaml.getString("Groups." + rank + ".chat.nameColor");
-
-				String subprefix = "";
-				String subsuffix = "";
-				String usertag = "";
-
-				try {
-					if (playerYaml.getConfigurationSection("players." + uuid + ".subranks") != null) {
-						ConfigurationSection subranks = playerYaml.getConfigurationSection("players." + uuid + ".subranks");
-						for (String r : subranks.getKeys(false)) {
-							boolean in_world = false;
-							if (!playerYaml.isSet("players." + uuid + ".subranks." + r + ".worlds")) {
+						String player_current_world = player.getWorld().getName();
+						List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+						for (String world : worlds) {
+							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
 								in_world = true;
-
-								ArrayList<String> default_worlds = new ArrayList<String>();
-								default_worlds.add("All");
-								playerYaml.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
-								playerYaml.save(playerFile);
-							}
-
-							String player_current_world = player.getWorld().getName();
-							List<String> worlds = playerYaml.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-							for (String world : worlds) {
-								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-									in_world = true;
-								}
-							}
-
-							if (in_world) {
-								if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-									subprefix += (rankYaml.getString("Groups." + r + ".chat.prefix") != null && rankYaml.getString("Groups." + r + ".chat.prefix").length() > 0
-											? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.prefix") + " "
-											: "");
-								}
-
-								if (playerYaml.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-									subsuffix += (rankYaml.getString("Groups." + r + ".chat.suffix") != null && rankYaml.getString("Groups." + r + ".chat.suffix").length() > 0
-											? ChatColor.RESET + rankYaml.getString("Groups." + r + ".chat.suffix") + " "
-											: "");
-
-								}
 							}
 						}
-					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
 
-				subprefix = subprefix.trim();
-				subsuffix = subsuffix.trim();
+						if (in_world) {
+							if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+								subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null && CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
+										? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix") + " "
+										: "");
+							}
 
-				if (subsuffix.endsWith(" ")) {
-					subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
-				}
+							if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+								subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null && CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
+										? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix") + " "
+										: "");
 
-				if (subsuffix.replaceAll(" ", "").length() == 0) {
-					subsuffix = "";
-				}
-
-				if (playerYaml.isSet("players." + uuid + ".usertag") && playerYaml.getString("players." + uuid + ".usertag").length() > 0) {
-					String tmp_usertag = playerYaml.getString("players." + uuid + ".usertag");
-
-					if (rankYaml.getConfigurationSection("Usertags") != null) {
-						ConfigurationSection tags = rankYaml.getConfigurationSection("Usertags");
-						for (String key : tags.getKeys(false)) {
-							if (key.equalsIgnoreCase(tmp_usertag)) {
-								usertag = rankYaml.getString("Usertags." + key) + ChatColor.RESET;
-								break;
 							}
 						}
 					}
 				}
-
-				if (format.contains("[name]")) {
-					String tmp_format = configYaml.getString("tablist_modification.format");
-					tmp_format = tmp_format.replace("[name]", "[player]");
-					configYaml.set("tablist_modification.format", tmp_format);
-					configYaml.save(configFile);
-					format = tmp_format;
-				}
-
-				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
-						.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", namecolor + player.getPlayerListName()).build(), '[', ']');
-
-				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
-
-				while (format.endsWith(" ")) {
-					format = format.substring(0, format.length() - 1);
-				}
-
-				player.setPlayerListName(format);
-			} catch (IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
+
+			subprefix = subprefix.trim();
+			subsuffix = subsuffix.trim();
+
+			if (subsuffix.endsWith(" ")) {
+				subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
+			}
+
+			if (subsuffix.replaceAll(" ", "").length() == 0) {
+				subsuffix = "";
+			}
+
+			if (CachedPlayers.contains("players." + uuid + ".usertag") && CachedPlayers.getString("players." + uuid + ".usertag").length() > 0) {
+				String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
+
+				if (CachedRanks.getConfigurationSection("Usertags") != null) {
+					ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+					for (String key : tags.getKeys(false)) {
+						if (key.equalsIgnoreCase(tmp_usertag)) {
+							usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
+							break;
+						}
+					}
+				}
+			}
+
+			if (format.contains("[name]")) {
+				String tmp_format = CachedConfig.getString("tablist_modification.format");
+				tmp_format = tmp_format.replace("[name]", "[player]");
+				CachedConfig.set("tablist_modification.format", tmp_format);
+				format = tmp_format;
+			}
+
+			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+					.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", namecolor + player.getPlayerListName()).build(), '[', ']');
+
+			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+
+			while (format.endsWith(" ")) {
+				format = format.substring(0, format.length() - 1);
+			}
+
+			player.setPlayerListName(format);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -880,36 +882,31 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			playerTablistNameBackup.put(player, player.getPlayerListName());
 
-			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-			YamlConfiguration configYaml = new YamlConfiguration();
-			try {
-				configYaml.load(configFile);
-				if (!configYaml.getBoolean("tablist_modification.enabled"))
-					return;
+//			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+//			YamlConfiguration configYaml = new YamlConfiguration();
+//				configYaml.load(configFile);
+			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
+				return;
 
-				String format = configYaml.getString("tablist_modification.format");
+			String format = CachedConfig.getString("tablist_modification.format");
 
-				if (format.contains("[name]")) {
-					String tmp_format = configYaml.getString("tablist_modification.format");
-					tmp_format = tmp_format.replace("[name]", "[player]");
-					configYaml.set("tablist_modification.format", tmp_format);
-					configYaml.save(configFile);
-					format = tmp_format;
-				}
-
-				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
-						.put("player", nameColor + player.getPlayerListName()).build(), '[', ']');
-
-				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
-
-				while (format.endsWith(" ")) {
-					format = format.substring(0, format.length() - 1);
-				}
-
-				player.setPlayerListName(format);
-			} catch (IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
+			if (format.contains("[name]")) {
+				String tmp_format = CachedConfig.getString("tablist_modification.format");
+				tmp_format = tmp_format.replace("[name]", "[player]");
+				CachedConfig.set("tablist_modification.format", tmp_format);
+				format = tmp_format;
 			}
+
+			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
+					.put("player", nameColor + player.getPlayerListName()).build(), '[', ']');
+
+			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+
+			while (format.endsWith(" ")) {
+				format = format.substring(0, format.length() - 1);
+			}
+
+			player.setPlayerListName(format);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1013,22 +1010,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updatePlaytime(Player player, long join_time, long leave_time) {
-		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		YamlConfiguration playerYaml = new YamlConfiguration();
-		try {
-			playerYaml.load(playerFile);
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
+//		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		YamlConfiguration playerYaml = new YamlConfiguration();
+//		try {
+//			playerYaml.load(playerFile);
+//		} catch (IOException | InvalidConfigurationException e) {
+//			e.printStackTrace();
+//		}
 
-		Long current_playtime = playerYaml.getLong("players." + player.getUniqueId() + ".playtime");
-		playerYaml.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
+		Long current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime");
+		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
 
-		try {
-			playerYaml.save(playerFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			playerYaml.save(playerFile);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public void updatePlayersWithRank(Users users, String rank) {

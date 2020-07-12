@@ -18,6 +18,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CachedPlayers;
+import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon.RankChangeCause;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
@@ -49,6 +51,7 @@ public class Users implements Listener {
 							String oldRank = playerYaml.getString("players." + target.getUniqueId() + ".rank");
 							playerYaml.set("players." + target.getUniqueId() + ".rank", (Object) rank);
 							playerYaml.save(playerFile);
+							CachedPlayers.update();
 							
 							if (fireAddonEvent)
 								for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -60,6 +63,7 @@ public class Users implements Listener {
 							Messages.messageSetRankSuccessTarget(target, player.getName(), rank);
 							this.m.setupPermissions(target);
 							this.m.updateTablistName(target);
+							
 						} else {
 							Messages.messageGroupNotFound(player, rank);
 						}
@@ -83,6 +87,7 @@ public class Users implements Listener {
 									String oldRank = playerYaml2.getString("players." + key + ".rank");
 									playerYaml2.set("players." + key + ".rank", (Object) rank);
 									playerYaml2.save(playerFile2);
+									CachedPlayers.update();
 									
 									if (fireAddonEvent)
 										for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -124,6 +129,7 @@ public class Users implements Listener {
 						String oldRank = playerYaml2.getString("players." + target2.getUniqueId() + ".rank");
 						playerYaml2.set("players." + target2.getUniqueId() + ".rank", (Object) rank);
 						playerYaml2.save(playerFile2);
+						CachedPlayers.update();
 
 						if (fireAddonEvent)
 							for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -135,6 +141,7 @@ public class Users implements Listener {
 						Messages.messageSetRankSuccessTarget(target2, console.getName(), rank);
 						this.m.setupPermissions(target2);
 						this.m.updateTablistName(target2);
+						
 					} else {
 						Messages.messageGroupNotFound(console, rank);
 					}
@@ -158,6 +165,7 @@ public class Users implements Listener {
 								String oldRank = playerYaml2.getString("players." + key + ".rank");
 								playerYaml2.set("players." + key + ".rank", (Object) rank);
 								playerYaml2.save(playerFile2);
+								CachedPlayers.update();
 
 								if (fireAddonEvent)
 									for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -198,6 +206,7 @@ public class Users implements Listener {
 				String oldRank = playerYaml.getString("players." + player.getUniqueId() + ".rank");
 				playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rank);
 				playerYaml.save(playerFile);
+				CachedPlayers.update();
 				
 				if (fireAddonEvent)
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -207,6 +216,7 @@ public class Users implements Listener {
 				
 				this.m.setupPermissions(player);
 				this.m.updateTablistName(player);
+				
 				Messages.messageSetRankSuccessSender(player, player.getName(), rank);
 				success = true;
 			} else {
@@ -238,6 +248,7 @@ public class Users implements Listener {
 			rankYaml.load(rankFile);
 			rankYaml.set("Groups." + rank + "." + field, new_value);
 			rankYaml.save(rankFile);
+			CachedRanks.update();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -265,6 +276,7 @@ public class Users implements Listener {
 			rankYaml.load(rankFile);
 			rankYaml.set("Groups." + rank + "." + field, new_value);
 			rankYaml.save(rankFile);
+			CachedRanks.update();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -292,6 +304,7 @@ public class Users implements Listener {
 			rankYaml.load(rankFile);
 			rankYaml.set("Groups." + rank + "." + field, new_value);
 			rankYaml.save(rankFile);
+			CachedRanks.update();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -414,6 +427,7 @@ public class Users implements Listener {
 						list.add(permission);
 						rankYaml.set("Groups." + rank + ".permissions", (Object) list);
 						rankYaml.save(rankFile);
+						CachedRanks.update();
 					}
 					this.m.updatePlayersWithRank(this, rank);
 					return true;
@@ -430,6 +444,7 @@ public class Users implements Listener {
 					}
 				}
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -449,6 +464,7 @@ public class Users implements Listener {
 					list.remove(permission);
 					rankYaml.set("Groups." + rank + ".permissions", (Object) list);
 					rankYaml.save(rankFile);
+					CachedRanks.update();
 					this.m.updatePlayersWithRank(this, rank);
 					return true;
 				}
@@ -463,6 +479,7 @@ public class Users implements Listener {
 					}
 				}
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -483,6 +500,7 @@ public class Users implements Listener {
 				}
 				rankYaml.set("Groups." + rank + ".inheritance", (Object) list);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rank);
 				return true;
 			}
@@ -500,6 +518,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.prefix", (Object) prefix);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rank);
 				this.m.updatePlayersTABlistWithRank(this, rank);
 				return true;
@@ -518,6 +537,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.suffix", (Object) suffix);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rank);
 				this.m.updatePlayersTABlistWithRank(this, rank);
 				return true;
@@ -536,6 +556,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.chatColor", (Object) color);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rank);
 				return true;
 			}
@@ -553,6 +574,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".chat.nameColor", (Object) color);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rank);
 				this.m.updatePlayersTABlistWithRank(this, rank);
 				return true;
@@ -575,6 +597,7 @@ public class Users implements Listener {
 				}
 				rankYaml.set("Groups." + rank + ".inheritance", (Object) list);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rank);
 				return true;
 			}
@@ -603,6 +626,7 @@ public class Users implements Listener {
 				rankYaml.set("Groups." + rank + ".economy.cost", 0);
 				rankYaml.set("Groups." + rank + ".gui.icon", "stone");
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -619,6 +643,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank, (Object) null);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -635,6 +660,7 @@ public class Users implements Listener {
 			if (rankYaml.get("Groups." + rank) != null) {
 				rankYaml.set("Groups." + rank + ".build", (Object) enabled);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -666,9 +692,11 @@ public class Users implements Listener {
 						}
 //						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
 //						playerYaml.save(playerFile);
+//						CachedPlayers.update();
 //						this.m.setupPermissions(player);
 //						this.m.updateTablistName(player);
 						this.m.updatePlayersWithRank(this, rank);
+						
 						return true;
 					}
 				}
@@ -697,9 +725,10 @@ public class Users implements Listener {
 						}
 //						playerYaml.set("players." + key + ".rank", (Object) rankname);
 //						playerYaml.save(playerFile);
+//						CachedPlayers.update();
 //						this.m.setupPermissions(player);
 //						this.m.updateTablistName(player);
-
+						
 						offline_player_found = true;
 						return true;
 					}
@@ -738,6 +767,7 @@ public class Users implements Listener {
 						}
 //						playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rankname);
 //						playerYaml.save(playerFile);
+//						CachedPlayers.update();
 						this.m.updatePlayersWithRank(this, rank);
 						return true;
 					}
@@ -767,7 +797,7 @@ public class Users implements Listener {
 						}
 //						playerYaml.set("players." + key + ".rank", (Object) rankname);
 //						playerYaml.save(playerFile);
-
+//						CachedPlayers.update();
 						offline_player_found = true;
 						return true;
 					}
@@ -835,7 +865,9 @@ public class Users implements Listener {
 			}
 			try {
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				playerYaml.save(playerFile);
+				CachedPlayers.update();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -859,6 +891,7 @@ public class Users implements Listener {
 			rankYaml.set("Default", rankname);
 			try {
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -1052,6 +1085,7 @@ public class Users implements Listener {
 				}
 				rankYaml.set("Groups." + rankname + ".economy.buyable", (Object) list);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -1074,6 +1108,7 @@ public class Users implements Listener {
 				}
 				rankYaml.set("Groups." + rankname + ".economy.buyable", (Object) list);
 				rankYaml.save(rankFile);
+				CachedRanks.update();
 				this.m.updatePlayersWithRank(this, rankname);
 				return true;
 			}
@@ -1107,6 +1142,7 @@ public class Users implements Listener {
 				if (rankYaml.get("Groups." + rankname) != null) {
 					rankYaml.set("Groups." + rankname + ".economy.cost", Integer.parseInt(cost));
 					rankYaml.save(rankFile);
+					CachedRanks.update();
 					return true;
 				}
 			} catch (Exception e) {
@@ -1150,7 +1186,9 @@ public class Users implements Listener {
 						playersYaml.set("players." + target_player.getUniqueId() + ".permissions", (Object) list);
 					}
 					playersYaml.save(playersFile);
+					CachedPlayers.update();
 					this.m.setupPermissions(target_player);
+					
 					return true;
 				} else {
 					return false;
@@ -1176,6 +1214,7 @@ public class Users implements Listener {
 							playersYaml.set("players." + uuid + ".permissions", (Object) list);
 						}
 						playersYaml.save(playersFile);
+						CachedPlayers.update();
 						return true;
 					} else {
 						return false;
@@ -1208,7 +1247,9 @@ public class Users implements Listener {
 						playersYaml.set("players." + target_player.getUniqueId() + ".permissions", (Object) list);
 					}
 					playersYaml.save(playersFile);
+					CachedPlayers.update();
 					this.m.setupPermissions(target_player);
+					
 					return true;
 				} else {
 					return false;
@@ -1234,6 +1275,7 @@ public class Users implements Listener {
 							playersYaml.set("players." + uuid + ".permissions", (Object) list);
 						}
 						playersYaml.save(playersFile);
+						CachedPlayers.update();
 						return true;
 					} else {
 						return false;
@@ -1271,7 +1313,9 @@ public class Users implements Listener {
 			}
 
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 			this.m.setupPermissions(player);
+			
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1299,7 +1343,9 @@ public class Users implements Listener {
 			}
 
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 			this.m.setupPermissions(player);
+			
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1357,6 +1403,7 @@ public class Users implements Listener {
 			}
 
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1386,6 +1433,7 @@ public class Users implements Listener {
 			}
 
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1416,6 +1464,7 @@ public class Users implements Listener {
 			}
 
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1446,6 +1495,7 @@ public class Users implements Listener {
 			}
 
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1478,6 +1528,7 @@ public class Users implements Listener {
 					ranksYaml.set("Usertags", null);
 					ranksYaml.set("Usertags." + tag, format);
 					ranksYaml.save(ranksFile);
+					CachedRanks.update();
 				}
 
 				PowerRanks.log.info("tagExists: " + tagExists);
@@ -1485,6 +1536,7 @@ public class Users implements Listener {
 				if (!tagExists) {
 					ranksYaml.set("Usertags." + tag, format);
 					ranksYaml.save(ranksFile);
+					CachedRanks.update();
 					return true;
 				}
 			}
@@ -1516,6 +1568,7 @@ public class Users implements Listener {
 					if (tagExists) {
 						ranksYaml.set("Usertags." + tag, format);
 						ranksYaml.save(ranksFile);
+						CachedRanks.update();
 						return true;
 					}
 				} catch (Exception e) {
@@ -1549,6 +1602,7 @@ public class Users implements Listener {
 					if (tagExists) {
 						ranksYaml.set("Usertags." + tag, null);
 						ranksYaml.save(ranksFile);
+						CachedRanks.update();
 						return true;
 					}
 				} catch (Exception e) {
@@ -1590,6 +1644,7 @@ public class Users implements Listener {
 					if (tagExists) {
 						playersYaml.set("players." + uuid + ".usertag", tag);
 						playersYaml.save(playersFile);
+						CachedPlayers.update();
 						return true;
 					}
 				} catch (Exception e) {
@@ -1659,6 +1714,7 @@ public class Users implements Listener {
 
 			playersYaml.set("players." + uuid + ".usertag", "");
 			playersYaml.save(playersFile);
+			CachedPlayers.update();
 			return true;
 
 		} catch (Exception e) {

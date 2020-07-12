@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map.Entry;
 
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +12,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CachedPlayers;
+import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
@@ -26,36 +27,36 @@ public class OnJoin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
-		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final YamlConfiguration rankYaml = new YamlConfiguration();
-		final YamlConfiguration playerYaml = new YamlConfiguration();
+//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		final YamlConfiguration rankYaml = new YamlConfiguration();
+//		final YamlConfiguration playerYaml = new YamlConfiguration();
 
 		this.m.playerInjectPermissible(player);
 
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
 		try {
-			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
+//			rankYaml.load(rankFile);
+//			playerYaml.load(playerFile);
 			
-			playerYaml.set("players." + player.getUniqueId() + ".name", player.getName());
+			CachedPlayers.set("players." + player.getUniqueId() + ".name", player.getName());
 			
-			if (playerYaml.getString("players." + player.getUniqueId() + ".rank") == null) {
-				playerYaml.set("players." + player.getUniqueId() + ".rank", rankYaml.get("Default"));
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank")) {
+				CachedPlayers.set("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
 			}
 
-			if (playerYaml.getString("players." + player.getUniqueId() + ".permissions") == null) {
-				playerYaml.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
+				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
 			}
 
-			if (playerYaml.getString("players." + player.getUniqueId() + ".subranks") == null) {
-				playerYaml.set("players." + player.getUniqueId() + ".subranks", "");
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks")) {
+				CachedPlayers.set("players." + player.getUniqueId() + ".subranks", "");
 			}
 			
-			if (!playerYaml.isSet("players." + player.getUniqueId() + ".usertag"))
-				playerYaml.set("players." + player.getUniqueId() + ".usertag", "");
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+				CachedPlayers.set("players." + player.getUniqueId() + ".usertag", "");
 			
-			playerYaml.save(playerFile);
+//			playerYaml.save(playerFile);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}

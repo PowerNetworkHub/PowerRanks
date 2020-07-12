@@ -1,17 +1,14 @@
 package nl.svenar.PowerRanks.Events;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 
@@ -27,15 +24,15 @@ public class OnSignChanged implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		if (Util.isPowerRanksSign(this.m, event.getLine(0))) {
 			if (event.getPlayer().hasPermission("powerranks.cmd.admin")) {
-				final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
-				final YamlConfiguration configYaml = new YamlConfiguration();
-				try {
-					configYaml.load(configFile);
-				} catch (IOException | InvalidConfigurationException e) {
-					e.printStackTrace();
-				}
+//				final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
+//				final YamlConfiguration configYaml = new YamlConfiguration();
+//				try {
+//					configYaml.load(configFile);
+//				} catch (IOException | InvalidConfigurationException e) {
+//					e.printStackTrace();
+//				}
 
-				event.setLine(0, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), Util.replaceAll(configYaml.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
+				event.setLine(0, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), Util.replaceAll(CachedConfig.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
 
 				final Users s = new Users(this.m);
 				String sign_command = event.getLine(1);
