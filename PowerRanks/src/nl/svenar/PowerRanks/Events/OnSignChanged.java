@@ -24,14 +24,6 @@ public class OnSignChanged implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		if (Util.isPowerRanksSign(this.m, event.getLine(0))) {
 			if (event.getPlayer().hasPermission("powerranks.cmd.admin")) {
-//				final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
-//				final YamlConfiguration configYaml = new YamlConfiguration();
-//				try {
-//					configYaml.load(configFile);
-//				} catch (IOException | InvalidConfigurationException e) {
-//					e.printStackTrace();
-//				}
-
 				event.setLine(0, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), Util.replaceAll(CachedConfig.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
 
 				final Users s = new Users(this.m);

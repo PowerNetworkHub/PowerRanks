@@ -1010,22 +1010,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updatePlaytime(Player player, long join_time, long leave_time) {
-//		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		YamlConfiguration playerYaml = new YamlConfiguration();
-//		try {
-//			playerYaml.load(playerFile);
-//		} catch (IOException | InvalidConfigurationException e) {
-//			e.printStackTrace();
-//		}
-
 		Long current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime");
 		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
-
-//		try {
-//			playerYaml.save(playerFile);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 	}
 
 	public void updatePlayersWithRank(Users users, String rank) {

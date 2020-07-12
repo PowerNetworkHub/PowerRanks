@@ -24,7 +24,6 @@ public class OnInventory implements Listener {
 		Player player = (Player) event.getWhoClicked();
 
 		Inventory inventory = event.getInventory();
-//		ItemStack clickedItem = event.getCurrentItem();
 
 		if (!GUI.isPowerRanksGUI(inventory))
 			return;

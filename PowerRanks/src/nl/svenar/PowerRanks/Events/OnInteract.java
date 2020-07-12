@@ -77,7 +77,6 @@ public class OnInteract implements Listener {
 				}
 			} else if (sign_command.equalsIgnoreCase("gui")) {
 				if (player.hasPermission("powerranks.signs.admin")) {
-//					GUI.openPowerRanksGUI(player, 0, "");
 					GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 				} else {
 					Messages.noPermission(player);
@@ -85,7 +84,6 @@ public class OnInteract implements Listener {
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
 					if (sign_argument.length() == 0) {
-//						GUI.openPowerRanksRankupGUI(player, 0);
 						GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
 					} else {
 						if (PowerRanks.getVaultEconomy() != null) {

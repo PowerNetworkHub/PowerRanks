@@ -27,46 +27,32 @@ public class OnJoin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
-//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		final YamlConfiguration rankYaml = new YamlConfiguration();
-//		final YamlConfiguration playerYaml = new YamlConfiguration();
-
 		this.m.playerInjectPermissible(player);
 
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
-		try {
-//			rankYaml.load(rankFile);
-//			playerYaml.load(playerFile);
-			
-			CachedPlayers.set("players." + player.getUniqueId() + ".name", player.getName());
-			
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank")) {
-				CachedPlayers.set("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
-			}
+		CachedPlayers.set("players." + player.getUniqueId() + ".name", player.getName());
 
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
-				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
-			}
-
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks")) {
-				CachedPlayers.set("players." + player.getUniqueId() + ".subranks", "");
-			}
-			
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
-				CachedPlayers.set("players." + player.getUniqueId() + ".usertag", "");
-			
-//			playerYaml.save(playerFile);
-		} catch (Exception e2) {
-			e2.printStackTrace();
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank")) {
+			CachedPlayers.set("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
 		}
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
+			CachedPlayers.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+		}
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks")) {
+			CachedPlayers.set("players." + player.getUniqueId() + ".subranks", "");
+		}
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+			CachedPlayers.set("players." + player.getUniqueId() + ".usertag", "");
 
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
 
 		long time = new Date().getTime();
 		this.m.playerLoginTime.put(player, time);
-		
+
 		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 			prAddon.getValue().onPlayerJoin(prPlayer);
