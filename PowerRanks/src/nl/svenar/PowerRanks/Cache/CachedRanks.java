@@ -28,6 +28,12 @@ public class CachedRanks {
 		final File ranksFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration ranksYaml = new YamlConfiguration();
 		
+		ranks_data.clear();
+		ranks_configuration_sections.clear();
+		ranks_strings.clear();
+		ranks_string_lists.clear();
+		ranks_booleans.clear();
+		
 		try {
 			ranksYaml.load(ranksFile);
 			for (String field : ranksYaml.getConfigurationSection("").getKeys(true)) {

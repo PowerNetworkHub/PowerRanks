@@ -125,7 +125,7 @@ public class OnChat implements Listener {
 
 				format = Util.powerFormatter(format,
 						ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
-								.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", nameColor + "%1$s").put("msg", chatColor + "%2$s").put("format", e.getFormat()).build(),
+								.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", nameColor + "%1$s").put("msg", chatColor + "%2$s").put("format", e.getFormat()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
 						'[', ']');
 
 				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);

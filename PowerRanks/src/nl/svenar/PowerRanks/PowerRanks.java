@@ -861,8 +861,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = tmp_format;
 			}
 
-			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
-					.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", namecolor + player.getPlayerListName()).build(), '[', ']');
+			format = Util.powerFormatter(format,
+					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", namecolor + player.getPlayerListName())
+							.put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
+					'[', ']');
 
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
 
@@ -898,7 +901,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
-					.put("player", nameColor + player.getPlayerListName()).build(), '[', ']');
+					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
 
 			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
 
@@ -1010,7 +1013,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updatePlaytime(Player player, long join_time, long leave_time) {
-		Long current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime");
+		int current_playtime = CachedPlayers.contains("players." + player.getUniqueId() + ".playtime") ? CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime") : 0;
 		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
 	}
 

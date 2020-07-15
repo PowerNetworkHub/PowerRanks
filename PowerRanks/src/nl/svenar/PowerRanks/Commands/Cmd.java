@@ -1533,6 +1533,84 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageUsertagsDisabled(console);
 					}
+				} else if (args[0].equalsIgnoreCase("setpromoterank")) {
+					if (args.length == 3) {
+						final String rankname = args[1];
+						final String promote_rank = args[2];
+						if (s.setPromoteRank(rankname, promote_rank)) {
+							Messages.messageCommandSetpromoterankSuccess(console, rankname, promote_rank);
+						} else {
+							Messages.messageCommandSetpromoterankError(console, rankname, promote_rank);
+						}
+					} else {
+						Messages.messageCommandUsageSetpromoterank(console);
+					}
+				} else if (args[0].equalsIgnoreCase("setdemoterank")) {
+					if (args.length == 3) {
+						final String rankname = args[1];
+						final String promote_rank = args[2];
+						if (s.setDemoteRank(rankname, promote_rank)) {
+							Messages.messageCommandSetdemoterankSuccess(console, rankname, promote_rank);
+						} else {
+							Messages.messageCommandSetdemoterankError(console, rankname, promote_rank);
+						}
+					} else {
+						Messages.messageCommandUsageSetdemoterank(console);
+					}
+				} else if (args[0].equalsIgnoreCase("clearpromoterank")) {
+					if (args.length == 2) {
+						final String rankname = args[1];
+						if (s.clearPromoteRank(rankname)) {
+							Messages.messageCommandClearpromoterankSuccess(console, rankname);
+						} else {
+							Messages.messageCommandClearpromoterankError(console, rankname);
+						}
+					} else {
+						Messages.messageCommandUsageClearpromoterank(console);
+					}
+				} else if (args[0].equalsIgnoreCase("cleardemoterank")) {
+					if (args.length == 2) {
+						final String rankname = args[1];
+						if (s.clearDemoteRank(rankname)) {
+							Messages.messageCommandCleardemoterankSuccess(console, rankname);
+						} else {
+							Messages.messageCommandCleardemoterankError(console, rankname);
+						}
+					} else {
+						Messages.messageCommandUsageCleardemoterank(console);
+					}
+
+				} else if (args[0].equalsIgnoreCase("addoninfo")) {
+					if (args.length == 2) {
+						final String addon_name = args[1];
+						PowerRanksAddon addon = null;
+						for (Entry<File, PowerRanksAddon> a : this.m.addonsManager.addonClasses.entrySet()) {
+							if (a.getValue().getIdentifier().equalsIgnoreCase(addon_name))
+								addon = a.getValue();
+						}
+						if (addon != null) {
+							console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+							console.sendMessage(ChatColor.DARK_GREEN + "Add-on name: " + ChatColor.GREEN + addon.getIdentifier());
+							console.sendMessage(ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + addon.getAuthor());
+							console.sendMessage(ChatColor.DARK_GREEN + "Version: " + ChatColor.GREEN + addon.getVersion());
+							console.sendMessage(ChatColor.DARK_GREEN + "Registered Commands:");
+							for (String command : addon.getRegisteredCommands()) {
+								console.sendMessage(ChatColor.GREEN + "- /pr " + command);
+							}
+							console.sendMessage(ChatColor.DARK_GREEN + "Registered Permissions:");
+							for (String permission : addon.getRegisteredPermissions()) {
+								console.sendMessage(ChatColor.GREEN + "- " + permission);
+							}
+							console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+						} else {
+							Messages.messageCommandErrorAddonNotFound(console, addon_name);
+						}
+					} else {
+						Messages.messageCommandUsageAddoninfo(console);
+					}
+//				} else if (args[0].equalsIgnoreCase("webeditor")) {
+//					Editor editor = new Editor();
+//					editor.setup();
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -1732,6 +1810,29 @@ public class Cmd implements CommandExecutor {
 						final String tag = args[2];
 						s.setUserTag(player, tag);
 					}
+				}
+
+			} else if (args[0].equalsIgnoreCase("setpromoterank")) {
+				if (args.length == 3) {
+					final String rankname = args[1];
+					final String promote_rank = args[2];
+					s.setPromoteRank(rankname, promote_rank);
+				}
+			} else if (args[0].equalsIgnoreCase("setdemoterank")) {
+				if (args.length == 3) {
+					final String rankname = args[1];
+					final String promote_rank = args[2];
+					s.setDemoteRank(rankname, promote_rank);
+				}
+			} else if (args[0].equalsIgnoreCase("clearpromoterank")) {
+				if (args.length == 2) {
+					final String rankname = args[1];
+					s.clearPromoteRank(rankname);
+				}
+			} else if (args[0].equalsIgnoreCase("cleardemoterank")) {
+				if (args.length == 2) {
+					final String rankname = args[1];
+					s.clearDemoteRank(rankname);
 				}
 			}
 		}

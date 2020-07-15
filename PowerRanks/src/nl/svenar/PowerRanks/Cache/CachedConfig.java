@@ -31,6 +31,12 @@ public class CachedConfig {
 		final File configFile = new File(pr.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		
+		config_data.clear();
+		config_configuration_sections.clear();
+		config_strings.clear();
+		config_string_lists.clear();
+		config_booleans.clear();
+		
 		try {
 			configYaml.load(configFile);
 			for (String field : configYaml.getConfigurationSection("").getKeys(true)) {

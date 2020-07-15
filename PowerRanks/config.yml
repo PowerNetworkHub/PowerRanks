@@ -18,6 +18,8 @@
 # Tablist Modification
 # Change the player's name in the tablist
 # Available options:
+# [world] player's current world
+# [usertag] player's usertag
 # [prefix] rank name
 # [suffix] suffix
 # [subprefix] player's subrank prefix
@@ -45,12 +47,12 @@
 
 chat:
   enabled: true
-  format: '[usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
+  format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
 build_modification:
   enabled: true
 tablist_modification:
   enabled: true
-  format: '[usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]'
+  format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]'
 signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"

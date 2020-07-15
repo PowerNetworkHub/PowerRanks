@@ -52,18 +52,18 @@ public class Users implements Listener {
 							playerYaml.set("players." + target.getUniqueId() + ".rank", (Object) rank);
 							playerYaml.save(playerFile);
 							CachedPlayers.update();
-							
+
 							if (fireAddonEvent)
 								for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 									PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, target);
 									prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, true);
 								}
-							
+
 							Messages.messageSetRankSuccessSender(player, t, rank);
 							Messages.messageSetRankSuccessTarget(target, player.getName(), rank);
 							this.m.setupPermissions(target);
 							this.m.updateTablistName(target);
-							
+
 						} else {
 							Messages.messageGroupNotFound(player, rank);
 						}
@@ -88,13 +88,13 @@ public class Users implements Listener {
 									playerYaml2.set("players." + key + ".rank", (Object) rank);
 									playerYaml2.save(playerFile2);
 									CachedPlayers.update();
-									
+
 									if (fireAddonEvent)
 										for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 											PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
 											prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, false);
 										}
-									
+
 									Messages.messageSetRankSuccessSender(player, t, rank);
 
 									offline_player_found = true;
@@ -141,7 +141,7 @@ public class Users implements Listener {
 						Messages.messageSetRankSuccessTarget(target2, console.getName(), rank);
 						this.m.setupPermissions(target2);
 						this.m.updateTablistName(target2);
-						
+
 					} else {
 						Messages.messageGroupNotFound(console, rank);
 					}
@@ -159,26 +159,27 @@ public class Users implements Listener {
 						playerYaml2.load(playerFile2);
 
 						boolean offline_player_found = false;
+						
+						if (playerYaml2.isConfigurationSection("players")) {
+							for (String key : playerYaml2.getConfigurationSection("players").getKeys(false)) {
+								if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
+									String oldRank = playerYaml2.getString("players." + key + ".rank");
+									playerYaml2.set("players." + key + ".rank", (Object) rank);
+									playerYaml2.save(playerFile2);
+									CachedPlayers.update();
 
-						for (String key : playerYaml2.getConfigurationSection("players").getKeys(false)) {
-							if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
-								String oldRank = playerYaml2.getString("players." + key + ".rank");
-								playerYaml2.set("players." + key + ".rank", (Object) rank);
-								playerYaml2.save(playerFile2);
-								CachedPlayers.update();
+									if (fireAddonEvent)
+										for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+											PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
+											prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, false);
+										}
 
-								if (fireAddonEvent)
-									for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-										PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
-										prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, false);
-									}
+									Messages.messageSetRankSuccessSender(console, t, rank);
 
-								Messages.messageSetRankSuccessSender(console, t, rank);
-
-								offline_player_found = true;
+									offline_player_found = true;
+								}
 							}
 						}
-
 						if (!offline_player_found) {
 							Messages.messagePlayerNotFound(console, t);
 						}
@@ -207,16 +208,16 @@ public class Users implements Listener {
 				playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rank);
 				playerYaml.save(playerFile);
 				CachedPlayers.update();
-				
+
 				if (fireAddonEvent)
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 						prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, true);
 					}
-				
+
 				this.m.setupPermissions(player);
 				this.m.updateTablistName(player);
-				
+
 				Messages.messageSetRankSuccessSender(player, player.getName(), rank);
 				success = true;
 			} else {
@@ -685,7 +686,7 @@ public class Users implements Listener {
 					String rankname = rankYaml.getString("Groups." + rank + ".level.promote");
 					if (rankYaml.get("Groups." + rankname) != null && rankname.length() > 0) {
 						this.setGroup(player, rankname, false);
-						
+
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.PROMOTE, true);
@@ -696,7 +697,7 @@ public class Users implements Listener {
 //						this.m.setupPermissions(player);
 //						this.m.updateTablistName(player);
 						this.m.updatePlayersWithRank(this, rank);
-						
+
 						return true;
 					}
 				}
@@ -718,7 +719,7 @@ public class Users implements Listener {
 							return false;
 
 						this.setGroup(player, rankname, false);
-						
+
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rankname, RankChangeCause.PROMOTE, true);
@@ -728,7 +729,7 @@ public class Users implements Listener {
 //						CachedPlayers.update();
 //						this.m.setupPermissions(player);
 //						this.m.updateTablistName(player);
-						
+
 						offline_player_found = true;
 						return true;
 					}
@@ -760,7 +761,7 @@ public class Users implements Listener {
 					String rankname = rankYaml.getString("Groups." + rank + ".level.demote");
 					if (rankYaml.get("Groups." + rankname) != null && rankname.length() > 0) {
 						this.setGroup(player, rankname, false);
-						
+
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rankname, RankChangeCause.DEMOTE, true);
@@ -790,7 +791,7 @@ public class Users implements Listener {
 							return false;
 
 						this.setGroup(player, rankname, false);
-						
+
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rankname, RankChangeCause.PROMOTE, true);
@@ -1188,7 +1189,7 @@ public class Users implements Listener {
 					playersYaml.save(playersFile);
 					CachedPlayers.update();
 					this.m.setupPermissions(target_player);
-					
+
 					return true;
 				} else {
 					return false;
@@ -1249,7 +1250,7 @@ public class Users implements Listener {
 					playersYaml.save(playersFile);
 					CachedPlayers.update();
 					this.m.setupPermissions(target_player);
-					
+
 					return true;
 				} else {
 					return false;
@@ -1302,7 +1303,7 @@ public class Users implements Listener {
 			playersYaml.load(playersFile);
 			ArrayList<String> default_worlds = new ArrayList<String>();
 			default_worlds.add("All");
-			
+
 			if (playersYaml.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) == null) {
 				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_prefix", true);
 				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".use_suffix", true);
@@ -1315,7 +1316,7 @@ public class Users implements Listener {
 			playersYaml.save(playersFile);
 			CachedPlayers.update();
 			this.m.setupPermissions(player);
-			
+
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1345,7 +1346,7 @@ public class Users implements Listener {
 			playersYaml.save(playersFile);
 			CachedPlayers.update();
 			this.m.setupPermissions(player);
-			
+
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -3,6 +3,7 @@ package nl.svenar.PowerRanks.Events;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
@@ -27,25 +28,33 @@ public class OnJoin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
+
+		CachedPlayers.update();
+
+		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
+		new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId())) {
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
+				new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
+
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
+				new_user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
+				new_user_data.put("players." + player.getUniqueId() + ".subranks", "");
+
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+				new_user_data.put("players." + player.getUniqueId() + ".usertag", "");
+			
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
+				new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
+		}
+
+		CachedPlayers.set(new_user_data);
+
 		this.m.playerInjectPermissible(player);
-
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
-		CachedPlayers.set("players." + player.getUniqueId() + ".name", player.getName());
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank")) {
-			CachedPlayers.set("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
-		}
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
-			CachedPlayers.set("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
-		}
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks")) {
-			CachedPlayers.set("players." + player.getUniqueId() + ".subranks", "");
-		}
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
-			CachedPlayers.set("players." + player.getUniqueId() + ".usertag", "");
 
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
