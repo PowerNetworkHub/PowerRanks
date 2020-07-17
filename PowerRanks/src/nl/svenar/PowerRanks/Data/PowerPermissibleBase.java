@@ -42,12 +42,18 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean hasPermission(String permission) {
+//		PowerRanks.log.info("-----------------------------");
 //		PowerRanks.log.info("[hasPermission] " + permission + ": " + oldPermissible.hasPermission(permission));
+//		PowerRanks.log.info("[hasPermission] " + permission + ": " + oldPermissible.hasPermission("*"));
+//		PowerRanks.log.info("[hasPermission] " + permission + ": " + !plugin.playerDisallowedPermissions.get(player).contains(permission));
+//		PowerRanks.log.info("[hasPermission] " + permission + ": " + (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission)));
+//		PowerRanks.log.info("[hasPermission] " + permission + ": " + checkPermissionWildcardTree(permission));
+//		PowerRanks.log.info("-----------------------------");
 		if (permission == null) {
 			throw new NullPointerException(permission);
 		}
 
-		return oldPermissible.hasPermission(permission) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission)) || checkPermissionWildcardTree(permission);
+		return (oldPermissible.hasPermission(permission) && !plugin.playerDisallowedPermissions.get(player).contains(permission)) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission)) || (checkPermissionWildcardTree(permission) && !plugin.playerDisallowedPermissions.get(player).contains(permission));
 	}
 
 	@Override
@@ -96,7 +102,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public boolean isPermissionSet(String permission) {
 //    	plugin.log.info("[isPermissionSet] " + permission + ": " + (oldPermissible.isPermissionSet(permission)));
-		return oldPermissible.isPermissionSet(permission) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission));
+//		return oldPermissible.isPermissionSet(permission) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission));
+		return (oldPermissible.hasPermission(permission) && !plugin.playerDisallowedPermissions.get(player).contains(permission)) || (oldPermissible.hasPermission("*") && !plugin.playerDisallowedPermissions.get(player).contains(permission)) || (checkPermissionWildcardTree(permission) && !plugin.playerDisallowedPermissions.get(player).contains(permission));
 	}
 
 	@Override

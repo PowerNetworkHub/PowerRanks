@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachment;
@@ -200,8 +201,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
 
 		int pluginId = 7565;
-		@SuppressWarnings("unused")
+//		@SuppressWarnings("unused")
 		Metrics metrics = new Metrics(this, pluginId);
+		
+		metrics.addCustomChart(new Metrics.SimplePie("number_of_installed_addons", new Callable<String>() {
+	        @Override
+	        public String call() throws Exception {
+	        	int addonCount = 0;
+	    		for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
+	    			if (prAddon.getValue() == true)
+	    				addonCount++;
+	    		}
+	            return String.valueOf(addonCount);
+	        }
+	    }));
 	}
 
 	public void onDisable() {

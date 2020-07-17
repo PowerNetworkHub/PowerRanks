@@ -4,6 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
+
+import nl.svenar.PowerRanks.addons.AddonsManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,6 +21,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
@@ -245,7 +249,7 @@ public class Metrics {
         String osArch = System.getProperty("os.arch");
         String osVersion = System.getProperty("os.version");
         int coreCount = Runtime.getRuntime().availableProcessors();
-
+        
         JsonObject data = new JsonObject();
 
         data.addProperty("serverUUID", serverUUID);
