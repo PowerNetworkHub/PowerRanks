@@ -107,6 +107,35 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + ChatColor.DARK_GREEN + (PowerRanks.plugin_hook_deluxetags ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
+	
+	public static void messageCommandFactoryReset(Player sender) {
+		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.DARK_RED + "WARNING!");
+		sender.sendMessage(ChatColor.RED + "This action is irreversible if you continue");
+		sender.sendMessage(ChatColor.RED + "Factory reset ID: " + ChatColor.GOLD + PowerRanks.factoryresetid);
+		sender.sendMessage(ChatColor.RED + "To continue do: " + ChatColor.GOLD + "/pr factoryreset " + PowerRanks.factoryresetid);
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
+	
+	public static void messageCommandFactoryReset(ConsoleCommandSender sender) {
+		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.DARK_RED + "WARNING!");
+		sender.sendMessage(ChatColor.RED + "This action is irreversible if you continue");
+		sender.sendMessage(ChatColor.RED + "Factory reset ID: " + ChatColor.GOLD + PowerRanks.factoryresetid);
+		sender.sendMessage(ChatColor.RED + "To continue do: " + ChatColor.GOLD + "/pr factoryreset " + PowerRanks.factoryresetid);
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
+	
+	public static void messageCommandFactoryResetDone(CommandSender sender) {
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.GREEN + "Factory reset complete!");
+		sender.sendMessage(ChatColor.GREEN + "It is recommended to restart your server.");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
 
 	public static void helpMenu(final Player player) {
 		helpMenu(player, 0);
@@ -492,20 +521,6 @@ public class Messages {
 		String msg = getGeneralMessage(langYaml, "messages.permission_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
-		if (msg.length() > 0)
-			console.sendMessage(msg);
-	}
-
-	public static void messageConfigVersionUpdated(Player player) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.config_version_updated");
-		if (msg.length() > 0)
-			player.sendMessage(msg);
-	}
-
-	public static void messageConfigVersionUpdated(ConsoleCommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.config_version_updated");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
@@ -2107,6 +2122,20 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_addon_not_found");
 		msg = Util.replaceAll(msg, "%argument_addon%", addon_name);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageFactoryReset(Player sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_factoryreset");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+	
+	public static void messageCommandUsageFactoryReset(ConsoleCommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_factoryreset");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}

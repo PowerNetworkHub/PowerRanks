@@ -583,10 +583,23 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageDemote(player);
 					}
-				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
+				} else if (args[0].equalsIgnoreCase("factoryreset")) {
 					if (sender.hasPermission("powerranks.cmd.admin")) {
-						this.m.forceUpdateConfigVersions();
-						Messages.messageConfigVersionUpdated(player);
+						if (args.length == 1) {
+							Messages.messageCommandFactoryReset(player);
+						} else if (args.length == 2) {
+							if (PowerRanks.factoryresetid == null) {
+								Messages.messageCommandFactoryReset(player);
+							} else {
+								String resetid = args[1];
+								if (resetid.equalsIgnoreCase(PowerRanks.factoryresetid))
+									this.m.factoryReset(sender);
+								else
+									Messages.messageCommandFactoryReset(player);
+							}
+						} else {
+							Messages.messageCommandUsageFactoryReset(player);
+						}
 					} else {
 						Messages.noPermission(player);
 					}
@@ -1366,9 +1379,22 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageDemote(console);
 					}
-				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
-					this.m.forceUpdateConfigVersions();
-					Messages.messageConfigVersionUpdated(console);
+				} else if (args[0].equalsIgnoreCase("factoryreset")) {
+					if (args.length == 1) {
+						Messages.messageCommandFactoryReset(console);
+					} else if (args.length == 2) {
+						if (PowerRanks.factoryresetid == null) {
+							Messages.messageCommandFactoryReset(console);
+						} else {
+							String resetid = args[1];
+							if (resetid.equalsIgnoreCase(PowerRanks.factoryresetid))
+								this.m.factoryReset(sender);
+							else
+								Messages.messageCommandFactoryReset(console);
+						}
+					} else {
+						Messages.messageCommandUsageFactoryReset(console);
+					}
 				} else if (args[0].equalsIgnoreCase("stats")) {
 					Messages.messageStats(console);
 				} else if (args[0].equalsIgnoreCase("addbuyablerank")) {
@@ -1769,8 +1795,6 @@ public class Cmd implements CommandExecutor {
 						final String cost = s.getRankIgnoreCase(args[2]);
 						s.setBuyCost(rankname, cost);
 					}
-				} else if (args[0].equalsIgnoreCase("forceupdateconfigversion")) {
-					this.m.forceUpdateConfigVersions();
 				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
 					if (args.length == 3) {
 						final String target_player = args[1];

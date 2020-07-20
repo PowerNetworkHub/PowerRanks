@@ -20,6 +20,7 @@ import java.io.InputStream;
 import org.bukkit.entity.Player;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
@@ -80,6 +81,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String configFileLoc;
 	public static String fileLoc;
 	public static String langFileLoc;
+	public static String factoryresetid = null;
 
 	// Soft Dependencies
 	private static Economy vaultEconomy;
@@ -165,23 +167,29 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			this.playerInjectPermissible(player);
 		}
 
-		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final YamlConfiguration rankYaml = new YamlConfiguration();
-		final YamlConfiguration playerYaml = new YamlConfiguration();
-		try {
-			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
+		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
+		for (final Player player : this.getServer().getOnlinePlayers()) {
+			new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
 
-			for (final Player player : this.getServer().getOnlinePlayers()) {
-				if (playerYaml.getString("players." + player.getUniqueId() + ".rank") == null) {
-					playerYaml.set("players." + player.getUniqueId() + ".rank", rankYaml.get("Default"));
-				}
+			if (!CachedPlayers.contains("players." + player.getUniqueId())) {
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
+					new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
+					new_user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
+					new_user_data.put("players." + player.getUniqueId() + ".subranks", "");
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+					new_user_data.put("players." + player.getUniqueId() + ".usertag", "");
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
+					new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 			}
-			playerYaml.save(playerFile);
-		} catch (Exception e2) {
-			e2.printStackTrace();
+
 		}
+		CachedPlayers.set(new_user_data);
 
 		setupSoftDependencies();
 
@@ -203,18 +211,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		int pluginId = 7565;
 //		@SuppressWarnings("unused")
 		Metrics metrics = new Metrics(this, pluginId);
-		
+
 		metrics.addCustomChart(new Metrics.SimplePie("number_of_installed_addons", new Callable<String>() {
-	        @Override
-	        public String call() throws Exception {
-	        	int addonCount = 0;
-	    		for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
-	    			if (prAddon.getValue() == true)
-	    				addonCount++;
-	    		}
-	            return String.valueOf(addonCount);
-	        }
-	    }));
+			@Override
+			public String call() throws Exception {
+				int addonCount = 0;
+				for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
+					if (prAddon.getValue() == true)
+						addonCount++;
+				}
+				return String.valueOf(addonCount);
+			}
+		}));
 	}
 
 	public void onDisable() {
@@ -357,33 +365,71 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void forceUpdateConfigVersions() {
-		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-		final File langFile = new File(PowerRanks.langFileLoc);
-		final YamlConfiguration rankYaml = new YamlConfiguration();
-		final YamlConfiguration playerYaml = new YamlConfiguration();
-		final YamlConfiguration configYaml = new YamlConfiguration();
-		final YamlConfiguration langYaml = new YamlConfiguration();
-		try {
-			rankYaml.load(rankFile);
-			playerYaml.load(playerFile);
-			configYaml.load(configFile);
-			langYaml.load(langFile);
+	public void factoryReset(CommandSender sender) {
+		ArrayList<String> files = new ArrayList<String>();
+		files.add(configFileLoc + File.separator + "config.yml");
+		files.add(configFileLoc + File.separator + "lang.yml");
+		files.add(fileLoc + File.separator + "Players.yml");
+		files.add(fileLoc + File.separator + "Ranks.yml");
 
-			rankYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-			playerYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-			configYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-			langYaml.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-
-			rankYaml.save(rankFile);
-			playerYaml.save(playerFile);
-			configYaml.save(configFile);
-			langYaml.save(langFile);
-		} catch (Exception e2) {
-			e2.printStackTrace();
+		for (String filePath : files) {
+			File tmp_file = new File(filePath);
+			if (tmp_file.exists())
+				tmp_file.delete();
 		}
+
+		this.createDir(PowerRanks.fileLoc);
+//		this.log.info("By: " + this.pdf.getAuthors().get(0));
+		this.configFile = new File(this.getDataFolder(), "config.yml");
+		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
+		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
+		this.langFile = new File(this.getDataFolder(), "lang.yml");
+		this.config = (FileConfiguration) new YamlConfiguration();
+		this.ranks = (FileConfiguration) new YamlConfiguration();
+		this.players = (FileConfiguration) new YamlConfiguration();
+		this.lang = (FileConfiguration) new YamlConfiguration();
+		try {
+			this.copyFiles();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.loadAllFiles();
+
+		new CachedConfig(this);
+		new CachedPlayers(this);
+		new CachedRanks(this);
+
+		for (Player player : this.getServer().getOnlinePlayers()) {
+			this.playerInjectPermissible(player);
+		}
+
+		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
+		for (final Player player : this.getServer().getOnlinePlayers()) {
+			new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+
+			if (!CachedPlayers.contains("players." + player.getUniqueId())) {
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
+					new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
+					new_user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
+					new_user_data.put("players." + player.getUniqueId() + ".subranks", "");
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+					new_user_data.put("players." + player.getUniqueId() + ".usertag", "");
+
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
+					new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
+			}
+
+		}
+		CachedPlayers.set(new_user_data);
+
+		this.setupPermissions();
+
+		Messages.messageCommandFactoryResetDone(sender);
 	}
 
 	public void printVersionError(String fileName, boolean auto_update) {
