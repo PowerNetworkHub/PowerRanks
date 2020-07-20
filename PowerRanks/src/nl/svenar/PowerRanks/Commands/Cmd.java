@@ -584,7 +584,7 @@ public class Cmd implements CommandExecutor {
 						Messages.messageCommandUsageDemote(player);
 					}
 				} else if (args[0].equalsIgnoreCase("factoryreset")) {
-					if (sender.hasPermission("powerranks.cmd.admin")) {
+					if (sender.hasPermission("powerranks.cmd.factoryreset")) {
 						if (args.length == 1) {
 							Messages.messageCommandFactoryReset(player);
 						} else if (args.length == 2) {

@@ -66,7 +66,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("renamerank");
 				commands_list.add("setdefaultrank");
 				commands_list.add("reload");
-				commands_list.add("forceupdateconfigversion");
+				commands_list.add("factoryreset");
 				commands_list.add("gui");
 				commands_list.add("rankup");
 				commands_list.add("addbuyablerank");

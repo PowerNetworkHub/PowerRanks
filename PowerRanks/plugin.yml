@@ -23,6 +23,7 @@ permissions:
       powerranks.cmd.create: true
       powerranks.cmd.admin: true
       powerranks.cmd.usertag: true
+      powerranks.cmd.factoryreset: true
   powerranks.signs.*:
     default: false
     children:
@@ -48,6 +49,8 @@ permissions:
   powerranks.cmd.create:
     default: op
   powerranks.cmd.admin:
+    default: op
+  powerranks.cmd.factoryreset:
     default: op
   powerranks.signs.create:
     default: op
