@@ -38,9 +38,8 @@ public class GUIPage {
 		CMD_SETCHATCOLOR_INPUT_RANK(7, "select rank"), CMD_SETCHATCOLOR_INPUT_COLOR(8, "select color"), CMD_SETCHATCOLOR_INPUT_SPECIAL(9, "select color modifier"), CMD_SETNAMECOLOR_INPUT_RANK(10, "select rank"),
 		CMD_SETNAMECOLOR_INPUT_COLOR(11, "select color"), CMD_SETNAMECOLOR_INPUT_SPECIAL(12, "select color modifier"), CMD_ALLOWBUILD_INPUT_RANK(13, "select rank"), CMD_ALLOWBUILD_INPUT_BOOLEAN(14, "select option"),
 		CMD_SETDEFAULTRANK_INPUT_RANK(15, "select rank"), CMD_ADDINHERITANCE_INPUT_RANK(16, "select rank"), CMD_ADDINHERITANCE_INPUT_RANK2(17, "select inheritance"), CMD_DELINHERITANCE_INPUT_RANK(18, "select rank"),
-		CMD_DELINHERITANCE_INPUT_RANK2(19, "select inheritance"),
-		CMD_ADDBUYABLERANK_INPUT_RANK(20, "select rank"), CMD_ADDBUYABLERANK_INPUT_RANK2(21, "select buyable rank"),
-		CMD_DELBUYABLERANK_INPUT_RANK(22, "select rank"), CMD_DELBUYABLERANK_INPUT_RANK2(23, "select buyable rank");
+		CMD_DELINHERITANCE_INPUT_RANK2(19, "select inheritance"), CMD_ADDBUYABLERANK_INPUT_RANK(20, "select rank"), CMD_ADDBUYABLERANK_INPUT_RANK2(21, "select buyable rank"), CMD_DELBUYABLERANK_INPUT_RANK(22, "select rank"),
+		CMD_DELBUYABLERANK_INPUT_RANK2(23, "select buyable rank");
 
 		public final int id;
 		public final String name;
@@ -114,7 +113,7 @@ public class GUIPage {
 				Messages.messageBuyRankNotAvailable(player);
 				return null;
 			}
-			
+
 			for (int i = 0; i < num_rank_on_page; i++) {
 				if (num_rank_on_page * current_page + i < ranks.size()) {
 					String rank = (String) ranks.get(num_rank_on_page * current_page + i);
@@ -122,8 +121,12 @@ public class GUIPage {
 						try {
 							if (users.getRanksConfigFieldString(rank, "gui.icon").length() > 0) {
 								Material icon = Material.BARRIER;
+
 								try {
 									icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+									if (icon == null) {
+										icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+									}
 								} catch (NoSuchMethodError e) {
 									icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 								}
@@ -135,7 +138,7 @@ public class GUIPage {
 							} else {
 								PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
 							}
-						}catch (Exception e) {
+						} catch (Exception e) {
 							PowerRanks.log.warning("[RANKUP] Rank '" + rank + "' not found!");
 						}
 					}
@@ -204,6 +207,9 @@ public class GUIPage {
 						Material icon = Material.BARRIER;
 						try {
 							icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+							if (icon == null) {
+								icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+							}
 						} catch (NoSuchMethodError e) {
 							icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 						}
@@ -236,6 +242,9 @@ public class GUIPage {
 							Material icon = Material.BARRIER;
 							try {
 								icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+								if (icon == null) {
+									icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+								}
 							} catch (NoSuchMethodError e) {
 								icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 							}
@@ -268,6 +277,9 @@ public class GUIPage {
 						Material icon = Material.BARRIER;
 						try {
 							icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+							if (icon == null) {
+								icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+							}
 						} catch (NoSuchMethodError e) {
 							icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 						}
@@ -281,7 +293,7 @@ public class GUIPage {
 				}
 			}
 		}
-		
+
 		if (pageID.getID() == GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK2.getID()) {
 			Object[] ranks = users.getBuyableRanks(getData(player.getName() + ":rankname")).toArray();
 			int num_rank_on_page = new_gui.getSize() - 9;
@@ -299,6 +311,9 @@ public class GUIPage {
 						Material icon = Material.BARRIER;
 						try {
 							icon = Material.matchMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase(), true);
+							if (icon == null) {
+								icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
+							}
 						} catch (NoSuchMethodError e) {
 							icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 						}

@@ -11,6 +11,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.craftbukkit.v1_15_R1.command.CraftBlockCommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -958,6 +959,21 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 
+				} else if (args[0].equalsIgnoreCase("seticon")) {
+					if (args.length == 2) {
+						String rankName = s.getRankIgnoreCase(args[1]);
+						Material material = player.getInventory().getItemInMainHand().getType();
+						player.sendMessage(material.name());
+						if (material != Material.AIR) {
+							s.setRanksConfigFieldString(rankName, "gui.icon", material.name().toLowerCase());
+							player.sendMessage("Set icon to " + material.name().toLowerCase() + " on rank :" + rankName);
+						} else {
+							player.sendMessage("You must held a item");
+						}
+						
+					} else {
+						player.sendMessage("/pr seticon <rank>");
+					}
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
