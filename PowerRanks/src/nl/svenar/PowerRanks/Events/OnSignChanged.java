@@ -24,7 +24,7 @@ public class OnSignChanged implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		if (Util.isPowerRanksSign(this.m, event.getLine(0))) {
 			if (event.getPlayer().hasPermission("powerranks.cmd.admin")) {
-				event.setLine(0, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), Util.replaceAll(CachedConfig.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
+				event.setLine(0, PowerRanks.chatColor(Util.replaceAll(CachedConfig.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
 
 				final Users s = new Users(this.m);
 				String sign_command = event.getLine(1);
@@ -44,7 +44,7 @@ public class OnSignChanged implements Listener {
 					}
 					if (!rank_exists) {
 						Messages.messageGroupNotFound(event.getPlayer(), sign_argument);
-						event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
+						event.setLine(3, PowerRanks.chatColor("&4Error", true));
 					} else {
 						Messages.messageSignCreated(event.getPlayer());
 					}
@@ -62,14 +62,14 @@ public class OnSignChanged implements Listener {
 						}
 						if (!rank_exists) {
 							Messages.messageGroupNotFound(event.getPlayer(), sign_argument);
-							event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
+							event.setLine(3, PowerRanks.chatColor("&4Error", true));
 						} else {
 							if (sign_argument2.length() > 0) {
 								if (!sign_argument2.chars().anyMatch(Character::isLetter)) {
 									Messages.messageSignCreated(event.getPlayer());
 								} else {
 									Messages.messageSignUnknownCommand(event.getPlayer());
-									event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
+									event.setLine(3, PowerRanks.chatColor("&4Error", true));
 								}
 							} else {
 								event.setLine(3, String.valueOf(s.getRankCost(s.getRankIgnoreCase(sign_argument))));
@@ -80,7 +80,7 @@ public class OnSignChanged implements Listener {
 					}
 				} else {
 					Messages.messageSignUnknownCommand(event.getPlayer());
-					event.setLine(3, PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), "&4Error", true));
+					event.setLine(3, PowerRanks.chatColor("&4Error", true));
 				}
 			} else {
 				event.setLine(0, "");

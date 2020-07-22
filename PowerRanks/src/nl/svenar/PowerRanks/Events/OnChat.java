@@ -33,26 +33,17 @@ public class OnChat implements Listener {
 
 	@EventHandler
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
-//		final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
-//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		final YamlConfiguration configYaml = new YamlConfiguration();
-//		final YamlConfiguration rankYaml = new YamlConfiguration();
-//		final YamlConfiguration playerYaml = new YamlConfiguration();
 		final Player player = e.getPlayer();
 		final String uuid = player.getUniqueId().toString();
 
 		try {
-//			configYaml.load(configFile);
 			if (CachedConfig.getBoolean("chat.enabled")) {
-//				rankYaml.load(rankFile);
-//				playerYaml.load(playerFile);
 				final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 				String format = CachedConfig.getString("chat.format");
 				String prefix = (CachedRanks.getString("Groups." + rank + ".chat.prefix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.prefix") : "";
 				String suffix = (CachedRanks.getString("Groups." + rank + ".chat.suffix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.suffix") : "";
-				final String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.chatColor") : "";
-				final String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.nameColor") : "";
+				String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.chatColor") : "";
+				String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.nameColor") : "";
 				String subprefix = "";
 				String subsuffix = "";
 				String usertag = "";
@@ -122,13 +113,21 @@ public class OnChat implements Listener {
 						}
 					}
 				}
+				
+				nameColor = nameColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
+				chatColor = chatColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
+				nameColor = "&r" + nameColor;
+				chatColor = "&r" + chatColor;
 
 				format = Util.powerFormatter(format,
 						ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
 								.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", nameColor + "%1$s").put("msg", chatColor + "%2$s").put("format", e.getFormat()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
 						'[', ']');
 
-				format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+				format = PowerRanks.chatColor(format, true);
+
+				PowerRanks.log.info(format);
+
 				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
 
 				for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {

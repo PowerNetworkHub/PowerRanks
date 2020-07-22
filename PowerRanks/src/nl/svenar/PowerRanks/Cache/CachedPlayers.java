@@ -22,6 +22,7 @@ public class CachedPlayers {
 	private static HashMap<String, Boolean> players_booleans = new HashMap<String, Boolean>();
 	private static HashMap<String, Integer> players_ints = new HashMap<String, Integer>();
 	private static HashMap<String, Long> players_longs = new HashMap<String, Long>();
+	private static HashMap<String, Double> players_doubles = new HashMap<String, Double>();
 
 	public CachedPlayers(PowerRanks pr) {
 		update();
@@ -56,6 +57,8 @@ public class CachedPlayers {
 					players_ints.put(field, playersYaml.getInt(field));
 				} else if (playersYaml.isLong(field)) {
 					players_longs.put(field, playersYaml.getLong(field));
+				} else if (playersYaml.isDouble(field)) {
+					players_doubles.put(field, playersYaml.getDouble(field));
 				}
 			}
 		} catch (IOException | InvalidConfigurationException e) {
@@ -93,6 +96,10 @@ public class CachedPlayers {
 
 	public static Long getLong(String field) {
 		return players_longs.get(field);
+	}
+	
+	public static Double getDouble(String field) {
+		return players_doubles.get(field);
 	}
 
 	public static void set(String field, Object data) {

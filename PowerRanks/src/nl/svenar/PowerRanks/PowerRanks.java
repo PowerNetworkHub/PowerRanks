@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
@@ -29,6 +28,7 @@ import nl.svenar.PowerRanks.Commands.Cmd;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
+import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
@@ -75,7 +75,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
-	public static String colorChar;
 	public String plp;
 	public static Logger log;
 	public static String configFileLoc;
@@ -106,7 +105,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
-		PowerRanks.colorChar = "&";
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
 		PowerRanks.configFileLoc = this.getDataFolder() + File.separator;
 		PowerRanks.fileLoc = this.getDataFolder() + File.separator + "Ranks" + File.separator;
@@ -926,7 +924,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							.put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
 					'[', ']');
 
-			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+			format = PowerRanks.chatColor(format, true);
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
@@ -962,7 +960,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
 					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
 
-			format = PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), format, true);
+			format = PowerRanks.chatColor(format, true);
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
@@ -974,86 +972,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static String chatColor(char altColorChar, String textToTranslate, boolean custom_colors) {
-
-		if (custom_colors) {
-			for (int i = 0; i < textToTranslate.length() - 1; i++) {
-				if (textToTranslate.charAt(i) == altColorChar && "Ii".indexOf(textToTranslate.charAt(i + 1)) > -1) {
-					String rainbow_msg = "";
-					for (int j = i + 2; j < textToTranslate.length() - 1; j++) {
-						if (textToTranslate.charAt(j) == altColorChar)
-							break;
-						rainbow_msg += textToTranslate.charAt(j);
-					}
-					String converted_rainbow_msg = rainbowColor(rainbow_msg);
-					textToTranslate = Util.replaceAll(textToTranslate, rainbow_msg, converted_rainbow_msg);
-				}
-			}
-
-			for (int i = 0; i < textToTranslate.length() - 1; i++) {
-				if (textToTranslate.charAt(i) == altColorChar && "Jj".indexOf(textToTranslate.charAt(i + 1)) > -1) {
-					String random_msg = "";
-					for (int j = i + 2; j < textToTranslate.length() - 1; j++) {
-						if (textToTranslate.charAt(j) == altColorChar)
-							break;
-						random_msg += textToTranslate.charAt(j);
-					}
-					String converted_random_msg = randomColor(random_msg);
-					textToTranslate = Util.replaceAll(textToTranslate, random_msg, converted_random_msg);
-				}
-			}
-
-			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "I", "");
-			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "i", "");
-			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "J", "");
-			textToTranslate = Util.replaceAll(textToTranslate, altColorChar + "j", "");
-		}
-
-		final char[] charArray = textToTranslate.toCharArray();
-
-		for (int i = 0; i < charArray.length - 1; ++i) {
-			if (charArray[i] == altColorChar && "0123456789AaBbCcDdEeFfKkNnRrLlMmOo".indexOf(charArray[i + 1]) > -1) {
-				charArray[i] = '§';
-				charArray[i + 1] = Character.toLowerCase(charArray[i + 1]);
-			}
-		}
-		return new String(charArray);
-	}
-
-	private static String randomColor(String random_msg) {
-		String msg = "";
-
-		Random rand = new Random();
-		int i = rand.nextInt(10) + 1;
-		final char[] __tmpChars = random_msg.toCharArray();
-		char[] ac;
-		for (int i2 = (ac = __tmpChars).length, l = 0; l < i2; ++l) {
-			final char __curr = ac[l];
-			msg = String.valueOf(msg) + "&" + Integer.toString(i % 15 + 1, 16) + Character.toString(__curr);
-			i = i + rand.nextInt(10) + 1;
-		}
-
-		return msg;
-	}
-
-	private static String rainbowColor(String rainbow_msg) {
-		String msg = "";
-
-		final int[] colors = { 3, 5, 13, 1, 2, 4, 12 };
-		int i = 0;
-		final char[] __tmpChars = rainbow_msg.toCharArray();
-		char[] ac;
-		for (int i2 = (ac = __tmpChars).length, l = 0; l < i2; ++l) {
-			final char __curr = ac[l];
-			msg = String.valueOf(msg) + "&" + Integer.toString(colors[i] % 15 + 1, 16) + Character.toString(__curr);
-			if (i < colors.length - 1) {
-				++i;
-			} else {
-				i = 0;
-			}
-		}
-
-		return msg;
+	public static String chatColor(String textToTranslate, boolean custom_colors) {
+		return PowerRanksChatColor.colorize(textToTranslate, custom_colors);
 	}
 
 	public static YamlConfiguration loadLangFile() {
@@ -1072,7 +992,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updatePlaytime(Player player, long join_time, long leave_time) {
-		int current_playtime = CachedPlayers.contains("players." + player.getUniqueId() + ".playtime") ? CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime") : 0;
+		int current_playtime = 0;
+		try {
+			current_playtime = CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime");
+		} catch (Exception e) {
+			try {
+				current_playtime = CachedPlayers.getDouble("players." + player.getUniqueId() + ".playtime").intValue();
+			} catch (Exception e1) {
+				current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime").intValue();
+			}
+		}
 		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
 	}
 

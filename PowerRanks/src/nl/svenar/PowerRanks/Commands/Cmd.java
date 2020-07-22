@@ -852,7 +852,7 @@ public class Cmd implements CommandExecutor {
 								Set<String> tags = s.getUserTags();
 								player.sendMessage("Usertags(" + tags.size() + "):");
 								for (String tag : tags) {
-									player.sendMessage(tag + " - " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), s.getUserTagValue(tag), true));
+									player.sendMessage(tag + " - " + PowerRanks.chatColor(s.getUserTagValue(tag), true));
 								}
 							} else {
 								Messages.messageCommandUsageListusertags(player);
@@ -963,17 +963,17 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						String rankName = s.getRankIgnoreCase(args[1]);
 						Material material = player.getInventory().getItemInMainHand().getType();
-						player.sendMessage(material.name());
 						if (material != Material.AIR) {
 							s.setRanksConfigFieldString(rankName, "gui.icon", material.name().toLowerCase());
-							player.sendMessage("Set icon to " + material.name().toLowerCase() + " on rank :" + rankName);
+							Messages.messageSuccessSetIcon(player, material.name().toLowerCase(), rankName);
 						} else {
-							player.sendMessage("You must held a item");
+							Messages.messageErrorMustHoldItem(player);
 						}
 						
 					} else {
-						player.sendMessage("/pr seticon <rank>");
+						Messages.messageCommandUsageSeticon(player);
 					}
+					
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -1567,7 +1567,7 @@ public class Cmd implements CommandExecutor {
 							Set<String> tags = s.getUserTags();
 							console.sendMessage("Usertags(" + tags.size() + "):");
 							for (String tag : tags) {
-								console.sendMessage(tag + " - " + PowerRanks.chatColor(PowerRanks.colorChar.charAt(0), s.getUserTagValue(tag), true));
+								console.sendMessage(tag + " - " + PowerRanks.chatColor(s.getUserTagValue(tag), true));
 							}
 						} else {
 							Messages.messageCommandUsageListusertags(console);

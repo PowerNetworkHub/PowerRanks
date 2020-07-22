@@ -18,6 +18,7 @@
 # %argument_usertag_text% | command argument usertag text
 # %argument_external_plugin% | command argument external plugin name
 # %argument_addon% | command argument addon name
+# %argument_material% | command argument material name
 
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
@@ -95,6 +96,8 @@ messages:
    error_clear_demoterank: "%plugin_prefix% &cError clearing the demote rank on rank: %argument_rank%"
    error_usertags_disable_use_external_plugin: "%plugin_prefix% &cUsertags disabled, use %argument_external_plugin% instead"
    error_addon_not_found: "%plugin_prefix% &cError addon with name '%argument_addon%' not found!"
+   success_set_icon: "%plugin_prefix% &aIcon set to '%argument_material%' on rank: %argument_rank%"
+   error_must_hold_item: "%plugin_prefix% &cYou must hold a item!"
 
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -142,6 +145,7 @@ commands:
    usage_command_clear_demoterank: "%plugin_prefix% &c/pr cleardemoterank <rank>"
    usage_command_addoninfo: "%plugin_prefix% &c/pr addoninfo <addon_name>"
    usage_command_factoryreset: "%plugin_prefix% &c/pr factoryreset"
+   usage_command_seticon: "%plugin_prefix% &c/pr seticon <rank>"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
