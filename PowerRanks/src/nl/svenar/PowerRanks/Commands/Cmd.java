@@ -19,6 +19,7 @@ import org.bukkit.command.CommandExecutor;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
@@ -969,11 +970,41 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageErrorMustHoldItem(player);
 						}
-						
+
 					} else {
 						Messages.messageCommandUsageSeticon(player);
 					}
-					
+
+				} else if (args[0].equalsIgnoreCase("verbose")) {
+					if (args.length == 2) {
+						String verboseType = args[1].toLowerCase();
+						if (verboseType.equals("start")) {
+							if (!PowerRanksVerbose.USE_VERBOSE) {
+								PowerRanksVerbose.USE_VERBOSE = true;
+								Messages.messageCommandVerboseStarted(player);
+							} else {
+								Messages.messageCommandVerboseAlreadyRunning(player);
+							}
+						} else if (verboseType.equals("stop")) {
+							if (PowerRanksVerbose.USE_VERBOSE) {
+								PowerRanksVerbose.USE_VERBOSE = false;
+								Messages.messageCommandVerboseStopped(player);
+							} else {
+								Messages.messageCommandVerboseNotRunning(player);
+							}
+						} else if (verboseType.equals("save")) {
+							if (!PowerRanksVerbose.USE_VERBOSE) {
+								PowerRanksVerbose.save();
+								Messages.messageCommandVerboseSaved(player);
+							} else {
+								Messages.messageCommandVerboseMustStopBeforeSaving(player);
+							}
+						} else {
+							Messages.messageCommandUsageVerbose(player);
+						}
+					} else {
+						Messages.messageCommandUsageVerbose(player);
+					}
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {

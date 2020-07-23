@@ -84,6 +84,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("clearpromoterank");
 				commands_list.add("cleardemoterank");
 				commands_list.add("addoninfo");
+				commands_list.add("seticon");
 
 				for (String command : addon_commands) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -101,7 +102,7 @@ public class ChatTabExecutor implements TabCompleter {
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
 						|| args[0].equalsIgnoreCase("enablebuild") || args[0].equalsIgnoreCase("disablebuild") || args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
 						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
-						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost")) {
+						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))

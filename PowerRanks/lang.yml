@@ -98,7 +98,12 @@ messages:
    error_addon_not_found: "%plugin_prefix% &cError addon with name '%argument_addon%' not found!"
    success_set_icon: "%plugin_prefix% &aIcon set to '%argument_material%' on rank: %argument_rank%"
    error_must_hold_item: "%plugin_prefix% &cYou must hold a item!"
-
+   error_verbose_already_started: "%plugin_prefix% &cVerbose logging is already running!"
+   error_verbose_not_started: "%plugin_prefix% &cVerbose logging is not running!"
+   error_verbose_must_stop_before_save: "%plugin_prefix% &cCannot save log wile verbose is running!"
+   success_verbose_started: "%plugin_prefix% &aVerbose logging started!&cWarning: enabling verbose may decrease server performance, only use verbose for bug reporting!"
+   success_verbose_stopped: "%plugin_prefix% &aVerbose logging stopped! To save the log use the command: /pr verbose save"
+   success_verbose_saved: "%plugin_prefix% &aVerbose log saved!"
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
    usage_command_setrank: "%plugin_prefix% &c/pr setrank <username> <rank>"
@@ -146,6 +151,7 @@ commands:
    usage_command_addoninfo: "%plugin_prefix% &c/pr addoninfo <addon_name>"
    usage_command_factoryreset: "%plugin_prefix% &c/pr factoryreset"
    usage_command_seticon: "%plugin_prefix% &c/pr seticon <rank>"
+   usage_command_verbose: "%plugin_prefix% &c/pr verbose <start/stop/save>"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
@@ -201,4 +207,6 @@ commands:
    - "&a/pr addbuyablerank <rank> <buyable_rank>&2 - Add a rank to the buyable list of a rank"
    - "&a/pr delbuyablerank <rank> <buyable_rank>&2 - Remove a rank from the buyable list of a rank"
    - "&a/pr setcost <rank> <cost>&2 - Set the buy cost of a rank"
+   - "&a/pr seticon <rank>&2 - Set the icon of a rank to the current item in your hand"
+   - "&a/pr verbose <start/stop/save>&2 - Enable verbose logging, may result in lower performance! Only use for bug reporting"
    - "&a/pr stats&2 - Show stats about PowerRanks"
