@@ -72,10 +72,10 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + ChatColor.DARK_GREEN + (PowerRanks.plugin_hook_deluxetags ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
-	
+
 	public static void messageCommandFactoryReset(CommandSender sender) {
 		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
-		
+
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.DARK_RED + "WARNING!");
 		sender.sendMessage(ChatColor.RED + "This action is irreversible if you continue");
@@ -83,7 +83,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.RED + "To continue do: " + ChatColor.GOLD + "/pr factoryreset " + PowerRanks.factoryresetid);
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
-	
+
 	public static void messageCommandFactoryResetDone(CommandSender sender) {
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Factory reset complete!");
@@ -153,6 +153,13 @@ public class Messages {
 			}
 			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
+	}
+
+	public static void checkVerbose(CommandSender sender) {
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.DARK_GREEN + "Verbose: " + ChatColor.GREEN + (!PowerRanksVerbose.USE_VERBOSE ? "Disabled" : "Enabled" + (PowerRanksVerbose.USE_VERBOSE_LIVE ? " (Live)" : "")));
+		sender.sendMessage(ChatColor.DARK_GREEN + "Log size: " + ChatColor.GREEN + PowerRanksVerbose.logSize() + ChatColor.DARK_GREEN + " lines");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void noPermission(Player player) {
@@ -1184,21 +1191,21 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandVerboseAlreadyRunning(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_verbose_already_started");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandVerboseNotRunning(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_verbose_not_started");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandVerboseMustStopBeforeSaving(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_verbose_must_stop_before_save");
@@ -1206,23 +1213,38 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandVerboseStopped(Player sender) {
+	public static void messageCommandVerboseStopped(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_verbose_stopped");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandVerboseStarted(Player sender) {
+	public static void messageCommandVerboseStarted(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_verbose_started");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
-	
-	public static void messageCommandVerboseSaved(Player sender) {
+
+	public static void messageCommandVerboseSaved(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.success_verbose_saved");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandErrorSavingVerbose(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_saving_verbose");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+
+	}
+
+	public static void messageCommandUsageListPlayerPermissions(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_listplayerpermissions");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}

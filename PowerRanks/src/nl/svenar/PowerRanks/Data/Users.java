@@ -1739,4 +1739,25 @@ public class Users implements Listener {
 	public boolean clearDemoteRank(String rank) {
 		return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote", "");
 	}
+
+	public ArrayList<String> getPlayerNames() {
+		ArrayList<String> player_names = new ArrayList<String>();
+		
+//		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		YamlConfiguration playersYaml = new YamlConfiguration();
+//		try {
+//			playersYaml.load(playersFile);
+//			ConfigurationSection players_section = playersYaml.getConfigurationSection("players");
+			ConfigurationSection players_section = CachedPlayers.getConfigurationSection("players");
+			for (String key : players_section.getKeys(false)) {
+//				player_names.add(playersYaml.getString("players." + key + ".name"));
+				player_names.add(CachedPlayers.getString("players." + key + ".name"));
+			}
+
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		return player_names;
+	}
 }

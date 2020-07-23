@@ -29,6 +29,7 @@ import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
+import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
@@ -100,6 +101,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public String updatemsg;
 	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
 	public Map<Player, ArrayList<String>> playerDisallowedPermissions = new HashMap<Player, ArrayList<String>>();
+	public Map<Player, ArrayList<String>> playerAllowedPermissions = new HashMap<Player, ArrayList<String>>();
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
 	public Map<Player, Long> playerLoginTime = new HashMap<Player, Long>();
 
@@ -132,6 +134,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
 		new Messages(this);
+		new PowerRanksVerbose(this);
 
 		this.createDir(PowerRanks.fileLoc);
 //		this.log.info("By: " + this.pdf.getAuthors().get(0));
@@ -518,12 +521,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	@SuppressWarnings("unchecked")
 	public void setupPermissions(Player player) {
+		this.playerUninjectPermissible(player);
 		if (!playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
 		}
 
 //		if (!playerDisallowedPermissions.containsKey(player)) {
 		playerDisallowedPermissions.put(player, new ArrayList<String>());
+		playerAllowedPermissions.put(player, new ArrayList<String>());
 //		}
 		clearPermissions(player);
 
@@ -587,10 +592,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							attachment.setPermission((String) permissions.get(j), true);
 							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
+							
+							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player).add((String) permissions.get(j));
 						} else {
 							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
 							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
+							
+							if (playerAllowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player).remove((String) permissions.get(j).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -607,10 +618,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 								attachment.setPermission((String) Permissions.get(j), true);
 								if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
 									playerDisallowedPermissions.get(player).remove((String) Permissions.get(j));
+								
+								if (!playerAllowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
+									playerAllowedPermissions.get(player).add((String) Permissions.get(j));
 							} else {
 								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
 								if (!playerDisallowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
 									playerDisallowedPermissions.get(player).add((String) Permissions.get(j).replaceFirst("-", ""));
+								
+								if (playerAllowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
+									playerAllowedPermissions.get(player).remove((String) Permissions.get(j).replaceFirst("-", ""));
 							}
 						}
 					}
@@ -625,10 +642,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						attachment.setPermission((String) GroupPermissions.get(i), true);
 						if (playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
 							playerDisallowedPermissions.get(player).remove((String) GroupPermissions.get(i));
+						
+						if (!playerAllowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+							playerAllowedPermissions.get(player).add((String) GroupPermissions.get(i));
 					} else {
 						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
 						if (!playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
 							playerDisallowedPermissions.get(player).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
+						
+						if (playerAllowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
+							playerAllowedPermissions.get(player).remove((String) GroupPermissions.get(i).replaceFirst("-", ""));
 					}
 				}
 			}
@@ -642,10 +665,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							attachment.setPermission((String) permissions.get(i), true);
 							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
 								playerDisallowedPermissions.get(player).remove((String) permissions.get(i));
+							
+							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+								playerAllowedPermissions.get(player).add((String) permissions.get(i));
 						} else {
 							attachment.setPermission((String) permissions.get(i).replaceFirst("-", ""), false);
 							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
 								playerDisallowedPermissions.get(player).add((String) permissions.get(i).replaceFirst("-", ""));
+							
+							if (playerAllowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
+								playerAllowedPermissions.get(player).remove((String) permissions.get(i).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -664,6 +693,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 //		if (!playerDisallowedPermissions.containsKey(player)) {
 		playerDisallowedPermissions.put(player, new ArrayList<String>());
+		playerAllowedPermissions.put(player, new ArrayList<String>());
 //		}
 
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
@@ -725,10 +755,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							attachment.setPermission((String) permissions.get(j), true);
 							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
+							
+							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player).add((String) permissions.get(j));
 						} else {
 							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
 							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
+							
+							if (playerAllowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player).remove((String) permissions.get(j).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -779,6 +815,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		playerDisallowedPermissions.put(player, new ArrayList<String>());
+		playerAllowedPermissions.put(player, new ArrayList<String>());
 
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 

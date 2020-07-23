@@ -38,6 +38,13 @@ public class Cmd implements CommandExecutor {
 		if (sender instanceof Player) { // TODO nothing todo just easy navigation
 			final Player player = (Player) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
+				if (PowerRanksVerbose.USE_VERBOSE) {
+					String argstmp = "";
+					for (String arg : args)
+						argstmp += " " + arg;
+					PowerRanksVerbose.log("onCommand", "Sender: " + sender.getName() + ", Command(" + cmd + "): /pr" + argstmp);
+				}
+
 				if (args.length == 0) {
 					Messages.messageNoArgs(player);
 				} else if (args[0].equalsIgnoreCase("help")) {
@@ -144,6 +151,25 @@ public class Cmd implements CommandExecutor {
 							}
 						} else {
 							Messages.messageCommandUsageListPermissions(player);
+						}
+
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("listplayerpermissions")) {
+					if (sender.hasPermission("powerranks.cmd.list")) {
+						if (args.length == 2) {
+							if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
+								List<String> permissions = s.getPlayerPermissions(args[1]);
+								sender.sendMessage("Permissions of " + args[1] + "(" + permissions.size() + "):");
+								for (String permission : permissions) {
+									sender.sendMessage(permission);
+								}
+							} else {
+								Messages.messagePlayerNotFound(player, args[1]);
+							}
+						} else {
+							Messages.messageCommandUsageListPlayerPermissions(player);
 						}
 
 					} else {
@@ -976,34 +1002,50 @@ public class Cmd implements CommandExecutor {
 					}
 
 				} else if (args[0].equalsIgnoreCase("verbose")) {
-					if (args.length == 2) {
-						String verboseType = args[1].toLowerCase();
-						if (verboseType.equals("start")) {
-							if (!PowerRanksVerbose.USE_VERBOSE) {
-								PowerRanksVerbose.USE_VERBOSE = true;
-								Messages.messageCommandVerboseStarted(player);
+					if (player.hasPermission("powerranks.cmd.verbose")) {
+						if (args.length == 1) {
+							Messages.checkVerbose(player);
+						} else if (args.length == 2) {
+							String verboseType = args[1].toLowerCase();
+							if (verboseType.equals("start")) {
+								if (!PowerRanksVerbose.USE_VERBOSE) {
+									PowerRanksVerbose.start(false);
+									Messages.messageCommandVerboseStarted(player);
+								} else {
+									Messages.messageCommandVerboseAlreadyRunning(player);
+								}
+							} else if (verboseType.equals("startlive")) {
+								if (!PowerRanksVerbose.USE_VERBOSE) {
+									PowerRanksVerbose.start(true);
+									Messages.messageCommandVerboseStarted(player);
+								} else {
+									Messages.messageCommandVerboseAlreadyRunning(player);
+								}
+							} else if (verboseType.equals("stop")) {
+								if (PowerRanksVerbose.USE_VERBOSE) {
+									PowerRanksVerbose.stop();
+									Messages.messageCommandVerboseStopped(player);
+								} else {
+									Messages.messageCommandVerboseNotRunning(player);
+								}
+							} else if (verboseType.equals("save")) {
+								if (!PowerRanksVerbose.USE_VERBOSE) {
+									if (PowerRanksVerbose.save()) {
+										Messages.messageCommandVerboseSaved(player);
+									} else {
+										Messages.messageCommandErrorSavingVerbose(player);
+									}
+								} else {
+									Messages.messageCommandVerboseMustStopBeforeSaving(player);
+								}
 							} else {
-								Messages.messageCommandVerboseAlreadyRunning(player);
-							}
-						} else if (verboseType.equals("stop")) {
-							if (PowerRanksVerbose.USE_VERBOSE) {
-								PowerRanksVerbose.USE_VERBOSE = false;
-								Messages.messageCommandVerboseStopped(player);
-							} else {
-								Messages.messageCommandVerboseNotRunning(player);
-							}
-						} else if (verboseType.equals("save")) {
-							if (!PowerRanksVerbose.USE_VERBOSE) {
-								PowerRanksVerbose.save();
-								Messages.messageCommandVerboseSaved(player);
-							} else {
-								Messages.messageCommandVerboseMustStopBeforeSaving(player);
+								Messages.messageCommandUsageVerbose(player);
 							}
 						} else {
 							Messages.messageCommandUsageVerbose(player);
 						}
 					} else {
-						Messages.messageCommandUsageVerbose(player);
+						Messages.noPermission(player);
 					}
 				} else {
 					boolean addonCommandFound = false;
@@ -1069,7 +1111,20 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageListPermissions(console);
 					}
-
+				} else if (args[0].equalsIgnoreCase("listplayerpermissions")) {
+					if (args.length == 2) {
+						if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
+							List<String> permissions = s.getPlayerPermissions(args[1]);
+							sender.sendMessage("Permissions of " + args[1] + "(" + permissions.size() + "):");
+							for (String permission : permissions) {
+								sender.sendMessage(permission);
+							}
+						} else {
+							Messages.messagePlayerNotFound(console, args[1]);
+						}
+					} else {
+						Messages.messageCommandUsageListPlayerPermissions(console);
+					}
 				} else if (args[0].equalsIgnoreCase("check")) {
 					if (args.length == 2) {
 						s.getGroup(null, args[1]);
@@ -1681,9 +1736,49 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageAddoninfo(console);
 					}
-//				} else if (args[0].equalsIgnoreCase("webeditor")) {
-//					Editor editor = new Editor();
-//					editor.setup();
+				} else if (args[0].equalsIgnoreCase("verbose")) {
+					if (args.length == 1) {
+						Messages.checkVerbose(console);
+					} else 
+					if (args.length == 2) {
+						String verboseType = args[1].toLowerCase();
+						if (verboseType.equals("start")) {
+							if (!PowerRanksVerbose.USE_VERBOSE) {
+								PowerRanksVerbose.start(false);
+								Messages.messageCommandVerboseStarted(console);
+							} else {
+								Messages.messageCommandVerboseAlreadyRunning(console);
+							}
+						} else if (verboseType.equals("startlive")) {
+							if (!PowerRanksVerbose.USE_VERBOSE) {
+								PowerRanksVerbose.start(true);
+								Messages.messageCommandVerboseStarted(console);
+							} else {
+								Messages.messageCommandVerboseAlreadyRunning(console);
+							}
+						} else if (verboseType.equals("stop")) {
+							if (PowerRanksVerbose.USE_VERBOSE) {
+								PowerRanksVerbose.stop();
+								Messages.messageCommandVerboseStopped(console);
+							} else {
+								Messages.messageCommandVerboseNotRunning(console);
+							}
+						} else if (verboseType.equals("save")) {
+							if (!PowerRanksVerbose.USE_VERBOSE) {
+								if (PowerRanksVerbose.save()) {
+									Messages.messageCommandVerboseSaved(console);
+								} else {
+									Messages.messageCommandErrorSavingVerbose(console);
+								}
+							} else {
+								Messages.messageCommandVerboseMustStopBeforeSaving(console);
+							}
+						} else {
+							Messages.messageCommandUsageVerbose(console);
+						}
+					} else {
+						Messages.messageCommandUsageVerbose(console);
+					}
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {

@@ -25,7 +25,7 @@ public class OnJoin implements Listener {
 		this.m = m;
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = false)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
 
@@ -68,7 +68,7 @@ public class OnJoin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = false)
 	public void onPlayerLeave(final PlayerQuitEvent e) {
 		final Player player = e.getPlayer();
 		this.m.playerUninjectPermissible(player);

@@ -47,6 +47,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("listranks");
 				commands_list.add("listsubranks");
 				commands_list.add("listpermissions");
+				commands_list.add("listplayerpermissions");
 				commands_list.add("addsubrank");
 				commands_list.add("delsubrank");
 				commands_list.add("enablesubrankprefix");
@@ -85,6 +86,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("cleardemoterank");
 				commands_list.add("addoninfo");
 				commands_list.add("seticon");
+				commands_list.add("verbose");
 
 				for (String command : addon_commands) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -113,7 +115,8 @@ public class ChatTabExecutor implements TabCompleter {
 				if (args[0].equalsIgnoreCase("setrank") || args[0].equalsIgnoreCase("promote") || args[0].equalsIgnoreCase("demote") || args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("addsubrank")
 						|| args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("listsubranks") || args[0].equalsIgnoreCase("addplayerperm") || args[0].equalsIgnoreCase("delplayerperm")
 						|| args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix") || args[0].equalsIgnoreCase("enablesubranksuffix") || args[0].equalsIgnoreCase("disablesubranksuffix")
-						|| args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("setusertag") || args[0].equalsIgnoreCase("clearusertag")) {
+						|| args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("setusertag") || args[0].equalsIgnoreCase("clearusertag")
+						|| args[0].equalsIgnoreCase("listplayerpermissions")) {
 					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 						if (player.getName().toLowerCase().contains(args[1].toLowerCase()))
 							list.add(player.getName());
@@ -127,11 +130,18 @@ public class ChatTabExecutor implements TabCompleter {
 							list.add(tag);
 					}
 				}
-				
+
 				if (args[0].equalsIgnoreCase("addoninfo")) {
 					for (Entry<File, PowerRanksAddon> addon : this.m.addonsManager.addonClasses.entrySet()) {
 						list.add(addon.getValue().getIdentifier());
 					}
+				}
+
+				if (args[0].equalsIgnoreCase("verbose")) {
+					list.add("start");
+					list.add("startlive");
+					list.add("stop");
+					list.add("save");
 				}
 			}
 
