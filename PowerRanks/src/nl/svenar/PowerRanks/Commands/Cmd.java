@@ -987,18 +987,22 @@ public class Cmd implements CommandExecutor {
 					}
 
 				} else if (args[0].equalsIgnoreCase("seticon")) {
-					if (args.length == 2) {
-						String rankName = s.getRankIgnoreCase(args[1]);
-						Material material = player.getInventory().getItemInMainHand().getType();
-						if (material != Material.AIR) {
-							s.setRanksConfigFieldString(rankName, "gui.icon", material.name().toLowerCase());
-							Messages.messageSuccessSetIcon(player, material.name().toLowerCase(), rankName);
-						} else {
-							Messages.messageErrorMustHoldItem(player);
-						}
+					if (player.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 2) {
+							String rankName = s.getRankIgnoreCase(args[1]);
+							Material material = player.getInventory().getItemInMainHand().getType();
+							if (material != Material.AIR) {
+								s.setRanksConfigFieldString(rankName, "gui.icon", material.name().toLowerCase());
+								Messages.messageSuccessSetIcon(player, material.name().toLowerCase(), rankName);
+							} else {
+								Messages.messageErrorMustHoldItem(player);
+							}
 
+						} else {
+							Messages.messageCommandUsageSeticon(player);
+						}
 					} else {
-						Messages.messageCommandUsageSeticon(player);
+						Messages.noPermission(player);
 					}
 
 				} else if (args[0].equalsIgnoreCase("verbose")) {
@@ -1739,8 +1743,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("verbose")) {
 					if (args.length == 1) {
 						Messages.checkVerbose(console);
-					} else 
-					if (args.length == 2) {
+					} else if (args.length == 2) {
 						String verboseType = args[1].toLowerCase();
 						if (verboseType.equals("start")) {
 							if (!PowerRanksVerbose.USE_VERBOSE) {
