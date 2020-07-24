@@ -58,7 +58,12 @@ public class PowerPermissibleBase extends PermissibleBase {
 		boolean hasAllPerms = oldPermissible.hasPermission("*");
 		boolean hasWildcardTree = (hasPerm && !isDisallowed) || (hasAllPerms && !isDisallowed) || checkPermissionWildcardTree(permission);
 
+		String playerPermissions = "";
+		for (String perm : plugin.playerAllowedPermissions.get(player)) {
+			playerPermissions += perm + ", ";
+		}
 		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "----------------FINALCHECK");
+		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | " + player.getName() + "'s permissions: " + playerPermissions);
 		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasPerm: " + hasPerm);
 		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | isDisallowed: " + isDisallowed);
 		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasAllPerms: " + hasAllPerms);
@@ -237,7 +242,9 @@ public class PowerPermissibleBase extends PermissibleBase {
 		if (permission_split.length == 0)
 			return false;
 
-		for (int i = permission_split.length - 1; i >= 0; i--) {
+		permission_split[permission_split.length - 1] = "";
+		
+		for (int i = permission_split.length - 2; i >= 0; i--) {
 			String perm = String.join(".", permission_split);
 			if (perm != null && perm.length() > 0) {
 				while (perm.charAt(perm.length() - 1) == '.') {
@@ -247,11 +254,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 			if (!perm.endsWith("*")) {
 				perm += ".*";
 				PowerRanksVerbose.log("checkPermissionWildcardTree", "Checking: " + perm);
-//				if (hasPermission(perm, false)) {
-//					return true;
-//				}
-				
-				if (plugin.playerAllowedPermissions.get(player) != null ? plugin.playerAllowedPermissions.get(player).contains(permission) : false) {
+				if (plugin.playerAllowedPermissions.get(player).contains(perm)) {
 					return true;
 				}
 			}
