@@ -10,11 +10,16 @@ import nl.svenar.PowerRanks.Data.Users;
 
 public class PowerRanksAPI {
 	
-	public static PowerRanks main;
+	public static PowerRanks plugin;
 	private Users s;
 	
+	public PowerRanksAPI(PowerRanks plugin) {
+		PowerRanksAPI.plugin = plugin;
+		this.s = new Users(plugin);
+	}
+	
 	public PowerRanksAPI() {
-		this.s = new Users(PowerRanksAPI.main);
+		this.s = new Users(plugin);
 	}
 	
 	public String getPlayerRank(Player player) {
@@ -167,5 +172,13 @@ public class PowerRanksAPI {
 	
 	public String getPlayerSubrankSuffixes(Player player) {
 		return s.getSubranksuffixes(player);
+	}
+
+	public boolean removePermission(Player player, String permission) {
+		return s.delPlayerPermission(player.getName(), permission);
+	}
+
+	public boolean addPermission(Player player, String permission) {
+		return s.addPlayerPermission(player.getName(), permission);
 	}
 }

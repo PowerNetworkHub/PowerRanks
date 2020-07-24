@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Data.BannerItem;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
@@ -108,7 +109,7 @@ public class GUIPage {
 				new_gui.setItem(new_gui.getSize() - 6, createGuiItem(Material.PAPER, "Previous page", PowerRanks.pdf.getName().toLowerCase(), "Page " + current_page));
 				new_gui.setItem(new_gui.getSize() - 4, createGuiItem(Material.PAPER, "Next page", PowerRanks.pdf.getName().toLowerCase(), "Page " + current_page));
 				new_gui.setItem(new_gui.getSize() - 9, createGuiItem(Material.NOTE_BLOCK, "Current rank", users.getGroup(player), ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(player), true)));
-				new_gui.setItem(new_gui.getSize() - 1, createGuiItem(Material.EMERALD, "Balance", PowerRanks.getVaultEconomy().format(PowerRanks.getVaultEconomy().getBalance(player))));
+				new_gui.setItem(new_gui.getSize() - 1, createGuiItem(Material.EMERALD, "Balance", VaultHook.getVaultEconomy().format(VaultHook.getVaultEconomy().getBalance(player))));
 			} catch (Exception e) {
 				Messages.messageBuyRankNotAvailable(player);
 				return null;

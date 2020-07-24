@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
@@ -73,9 +74,9 @@ public class GUI {
 				Users users = new Users(powerRanks);
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
 				int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
-				double player_balance = PowerRanks.getVaultEconomy().getBalance(player);
+				double player_balance = VaultHook.getVaultEconomy().getBalance(player);
 				if (cost >= 0 && player_balance >= cost) {
-					PowerRanks.getVaultEconomy().withdrawPlayer(player, cost);
+					VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 					users.setGroup(player, rankname, true);
 					Messages.messageBuyRankSuccess(player, rankname);
 				} else {

@@ -66,8 +66,8 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
-		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultEconomy() != null ? "enabled" : "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.getVaultPermissions() != null ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + ChatColor.DARK_GREEN + (PowerRanks.vaultEconomyEnabled ? "enabled" : "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + ChatColor.DARK_GREEN + (PowerRanks.vaultPermissionsEnabled ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + ChatColor.DARK_GREEN + (PowerRanks.getPlaceholderapiExpansion() != null ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + ChatColor.DARK_GREEN + (PowerRanks.plugin_hook_deluxetags ? "enabled" : "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");

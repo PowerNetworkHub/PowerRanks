@@ -640,7 +640,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
-						if (PowerRanks.getVaultEconomy() != null)
+						if (PowerRanks.vaultEconomyEnabled)
 //							GUI.openPowerRanksRankupGUI(player, 0);
 							GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
 						else

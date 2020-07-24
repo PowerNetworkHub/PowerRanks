@@ -29,6 +29,10 @@ public class ConfigFilesUpdater {
 				tmpYamlConf.load(tmpFile);
 				yamlConf.load(file);
 				yamlConf.set("version", null);
+				if (yamlConf.isSet("plugin_hook.vault")) {
+					yamlConf.set("plugin_hook.vault_economy", yamlConf.getBoolean("plugin_hook.vault"));
+					yamlConf.set("plugin_hook.vault", null);
+				}
 				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(false)) {
 					for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
 						String field = key + "." + key2;

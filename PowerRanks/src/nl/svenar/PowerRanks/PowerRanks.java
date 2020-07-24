@@ -60,15 +60,14 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.ImmutableMap;
 
 import me.clip.deluxetags.DeluxeTag;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
+//import net.milkbowl.vault.economy.Economy;
+//import net.milkbowl.vault.permission.Permission;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
@@ -84,8 +83,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String factoryresetid = null;
 
 	// Soft Dependencies
-	private static Economy vaultEconomy;
-	private static Permission vaultPermissions;
+//	private static Economy vaultEconomy;
+//	private static Permission vaultPermissions;
+	public static boolean vaultEconomyEnabled = false;
+	public static boolean vaultPermissionsEnabled = false;
 	private static PowerRanksExpansion placeholderapiExpansion;
 	public static boolean plugin_hook_deluxetags = false;
 	// Soft Dependencies
@@ -116,7 +117,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		PowerRanks.log = this.getLogger();
-		PowerRanksAPI.main = this;
+		PowerRanksAPI.plugin = this;
 
 //		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
@@ -249,15 +250,26 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	private void setupSoftDependencies() {
-		boolean has_vault = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault");
+		boolean has_vault_economy = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy");
+		boolean has_vault_permissions = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_permissions");
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && getConfigBool("plugin_hook.placeholderapi");
 		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null && getConfigBool("plugin_hook.deluxetags");
 
 		PowerRanks.log.info("Checking for plugins to hook in to:");
-		if (has_vault) {
+		if (has_vault_economy || has_vault_permissions) {
 			PowerRanks.log.info("Vault found!");
-			setupVaultEconomy();
-			// setupVaultPermissions(); // TODO: Implement Vault permissions
+//			setupVaultEconomy();
+//			 setupVaultPermissions();
+			if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+				if (has_vault_economy)
+					PowerRanks.log.info("Enabling Vault Economy integration.");
+				if (has_vault_permissions)
+					PowerRanks.log.info("Enabling Vault Permission integration.");
+				VaultHook vaultHook = new VaultHook();
+				vaultHook.hook(this, has_vault_permissions, has_vault_economy);
+				vaultEconomyEnabled = has_vault_economy;
+				vaultPermissionsEnabled = has_vault_permissions;
+			}
 		}
 
 		if (has_placeholderapi) {
@@ -271,26 +283,31 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			plugin_hook_deluxetags = true;
 		}
 
-		if (!has_vault && !has_placeholderapi && !has_deluxetags)
+		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
 
-	private boolean setupVaultEconomy() {
-		try {
-			RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-			PowerRanks.vaultEconomy = rsp.getProvider();
-		} catch (Exception e) {
-			PowerRanks.log.warning("Failed to load Vault Economy! Is an economy plugin present?");
-		}
-		return PowerRanks.vaultEconomy != null;
-	}
-
-	@SuppressWarnings("unused")
-	private boolean setupVaultPermissions() {
-		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		PowerRanks.vaultPermissions = rsp.getProvider();
-		return PowerRanks.vaultPermissions != null;
-	}
+//	private boolean setupVaultEconomy() {
+//		try {
+//			RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+//			PowerRanks.vaultEconomy = rsp.getProvider();
+//		} catch (Exception e) {
+//			PowerRanks.log.warning("Failed to load Vault Economy! Is an economy plugin present?");
+//		}
+//		return PowerRanks.vaultEconomy != null;
+//	}
+//
+////	@SuppressWarnings("unused")
+//	private boolean setupVaultPermissions() {
+////		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+////		PowerRanks.vaultPermissions = rsp.getProvider();
+//		PowerRanks.vaultPermissions = new PowerRanksVault(this);
+//		
+//		final ServicesManager sm = this.getServer().getServicesManager();
+//        sm.register(Permission.class, vaultPermissions, this, ServicePriority.High);
+//        
+//		return PowerRanks.vaultPermissions != null;
+//	}
 
 	private boolean handle_update_checking() {
 		if (getConfigBool("updates.enable_update_checking")) {
@@ -592,14 +609,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							attachment.setPermission((String) permissions.get(j), true);
 							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
-							
+
 							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
 								playerAllowedPermissions.get(player).add((String) permissions.get(j));
 						} else {
 							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
 							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
-							
+
 							if (playerAllowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
 								playerAllowedPermissions.get(player).remove((String) permissions.get(j).replaceFirst("-", ""));
 						}
@@ -618,14 +635,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 								attachment.setPermission((String) Permissions.get(j), true);
 								if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
 									playerDisallowedPermissions.get(player).remove((String) Permissions.get(j));
-								
+
 								if (!playerAllowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
 									playerAllowedPermissions.get(player).add((String) Permissions.get(j));
 							} else {
 								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
 								if (!playerDisallowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
 									playerDisallowedPermissions.get(player).add((String) Permissions.get(j).replaceFirst("-", ""));
-								
+
 								if (playerAllowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
 									playerAllowedPermissions.get(player).remove((String) Permissions.get(j).replaceFirst("-", ""));
 							}
@@ -642,14 +659,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						attachment.setPermission((String) GroupPermissions.get(i), true);
 						if (playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
 							playerDisallowedPermissions.get(player).remove((String) GroupPermissions.get(i));
-						
+
 						if (!playerAllowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
 							playerAllowedPermissions.get(player).add((String) GroupPermissions.get(i));
 					} else {
 						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
 						if (!playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
 							playerDisallowedPermissions.get(player).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
-						
+
 						if (playerAllowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
 							playerAllowedPermissions.get(player).remove((String) GroupPermissions.get(i).replaceFirst("-", ""));
 					}
@@ -665,14 +682,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							attachment.setPermission((String) permissions.get(i), true);
 							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
 								playerDisallowedPermissions.get(player).remove((String) permissions.get(i));
-							
+
 							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
 								playerAllowedPermissions.get(player).add((String) permissions.get(i));
 						} else {
 							attachment.setPermission((String) permissions.get(i).replaceFirst("-", ""), false);
 							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
 								playerDisallowedPermissions.get(player).add((String) permissions.get(i).replaceFirst("-", ""));
-							
+
 							if (playerAllowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
 								playerAllowedPermissions.get(player).remove((String) permissions.get(i).replaceFirst("-", ""));
 						}
@@ -755,14 +772,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							attachment.setPermission((String) permissions.get(j), true);
 							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
-							
+
 							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
 								playerAllowedPermissions.get(player).add((String) permissions.get(j));
 						} else {
 							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
 							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
 								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
-							
+
 							if (playerAllowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
 								playerAllowedPermissions.get(player).remove((String) permissions.get(j).replaceFirst("-", ""));
 						}
@@ -1058,13 +1075,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	public static Economy getVaultEconomy() {
-		return vaultEconomy;
-	}
-
-	public static Permission getVaultPermissions() {
-		return vaultPermissions;
-	}
+//	public static Economy getVaultEconomy() {
+//		return vaultEconomy;
+//	}
+//
+//	public static Permission getVaultPermissions() {
+//		return vaultPermissions;
+//	}
 
 	public static PowerRanksExpansion getPlaceholderapiExpansion() {
 		return placeholderapiExpansion;

@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUI;
@@ -86,13 +87,13 @@ public class OnInteract implements Listener {
 					if (sign_argument.length() == 0) {
 						GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
 					} else {
-						if (PowerRanks.getVaultEconomy() != null) {
+						if (PowerRanks.vaultEconomyEnabled) {
 							if (sign_argument2.length() > 0) {
 								Users users = new Users(this.m);
 								int cost = Integer.parseInt(sign_argument2);
-								double player_balance = PowerRanks.getVaultEconomy().getBalance(player);
+								double player_balance = VaultHook.getVaultEconomy().getBalance(player);
 								if (cost >= 0 && player_balance >= cost) {
-									PowerRanks.getVaultEconomy().withdrawPlayer(player, cost);
+									VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 									users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
 									Messages.messageBuyRankSuccess(player, sign_argument);
 								} else {

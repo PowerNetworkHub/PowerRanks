@@ -37,7 +37,9 @@
 # Plugin hooks
 # Enable or disable the use of a certain soft-dependency.
 # Vault (Economy): used for '/pr rankup'
+# Vault (Permissions): used for plugins using the Vault API
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
+# DeluxeTags: used for user tags
 # --------------------
 # Updates
 # 'enable_update_checking' Enable or disable update checking.
@@ -57,7 +59,8 @@ signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"
 plugin_hook:
-  vault: false
+  vault_economy: false
+  vault_permissions: false
   placeholderapi: false
   deluxetags: false
 updates:

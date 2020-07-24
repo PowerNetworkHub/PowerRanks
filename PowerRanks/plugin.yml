@@ -1,9 +1,10 @@
 name: PowerRanks
-version: 1.2
+version: 1.3 BETA 2
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
 softdepend: [Vault, PlaceholderAPI, DeluxeTags]
+load: startup
 website: 'http://dev.bukkit.org/bukkit-plugins/powerranks'
 commands:
   powerranks:
