@@ -58,18 +58,26 @@ public class PowerPermissibleBase extends PermissibleBase {
 		boolean hasAllPerms = oldPermissible.hasPermission("*");
 		boolean hasWildcardTree = (hasPerm && !isDisallowed) || (hasAllPerms && !isDisallowed) || checkPermissionWildcardTree(permission);
 
-		String playerPermissions = "";
-		for (String perm : plugin.playerAllowedPermissions.get(player)) {
-			playerPermissions += perm + ", ";
+		if (PowerRanksVerbose.USE_VERBOSE) {
+			String playerAllowedPermissions = "";
+			String playerDisallowedPermissions = "";
+			for (String perm : plugin.playerAllowedPermissions.get(player)) {
+				playerAllowedPermissions += perm + ", ";
+			}
+			
+			for (String perm : plugin.playerDisallowedPermissions.get(player)) {
+				playerDisallowedPermissions += perm + ", ";
+			}
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "----------------FINALCHECK");
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | " + player.getName() + "'s  allowed permissions: " + playerAllowedPermissions);
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | " + player.getName() + "'s  disallowed permissions: " + playerDisallowedPermissions);
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasPerm: " + hasPerm);
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | isDisallowed: " + isDisallowed);
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasAllPerms: " + hasAllPerms);
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasWildcardTree: " + hasWildcardTree);
+	
+			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "-----------------------END");
 		}
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "----------------FINALCHECK");
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | " + player.getName() + "'s permissions: " + playerPermissions);
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasPerm: " + hasPerm);
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | isDisallowed: " + isDisallowed);
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasAllPerms: " + hasAllPerms);
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasWildcardTree: " + hasWildcardTree);
-
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "-----------------------END");
 		
 		return (hasPerm && !isDisallowed) || (hasAllPerms && !isDisallowed) || (hasWildcardTree && !isDisallowed);
 	}

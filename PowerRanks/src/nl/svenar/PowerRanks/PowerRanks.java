@@ -66,8 +66,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.collect.ImmutableMap;
 
 import me.clip.deluxetags.DeluxeTag;
-//import net.milkbowl.vault.economy.Economy;
-//import net.milkbowl.vault.permission.Permission;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
@@ -83,8 +81,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String factoryresetid = null;
 
 	// Soft Dependencies
-//	private static Economy vaultEconomy;
-//	private static Permission vaultPermissions;
 	public static boolean vaultEconomyEnabled = false;
 	public static boolean vaultPermissionsEnabled = false;
 	private static PowerRanksExpansion placeholderapiExpansion;
@@ -138,7 +134,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		new PowerRanksVerbose(this);
 
 		this.createDir(PowerRanks.fileLoc);
-//		this.log.info("By: " + this.pdf.getAuthors().get(0));
 		this.configFile = new File(this.getDataFolder(), "config.yml");
 		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
 		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
@@ -157,7 +152,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		new CachedConfig(this);
 		new CachedPlayers(this);
 		new CachedRanks(this);
-//		this.verifyConfig();
 
 		if (handle_update_checking()) {
 			return;
@@ -196,10 +190,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		setupSoftDependencies();
 
 		this.setupPermissions();
-//		this.setupScoreboardTeams();
 
 		GUI.setPlugin(this);
-//		GUI.setupGUI();
 
 		PowerRanks.log.info("----------------------");
 		PowerRanks.log.info("Loading add-ons");
@@ -211,7 +203,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
 
 		int pluginId = 7565;
-//		@SuppressWarnings("unused")
 		Metrics metrics = new Metrics(this, pluginId);
 
 		metrics.addCustomChart(new Metrics.SimplePie("number_of_installed_addons", new Callable<String>() {
@@ -258,13 +249,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 		if (has_vault_economy || has_vault_permissions) {
 			PowerRanks.log.info("Vault found!");
-//			setupVaultEconomy();
-//			 setupVaultPermissions();
 			if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
-				if (has_vault_economy)
+				if (has_vault_economy) {
 					PowerRanks.log.info("Enabling Vault Economy integration.");
-				if (has_vault_permissions)
-					PowerRanks.log.info("Enabling Vault Permission integration.");
+				}
+				if (has_vault_permissions) {
+					PowerRanks.log.info("Enabling Vault Permission integration (experimental).");
+				}
 				VaultHook vaultHook = new VaultHook();
 				vaultHook.hook(this, has_vault_permissions, has_vault_economy);
 				vaultEconomyEnabled = has_vault_economy;
@@ -286,28 +277,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
-
-//	private boolean setupVaultEconomy() {
-//		try {
-//			RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-//			PowerRanks.vaultEconomy = rsp.getProvider();
-//		} catch (Exception e) {
-//			PowerRanks.log.warning("Failed to load Vault Economy! Is an economy plugin present?");
-//		}
-//		return PowerRanks.vaultEconomy != null;
-//	}
-//
-////	@SuppressWarnings("unused")
-//	private boolean setupVaultPermissions() {
-////		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-////		PowerRanks.vaultPermissions = rsp.getProvider();
-//		PowerRanks.vaultPermissions = new PowerRanksVault(this);
-//		
-//		final ServicesManager sm = this.getServer().getServicesManager();
-//        sm.register(Permission.class, vaultPermissions, this, ServicePriority.High);
-//        
-//		return PowerRanks.vaultPermissions != null;
-//	}
 
 	private boolean handle_update_checking() {
 		if (getConfigBool("updates.enable_update_checking")) {
@@ -397,7 +366,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		this.createDir(PowerRanks.fileLoc);
-//		this.log.info("By: " + this.pdf.getAuthors().get(0));
+
 		this.configFile = new File(this.getDataFolder(), "config.yml");
 		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
 		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
@@ -538,27 +507,21 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	@SuppressWarnings("unchecked")
 	public void setupPermissions(Player player) {
+		PowerRanksVerbose.log("setupPermissions", "Setting up " + player.getName() + "'s permissions");
 		this.playerUninjectPermissible(player);
 		if (!playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
 		}
 
-//		if (!playerDisallowedPermissions.containsKey(player)) {
+		clearPermissions(player);
+
 		playerDisallowedPermissions.put(player, new ArrayList<String>());
 		playerAllowedPermissions.put(player, new ArrayList<String>());
-//		}
-		clearPermissions(player);
 
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 		final String uuid = player.getUniqueId().toString();
 
-//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		final YamlConfiguration rankYaml = new YamlConfiguration();
-//		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
-//			rankYaml.load(rankFile);
-//			playerYaml.load(playerFile);
 			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
 			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
@@ -704,25 +667,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void removePermissions(Player player) {
+		PowerRanksVerbose.log("removePermissions", "Removing " + player.getName() + "'s permissions");
 		if (playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
 		}
 
-//		if (!playerDisallowedPermissions.containsKey(player)) {
-		playerDisallowedPermissions.put(player, new ArrayList<String>());
-		playerAllowedPermissions.put(player, new ArrayList<String>());
-//		}
-
 		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
 		final String uuid = player.getUniqueId().toString();
 
-//		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//		final File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		final YamlConfiguration rankYaml = new YamlConfiguration();
-//		final YamlConfiguration playerYaml = new YamlConfiguration();
 		try {
-//			rankYaml.load(rankFile);
-//			playerYaml.load(playerFile);
 			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
 			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
@@ -790,8 +743,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			if (GroupPermissions != null) {
 				for (int i = 0; i < GroupPermissions.size(); ++i) {
 					attachment.unsetPermission((String) GroupPermissions.get(i));
-//					if (playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
-//						playerDisallowedPermissions.get(player).remove((String) GroupPermissions.get(i));
 				}
 			}
 
@@ -801,9 +752,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					if (Permissions != null) {
 						for (int j = 0; j < Permissions.size(); ++j) {
 							attachment.unsetPermission((String) Permissions.get(j));
-//							if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(i)) && !Permissions.get(i).equals("*"))
-//								playerDisallowedPermissions.get(player).remove((String) Permissions.get(i));
-							// attachment.unsetPermission((String) GroupPermissions.get(j));
 						}
 					}
 				}
@@ -814,8 +762,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (permissions != null) {
 					for (int i = 0; i < permissions.size(); i++) {
 						attachment.unsetPermission((String) permissions.get(i));
-//						if (playerDisallowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
-//							playerDisallowedPermissions.get(player).remove((String) permissions.get(i));
 					}
 				}
 			} else {
@@ -824,9 +770,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		playerDisallowedPermissions.put(player, new ArrayList<String>());
+		playerAllowedPermissions.put(player, new ArrayList<String>());
 	}
 
 	public void clearPermissions(Player player) {
+		PowerRanksVerbose.log("clearPermissions", "Clearing " + player.getName() + "'s permissions");
 		if (playerPermissionAttachment.containsKey(player.getName())) {
 			this.playerInjectPermissible(player);
 		}
@@ -842,6 +792,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void playerInjectPermissible(Player player) {
+		PowerRanksVerbose.log("playerInjectPermissible", "Injecting permissions handler in " + player.getName());
 		Permissible permissible = new PowerPermissibleBase(player, this);
 		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
 		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
@@ -851,41 +802,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void playerUninjectPermissible(Player player) {
+		PowerRanksVerbose.log("playerUninjectPermissible", "Uninjecting permissions handler from " + player.getName());
 		PermissibleInjector.uninject(player);
 	}
 
-//	private void setupScoreboardTeams() {
-//		ScoreboardManager manager = Bukkit.getScoreboardManager();
-//		Scoreboard board = manager.getNewScoreboard();
-//		Users s = new Users(this);
-//		Set<String> ranks = s.getGroups();
-//		for (String rank : ranks) {
-//			Team team = board.registerNewTeam(rank);
-//			team.setPrefix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.prefix"), true));
-//			team.setSuffix(chatColor(colorChar.charAt(0), s.getRanksConfigFieldString(rank, "chat.suffix"), true));
-//
-//			for (Player player : Bukkit.getOnlinePlayers()) {
-//				if (s.getGroup(player).equalsIgnoreCase(rank)) {
-//					team.addEntry(player.getName());
-//				}
-//			}
-//		}
-//	}
-
 	public void updateTablistName(Player player) {
+		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
 		try {
 			player.setPlayerListName(playerTablistNameBackup.get(player));
 
 			playerTablistNameBackup.put(player, player.getPlayerListName());
 			String uuid = player.getUniqueId().toString();
 
-//			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-//			File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//			File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//			YamlConfiguration configYaml = new YamlConfiguration();
-//			YamlConfiguration rankYaml = new YamlConfiguration();
-//			YamlConfiguration playerYaml = new YamlConfiguration();
-//				configYaml.load(configFile);
 			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
 				return;
 
@@ -991,14 +919,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor) {
+		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
 		try {
 			player.setPlayerListName(playerTablistNameBackup.get(player));
 
 			playerTablistNameBackup.put(player, player.getPlayerListName());
 
-//			File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-//			YamlConfiguration configYaml = new YamlConfiguration();
-//				configYaml.load(configFile);
 			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
 				return;
 
@@ -1074,14 +1000,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}
 	}
-
-//	public static Economy getVaultEconomy() {
-//		return vaultEconomy;
-//	}
-//
-//	public static Permission getVaultPermissions() {
-//		return vaultPermissions;
-//	}
 
 	public static PowerRanksExpansion getPlaceholderapiExpansion() {
 		return placeholderapiExpansion;
