@@ -159,7 +159,7 @@ public class Users implements Listener {
 						playerYaml2.load(playerFile2);
 
 						boolean offline_player_found = false;
-						
+
 						if (playerYaml2.isConfigurationSection("players")) {
 							for (String key : playerYaml2.getConfigurationSection("players").getKeys(false)) {
 								if (playerYaml2.getString("players." + key + ".name").equalsIgnoreCase(t)) {
@@ -356,60 +356,74 @@ public class Users implements Listener {
 	}
 
 	public String getGroup(Player player) {
-		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		YamlConfiguration playerYaml = new YamlConfiguration();
-		String group = null;
-		try {
-			playerYaml.load(playerFile);
-			group = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return group;
+//		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		YamlConfiguration playerYaml = new YamlConfiguration();
+//		String group = null;
+//		try {
+//			playerYaml.load(playerFile);
+//			group = playerYaml.getString("players." + player.getUniqueId() + ".rank");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return group;
+		return CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 	}
 
 	public String getGroup(String playername) {
-		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		YamlConfiguration playerYaml = new YamlConfiguration();
-		String group = null;
+//		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+//		YamlConfiguration playerYaml = new YamlConfiguration();
+//		String group = null;
 		String uuid = "";
+		String group = null;
 		if (Bukkit.getServer().getPlayer(playername) != null)
 			uuid = Bukkit.getServer().getPlayer(playername).getUniqueId().toString();
 
-		try {
-			playerYaml.load(playerFile);
-
-			if (uuid.length() != 0) {
-				for (String key : playerYaml.getConfigurationSection("players").getKeys(false)) {
-					if (playerYaml.getString("players." + key + ".name").equalsIgnoreCase(playername)) {
-						uuid = key;
-					}
+		if (uuid.length() == 0) {
+			for (String key : CachedPlayers.getConfigurationSection("players").getKeys(false)) {
+				if (CachedPlayers.getString("players." + key + ".name").equalsIgnoreCase(playername)) {
+					uuid = key;
 				}
 			}
-
-			if (uuid.length() != 0) {
-				group = playerYaml.getString("players." + uuid + ".rank");
-			} else {
-				return "";
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else if (uuid.length() != 0) {
+			group = CachedPlayers.getString("players." + uuid + ".rank");
 		}
 		return group;
+
+//		try {
+//			playerYaml.load(playerFile);
+//
+//			if (uuid.length() == 0) {
+//				for (String key : playerYaml.getConfigurationSection("players").getKeys(false)) {
+//					if (playerYaml.getString("players." + key + ".name").equalsIgnoreCase(playername)) {
+//						uuid = key;
+//					}
+//				}
+//			}
+//
+//			if (uuid.length() != 0) {
+//				group = playerYaml.getString("players." + uuid + ".rank");
+//			} else {
+//				return "";
+//			}
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return group;
 	}
 
 	public Set<String> getGroups() {
-		ConfigurationSection ranks = null;
-		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-		YamlConfiguration rankYaml = new YamlConfiguration();
-		try {
-			rankYaml.load(rankFile);
-			ranks = rankYaml.getConfigurationSection("Groups");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return ranks.getKeys(false);
+		return CachedRanks.getConfigurationSection("Groups").getKeys(false);
+//		ConfigurationSection ranks = null;
+//		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+//		YamlConfiguration rankYaml = new YamlConfiguration();
+//		try {
+//			rankYaml.load(rankFile);
+//			ranks = rankYaml.getConfigurationSection("Groups");
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return ranks.getKeys(false);
 	}
 
 	public boolean addPermission(String rank, String permission) {
@@ -1742,22 +1756,22 @@ public class Users implements Listener {
 
 	public ArrayList<String> getPlayerNames() {
 		ArrayList<String> player_names = new ArrayList<String>();
-		
+
 //		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 //		YamlConfiguration playersYaml = new YamlConfiguration();
 //		try {
 //			playersYaml.load(playersFile);
 //			ConfigurationSection players_section = playersYaml.getConfigurationSection("players");
-			ConfigurationSection players_section = CachedPlayers.getConfigurationSection("players");
-			for (String key : players_section.getKeys(false)) {
+		ConfigurationSection players_section = CachedPlayers.getConfigurationSection("players");
+		for (String key : players_section.getKeys(false)) {
 //				player_names.add(playersYaml.getString("players." + key + ".name"));
-				player_names.add(CachedPlayers.getString("players." + key + ".name"));
-			}
+			player_names.add(CachedPlayers.getString("players." + key + ".name"));
+		}
 
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		
+
 		return player_names;
 	}
 }
