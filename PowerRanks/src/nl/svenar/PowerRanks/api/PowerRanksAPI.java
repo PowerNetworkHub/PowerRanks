@@ -91,12 +91,12 @@ public class PowerRanksAPI {
 	}
 	
 	public String getChatColor(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.chatcolor");
+		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.chatColor");
 		return value;
 	}
 	
 	public boolean setChatColor(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.chatcolor", new_value);
+		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.chatColor", new_value);
 		return value;
 	}
 	
