@@ -5,8 +5,6 @@ import java.util.Random;
 
 import org.bukkit.ChatColor;
 
-import nl.svenar.PowerRanks.PowerRanks;
-
 public class PowerRanksChatColor {
 
 	private static final Random rand = new Random();
