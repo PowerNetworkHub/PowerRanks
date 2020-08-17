@@ -1083,18 +1083,28 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("listranks")) {
 					Set<String> ranks = s.getGroups();
-					console.sendMessage("Ranks(" + ranks.size() + "):");
+					console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+					console.sendMessage(ChatColor.DARK_GREEN + "Number of ranks: " + ChatColor.GREEN + ranks.size());
+					int index = 0;
 					for (String rank : ranks) {
-						console.sendMessage(rank);
+						index++;
+						console.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GREEN + rank + ChatColor.RESET + " " + PowerRanks.chatColor(s.getPrefix(rank), true));
 					}
+					console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 				} else if (args[0].equalsIgnoreCase("listsubranks")) {
 					if (args.length == 2) {
 						if (Bukkit.getPlayer(args[1]) != null) {
 							List<String> subranks = s.getSubranks(args[1]);
 							sender.sendMessage("Subranks of " + Bukkit.getPlayer(args[1]).getName() + "(" + subranks.size() + "):");
+							console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+							console.sendMessage(ChatColor.DARK_GREEN + "Subranks from player: " + ChatColor.GREEN + Bukkit.getPlayer(args[1]).getName());
+							console.sendMessage(ChatColor.DARK_GREEN + "Number of subranks: " + ChatColor.GREEN + subranks.size());
+							int index = 0;
 							for (String subrank : subranks) {
-								console.sendMessage(subrank);
+								index++;
+								console.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GREEN + subrank + ChatColor.RESET + " " + PowerRanks.chatColor(s.getPrefix(subrank), true));
 							}
+							console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 						} else {
 							Messages.messagePlayerNotFound(console, args[1]);
 						}
@@ -1105,10 +1115,16 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						if (s.getGroups().contains(s.getRankIgnoreCase(args[1]))) {
 							List<String> permissions = s.getPermissions(s.getRankIgnoreCase(args[1]));
-							sender.sendMessage("Permissions of " + s.getRankIgnoreCase(args[1]) + "(" + permissions.size() + "):");
+							
+							console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+							console.sendMessage(ChatColor.DARK_GREEN + "Permissions of rank: " + ChatColor.GREEN + s.getRankIgnoreCase(args[1]));
+							console.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
+							int index = 0;
 							for (String permission : permissions) {
-								sender.sendMessage(permission);
+								index++;
+								console.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
 							}
+							console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 						} else {
 							Messages.messageGroupNotFound(console, args[1]);
 						}
@@ -1119,10 +1135,15 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
 							List<String> permissions = s.getPlayerPermissions(args[1]);
-							sender.sendMessage("Permissions of " + args[1] + "(" + permissions.size() + "):");
+							console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+							console.sendMessage(ChatColor.DARK_GREEN + "Permissions of player: " + ChatColor.GREEN + args[1]);
+							console.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
+							int index = 0;
 							for (String permission : permissions) {
-								sender.sendMessage(permission);
+								index++;
+								console.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
 							}
+							console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 						} else {
 							Messages.messagePlayerNotFound(console, args[1]);
 						}
