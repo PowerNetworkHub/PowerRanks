@@ -173,7 +173,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("listplayerpermissions")) {
 					if (sender.hasPermission("powerranks.cmd.list")) {
 						if (args.length == 2) {
-							if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
+//							if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
 								List<String> permissions = s.getPlayerPermissions(args[1]);
 								sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 								sender.sendMessage(ChatColor.DARK_GREEN + "Permissions of player: " + ChatColor.GREEN + args[1]);
@@ -184,9 +184,9 @@ public class Cmd implements CommandExecutor {
 									sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
 								}
 								sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
-							} else {
-								Messages.messagePlayerNotFound(player, args[1]);
-							}
+//							} else {
+//								Messages.messagePlayerNotFound(player, args[1]);
+//							}
 						} else {
 							Messages.messageCommandUsageListPlayerPermissions(player);
 						}
