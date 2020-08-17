@@ -5,6 +5,8 @@ import java.util.Random;
 
 import org.bukkit.ChatColor;
 
+import nl.svenar.PowerRanks.PowerRanks;
+
 public class PowerRanksChatColor {
 
 	private static final Random rand = new Random();
@@ -16,6 +18,10 @@ public class PowerRanksChatColor {
 	public static String colorize(String text, boolean special) {
 		String output = "";
 
+		if (text.charAt(0) != unformatted_char) {
+			text = unformatted_char + "r" + text;
+		}
+		
 		String[] text_split = text.split(String.valueOf(unformatted_char));
 		for (String s : text_split) {
 			if (s.length() > 0) {
