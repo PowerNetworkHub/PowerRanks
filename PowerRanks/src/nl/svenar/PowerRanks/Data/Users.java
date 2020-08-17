@@ -316,6 +316,7 @@ public class Users implements Listener {
 	public String getGroup(String plr, String t) {
 		Player sender = (plr == null || plr == "API") ? null : Bukkit.getServer().getPlayer(plr);
 		Player target = Bukkit.getServer().getPlayer(t);
+		String target_name = "";
 		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration playerYaml = new YamlConfiguration();
 		String group = "";
@@ -323,6 +324,7 @@ public class Users implements Listener {
 			try {
 				playerYaml.load(playerFile);
 				group = playerYaml.getString("players." + target.getUniqueId() + ".rank");
+				target_name = target.getName();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -332,6 +334,8 @@ public class Users implements Listener {
 				for (String key : playerYaml.getConfigurationSection("players").getKeys(false)) {
 					if (playerYaml.getString("players." + key + ".name").equalsIgnoreCase(t)) {
 						group = playerYaml.getString("players." + key + ".rank");
+						target_name = playerYaml.getString("players." + key + ".name");
+						break;
 					}
 				}
 			} catch (Exception e) {
@@ -341,9 +345,9 @@ public class Users implements Listener {
 		}
 		if (group.length() > 0) {
 			if (sender != null) {
-				Messages.messagePlayerCheckRank(sender, target.getName(), group);
+				Messages.messagePlayerCheckRank(sender, target_name, group);
 			} else {
-				Messages.messagePlayerCheckRank(Bukkit.getConsoleSender(), target.getName(), group);
+				Messages.messagePlayerCheckRank(Bukkit.getConsoleSender(), target_name, group);
 			}
 		} else {
 			if (sender != null) {
