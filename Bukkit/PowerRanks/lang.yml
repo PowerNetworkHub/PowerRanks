@@ -120,6 +120,8 @@ commands:
    usage_command_disablesubranksuffix: "%plugin_prefix% &c/pr disablesubranksuffix <player> <rank>"
    usage_command_enablesubrankpermissions: "%plugin_prefix% &c/pr enablesubrankpermissions <player> <rank>"
    usage_command_disablesubrankpermissions: "%plugin_prefix% &c/pr disablesubrankpermissions <player> <rank>"
+   usage_command_addsubrankworld: "%plugin_prefix% &c/pr addsubrankworld <player> <rank> <world>"
+   usage_command_delsubrankworld: "%plugin_prefix% &c/pr delsubrankworld <player> <rank> <world>"
    usage_command_add_inheritance: "%plugin_prefix% &c/pr addinheritance <rank> <inheritance>"
    usage_command_remove_inheritance: "%plugin_prefix% &c/pr delinheritance <rank> <inheritance>"
    usage_command_set_prefix: "%plugin_prefix% &c/pr setprefix <rank> <prefix>"

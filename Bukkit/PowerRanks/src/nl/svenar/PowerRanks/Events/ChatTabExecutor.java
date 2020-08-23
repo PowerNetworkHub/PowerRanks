@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -87,6 +88,8 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("addoninfo");
 				commands_list.add("seticon");
 				commands_list.add("verbose");
+				commands_list.add("addsubrankworld");
+				commands_list.add("delsubrankworld");
 
 				for (String command : addon_commands) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -116,7 +119,7 @@ public class ChatTabExecutor implements TabCompleter {
 						|| args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("listsubranks") || args[0].equalsIgnoreCase("addplayerperm") || args[0].equalsIgnoreCase("delplayerperm")
 						|| args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix") || args[0].equalsIgnoreCase("enablesubranksuffix") || args[0].equalsIgnoreCase("disablesubranksuffix")
 						|| args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("setusertag") || args[0].equalsIgnoreCase("clearusertag")
-						|| args[0].equalsIgnoreCase("listplayerpermissions")) {
+						|| args[0].equalsIgnoreCase("listplayerpermissions") || args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld")) {
 					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 						if (player.getName().toLowerCase().contains(args[1].toLowerCase()))
 							list.add(player.getName());
@@ -215,7 +218,7 @@ public class ChatTabExecutor implements TabCompleter {
 				}
 
 				if (args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix") || args[0].equalsIgnoreCase("enablesubranksuffix")
-						|| args[0].equalsIgnoreCase("disablesubranksuffix") || args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions")) {
+						|| args[0].equalsIgnoreCase("disablesubranksuffix") || args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getSubranks(args[1])) {
 						if (rank.toLowerCase().contains(args[2].toLowerCase()))
@@ -245,6 +248,14 @@ public class ChatTabExecutor implements TabCompleter {
 					list.add("100");
 					list.add("1000");
 					list.add("10000");
+				}
+			}
+			
+			if (args.length == 4) {
+				if (args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld")) {
+					for (World world : Bukkit.getServer().getWorlds()) {
+						list.add(world.getName());
+					}
 				}
 			}
 

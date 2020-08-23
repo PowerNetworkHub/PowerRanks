@@ -174,16 +174,16 @@ public class Cmd implements CommandExecutor {
 					if (sender.hasPermission("powerranks.cmd.list")) {
 						if (args.length == 2) {
 //							if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
-								List<String> permissions = s.getPlayerPermissions(args[1]);
-								sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-								sender.sendMessage(ChatColor.DARK_GREEN + "Permissions of player: " + ChatColor.GREEN + args[1]);
-								sender.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
-								int index = 0;
-								for (String permission : permissions) {
-									index++;
-									sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
-								}
-								sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+							List<String> permissions = s.getPlayerPermissions(args[1]);
+							sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+							sender.sendMessage(ChatColor.DARK_GREEN + "Permissions of player: " + ChatColor.GREEN + args[1]);
+							sender.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
+							int index = 0;
+							for (String permission : permissions) {
+								index++;
+								sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+							}
+							sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 //							} else {
 //								Messages.messagePlayerNotFound(player, args[1]);
 //							}
@@ -381,6 +381,42 @@ public class Cmd implements CommandExecutor {
 							}
 						} else {
 							Messages.messageCommandUsageDisablesubrankpermissions(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("addsubrankworld")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 4) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final String worldname = args[3];
+							final boolean result = s.addToSubrankList(playername, subrank, "worlds", worldname);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageAddsubrankworld(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("delsubrankworld")) {
+					if (sender.hasPermission("powerranks.cmd.admin")) {
+						if (args.length == 4) {
+							final String playername = args[1];
+							final String subrank = s.getRankIgnoreCase(args[2]);
+							final String worldname = args[3];
+							final boolean result = s.removeFromSubrankList(playername, subrank, "worlds", worldname);
+							if (result) {
+								Messages.messageSuccessChangesubrank(player, subrank, playername);
+							} else {
+								Messages.messageErrorChangesubrank(player, subrank, playername);
+							}
+						} else {
+							Messages.messageCommandUsageDelsubrankworld(player);
 						}
 					} else {
 						Messages.noPermission(player);
@@ -1133,7 +1169,7 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						if (s.getGroups().contains(s.getRankIgnoreCase(args[1]))) {
 							List<String> permissions = s.getPermissions(s.getRankIgnoreCase(args[1]));
-							
+
 							console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 							console.sendMessage(ChatColor.DARK_GREEN + "Permissions of rank: " + ChatColor.GREEN + s.getRankIgnoreCase(args[1]));
 							console.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
@@ -1312,6 +1348,34 @@ public class Cmd implements CommandExecutor {
 						}
 					} else {
 						Messages.messageCommandUsageDisablesubrankpermissions(console);
+					}
+				} else if (args[0].equalsIgnoreCase("addsubrankworld")) {
+					if (args.length == 4) {
+						final String playername = args[1];
+						final String subrank = s.getRankIgnoreCase(args[2]);
+						final String worldname = args[3];
+						final boolean result = s.addToSubrankList(playername, subrank, "worlds", worldname);
+						if (result) {
+							Messages.messageSuccessChangesubrank(console, subrank, playername);
+						} else {
+							Messages.messageErrorChangesubrank(console, subrank, playername);
+						}
+					} else {
+						Messages.messageCommandUsageAddsubrankworld(console);
+					}
+				} else if (args[0].equalsIgnoreCase("delsubrankworld")) {
+					if (args.length == 4) {
+						final String playername = args[1];
+						final String subrank = s.getRankIgnoreCase(args[2]);
+						final String worldname = args[3];
+						final boolean result = s.removeFromSubrankList(playername, subrank, "worlds", worldname);
+						if (result) {
+							Messages.messageSuccessChangesubrank(console, subrank, playername);
+						} else {
+							Messages.messageErrorChangesubrank(console, subrank, playername);
+						}
+					} else {
+						Messages.messageCommandUsageDelsubrankworld(console);
 					}
 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {

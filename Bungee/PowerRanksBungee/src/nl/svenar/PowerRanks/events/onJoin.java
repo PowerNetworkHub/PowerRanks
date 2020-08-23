@@ -1,6 +1,8 @@
 package nl.svenar.PowerRanks.events;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -9,7 +11,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 import nl.svenar.PowerRanks.PowerRanksConfiguration;
-import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.PowerRanksExceptionsHandler;
 
 public class onJoin implements Listener {
 
@@ -25,8 +27,11 @@ public class onJoin implements Listener {
 				yml_players.set("players." + player_uuid + ".name", player.getName());
 			}
 			new PowerRanksConfiguration().save_players(yml_players);
+			throw new IOException("TEST");
 		} catch (IOException e) {
-			e.printStackTrace();
+			StringWriter errors = new StringWriter();
+			e.printStackTrace(new PrintWriter(errors));
+			PowerRanksExceptionsHandler.except(this.getClass().getName(), errors.toString());
 		}
     }
 }

@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginDescription;
 import nl.svenar.PowerRanks.commands.Commands;
@@ -12,10 +14,12 @@ import nl.svenar.PowerRanks.events.onJoin;
 
 public class PowerRanks extends Plugin {
 	public static PluginDescription pdf;
+	public static Logger log;
 	public static String website_url = "https://svenar.nl/powerranks";
 	
 	@Override
 	public void onEnable() {
+		log = ProxyServer.getInstance().getLogger();
 		pdf = this.getDescription();
 		
 		getProxy().getPluginManager().registerCommand(this, new Commands("powerranks"));
@@ -24,6 +28,7 @@ public class PowerRanks extends Plugin {
 
 		setup_config();
 		new PowerRanksConfiguration(getDataFolder());
+		new PowerRanksExceptionsHandler(getDataFolder());
 	}
 
 	private void setup_config() {

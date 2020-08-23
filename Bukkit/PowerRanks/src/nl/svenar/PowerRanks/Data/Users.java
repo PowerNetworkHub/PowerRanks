@@ -1778,4 +1778,70 @@ public class Users implements Listener {
 
 		return player_names;
 	}
+
+	public boolean addToSubrankList(String playername, String subrank, String string, String worldname) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			List<String> list = (List<String>) playersYaml.getStringList("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".worlds");
+			if (!list.contains(worldname)) {
+				list.add(worldname);
+				if (list.contains("All")) {
+					list.remove("All");
+				}
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".worlds", list);
+			} else {
+				return false;
+			}
+
+			playersYaml.save(playersFile);
+			CachedPlayers.update();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean removeFromSubrankList(String playername, String subrank, String string, String worldname) {
+		File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		YamlConfiguration playersYaml = new YamlConfiguration();
+		Player player = Bukkit.getServer().getPlayer(playername);
+		if (player == null)
+			return false;
+
+		String uuid = player.getUniqueId().toString();
+
+		try {
+			playersYaml.load(playersFile);
+
+			List<String> list = (List<String>) playersYaml.getStringList("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".worlds");
+			if (list.contains(worldname)) {
+				list.remove(worldname);
+				if (list.size() == 0) {
+					list.add("All");
+				}
+				playersYaml.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + ".worlds", list);
+			} else {
+				return false;
+			}
+
+			playersYaml.save(playersFile);
+			CachedPlayers.update();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 }

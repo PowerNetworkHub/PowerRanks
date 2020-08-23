@@ -1248,4 +1248,18 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
+
+	public static void messageCommandUsageAddsubrankworld(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_addsubrankworld");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageDelsubrankworld(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_delsubrankworld");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
 }
