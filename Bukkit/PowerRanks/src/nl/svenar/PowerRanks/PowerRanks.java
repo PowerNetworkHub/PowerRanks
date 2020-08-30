@@ -907,13 +907,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							.put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
 					'[', ']');
 
-			
-
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
 			}
-			
-			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+
+			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
 			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
@@ -944,12 +942,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
 					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
 
-
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
 			}
-			
-			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+
+			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
 			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);

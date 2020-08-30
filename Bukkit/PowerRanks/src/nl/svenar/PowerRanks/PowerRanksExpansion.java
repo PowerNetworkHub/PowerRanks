@@ -1,9 +1,14 @@
 package nl.svenar.PowerRanks;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Data.Users;
 
 /**
@@ -135,9 +140,15 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		
 		if (identifier.equals("world"))
 			return player.getWorld().getName();
+		
+		if (identifier.equals("playtime")) {
+			TimeZone tz = TimeZone.getTimeZone("UTC");
+		    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+		    df.setTimeZone(tz);
+		    String time = df.format(new Date((CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime") == null ? CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime") : CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime")) * 1000));
+			return time;
+		}
 
-		// We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
-		// was provided
 		return null;
 	}
 }

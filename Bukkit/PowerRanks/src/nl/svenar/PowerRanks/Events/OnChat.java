@@ -21,6 +21,7 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
@@ -125,7 +126,7 @@ public class OnChat implements Listener {
 								.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", nameColor + "%1$s").put("msg", chatColor + "%2$s").put("format", e.getFormat()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
 						'[', ']');
 				
-				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
 				format = PowerRanks.chatColor(format, true);
 
 				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)

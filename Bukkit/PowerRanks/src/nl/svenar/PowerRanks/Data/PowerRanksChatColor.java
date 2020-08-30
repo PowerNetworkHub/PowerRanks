@@ -13,7 +13,7 @@ public class PowerRanksChatColor {
 
 	private static final char[] list_colors = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 	private static final char[] list_colors_effects = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'l', 'n', 'o', 'k', 'm' };
-	private static char unformatted_char = '&';
+	public static char unformatted_char = '&';
 
 	public static String colorize(String text, boolean special) {
 		String output = "";
