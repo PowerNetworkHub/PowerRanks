@@ -90,14 +90,20 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("setrank")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 3) {
-							s.setGroup((Player) sender, args[1], s.getRankIgnoreCase(args[2]), true);
+					if (args.length == 3) {
+						String target_rank = s.getRankIgnoreCase(args[2]);
+						if (sender.hasPermission("powerranks.cmd.set") || sender.hasPermission("powerranks.cmd.set." + target_rank.toLowerCase())) {
+							s.setGroup((Player) sender, args[1], target_rank, true);
+
 						} else {
-							Messages.messageCommandUsageSet(player);
+							Messages.noPermission(player);
 						}
 					} else {
-						Messages.noPermission(player);
+						if (sender.hasPermission("powerranks.cmd.set") || sender.hasPermission("powerranks.cmd.set.*")) {
+							Messages.messageCommandUsageSet(player);
+						} else {
+							Messages.noPermission(player);
+						}
 					}
 				} else if (args[0].equalsIgnoreCase("setownrank")) {
 					if (sender.hasPermission("powerranks.cmd.set")) {

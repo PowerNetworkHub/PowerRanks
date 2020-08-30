@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 
@@ -19,23 +21,52 @@ public class PowerRanksChatColor {
 		if (text.charAt(0) != unformatted_char) {
 			text = unformatted_char + "r" + text;
 		}
-		
+
+		String pattern = "(?<=&[iIjJ]).*?(?=&[0-9a-fA-FrR])";
+
+		Pattern r = Pattern.compile(pattern);
+		Matcher m = r.matcher(text);
+
+		while (m.find()) {
+			int start = m.start();
+			int end = m.end() - 2;
+			String format_char = "";
+			
+			Matcher re = Pattern.compile("&[lLnNoOkKmM]").matcher(text.substring(start, end));
+			while (re.find()) {
+				int re_start = start + re.start();
+				int re_end = start + re.end();
+				format_char = text.substring(re_start, re_end);
+				text = text.replace(text.substring(re_start, re_end), "");
+			}
+			
+			text = text.replace(text.substring(start - 2, end), colorStyle(text.substring(start - 2, end)).special(format_char, true));
+		}
+
 		String[] text_split = text.split(String.valueOf(unformatted_char));
+
 		for (String s : text_split) {
 			if (s.length() > 0) {
 				char color_char = s.charAt(0);
+
 				String text_to_format = s.substring(1);
 				if (String.valueOf(color_char).matches("[0-9a-fA-F]")) {
 					text_to_format = colorStyle(unformatted_char + s).format();
-				} else if (String.valueOf(color_char).matches("[lLnNoOkKmMRr]")) {
+				}
+
+//				if (special && String.valueOf(color_char).matches("[iIjJ]")) {
+//					text_to_format = colorStyle(unformatted_char + s).special();
+//				}
+
+				if (String.valueOf(color_char).matches("[lLnNoOkKmMRr]")) {
 					text_to_format = colorStyle(unformatted_char + s).format();
-				} else if (special && String.valueOf(color_char).matches("[iIjJ]")) {
-					text_to_format = colorStyle(unformatted_char + s).special();
 				}
 
 				output += text_to_format;
 			}
 		}
+		
+		
 		return output;
 	}
 
@@ -61,20 +92,32 @@ public class PowerRanksChatColor {
 		}
 
 		public String special() {
-			return text.toLowerCase().charAt(1) == 'i' ? new PowerRanksColorStyle(text.substring(2)).toRainbow() : (text.toLowerCase().charAt(1) == 'j' ? new PowerRanksColorStyle(text.substring(2)).toRandom() : text.substring(2));
+			return special("", false);
+		}
+		
+		public String special(String format_char, boolean use_unformated_char) {
+			return text.toLowerCase().charAt(1) == 'i' ? new PowerRanksColorStyle(text.substring(2)).toRainbow(format_char, use_unformated_char) : (text.toLowerCase().charAt(1) == 'j' ? new PowerRanksColorStyle(text.substring(2)).toRandom(format_char, use_unformated_char) : text.substring(2));
 		}
 
 		public String toRandom() {
+			return toRandom("", false);
+		}
+		
+		public String toRandom(String format_char, boolean use_unformated_char) {
 			StringBuilder sb = new StringBuilder();
 
 			for (char c : text.toCharArray()) {
-				sb.append(PowerRanksChatColor.getRandomColorCode(false) + String.valueOf(c));
+				sb.append(PowerRanksChatColor.getRandomColorCode(false) + format_char + String.valueOf(c));
 			}
 
-			return ChatColor.translateAlternateColorCodes(unformatted_char, sb.toString());
+			return use_unformated_char ? sb.toString() : ChatColor.translateAlternateColorCodes(unformatted_char, sb.toString());
 		}
 
 		public String toRainbow() {
+			return toRainbow("", false);
+		}
+		
+		public String toRainbow(String format_char, boolean use_unformated_char) {
 			StringBuilder sb = new StringBuilder();
 			ArrayList<String> rainbow_colors = new ArrayList<String>();
 			rainbow_colors.add("4");
@@ -87,7 +130,7 @@ public class PowerRanksChatColor {
 			int index = 0;
 
 			for (char c : text.toCharArray()) {
-				sb.append(unformatted_char + rainbow_colors.get(index) + String.valueOf(c));
+				sb.append(unformatted_char + rainbow_colors.get(index) + format_char + String.valueOf(c));
 				if (index >= rainbow_colors.size() - 1) {
 					index = 0;
 				} else {
@@ -95,7 +138,7 @@ public class PowerRanksChatColor {
 				}
 			}
 
-			return ChatColor.translateAlternateColorCodes(unformatted_char, sb.toString());
+			return use_unformated_char ? sb.toString() : ChatColor.translateAlternateColorCodes(unformatted_char, sb.toString());
 		}
 
 		public String toStripe(ChatColor colorOne, ChatColor colorTwo) {

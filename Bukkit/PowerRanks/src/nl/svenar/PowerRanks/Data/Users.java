@@ -35,7 +35,7 @@ public class Users implements Listener {
 
 	public void setGroup(Player player, String t, String rank, boolean fireAddonEvent) {
 		if (player != null) {
-			if (player.hasPermission("powerranks.cmd.set")) {
+			if (player.hasPermission("powerranks.cmd.set") || player.hasPermission("powerranks.cmd.set." + rank)) {
 				Player target = Bukkit.getServer().getPlayer(t);
 
 				if (target != null) {
@@ -1717,6 +1717,15 @@ public class Users implements Listener {
 		}
 
 		return value;
+	}
+	
+	public String getUserTagValue(Player player) {
+		String usertag = CachedPlayers.getString("players." + player.getUniqueId() + ".usertag");
+		if (usertag.length() > 0) {
+			return getUserTagValue(usertag);
+		} else {
+			return "";
+		}
 	}
 
 	public boolean clearUserTag(String playername) {

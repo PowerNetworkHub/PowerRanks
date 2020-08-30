@@ -51,6 +51,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 			throw new NullPointerException(permission);
 		}
 
+		PowerRanksVerbose.log("", "");
 		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "---------------------START");
 
 		boolean hasPerm = oldPermissible.hasPermission(permission);

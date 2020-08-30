@@ -66,6 +66,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.collect.ImmutableMap;
 
 import me.clip.deluxetags.DeluxeTag;
+import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
@@ -906,11 +907,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							.put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
 					'[', ']');
 
-			format = PowerRanks.chatColor(format, true);
+			
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
 			}
+			
+			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
 		} catch (Exception e) {
@@ -940,11 +944,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
 					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
 
-			format = PowerRanks.chatColor(format, true);
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
 			}
+			
+			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "&");
+			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
 		} catch (Exception e) {

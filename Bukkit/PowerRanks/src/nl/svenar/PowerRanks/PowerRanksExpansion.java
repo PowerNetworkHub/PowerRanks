@@ -113,22 +113,28 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			return users.getGroup(player);
 
 		if (identifier.equals("prefix"))
-			return users.getPrefix(player) + ChatColor.RESET;
+			return PowerRanks.chatColor(users.getPrefix(player), true) + ChatColor.RESET;
 		
 		if (identifier.equals("suffix"))
-			return ChatColor.RESET + users.getSuffix(player);
+			return ChatColor.RESET + PowerRanks.chatColor(users.getSuffix(player), true);
 		
 		if (identifier.equals("subrankprefix"))
-			return users.getSubrankprefixes(player) + ChatColor.RESET;
+			return PowerRanks.chatColor(users.getSubrankprefixes(player), true) + ChatColor.RESET;
 		
 		if (identifier.equals("subranksuffix"))
-			return ChatColor.RESET + users.getSubranksuffixes(player);
+			return ChatColor.RESET + PowerRanks.chatColor(users.getSubranksuffixes(player), true);
 		
 		if (identifier.equals("chatcolor"))
 			return users.getChatColor(player);
 		
 		if (identifier.equals("namecolor"))
 			return users.getNameColor(player);
+		
+		if (identifier.equals("usertag"))
+			return users.getUserTagValue(player);
+		
+		if (identifier.equals("world"))
+			return player.getWorld().getName();
 
 		// We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
 		// was provided
