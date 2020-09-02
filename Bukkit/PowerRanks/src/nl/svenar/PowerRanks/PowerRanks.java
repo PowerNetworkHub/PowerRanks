@@ -270,6 +270,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.log.info("PlaceholderAPI found!");
 			PowerRanks.placeholderapiExpansion = new PowerRanksExpansion(this);
 			PowerRanks.placeholderapiExpansion.register();
+		} else {
+			PowerRanks.placeholderapiExpansion = null;
 		}
 
 		if (has_deluxetags) {
@@ -913,7 +915,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = format.substring(0, format.length() - 1);
 			}
 
-			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+			if (PowerRanks.placeholderapiExpansion != null) {
+				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+			}
 			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
