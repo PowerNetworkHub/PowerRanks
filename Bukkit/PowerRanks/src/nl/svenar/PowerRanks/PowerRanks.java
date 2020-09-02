@@ -84,7 +84,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	// Soft Dependencies
 	public static boolean vaultEconomyEnabled = false;
 	public static boolean vaultPermissionsEnabled = false;
-	private static PowerRanksExpansion placeholderapiExpansion;
+	public static PowerRanksExpansion placeholderapiExpansion;
 	public static boolean plugin_hook_deluxetags = false;
 	// Soft Dependencies
 
@@ -952,7 +952,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = format.substring(0, format.length() - 1);
 			}
 
-			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+			if (PowerRanks.placeholderapiExpansion != null) {
+				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+			}
 			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
