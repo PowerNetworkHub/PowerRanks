@@ -14,6 +14,8 @@ import nl.svenar.PowerRanks.PowerRanks;
 
 public class CachedPlayers {
 
+	private static boolean is_ready = false;
+
 	private static HashMap<String, Object> players_data = new HashMap<String, Object>();
 
 	private static HashMap<String, ConfigurationSection> players_configuration_sections = new HashMap<String, ConfigurationSection>();
@@ -31,7 +33,7 @@ public class CachedPlayers {
 	public static void update() {
 		final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration playersYaml = new YamlConfiguration();
-		
+
 		players_data.clear();
 		players_configuration_sections.clear();
 		players_strings.clear();
@@ -64,6 +66,23 @@ public class CachedPlayers {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+
+		is_ready = true;
+	}
+
+	public static void save() {
+		final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		final YamlConfiguration playersYaml = new YamlConfiguration();
+
+		try {
+			playersYaml.load(playersFile);
+			for (Entry<String, Object> kv : players_data.entrySet()) {
+				playersYaml.set(kv.getKey(), kv.getValue());
+			}
+			playersYaml.save(playersFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static Object get(String field) {
@@ -89,7 +108,7 @@ public class CachedPlayers {
 	public static boolean contains(String field) {
 		return players_data.containsKey(field);
 	}
-	
+
 	public static int getInt(String field) {
 		return players_ints.get(field);
 	}
@@ -97,34 +116,40 @@ public class CachedPlayers {
 	public static Long getLong(String field) {
 		return players_longs.get(field);
 	}
-	
+
 	public static Double getDouble(String field) {
 		return players_doubles.get(field);
 	}
 
-	public static void set(String field, Object data) {
-		final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final YamlConfiguration playersYaml = new YamlConfiguration();
-
-		try {
-			playersYaml.load(playersFile);
+	public static void set(String field, Object data, boolean cache_only) {
+		if (cache_only) {
 			players_data.put(field, data);
-			playersYaml.set(field, data);
-			playersYaml.save(playersFile);
-			update();
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
+		} else {
+			final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+			final YamlConfiguration playersYaml = new YamlConfiguration();
+
+			try {
+				playersYaml.load(playersFile);
+				players_data.put(field, data);
+				playersYaml.set(field, data);
+				playersYaml.save(playersFile);
+				update();
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public static void set(HashMap<String, Object> data) {
+		if (data.size() == 0) {
+			return;
+		}
+
 		final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		final YamlConfiguration playersYaml = new YamlConfiguration();
 
 		try {
 			playersYaml.load(playersFile);
-//			players_data.put(field, data);
-//			playersYaml.set(field, data);
 			for (Entry<String, Object> kv : data.entrySet()) {
 				players_data.put(kv.getKey(), kv.getValue());
 				playersYaml.set(kv.getKey(), kv.getValue());
@@ -134,5 +159,9 @@ public class CachedPlayers {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static boolean is_ready() {
+		return is_ready;
 	}
 }

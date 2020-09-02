@@ -236,6 +236,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 		playerTablistNameBackup.clear();
 
+		CachedPlayers.save();
+
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
 			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		}
@@ -540,7 +542,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 								ArrayList<String> default_worlds = new ArrayList<String>();
 								default_worlds.add("All");
-								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
 							}
 
 							String player_current_world = player.getWorld().getName();
@@ -660,7 +662,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			} else {
-				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]");
+				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]", false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -693,7 +695,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 								ArrayList<String> default_worlds = new ArrayList<String>();
 								default_worlds.add("All");
-								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
 							}
 
 							String player_current_world = player.getWorld().getName();
@@ -766,7 +768,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			} else {
-				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]");
+				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]", false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -838,7 +840,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 							ArrayList<String> default_worlds = new ArrayList<String>();
 							default_worlds.add("All");
-							CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+							CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, false);
 						}
 
 						String player_current_world = player.getWorld().getName();
@@ -985,7 +987,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime").intValue();
 			}
 		}
-		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000);
+		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000, true);
 	}
 
 	public void updatePlayersWithRank(Users users, String rank) {

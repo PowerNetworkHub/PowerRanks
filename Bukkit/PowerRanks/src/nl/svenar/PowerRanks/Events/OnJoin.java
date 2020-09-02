@@ -28,13 +28,19 @@ public class OnJoin implements Listener {
 	@EventHandler(ignoreCancelled = false)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
-
-		CachedPlayers.update();
-
+		
+		if (!CachedPlayers.is_ready())
+			CachedPlayers.update();
+		
 		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
-		new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+		
 
 		if (!CachedPlayers.contains("players." + player.getUniqueId())) {
+			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".name"))
+				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+			else if (CachedPlayers.getString("players." + player.getUniqueId() + ".name") != player.getName())
+				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+			
 			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
 				new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
 
@@ -52,7 +58,7 @@ public class OnJoin implements Listener {
 		}
 
 		CachedPlayers.set(new_user_data);
-
+		
 		this.m.playerInjectPermissible(player);
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
 

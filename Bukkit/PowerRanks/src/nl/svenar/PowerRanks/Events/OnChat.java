@@ -60,7 +60,7 @@ public class OnChat implements Listener {
 
 								ArrayList<String> default_worlds = new ArrayList<String>();
 								default_worlds.add("All");
-								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds);
+								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
 							}
 
 							String player_current_world = player.getWorld().getName();
