@@ -11,6 +11,6 @@
 	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/Vault.jar"/>
 	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/PlaceholderAPI-2.10.6.jar"/>
 	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/DeluxeTags-1.8.1-Release.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/PowerCore"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PowerRanksCore"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

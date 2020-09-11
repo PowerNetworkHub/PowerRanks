@@ -5,15 +5,17 @@ import me.svenar.powerranks.core.manager.RankManager;
 
 public class PowerRanksCore {
 
-	private String plugin_name = "";
+	private String plugin_server_type = "";
 	private RankManager rank_manager = null;
 	private PlayerManager player_manager = null;
 	
 	/**
 	 * constructor
+	 * 
+	 * @param plugin_server_type
 	 */
-	public PowerRanksCore(String plugin_name) {
-		this.plugin_name = plugin_name;
+	public PowerRanksCore(String plugin_server_type) {
+		this.plugin_server_type = plugin_server_type;
 		
 		
 	}
