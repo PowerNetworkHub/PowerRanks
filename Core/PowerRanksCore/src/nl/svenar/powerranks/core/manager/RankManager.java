@@ -1,9 +1,9 @@
-package me.svenar.powerranks.core.manager;
+package nl.svenar.powerranks.core.manager;
 
 import java.util.ArrayList;
 
-import me.svenar.powerranks.core.data.PowerRanksRank;
-import me.svenar.powerranks.core.util.RankWeightSorter;
+import nl.svenar.powerranks.core.data.PowerRanksRank;
+import nl.svenar.powerranks.core.util.RankWeightSorter;
 
 public class RankManager {
 	

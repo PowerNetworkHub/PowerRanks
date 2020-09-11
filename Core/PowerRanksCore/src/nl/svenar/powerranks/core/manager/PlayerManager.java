@@ -1,9 +1,9 @@
-package me.svenar.powerranks.core.manager;
+package nl.svenar.powerranks.core.manager;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import me.svenar.powerranks.core.data.PowerRanksPlayer;
+import nl.svenar.powerranks.core.data.PowerRanksPlayer;
 
 public class PlayerManager {
 	

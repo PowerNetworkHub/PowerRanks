@@ -1,68 +1,12 @@
 name: PowerRanks
-version: 1.5.1
+version: 2.0
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
-softdepend: [Vault, PlaceholderAPI, DeluxeTags]
 load: startup
-website: 'http://dev.bukkit.org/bukkit-plugins/powerranks'
+website: "https://svenar.nl/powerranks"
 commands:
   powerranks:
     description: Main Command
   pr:
     description: Main Command
-permissions:
-  powerranks.cmd.*:
-    default: false
-    children:
-      powerranks.cmd.help: true
-      powerranks.cmd.check: true
-      powerranks.cmd.rankup: true
-      powerranks.cmd.reload: true
-      powerranks.cmd.set: true
-      powerranks.cmd.list: true
-      powerranks.cmd.create: true
-      powerranks.cmd.admin: true
-      powerranks.cmd.usertag: true
-      powerranks.cmd.factoryreset: true
-      powerranks.cmd.verbose: true
-  powerranks.signs.*:
-    default: false
-    children:
-      powerranks.signs.create: true
-      powerranks.signs.set: true
-      powerranks.signs.check: true
-      powerranks.signs.rankup: true
-      powerranks.signs.admin: true
-  powerranks.cmd.help:
-    default: true
-  powerranks.cmd.check:
-    default: true
-  powerranks.cmd.rankup:
-    default: true
-  powerranks.cmd.usertag:
-    default: true
-  powerranks.cmd.reload:
-    default: op
-  powerranks.cmd.set:
-    default: op
-  powerranks.cmd.list:
-    default: op
-  powerranks.cmd.create:
-    default: op
-  powerranks.cmd.admin:
-    default: op
-  powerranks.cmd.factoryreset:
-    default: op
-  powerranks.cmd.verbose:
-    default: op
-  powerranks.signs.create:
-    default: op
-  powerranks.signs.set:
-    default: op
-  powerranks.signs.check:
-    default: true
-  powerranks.signs.rankup:
-    default: true
-  powerranks.signs.admin:
-    default: op

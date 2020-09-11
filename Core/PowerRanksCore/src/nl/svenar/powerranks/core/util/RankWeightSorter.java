@@ -1,8 +1,8 @@
-package me.svenar.powerranks.core.util;
+package nl.svenar.powerranks.core.util;
 
 import java.util.Comparator;
 
-import me.svenar.powerranks.core.data.PowerRanksRank;
+import nl.svenar.powerranks.core.data.PowerRanksRank;
 
 /**
  * Used for sorting the player's ranks based on the ranks weight

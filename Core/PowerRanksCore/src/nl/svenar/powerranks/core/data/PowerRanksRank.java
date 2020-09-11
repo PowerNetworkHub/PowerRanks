@@ -1,4 +1,4 @@
-package me.svenar.powerranks.core.data;
+package nl.svenar.powerranks.core.data;
 
 import java.util.ArrayList;
 

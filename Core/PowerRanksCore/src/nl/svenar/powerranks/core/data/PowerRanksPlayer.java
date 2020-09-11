@@ -1,9 +1,9 @@
-package me.svenar.powerranks.core.data;
+package nl.svenar.powerranks.core.data;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-import me.svenar.powerranks.core.util.RankWeightSorter;
+import nl.svenar.powerranks.core.util.RankWeightSorter;
 
 public class PowerRanksPlayer {
 
