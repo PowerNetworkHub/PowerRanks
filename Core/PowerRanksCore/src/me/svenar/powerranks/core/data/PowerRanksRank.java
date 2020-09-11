@@ -11,9 +11,15 @@ public class PowerRanksRank {
 	private String name_color = "";
 	private String level_promote = "";
 	private String level_demote = "";
+	private int weight = 0;
 	private ArrayList<String> permissions = new ArrayList<String>();
 	private ArrayList<String> inheritances = new ArrayList<String>();
 	
+	/**
+	 * constructor
+	 * 
+	 * @param name
+	 */
 	public PowerRanksRank(String name) {
 		set_name(name);
 	}
@@ -170,5 +176,33 @@ public class PowerRanksRank {
 	 */
 	public void remove_inheritance(String inheritance) {
 		this.inheritances.remove(inheritance);
+	}
+
+	/**
+	 * @return the weight
+	 */
+	public int get_weight() {
+		return weight;
+	}
+
+	/**
+	 * @param weight, the weight to set
+	 */
+	public void set_weight(int weight) {
+		this.weight = weight;
+	}
+
+	/**
+	 * @param permission, the permission to check
+	 */
+	public boolean has_permission(String permission) {
+		return get_permissions().contains(permission) || get_permissions().contains("-" + permission);
+	}
+	
+	/**
+	 * @param permission, the permission to check
+	 */
+	public boolean is_permission_allowed(String permission) {
+		return !permission.contains("-");
 	}
 }

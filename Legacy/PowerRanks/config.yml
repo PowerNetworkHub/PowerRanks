@@ -1,0 +1,69 @@
+# --------------------
+# Chat format
+# Available options:
+# [prefix] rank prefix
+# [suffix] rank 
+# [subprefix] player's subrank prefix
+# [subsuffix] player's subrank suffix
+# [player] player name
+# [msg] message player typed
+# [format] get the current chat format
+# [usertag] player's self-assigned tag
+# Example, use the current chat format and adding the rank's prefix:
+# format: '[prefix] [format]'
+# --------------------
+# Build Modification
+# Enable or disable processing the 'build' tag in Ranks.yml
+# --------------------
+# Tablist Modification
+# Change the player's name in the tablist
+# Available options:
+# [world] player's current world
+# [usertag] player's usertag
+# [prefix] rank name
+# [suffix] suffix
+# [subprefix] player's subrank prefix
+# [subsuffix] player's subrank suffix
+# [name] player name
+# --------------------
+# Signs
+# Set the player's rank using signs.
+# Available commands: promote, demote, set, check, gui, rankup
+# Format:
+# Line 1: [PowerRanks]
+# Line 2: <command>
+# Line 3: [rank]
+# --------------------
+# Plugin hooks
+# Enable or disable the use of a certain soft-dependency.
+# Vault (Economy): used for '/pr rankup'
+# Vault (Permissions): used for plugins using the Vault API
+# PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
+# DeluxeTags: used for user tags
+# --------------------
+# Updates
+# 'enable_update_checking' Enable or disable update checking.
+# 'automatic_download_updates' Attempt to automatically update PowerRanks.jar to the new version.
+# 'automatic_update_config_files' Update the configuration files to the newest version.
+# --------------------
+
+chat:
+  enabled: true
+  format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
+build_modification:
+  enabled: true
+tablist_modification:
+  enabled: true
+  format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]'
+signs:
+  enabled: true
+  title_format: "&0[&b%plugin_name%&0]"
+plugin_hook:
+  vault_economy: false
+  vault_permissions: false
+  placeholderapi: false
+  deluxetags: false
+updates:
+   enable_update_checking: true
+   automatic_download_updates: false
+   automatic_update_config_files: true
