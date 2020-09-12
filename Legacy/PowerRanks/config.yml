@@ -41,6 +41,16 @@
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # DeluxeTags: used for user tags
 # --------------------
+# Announcements
+# Enable or disable server-wide announcements.
+# rankup, broadcast when a player's rank has been changed
+# promote, broadcast when a player is promoted
+# demote, broadcast when a player is demoted
+# Available options:
+# [powerranks_prefix] the PowerRanks prefix
+# [player] the player's name
+# [rank] the player's new rank
+# --------------------
 # Updates
 # 'enable_update_checking' Enable or disable update checking.
 # 'automatic_download_updates' Attempt to automatically update PowerRanks.jar to the new version.
@@ -63,6 +73,16 @@ plugin_hook:
   vault_permissions: false
   placeholderapi: false
   deluxetags: false
+announcements:
+  rankup:
+    enabled: false
+    format: '[powerranks_prefix] &6[player]''s rank has been changed to [rank]'
+  promote:
+    enabled: false
+    format: '[powerranks_prefix] &6[player] has been promoted to [rank]'
+  demote:
+    enabled: false
+    format: '[powerranks_prefix] &6[player] has been demoted to [rank]'
 updates:
    enable_update_checking: true
    automatic_download_updates: false

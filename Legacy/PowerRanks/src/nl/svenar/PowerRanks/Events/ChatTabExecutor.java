@@ -40,7 +40,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("setownrank");
 				commands_list.add("promote");
 				commands_list.add("demote");
-				commands_list.add("check");
+				commands_list.add("checkrank");
 				commands_list.add("addperm");
 				commands_list.add("delperm");
 				commands_list.add("addplayerperm");
@@ -73,7 +73,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("rankup");
 				commands_list.add("addbuyablerank");
 				commands_list.add("delbuyablerank");
-				commands_list.add("setcost");
+				commands_list.add("setbuycost");
 				commands_list.add("stats");
 				commands_list.add("createusertag");
 				commands_list.add("editusertag");
@@ -86,7 +86,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("clearpromoterank");
 				commands_list.add("cleardemoterank");
 				commands_list.add("addoninfo");
-				commands_list.add("seticon");
+				commands_list.add("setguiicon");
 				commands_list.add("verbose");
 				commands_list.add("addsubrankworld");
 				commands_list.add("delsubrankworld");
@@ -107,7 +107,7 @@ public class ChatTabExecutor implements TabCompleter {
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
 						|| args[0].equalsIgnoreCase("enablebuild") || args[0].equalsIgnoreCase("disablebuild") || args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
 						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
-						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon")) {
+						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon") || args[0].equalsIgnoreCase("listpermissions")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))

@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
@@ -34,6 +35,7 @@ public class Users implements Listener {
 	}
 
 	public void setGroup(Player player, String t, String rank, boolean fireAddonEvent) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		if (player != null) {
 			if (player.hasPermission("powerranks.cmd.set") || player.hasPermission("powerranks.cmd.set." + rank)) {
 				Player target = Bukkit.getServer().getPlayer(t);
@@ -52,6 +54,9 @@ public class Users implements Listener {
 							playerYaml.set("players." + target.getUniqueId() + ".rank", (Object) rank);
 							playerYaml.save(playerFile);
 							CachedPlayers.update();
+							if (fireAddonEvent && CachedConfig.getBoolean("announcements.rankup.enabled")) {
+								Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.rankup.format").replace("[player]", t).replace("[rank]", rank).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+							}
 
 							if (fireAddonEvent)
 								for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -88,6 +93,9 @@ public class Users implements Listener {
 									playerYaml2.set("players." + key + ".rank", (Object) rank);
 									playerYaml2.save(playerFile2);
 									CachedPlayers.update();
+									if (fireAddonEvent && CachedConfig.getBoolean("announcements.rankup.enabled")) {
+										Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.rankup.format").replace("[player]", t).replace("[rank]", rank).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+									}
 
 									if (fireAddonEvent)
 										for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -130,6 +138,9 @@ public class Users implements Listener {
 						playerYaml2.set("players." + target2.getUniqueId() + ".rank", (Object) rank);
 						playerYaml2.save(playerFile2);
 						CachedPlayers.update();
+						if (fireAddonEvent && CachedConfig.getBoolean("announcements.rankup.enabled")) {
+							Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.rankup.format").replace("[player]", t).replace("[rank]", rank).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+						}
 
 						if (fireAddonEvent)
 							for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -167,6 +178,9 @@ public class Users implements Listener {
 									playerYaml2.set("players." + key + ".rank", (Object) rank);
 									playerYaml2.save(playerFile2);
 									CachedPlayers.update();
+									if (fireAddonEvent && CachedConfig.getBoolean("announcements.rankup.enabled")) {
+										Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.rankup.format").replace("[player]", t).replace("[rank]", rank).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+									}
 
 									if (fireAddonEvent)
 										for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -194,6 +208,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setGroup(Player player, String rank, boolean fireAddonEvent) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -208,6 +223,9 @@ public class Users implements Listener {
 				playerYaml.set("players." + player.getUniqueId() + ".rank", (Object) rank);
 				playerYaml.save(playerFile);
 				CachedPlayers.update();
+				if (fireAddonEvent && CachedConfig.getBoolean("announcements.rankup.enabled")) {
+					Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.rankup.format").replace("[player]", player.getDisplayName()).replace("[rank]", rank).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+				}
 
 				if (fireAddonEvent)
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -689,6 +707,7 @@ public class Users implements Listener {
 	}
 
 	public boolean promote(String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -704,6 +723,9 @@ public class Users implements Listener {
 					String rankname = rankYaml.getString("Groups." + rank + ".level.promote");
 					if (rankYaml.get("Groups." + rankname) != null && rankname.length() > 0) {
 						this.setGroup(player, rankname, false);
+						if (CachedConfig.getBoolean("announcements.promote.enabled")) {
+							Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.promote.format").replace("[player]", playername).replace("[rank]", rankname).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+						}
 
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
@@ -737,6 +759,9 @@ public class Users implements Listener {
 							return false;
 
 						this.setGroup(player, rankname, false);
+						if (CachedConfig.getBoolean("announcements.promote.enabled")) {
+							Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.promote.format").replace("[player]", playername).replace("[rank]", rankname).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+						}
 
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
@@ -764,6 +789,7 @@ public class Users implements Listener {
 	}
 
 	public boolean demote(String playername) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 		YamlConfiguration rankYaml = new YamlConfiguration();
@@ -779,6 +805,9 @@ public class Users implements Listener {
 					String rankname = rankYaml.getString("Groups." + rank + ".level.demote");
 					if (rankYaml.get("Groups." + rankname) != null && rankname.length() > 0) {
 						this.setGroup(player, rankname, false);
+						if (CachedConfig.getBoolean("announcements.demote.enabled")) {
+							Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.demote.format").replace("[player]", playername).replace("[rank]", rankname).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+						}
 
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
@@ -809,6 +838,9 @@ public class Users implements Listener {
 							return false;
 
 						this.setGroup(player, rankname, false);
+						if (CachedConfig.getBoolean("announcements.demote.enabled")) {
+							Bukkit.broadcastMessage(PowerRanks.chatColor(CachedConfig.getString("announcements.demote.format").replace("[player]", playername).replace("[rank]", rankname).replace("[powerranks_prefix]", langYaml.getString("general.prefix").replace("%plugin_name%", PowerRanks.pdf.getName())), true));
+						}
 
 						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
@@ -1027,6 +1059,24 @@ public class Users implements Listener {
 	public String getSuffix(Player player) {
 		String suffix = "";
 		String rank = getGroup(player);
+
+		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
+		final YamlConfiguration rankYaml = new YamlConfiguration();
+
+		try {
+			rankYaml.load(rankFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		suffix = (rankYaml.getString("Groups." + rank + ".chat.suffix") != null) ? rankYaml.getString("Groups." + rank + ".chat.suffix") : "";
+
+		return suffix;
+	}
+	
+	public String getSuffix(String rank) {
+		String suffix = "";
+		rank = this.getRankIgnoreCase(rank);
 
 		final File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
 		final YamlConfiguration rankYaml = new YamlConfiguration();

@@ -110,7 +110,7 @@ public class Messages {
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 //			sender.sendMessage(ChatColor.DARK_AQUA + "Page: " + page + "[<] [>]");
 
-			String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + page
+			String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
 					+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
 					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
 					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
@@ -153,6 +153,72 @@ public class Messages {
 			}
 			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
+	}
+	
+	public static void listRankPermissions(CommandSender sender, Users users, String rank_name, int page) {
+		List<String> lines = (List<String>) users.getPermissions(rank_name);
+		int lines_per_page = 10;
+		
+		if (page < 0)
+			page = 0;
+		
+		if (page > lines.size() / lines_per_page)
+			page = lines.size() / lines_per_page;
+		
+		String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
+				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page - 1)
+				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page - 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page - 1)
+				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page + 1)
+				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page + 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page + 1) + "\"}}]";
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + "Permissions of " + ChatColor.BLUE + rank_name + ChatColor.DARK_AQUA + "--------");
+		if (Messages.powerRanks != null)
+			Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+		
+		for (int i = 0; i < lines_per_page; i++) {
+			if (lines_per_page * page + i < lines.size()) {
+				String permission = lines.get(lines_per_page * page + i);
+				if (permission.length() > 0)
+					sender.sendMessage((permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+			}
+		}
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
+	
+	public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
+		List<String> lines = (List<String>) users.getPlayerPermissions(target_player);
+		int lines_per_page = 10;
+		
+		if (page < 0)
+			page = 0;
+		
+		if (page > lines.size() / lines_per_page)
+			page = lines.size() / lines_per_page;
+		
+		String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
+				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page - 1)
+				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page - 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page - 1)
+				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page + 1)
+				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page + 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page + 1) + "\"}}]";
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + "Permissions of " + ChatColor.BLUE + target_player + ChatColor.DARK_AQUA + "--------");
+		if (Messages.powerRanks != null)
+			Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+		
+		for (int i = 0; i < lines_per_page; i++) {
+			if (lines_per_page * page + i < lines.size()) {
+				String permission = lines.get(lines_per_page * page + i);
+				if (permission.length() > 0)
+					sender.sendMessage((permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+			}
+		}
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void checkVerbose(CommandSender sender) {

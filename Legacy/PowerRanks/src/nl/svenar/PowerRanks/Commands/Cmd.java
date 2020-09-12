@@ -159,19 +159,21 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("listpermissions")) {
+					String rank_name = "";
+
 					if (sender.hasPermission("powerranks.cmd.listpermissions")) {
 						if (args.length == 2) {
-							if (s.getGroups().contains(s.getRankIgnoreCase(args[1]))) {
-								List<String> permissions = s.getPermissions(s.getRankIgnoreCase(args[1]));
-								sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-								sender.sendMessage(ChatColor.DARK_GREEN + "Permissions of rank: " + ChatColor.GREEN + s.getRankIgnoreCase(args[1]));
-								sender.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
-								int index = 0;
-								for (String permission : permissions) {
-									index++;
-									sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
-								}
-								sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+							rank_name = s.getRankIgnoreCase(args[1]);
+							if (s.getGroups().contains(rank_name)) {
+								Messages.listRankPermissions(sender, s, rank_name, 0);
+							} else {
+								Messages.messageGroupNotFound(player, args[1]);
+							}
+						} else if (args.length == 3) {
+							rank_name = s.getRankIgnoreCase(args[1]);
+							if (s.getGroups().contains(rank_name)) {
+								int page = Integer.parseInt(args[2].replaceAll("[a-zA-Z]", ""));
+								Messages.listRankPermissions(sender, s, rank_name, page);
 							} else {
 								Messages.messageGroupNotFound(player, args[1]);
 							}
@@ -185,20 +187,20 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("listplayerpermissions")) {
 					if (sender.hasPermission("powerranks.cmd.listplayerpermissions")) {
 						if (args.length == 2) {
-//							if (s.getPlayerNames().contains(s.getRankIgnoreCase(args[1]))) {
-							List<String> permissions = s.getPlayerPermissions(args[1]);
-							sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-							sender.sendMessage(ChatColor.DARK_GREEN + "Permissions of player: " + ChatColor.GREEN + args[1]);
-							sender.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
-							int index = 0;
-							for (String permission : permissions) {
-								index++;
-								sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+							String player_name = s.getRankIgnoreCase(args[1]);
+							if (s.getPlayerNames().contains(player_name)) {
+								Messages.listPlayerPermissions(sender, s, player_name, 0);
+							} else {
+								Messages.messagePlayerNotFound(player, args[1]);
 							}
-							sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
-//							} else {
-//								Messages.messagePlayerNotFound(player, args[1]);
-//							}
+						} else if (args.length == 3) {
+							String player_name = s.getRankIgnoreCase(args[1]);
+							if (s.getPlayerNames().contains(player_name)) {
+								int page = Integer.parseInt(args[2].replaceAll("[a-zA-Z]", ""));
+								Messages.listPlayerPermissions(sender, s, player_name, page);
+							} else {
+								Messages.messagePlayerNotFound(player, args[1]);
+							}
 						} else {
 							Messages.messageCommandUsageListPlayerPermissions(player);
 						}
@@ -857,7 +859,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("removeusertag")) {
 					if (!PowerRanks.plugin_hook_deluxetags) {
 						if (sender.hasPermission("powerranks.cmd.removeusertag")) {
-							if (args.length == 3) {
+							if (args.length == 2) {
 								final String tag = args[1];
 								final boolean result = s.removeUserTag(tag);
 								if (result) {
@@ -1441,7 +1443,7 @@ public class Cmd implements CommandExecutor {
 								prefix += args[i] + " ";
 							}
 							prefix = prefix.substring(0, prefix.length() - 1);
-							
+
 							final boolean result = s.setPrefix(rank2, prefix);
 							if (result) {
 								Messages.messageCommandSetPrefix(console, prefix, rank2);
@@ -1732,7 +1734,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("removeusertag")) {
 					if (!PowerRanks.plugin_hook_deluxetags) {
-						if (args.length == 3) {
+						if (args.length == 2) {
 							final String tag = args[1];
 							final boolean result = s.removeUserTag(tag);
 							if (result) {
