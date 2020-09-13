@@ -19,6 +19,7 @@ public class CachedRanks {
 	private static HashMap<String, String> ranks_strings = new HashMap<String, String>();
 	private static HashMap<String, List<String>> ranks_string_lists = new HashMap<String, List<String>>();
 	private static HashMap<String, Boolean> ranks_booleans = new HashMap<String, Boolean>();
+	private static HashMap<String, Integer> ranks_ints = new HashMap<String, Integer>();
 	
 	public CachedRanks(PowerRanks pr) {
 		update();
@@ -33,6 +34,7 @@ public class CachedRanks {
 		ranks_strings.clear();
 		ranks_string_lists.clear();
 		ranks_booleans.clear();
+		ranks_ints.clear();
 		
 		try {
 			ranksYaml.load(ranksFile);
@@ -47,6 +49,8 @@ public class CachedRanks {
 					ranks_string_lists.put(field, ranksYaml.getStringList(field));
 				} else if (ranksYaml.isBoolean(field)) {
 					ranks_booleans.put(field, ranksYaml.getBoolean(field));
+				} else if (ranksYaml.isInt(field)) {
+					ranks_ints.put(field, ranksYaml.getInt(field));
 				}
 			}
 		} catch (IOException | InvalidConfigurationException e) {
@@ -91,5 +95,9 @@ public class CachedRanks {
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static int getInt(String field) {
+		return ranks_ints.get(field);
 	}
 }

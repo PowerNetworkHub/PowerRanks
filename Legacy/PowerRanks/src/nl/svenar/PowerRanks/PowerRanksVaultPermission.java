@@ -1,6 +1,5 @@
 package nl.svenar.PowerRanks;
 
-
 import java.util.ArrayList;
 
 import org.bukkit.OfflinePlayer;
@@ -51,7 +50,6 @@ public class PowerRanksVaultPermission extends Permission {
 	public boolean hasGroupSupport() {
 		return true;
 	}
-
 
 //	String[] getGroup(String name) {
 //		return null;
@@ -157,8 +155,10 @@ public class PowerRanksVaultPermission extends Permission {
 		ArrayList<String> groups = new ArrayList<String>();
 		groups.add(CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
 		ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
-		for (String subrank : subranks.getKeys(false)) {
-			groups.add(subrank);
+		if (subranks != null) {
+			for (String subrank : subranks.getKeys(false)) {
+				groups.add(subrank);
+			}
 		}
 		return (String[]) groups.toArray();
 	}
