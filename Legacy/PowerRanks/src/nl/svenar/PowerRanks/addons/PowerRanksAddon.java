@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.World;
 
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 
 public abstract class PowerRanksAddon {
@@ -70,7 +71,10 @@ public abstract class PowerRanksAddon {
 	public abstract String minimalPowerRanksVersion();
 
 	// This function is called once on add-on load
-	public abstract void setup();
+	public void setup(PowerRanks powerranks) {}
+
+	// This function is called once on add-on load
+	public void setup() {}
 
 	// Called when a player joins the server
 	public void onPlayerJoin(PowerRanksPlayer prPlayer) {
