@@ -24,5 +24,13 @@ Bukkit > The new PowerRanks v2.0 version for Bukkit
 
 Bungee > The new PowerRanks v2.0 version for BungeeCord
 
+## Support me
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z314C2H)
+
+## Quick Links
+- [PowerRanks](https://svenar.nl/powerranks)
+- [PowerRanks Web Editor](https://powerrankseditor.svenar.nl)
+- [Buy me a coffee](https://ko-fi.com/Z8Z314C2H)
+
 ## License
 GPL V3
