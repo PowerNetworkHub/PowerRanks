@@ -482,7 +482,11 @@ public class Cmd implements CommandExecutor {
 							}
 						} else if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final String prefix = args[2];
+							String prefix = "";
+							for (int i = 2; i < args.length; i++) {
+								prefix += args[i] + " ";
+							}
+							prefix = prefix.substring(0, prefix.length() - 1);
 							final boolean result = s.setPrefix(rank2, prefix);
 							if (result) {
 								Messages.messageCommandSetPrefix(player, prefix, rank2);
@@ -1426,7 +1430,6 @@ public class Cmd implements CommandExecutor {
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String prefix = "";
@@ -1453,9 +1456,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageSetPrefix(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String suffix = "";
@@ -1481,9 +1482,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageSetSuffix(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
@@ -1496,9 +1495,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageSetChatColor(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 3) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final String color = args[2];
@@ -1511,9 +1508,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageSetNameColor(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("createrank")) {
-					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.createRank(rank2);
@@ -1525,9 +1520,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageCreateRank(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
-					if (sender.hasPermission("powerranks.cmd.create")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.deleteRank(rank2);
@@ -1539,9 +1532,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageDeleteRank(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.setBuild(rank2, true);
@@ -1553,7 +1544,6 @@ public class Cmd implements CommandExecutor {
 						} else {
 							Messages.messageCommandUsageEnableBuild(console);
 						}
-					}
 				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
 					if (args.length == 2) {
 						final String rank2 = s.getRankIgnoreCase(args[1]);
