@@ -26,4 +26,4 @@ Bukkit > The new PowerRanks v2.0 version for Bukkit
 Bungee > The new PowerRanks v2.0 version for BungeeCord
 
 ## License
-All Rights Reserved unless otherwise explicitly stated.
+GPL V3
