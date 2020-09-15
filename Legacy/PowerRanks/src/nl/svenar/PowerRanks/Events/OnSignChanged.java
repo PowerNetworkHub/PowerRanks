@@ -23,7 +23,7 @@ public class OnSignChanged implements Listener {
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		if (Util.isPowerRanksSign(this.m, event.getLine(0))) {
-			if (event.getPlayer().hasPermission("powerranks.cmd.admin")) {
+			if (event.getPlayer().hasPermission("powerranks.signs.create")) {
 				event.setLine(0, PowerRanks.chatColor(Util.replaceAll(CachedConfig.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
 
 				final Users s = new Users(this.m);
@@ -31,9 +31,9 @@ public class OnSignChanged implements Listener {
 				String sign_argument = event.getLine(2);
 				String sign_argument2 = event.getLine(3);
 
-				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("check") || sign_command.equalsIgnoreCase("gui")) {
+				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("checkrank") || sign_command.equalsIgnoreCase("gui")) {
 					Messages.messageSignCreated(event.getPlayer());
-				} else if (sign_command.equalsIgnoreCase("set")) {
+				} else if (sign_command.equalsIgnoreCase("setrank")) {
 					Set<String> ranks = s.getGroups();
 					boolean rank_exists = false;
 					for (String rank : ranks) {

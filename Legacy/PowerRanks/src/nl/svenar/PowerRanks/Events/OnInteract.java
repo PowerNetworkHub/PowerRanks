@@ -47,7 +47,7 @@ public class OnInteract implements Listener {
 
 		if (!sign_error) {
 			if (sign_command.equalsIgnoreCase("promote")) {
-				if (player.hasPermission("powerranks.signs.set")) {
+				if (player.hasPermission("powerranks.signs.promote")) {
 					if (s.promote(player.getName()))
 						Messages.messageCommandPromoteSuccess(player, player.getName());
 					else
@@ -56,7 +56,7 @@ public class OnInteract implements Listener {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("demote")) {
-				if (player.hasPermission("powerranks.signs.set")) {
+				if (player.hasPermission("powerranks.signs.demote")) {
 					if (s.demote(player.getName()))
 						Messages.messageCommandDemoteSuccess(player, player.getName());
 					else
@@ -64,20 +64,20 @@ public class OnInteract implements Listener {
 				} else {
 					Messages.noPermission(player);
 				}
-			} else if (sign_command.equalsIgnoreCase("set")) {
-				if (player.hasPermission("powerranks.signs.set")) {
+			} else if (sign_command.equalsIgnoreCase("setrank")) {
+				if (player.hasPermission("powerranks.signs.setrank")) {
 					s.setGroup(player, s.getRankIgnoreCase(sign_argument), true);
 				} else {
 					Messages.noPermission(player);
 				}
-			} else if (sign_command.equalsIgnoreCase("check")) {
+			} else if (sign_command.equalsIgnoreCase("checkrank")) {
 				if (player.hasPermission("powerranks.signs.check")) {
 					s.getGroup(player.getName(), player.getName());
 				} else {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("gui")) {
-				if (player.hasPermission("powerranks.signs.admin")) {
+				if (player.hasPermission("powerranks.signs.gui")) {
 					GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 				} else {
 					Messages.noPermission(player);
