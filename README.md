@@ -1,6 +1,5 @@
 ![alt text](https://proxy.spigotmc.org/c0f941cde717bdb8139f35f5025a0bcb56915a6b?url=https%3A%2F%2Fi.imgur.com%2FAZ9f73n.png "Logo")
 
-# PowerRanks
 [![WebEditor](https://img.shields.io/badge/PowerRanks-WebEditor-blue)](https://powerrankseditor.svenar.nl/)
 [![Docs](https://img.shields.io/badge/PowerRanks-Docs-blue)](https://svenar.nl/powerranks/#information)
 [![Discord](https://img.shields.io/discord/710833982413209620?color=blue&label=Discord&style=flat)](https://discord.gg/rAgBHMB)
