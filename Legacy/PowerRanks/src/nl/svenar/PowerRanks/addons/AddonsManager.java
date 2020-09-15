@@ -14,9 +14,10 @@ public class AddonsManager {
 
 	public static HashMap<File, Boolean> loadedAddons = new HashMap<File, Boolean>(); // file_path, is_loaded
 	public HashMap<File, PowerRanksAddon> addonClasses = new HashMap<File, PowerRanksAddon>(); // file_path, PowerRanksAddon
+	private PowerRanks powerranks;
 
-	public AddonsManager() {
-
+	public AddonsManager(PowerRanks powerranks) {
+		this.powerranks = powerranks;
 	}
 
 	public void setup() {
@@ -59,6 +60,7 @@ public class AddonsManager {
 		for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
 			if (Util.calculateVersionFromString(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", "")) >= Util.calculateVersionFromString(prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", ""))) {
 				PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " v" + prAddon.getValue().getVersion() + " by: " + prAddon.getValue().getAuthor() + " loaded!");
+				prAddon.getValue().setup(this.powerranks);
 				prAddon.getValue().setup();
 			} else {
 				PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " requires PowerRanks v" + prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", "") + " or higher");
