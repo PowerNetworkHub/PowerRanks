@@ -14,6 +14,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.Instant;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import org.bukkit.entity.Player;
@@ -80,6 +81,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String fileLoc;
 	public static String langFileLoc;
 	public static String factoryresetid = null;
+	public static Instant powerranks_start_time = Instant.now();
 
 	// Soft Dependencies
 	public static boolean vaultEconomyEnabled = false;
@@ -130,6 +132,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
+
+		// TODO
+//		BungeeMessageListener bungee_message_listener = new BungeeMessageListener();
+//		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "powerranks:onjoin");
+//		this.getServer().getMessenger().registerIncomingPluginChannel(this, "powerranks:onjoin", (PluginMessageListener) bungee_message_listener);
 
 		new Messages(this);
 		new PowerRanksVerbose(this);
@@ -196,7 +203,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("----------------------");
 		PowerRanks.log.info("Loading add-ons");
-		addonsManager = new AddonsManager();
+		addonsManager = new AddonsManager(this);
 		addonsManager.setup();
 		PowerRanks.log.info("----------------------");
 
