@@ -708,6 +708,14 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("buyrank")) {
+					if (sender.hasPermission("powerranks.cmd.rankup")) {
+						// TODO: No arguments: show (clickable) list in chat with buyable ranks.
+						// TODO: One arguments: ask player for confirmation to buy rank(arg[1]), confirmation also clickable from chat?
+						// TODO: Two arguments: buy rank(arg[1]) if arg[2] is confirm 
+					} else {
+						Messages.noPermission(player);
+					}
 				} else if (args[0].equalsIgnoreCase("gui")) {
 					if (sender.hasPermission("powerranks.cmd.gui")) {
 //						GUI.openPowerRanksGUI(player, 0, "");
