@@ -99,6 +99,17 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "It is recommended to restart your server.");
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
+	
+	public static void messageCommandBuyrank(CommandSender sender, Users users) {
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.DARK_GREEN + "Ranks available to buy (click to buy):");
+		List<String> ranks = users.getBuyableRanks(users.getGroup((Player) sender));
+		for (String rank : ranks) {
+			int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
+			sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GREEN + "Buy" + ChatColor.BLACK + "] " + ChatColor.RESET + rank + " | Cost: " + String.valueOf(cost)); // TODO: Make [Buy] clickable
+		}
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
 
 	public static void helpMenu(final Player player) {
 		helpMenu(player, 0);
