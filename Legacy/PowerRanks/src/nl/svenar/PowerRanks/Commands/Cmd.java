@@ -710,6 +710,7 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("buyrank")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
+						Messages.messageCommandBuyrank(sender, s);
 						// TODO: No arguments: show (clickable) list in chat with buyable ranks.
 						// TODO: One arguments: ask player for confirmation to buy rank(arg[1]), confirmation also clickable from chat?
 						// TODO: Two arguments: buy rank(arg[1]) if arg[2] is confirm 
