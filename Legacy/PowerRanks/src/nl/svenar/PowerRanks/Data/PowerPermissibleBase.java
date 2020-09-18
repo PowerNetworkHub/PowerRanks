@@ -9,6 +9,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import nl.svenar.PowerRanks.PowerRanks;
 
@@ -17,6 +18,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 	private Permissible oldPermissible = new PermissibleBase(null);
 	private PowerRanks plugin;
 	private Player player;
+	private boolean doRecalculatePermissions = false;
 
 	public PowerPermissibleBase(Player player, PowerRanks main) {
 		super(player);
@@ -123,9 +125,20 @@ public class PowerPermissibleBase extends PermissibleBase {
 			return;
 		}
 
-		oldPermissible.recalculatePermissions();
-
-		PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated");
+		if (!doRecalculatePermissions) {
+			doRecalculatePermissions = true;
+			BukkitScheduler scheduler = plugin.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+				@Override
+				public void run() {
+					oldPermissible.recalculatePermissions();
+					doRecalculatePermissions = false;
+					PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated");
+				}
+			}, 20L);
+		} else {
+			PowerRanksVerbose.log("recalculatePermissions", "Already in queue");
+		}
 	}
 
 	@Override
