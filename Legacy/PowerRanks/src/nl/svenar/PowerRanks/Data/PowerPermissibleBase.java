@@ -122,6 +122,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 	public void recalculatePermissions() {
 		if (oldPermissible == null) {
 			super.recalculatePermissions();
+			if (player != null)
+				player.updateCommands();
 			return;
 		}
 
@@ -132,6 +134,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 				@Override
 				public void run() {
 					oldPermissible.recalculatePermissions();
+					if (player != null)
+						player.updateCommands();
 					doRecalculatePermissions = false;
 					PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated");
 				}
