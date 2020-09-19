@@ -18,6 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
@@ -710,15 +711,38 @@ public class Cmd implements CommandExecutor {
 					}
 				} else if (args[0].equalsIgnoreCase("buyrank")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
-						// TODO: No arguments: show (clickable) list in chat with buyable ranks.
-						// TODO: One arguments: ask player for confirmation to buy rank(arg[1]), confirmation also clickable from chat?
-						// TODO: Two arguments: buy rank(arg[1]) if arg[2] is confirm 
+						if (PowerRanks.vaultEconomyEnabled) {
+							if (args.length == 1) {
+								Messages.messageCommandBuyrank(sender, s, null);
+							} else if (args.length == 2) {
+								final String rankname = s.getRankIgnoreCase(args[1]);
+								Messages.messageCommandBuyrank(sender, s, rankname);
+							} else if (args.length == 3) {
+								final String rankname = s.getRankIgnoreCase(args[1]);
+								final boolean confirm = args[2].equalsIgnoreCase("confirm");
+								
+								if (confirm) {
+									int cost = s.getRanksConfigFieldInt(rankname, "economy.cost");
+									double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance(player) : 0;
+									if (cost >= 0 && player_balance >= cost) {
+										VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
+										s.setGroup(player, rankname, true);
+										Messages.messageBuyRankSuccess(player, rankname);
+									} else {
+										Messages.messageBuyRankError(player, rankname);
+									}
+								}
+							} else {
+								Messages.messageCommandUsageBuyrank(player);
+							}
+						} else {
+							Messages.messageBuyRankNotAvailable(player);
+						}
 					} else {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("gui")) {
 					if (sender.hasPermission("powerranks.cmd.gui")) {
-//						GUI.openPowerRanksGUI(player, 0, "");
 						GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 					} else {
 						Messages.noPermission(player);
@@ -726,7 +750,6 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("rankup")) {
 					if (sender.hasPermission("powerranks.cmd.rankup")) {
 						if (PowerRanks.vaultEconomyEnabled)
-//							GUI.openPowerRanksRankupGUI(player, 0);
 							GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
 						else
 							Messages.messageBuyRankNotAvailable(player);
@@ -1438,120 +1461,120 @@ public class Cmd implements CommandExecutor {
 						}
 					}
 				} else if (args[0].equalsIgnoreCase("setprefix")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final String prefix = "";
-							final boolean result = s.setPrefix(rank2, prefix);
-							if (result) {
-								Messages.messageCommandSetPrefix(console, prefix, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else if (args.length >= 3) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							String prefix = "";
-							for (int i = 2; i < args.length; i++) {
-								prefix += args[i] + " ";
-							}
-							prefix = prefix.substring(0, prefix.length() - 1);
+					if (args.length == 2) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String prefix = "";
+						final boolean result = s.setPrefix(rank2, prefix);
+						if (result) {
+							Messages.messageCommandSetPrefix(console, prefix, rank2);
+						} else {
+							Messages.messageGroupNotFound(console, rank2);
+						}
+					} else if (args.length >= 3) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						String prefix = "";
+						for (int i = 2; i < args.length; i++) {
+							prefix += args[i] + " ";
+						}
+						prefix = prefix.substring(0, prefix.length() - 1);
 
-							final boolean result = s.setPrefix(rank2, prefix);
-							if (result) {
-								Messages.messageCommandSetPrefix(console, prefix, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
+						final boolean result = s.setPrefix(rank2, prefix);
+						if (result) {
+							Messages.messageCommandSetPrefix(console, prefix, rank2);
 						} else {
-							Messages.messageCommandUsageSetPrefix(console);
+							Messages.messageGroupNotFound(console, rank2);
 						}
+					} else {
+						Messages.messageCommandUsageSetPrefix(console);
+					}
 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final String suffix = "";
-							final boolean result = s.setSuffix(rank2, suffix);
-							if (result) {
-								Messages.messageCommandSetSuffix(console, suffix, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
-						} else if (args.length >= 3) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							String suffix = "";
-							for (int i = 2; i < args.length; i++) {
-								suffix += args[i] + " ";
-							}
-							suffix = suffix.substring(0, suffix.length() - 1);
-							final boolean result = s.setSuffix(rank2, suffix);
-							if (result) {
-								Messages.messageCommandSetSuffix(console, suffix, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
+					if (args.length == 2) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String suffix = "";
+						final boolean result = s.setSuffix(rank2, suffix);
+						if (result) {
+							Messages.messageCommandSetSuffix(console, suffix, rank2);
 						} else {
-							Messages.messageCommandUsageSetSuffix(console);
+							Messages.messageGroupNotFound(console, rank2);
 						}
+					} else if (args.length >= 3) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						String suffix = "";
+						for (int i = 2; i < args.length; i++) {
+							suffix += args[i] + " ";
+						}
+						suffix = suffix.substring(0, suffix.length() - 1);
+						final boolean result = s.setSuffix(rank2, suffix);
+						if (result) {
+							Messages.messageCommandSetSuffix(console, suffix, rank2);
+						} else {
+							Messages.messageGroupNotFound(console, rank2);
+						}
+					} else {
+						Messages.messageCommandUsageSetSuffix(console);
+					}
 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
-						if (args.length == 3) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final String color = args[2];
-							final boolean result = s.setChatColor(rank2, color);
-							if (result) {
-								Messages.messageCommandSetChatColor(console, color, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
+					if (args.length == 3) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String color = args[2];
+						final boolean result = s.setChatColor(rank2, color);
+						if (result) {
+							Messages.messageCommandSetChatColor(console, color, rank2);
 						} else {
-							Messages.messageCommandUsageSetChatColor(console);
+							Messages.messageGroupNotFound(console, rank2);
 						}
+					} else {
+						Messages.messageCommandUsageSetChatColor(console);
+					}
 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
-						if (args.length == 3) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final String color = args[2];
-							final boolean result = s.setNameColor(rank2, color);
-							if (result) {
-								Messages.messageCommandSetNameColor(console, color, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
+					if (args.length == 3) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final String color = args[2];
+						final boolean result = s.setNameColor(rank2, color);
+						if (result) {
+							Messages.messageCommandSetNameColor(console, color, rank2);
 						} else {
-							Messages.messageCommandUsageSetNameColor(console);
+							Messages.messageGroupNotFound(console, rank2);
 						}
+					} else {
+						Messages.messageCommandUsageSetNameColor(console);
+					}
 				} else if (args[0].equalsIgnoreCase("createrank")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.createRank(rank2);
-							if (success) {
-								Messages.messageCommandCreateRankSuccess(console, rank2);
-							} else {
-								Messages.messageCommandCreateRankError(console, rank2);
-							}
+					if (args.length == 2) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final boolean success = s.createRank(rank2);
+						if (success) {
+							Messages.messageCommandCreateRankSuccess(console, rank2);
 						} else {
-							Messages.messageCommandUsageCreateRank(console);
+							Messages.messageCommandCreateRankError(console, rank2);
 						}
+					} else {
+						Messages.messageCommandUsageCreateRank(console);
+					}
 				} else if (args[0].equalsIgnoreCase("deleterank")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.deleteRank(rank2);
-							if (success) {
-								Messages.messageCommandDeleteRankSuccess(console, rank2);
-							} else {
-								Messages.messageCommandDeleteRankError(console, rank2);
-							}
+					if (args.length == 2) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final boolean success = s.deleteRank(rank2);
+						if (success) {
+							Messages.messageCommandDeleteRankSuccess(console, rank2);
 						} else {
-							Messages.messageCommandUsageDeleteRank(console);
+							Messages.messageCommandDeleteRankError(console, rank2);
 						}
+					} else {
+						Messages.messageCommandUsageDeleteRank(console);
+					}
 				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.setBuild(rank2, true);
-							if (success) {
-								Messages.messageCommandBuildEnabled(console, rank2);
-							} else {
-								Messages.messageGroupNotFound(console, rank2);
-							}
+					if (args.length == 2) {
+						final String rank2 = s.getRankIgnoreCase(args[1]);
+						final boolean success = s.setBuild(rank2, true);
+						if (success) {
+							Messages.messageCommandBuildEnabled(console, rank2);
 						} else {
-							Messages.messageCommandUsageEnableBuild(console);
+							Messages.messageGroupNotFound(console, rank2);
 						}
+					} else {
+						Messages.messageCommandUsageEnableBuild(console);
+					}
 				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
 					if (args.length == 2) {
 						final String rank2 = s.getRankIgnoreCase(args[1]);

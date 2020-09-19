@@ -17,8 +17,8 @@ public class PowerRanksChatColor {
 
 	public static String colorize(String text, boolean special) {
 		String output = "";
-
-		if (text.charAt(0) != unformatted_char) {
+		
+		if (text.length() == 0 || text.charAt(0) != unformatted_char) {
 			text = unformatted_char + "r" + text;
 		}
 

@@ -91,7 +91,7 @@ public class OnInteract implements Listener {
 							if (sign_argument2.length() > 0) {
 								Users users = new Users(this.m);
 								int cost = Integer.parseInt(sign_argument2);
-								double player_balance = VaultHook.getVaultEconomy().getBalance(player);
+								double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance(player) : 0;
 								if (cost >= 0 && player_balance >= cost) {
 									VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 									users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
