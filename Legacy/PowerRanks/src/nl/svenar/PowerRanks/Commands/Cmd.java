@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.craftbukkit.v1_15_R1.command.CraftBlockCommandSender;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -1945,7 +1945,7 @@ public class Cmd implements CommandExecutor {
 						Messages.unknownCommand(console);
 				}
 			}
-		} else if (sender instanceof CraftBlockCommandSender) { // TODO nothing todo just easy navigation
+		} else if (sender instanceof BlockCommandSender) { // TODO nothing todo just easy navigation
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
 				} else if (args[0].equalsIgnoreCase("reload")) {
