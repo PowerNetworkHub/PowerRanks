@@ -158,11 +158,11 @@ public class PowerRanksConfig {
 		YamlConfiguration config = loadConfigFile();
 		return config != null ? config.isList(field) : null;
 	}
-	
-	public boolean isLocation(String field) {
-		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isLocation(field) : null;
-	}
+
+//	public boolean isLocation(String field) {
+//		YamlConfiguration config = loadConfigFile();
+//		return config != null ? config.isLocation(field) : null;
+//	}
 	
 	public boolean isLong(String field) {
 		YamlConfiguration config = loadConfigFile();
