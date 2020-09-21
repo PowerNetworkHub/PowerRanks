@@ -132,6 +132,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
+		
+		new PowerRanksChatColor();
 
 		// TODO
 //		BungeeMessageListener bungee_message_listener = new BungeeMessageListener();
@@ -923,7 +925,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			if (PowerRanks.placeholderapiExpansion != null) {
-				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
 			}
 			format = PowerRanks.chatColor(format, true);
 
@@ -960,7 +962,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			if (PowerRanks.placeholderapiExpansion != null) {
-				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
 			}
 			format = PowerRanks.chatColor(format, true);
 

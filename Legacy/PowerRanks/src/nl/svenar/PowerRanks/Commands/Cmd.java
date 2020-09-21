@@ -7,12 +7,13 @@ import java.util.Map.Entry;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.craftbukkit.v1_15_R1.command.CraftBlockCommandSender;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
@@ -720,7 +721,7 @@ public class Cmd implements CommandExecutor {
 							} else if (args.length == 3) {
 								final String rankname = s.getRankIgnoreCase(args[1]);
 								final boolean confirm = args[2].equalsIgnoreCase("confirm");
-								
+
 								if (confirm) {
 									int cost = s.getRanksConfigFieldInt(rankname, "economy.cost");
 									double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance(player) : 0;
@@ -1945,7 +1946,7 @@ public class Cmd implements CommandExecutor {
 						Messages.unknownCommand(console);
 				}
 			}
-		} else if (sender instanceof CraftBlockCommandSender) { // TODO nothing todo just easy navigation
+		} else if (sender instanceof BlockCommandSender) { // TODO nothing todo just easy navigation
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
 				} else if (args[0].equalsIgnoreCase("reload")) {

@@ -1,5 +1,5 @@
 name: PowerRanks
-version: 1.7
+version: 1.8 BETA
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]

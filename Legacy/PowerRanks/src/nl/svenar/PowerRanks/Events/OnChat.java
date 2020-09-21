@@ -127,7 +127,7 @@ public class OnChat implements Listener {
 						'[', ']');
 				
 				if (PowerRanks.placeholderapiExpansion != null) {
-					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_char);
+					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
 				}
 				format = PowerRanks.chatColor(format, true);
 
