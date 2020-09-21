@@ -6,7 +6,7 @@
 
     <groupId>nl.svenar</groupId>
     <artifactId>PowerRanks</artifactId>
-    <version>1.7</version>
+    <version>1.8</version>
     <packaging>jar</packaging>
 
     <name>PowerRanks</name>
