@@ -132,7 +132,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
-		
+
 		new PowerRanksChatColor();
 
 		// TODO
@@ -1018,6 +1018,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			if (users.getGroup(p).equalsIgnoreCase(rank)) {
 				updateTablistName(p);
 			}
+		}
+	}
+
+	public void updateAllPlayersTABlist() {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			updateTablistName(p);
 		}
 	}
 

@@ -20,6 +20,9 @@ import org.bukkit.command.CommandExecutor;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.VaultHook;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
+import nl.svenar.PowerRanks.Cache.CachedPlayers;
+import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
@@ -66,7 +69,11 @@ public class Cmd implements CommandExecutor {
 					} else if (sender.hasPermission("powerranks.cmd.reload")) {
 						if (args[1].equalsIgnoreCase("config")) {
 							Messages.messageCommandReloadConfig(player);
-							this.m.reloadConfig();
+//							this.m.reloadConfig();
+							CachedConfig.update();
+							CachedRanks.update();
+							CachedPlayers.update();
+							this.m.updateAllPlayersTABlist();
 							Messages.messageCommandReloadConfigDone(player);
 						} else if (args[1].equalsIgnoreCase("plugin")) {
 							Messages.messageCommandReloadPlugin(player);
@@ -83,7 +90,10 @@ public class Cmd implements CommandExecutor {
 							plg.enablePlugin(plgname);
 							Messages.messageCommandReloadPluginDone(player);
 							Messages.messageCommandReloadConfig(player);
-							this.m.reloadConfig();
+							CachedConfig.update();
+							CachedRanks.update();
+							CachedPlayers.update();
+							this.m.updateAllPlayersTABlist();
 							Messages.messageCommandReloadConfigDone(player);
 						} else {
 							Messages.messageCommandUsageReload(player);
