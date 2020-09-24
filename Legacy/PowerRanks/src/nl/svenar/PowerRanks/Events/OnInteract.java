@@ -71,7 +71,7 @@ public class OnInteract implements Listener {
 					Messages.noPermission(player);
 				}
 			} else if (sign_command.equalsIgnoreCase("checkrank")) {
-				if (player.hasPermission("powerranks.signs.check")) {
+				if (player.hasPermission("powerranks.signs.checkrank")) {
 					s.getGroup(player.getName(), player.getName());
 				} else {
 					Messages.noPermission(player);

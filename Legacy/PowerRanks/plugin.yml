@@ -12,76 +12,6 @@ commands:
   pr:
     description: Main Command
 permissions:
-  powerranks.cmd.admin:
-    default: false
-    children:
-      powerranks.cmd.help: true
-      powerranks.cmd.reload: true
-      powerranks.cmd.setrank: true
-      powerranks.cmd.setownrank: true
-      powerranks.cmd.listranks: true
-      powerranks.cmd.listsubranks: true
-      powerranks.cmd.listpermissions: true
-      powerranks.cmd.listplayerpermissions: true
-      powerranks.cmd.checkrank: true
-      powerranks.cmd.addperm: true
-      powerranks.cmd.delperm: true
-      powerranks.cmd.addsubrank: true
-      powerranks.cmd.delsubrank: true
-      powerranks.cmd.enablesubrankprefix: true
-      powerranks.cmd.disablesubrankprefix: true
-      powerranks.cmd.enablesubranksuffix: true
-      powerranks.cmd.disablesubranksuffix: true
-      powerranks.cmd.enablesubrankpermissions: true
-      powerranks.cmd.disablesubrankpermissions: true
-      powerranks.cmd.addsubrankworld: true
-      powerranks.cmd.delsubrankworld: true
-      powerranks.cmd.addinheritance: true
-      powerranks.cmd.delinheritance: true
-      powerranks.cmd.setprefix: true
-      powerranks.cmd.setsuffix: true
-      powerranks.cmd.setchatcolor: true
-      powerranks.cmd.setnamecolor: true
-      powerranks.cmd.createrank: true
-      powerranks.cmd.deleterank: true
-      powerranks.cmd.enablebuild: true
-      powerranks.cmd.disablebuild: true
-      powerranks.cmd.promote: true
-      powerranks.cmd.demote: true
-      powerranks.cmd.renamerank: true
-      powerranks.cmd.setdefaultrank: true
-      powerranks.cmd.factoryreset: true
-      powerranks.cmd.gui: true
-      powerranks.cmd.rankup: true
-      powerranks.cmd.stats: true
-      powerranks.cmd.addbuyablerank: true
-      powerranks.cmd.delbuyablerank: true
-      powerranks.cmd.setbuycost: true
-      powerranks.cmd.addplayerperm: true
-      powerranks.cmd.delplayerperm: true
-      powerranks.cmd.createusertag: true
-      powerranks.cmd.editusertag: true
-      powerranks.cmd.removeusertag: true
-      powerranks.cmd.setusertag.player: true
-      powerranks.cmd.setusertag.admin: true
-      powerranks.cmd.clearusertag.player: true
-      powerranks.cmd.clearusertag.admin: true
-      powerranks.cmd.listusertags: true
-      powerranks.cmd.setpromoterank: true
-      powerranks.cmd.setdemoterank: true
-      powerranks.cmd.clearpromoterank: true
-      powerranks.cmd.cleardemoterank: true
-      powerranks.cmd.addoninfo: true
-      powerranks.cmd.setguiicon: true
-      powerranks.cmd.verbose: true
-  powerranks.signs.*:
-    default: false
-    children:
-      powerranks.signs.create: true
-      powerranks.signs.set: true
-      powerranks.signs.check: true
-      powerranks.signs.rankup: true
-      powerranks.signs.admin: true
   powerranks.cmd.help:
     default: true
   powerranks.cmd.reload:
@@ -199,4 +129,20 @@ permissions:
   powerranks.cmd.setguiicon:
     default: op
   powerranks.cmd.verbose:
+    default: op
+  powerranks.signs.create:
+    default: op
+  powerranks.signs.promote:
+    default: op
+  powerranks.signs.demote:
+    default: op
+  powerranks.signs.setrank:
+    default: op
+  powerranks.signs.checkrank:
+    default: op
+  powerranks.signs.gui:
+    default: op
+  powerranks.signs.rankup:
+    default: op
+  powerranks.signs.admin:
     default: op
