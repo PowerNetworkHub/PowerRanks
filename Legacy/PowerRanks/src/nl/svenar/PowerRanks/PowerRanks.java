@@ -46,6 +46,7 @@ import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.PowerRanks.database.PowerDatabase;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.metrics.Metrics;
 import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
@@ -104,6 +105,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<Player, ArrayList<String>> playerAllowedPermissions = new HashMap<Player, ArrayList<String>>();
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
 	public Map<Player, Long> playerLoginTime = new HashMap<Player, Long>();
+	
+	private PowerDatabase prdb;
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -134,6 +137,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
 		new PowerRanksChatColor();
+		new PowerRanksExceptionsHandler(getDataFolder());
 
 		// TODO
 //		BungeeMessageListener bungee_message_listener = new BungeeMessageListener();
@@ -142,6 +146,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		new Messages(this);
 		new PowerRanksVerbose(this);
+		
+		if (handle_update_checking()) {
+			return;
+		}
+
+		ConfigFilesUpdater.updateConfigFiles(this);
 
 		this.createDir(PowerRanks.fileLoc);
 		this.configFile = new File(this.getDataFolder(), "config.yml");
@@ -160,14 +170,21 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.loadAllFiles();
 
 		new CachedConfig(this);
+		
+		// Database
+		prdb = new PowerDatabase(CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"), CachedConfig.getString("storage.database.password"), CachedConfig.getString("storage.database.database"));
+		if (CachedConfig.getString("storage.type").equalsIgnoreCase("mysql")) {
+			PowerRanks.log.info("Using storage type: MySQL");
+			prdb.connect();
+		} else if (CachedConfig.getString("storage.type").equalsIgnoreCase("yaml")) {
+			PowerRanks.log.info("Using storage type: YAML");
+		} else {
+			PowerRanks.log.severe("Unknown storage type: " + CachedConfig.getString("storage.type"));
+		}
+		// Database
+
 		new CachedPlayers(this);
 		new CachedRanks(this);
-
-		if (handle_update_checking()) {
-			return;
-		}
-
-		ConfigFilesUpdater.updateConfigFiles(this);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
