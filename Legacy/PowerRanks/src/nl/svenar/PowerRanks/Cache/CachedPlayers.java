@@ -150,6 +150,8 @@ public class CachedPlayers {
 				}
 			} else {
 				// TODO: Set field in DB
+				players_data.put(field, data);
+				PowerRanks.log.info("[CachedPlayers] set(3), field: '" + field + "' value: '" + data + "'");
 			}
 		}
 
@@ -177,6 +179,10 @@ public class CachedPlayers {
 			}
 		} else {
 			// TODO: Set field in DB
+			for (Entry<String, Object> kv : data.entrySet()) {
+				players_data.put(kv.getKey(), kv.getValue());
+				PowerRanks.log.info("[CachedPlayers] set(1), field: '" + kv.getKey() + "' value: '" + kv.getValue() + "'");
+			}
 		}
 	}
 

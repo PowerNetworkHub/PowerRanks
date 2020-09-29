@@ -199,14 +199,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		// Database
-		prdb = new PowerDatabase(currentStorageType, CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"), CachedConfig.getString("storage.database.password"),
+		prdb = new PowerDatabase(this, currentStorageType, CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"), CachedConfig.getString("storage.database.password"),
 				CachedConfig.getString("storage.database.database"));
+		
 		if (CachedConfig.getString("storage.type").equalsIgnoreCase("mysql")) {
-			prdb.connect();
-		} else if (CachedConfig.getString("storage.type").equalsIgnoreCase("yaml")) {
-			
-		} else {
-
+			prdb.connectMYSQL();
+		} else if (CachedConfig.getString("storage.type").equalsIgnoreCase("sqlite")) {
+			prdb.connectSQLITE();
 		}
 		// Database
 

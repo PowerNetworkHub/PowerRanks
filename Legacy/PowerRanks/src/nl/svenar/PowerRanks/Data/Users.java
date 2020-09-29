@@ -318,23 +318,10 @@ public class Users implements Listener {
 	}
 
 	public String getGroup(Player player) {
-//		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		YamlConfiguration playerYaml = new YamlConfiguration();
-//		String group = null;
-//		try {
-//			playerYaml.load(playerFile);
-//			group = playerYaml.getString("players." + player.getUniqueId() + ".rank");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return group;
 		return CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 	}
 
 	public String getGroup(String playername) {
-//		File playerFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-//		YamlConfiguration playerYaml = new YamlConfiguration();
-//		String group = null;
 		String uuid = "";
 		String group = null;
 		if (Bukkit.getServer().getPlayer(playername) != null)
@@ -376,16 +363,6 @@ public class Users implements Listener {
 
 	public Set<String> getGroups() {
 		return CachedRanks.getConfigurationSection("Groups") != null ? CachedRanks.getConfigurationSection("Groups").getKeys(false) : new HashSet<String>();
-//		ConfigurationSection ranks = null;
-//		File rankFile = new File(String.valueOf(PowerRanks.fileLoc) + "Ranks" + ".yml");
-//		YamlConfiguration rankYaml = new YamlConfiguration();
-//		try {
-//			rankYaml.load(rankFile);
-//			ranks = rankYaml.getConfigurationSection("Groups");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return ranks.getKeys(false);
 	}
 
 	public boolean addPermission(String rank, String permission) {

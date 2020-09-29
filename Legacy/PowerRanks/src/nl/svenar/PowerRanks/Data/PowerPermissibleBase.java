@@ -1,6 +1,5 @@
 package nl.svenar.PowerRanks.Data;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
