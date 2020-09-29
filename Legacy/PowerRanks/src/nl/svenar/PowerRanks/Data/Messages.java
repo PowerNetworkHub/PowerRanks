@@ -69,7 +69,7 @@ public class Messages {
 
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion());
-		sender.sendMessage(ChatColor.GREEN + "Bukkit version: " + Bukkit.getServer().getBukkitVersion());
+		sender.sendMessage(ChatColor.GREEN + "Bukkit version: " + ChatColor.DARK_GREEN + Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
 		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN + format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
 		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
