@@ -5,22 +5,23 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.bukkit.ChatColor;
-
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.PowerRanks.StorageType;
 import nl.svenar.PowerRanks.PowerRanksExceptionsHandler;
 
 public class PowerDatabase {
-	private Connection connection;
+	private Connection mysqlConnection;
 	private String host, database, username, password, table_users, table_ranks, table_usertags;
 	private int port;
+	private StorageType storageType;
 
-	public PowerDatabase(String host, int port, String username, String password, String database) {
+	public PowerDatabase(StorageType storageType, String host, int port, String username, String password, String database) {
 		this.host = host;
 		this.port = port;
 		this.database = database;
 		this.username = username;
 		this.password = password;
+		this.storageType = storageType;
 
 		this.table_users = "users";
 		this.table_ranks = "ranks";
@@ -28,31 +29,32 @@ public class PowerDatabase {
 	}
 
 	public boolean connect() {
-		try {
-			synchronized (this) {
-				if (getConnection() != null && !getConnection().isClosed()) {
-					return false;
+		if (storageType == StorageType.MySQL) {
+			try {
+				synchronized (this) {
+					if (getMYSQLConnection() != null && !getMYSQLConnection().isClosed()) {
+						return false;
+					}
+
+					Class.forName("com.mysql.jdbc.Driver");
+					this.mysqlConnection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port/* + "/" + this.database */ + "?autoReconnect=true&useSSL=false", this.username, this.password);
+
+					setupMYSQLDatabase();
+
+//					PowerRanks.log.info(ChatColor.GREEN + "MYSQL CONNECTED");
 				}
-
-				Class.forName("com.mysql.jdbc.Driver");
-				this.connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port/* + "/" + this.database */, this.username, this.password);
-
-				setupDatabase();
-
-				PowerRanks.log.info(ChatColor.GREEN + "MYSQL CONNECTED");
+			} catch (SQLException e) {
+				PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
+				return false;
+			} catch (ClassNotFoundException e) {
+				PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
+				return false;
 			}
-		} catch (SQLException e) {
-			PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
-			return false;
-		} catch (ClassNotFoundException e) {
-			PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
-			return false;
 		}
-
 		return true;
 	}
 
-	private void setupDatabase() throws SQLException {
+	private void setupMYSQLDatabase() throws SQLException {
 		String sql_create_database = "CREATE DATABASE " + this.database;
 
 		String sql_create_table_users = "CREATE TABLE `" + this.database + "`.`" + this.table_users
@@ -63,7 +65,7 @@ public class PowerDatabase {
 
 		String sql_create_table_usertags = "CREATE TABLE `" + this.database + "`.`" + this.table_usertags + "` ( `name` VARCHAR(32) NOT NULL , `value` VARCHAR(64) NOT NULL , UNIQUE `name` (`name`))";
 
-		ResultSet resultSet = this.connection.getMetaData().getCatalogs();
+		ResultSet resultSet = this.mysqlConnection.getMetaData().getCatalogs();
 		boolean exists = false;
 		while (resultSet.next()) {
 
@@ -77,34 +79,33 @@ public class PowerDatabase {
 
 		if (!exists) {
 			int result = -1;
-			result = this.connection.createStatement().executeUpdate(sql_create_database);
+			result = this.mysqlConnection.createStatement().executeUpdate(sql_create_database);
 
+			PowerRanks.log.info("===--------------------===");
 			if (result == 1) {
-				PowerRanks.log.info(ChatColor.GREEN + "Database: " + this.database + " created!");
+				PowerRanks.log.info("Database: " + this.database + " created!");
 
-				result = this.connection.createStatement().executeUpdate(sql_create_table_users);
-//				if (result == 1) {
-				PowerRanks.log.info(ChatColor.GREEN + "Table: " + this.table_users + " created!");
-//				}
+				result = this.mysqlConnection.createStatement().executeUpdate(sql_create_table_users);
+				PowerRanks.log.info("Table: " + this.table_users + " created! (status: " + result + ")");
 
-				result = this.connection.createStatement().executeUpdate(sql_create_table_ranks);
-//				if (result == 1) {
-				PowerRanks.log.info(ChatColor.GREEN + "Table: " + this.table_ranks + " created!");
-//				}
+				result = this.mysqlConnection.createStatement().executeUpdate(sql_create_table_ranks);
+				PowerRanks.log.info("Table: " + this.table_ranks + " created! (status: " + result + ")");
 
-				result = this.connection.createStatement().executeUpdate(sql_create_table_usertags);
-//				if (result == 1) {
-				PowerRanks.log.info(ChatColor.GREEN + "Table: " + this.table_usertags + " created!");
-//				}
+				result = this.mysqlConnection.createStatement().executeUpdate(sql_create_table_usertags);
+				PowerRanks.log.info("Table: " + this.table_usertags + " created! (status: " + result + ")");
 
 			} else {
-//				PowerRanks.log.warning(ChatColor.RED + "There was a error creating the database: " + this.database + " are the permissions set correctly?");
 				PowerRanksExceptionsHandler.exceptCustom(this.getClass().getName(), "There was a error creating the database: " + this.database + " are the permissions set correctly?");
 			}
+			PowerRanks.log.info("===--------------------===");
 		}
 	}
 
-	public Connection getConnection() {
-		return connection;
+	public Connection getMYSQLConnection() {
+		return mysqlConnection;
+	}
+
+	public boolean isDatabase() {
+		return storageType == StorageType.MySQL || storageType == StorageType.SQLite;
 	}
 }
