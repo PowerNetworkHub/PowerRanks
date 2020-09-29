@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.Data;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
@@ -294,9 +295,15 @@ public class PowerPermissibleBase extends PermissibleBase {
 			if (!perm.endsWith("*")) {
 				perm += ".*";
 				PowerRanksVerbose.log("checkPermissionWildcardTree", "Checking: " + perm);
-				if (plugin.playerAllowedPermissions.get(player).contains(perm)) {
-					return true;
+				if (plugin.playerAllowedPermissions.containsKey(player)) {
+					if (plugin.playerAllowedPermissions.get(player).contains(perm)) {
+						return true;
+					}
+				} else {
+					plugin.setupPermissions(player);
+					return false;
 				}
+				
 			}
 			permission_split[i] = "";
 		}
