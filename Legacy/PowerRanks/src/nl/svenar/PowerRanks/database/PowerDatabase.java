@@ -6,9 +6,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.PowerRanks.StorageType;
@@ -141,18 +143,78 @@ public class PowerDatabase {
 					.replace("%rank_permissions%", "")
 					.replace("%rank_inheritance%", "")
 					.replace("%rank_build%", tmpYamlConf.getBoolean("Groups." + key + ".build") ? "1" : "0")
-					.replace("%rank_prefix%", (String)tmpYamlConf.get("Groups." + key + ".chat.prefix"))
-					.replace("%rank_suffix%", (String)tmpYamlConf.get("Groups." + key + ".chat.suffix"))
-					.replace("%rank_chatcolor%", (String)tmpYamlConf.get("Groups." + key + ".chat.chatColor"))
-					.replace("%rank_namecolor%", (String)tmpYamlConf.get("Groups." + key + ".chat.nameColor"))
-					.replace("%rank_promote%", (String)tmpYamlConf.get("Groups." + key + ".level.promote"))
-					.replace("%rank_demote%", (String)tmpYamlConf.get("Groups." + key + ".level.demote"))
+					.replace("%rank_prefix%", (String) tmpYamlConf.get("Groups." + key + ".chat.prefix"))
+					.replace("%rank_suffix%", (String) tmpYamlConf.get("Groups." + key + ".chat.suffix"))
+					.replace("%rank_chatcolor%", (String) tmpYamlConf.get("Groups." + key + ".chat.chatColor"))
+					.replace("%rank_namecolor%", (String) tmpYamlConf.get("Groups." + key + ".chat.nameColor"))
+					.replace("%rank_promote%", (String) tmpYamlConf.get("Groups." + key + ".level.promote"))
+					.replace("%rank_demote%", (String) tmpYamlConf.get("Groups." + key + ".level.demote"))
 					.replace("%rank_buyable%", "")
 					.replace("%rank_cost%", "0")
-					.replace("%rank_gui_icon%", (String)tmpYamlConf.get("Groups." + key + ".gui.icon"))
+					.replace("%rank_gui_icon%", (String) tmpYamlConf.get("Groups." + key + ".gui.icon"))
 					);
 		}
 		deleteTmpFile(plugin, "Ranks.yml");
+	}
+	
+	public String getDefaultRank() {
+		String default_rank = "";
+		String sql_get_default_rank = "SELECT `value` FROM `" + this.database + "`.`" + this.table_data + "` WHERE `key`='default_rank';";
+		try {
+			Statement st = this.mysqlConnection.createStatement();
+			ResultSet rs = st.executeQuery(sql_get_default_rank);
+		    while (rs.next()) {
+		    	default_rank = rs.getString("value");
+		    }
+		    st.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return default_rank;
+	}
+	
+	public void updatePlayer(Player player, String field, String value) {
+		String sql_insert_new_player = "INSERT INTO `" + this.database + "`.`" + this.table_users + "` (`uuid`, `name`, `rank`, `subranks`, `usertag`, `permissions`, `playtime`) VALUES ('%player_uuid%', '%player_name%', '%player_rank%', '%player_subranks%', '%player_usertag%', '%player_permissions%', '%player_playtime%')";
+		if (!playerExists(player)) {
+			PowerRanks.log.info("---------- Player created");
+			PowerRanks.log.warning(sql_insert_new_player
+						.replace("%player_uuid%", player.getUniqueId().toString())
+						.replace("%player_name%", player.getName())
+						.replace("%player_rank%", getDefaultRank())
+						.replace("%player_subranks%", "")
+						.replace("%player_usertag%", "")
+						.replace("%player_permissions%", "")
+						.replace("%player_playtime%", "0"));
+			try {
+				this.mysqlConnection.createStatement().executeUpdate(sql_insert_new_player
+						.replace("%player_uuid%", player.getUniqueId().toString())
+						.replace("%player_name%", player.getName())
+						.replace("%player_rank%", getDefaultRank())
+						.replace("%player_subranks%", "")
+						.replace("%player_usertag%", "")
+						.replace("%player_permissions%", "")
+						.replace("%player_playtime%", "0")
+						);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			PowerRanks.log.info("---------- Player exists");
+		}
+	}
+	
+	public boolean playerExists(Player player) {
+		try {
+			Statement st = this.mysqlConnection.createStatement();
+			ResultSet rs = st.executeQuery("SELECT * FROM `" + this.database + "`.`" + this.table_users + "` WHERE `uuid`='" + player.getUniqueId().toString() + "';");
+			if (rs.next()) {
+				return true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public Connection getMYSQLConnection() {

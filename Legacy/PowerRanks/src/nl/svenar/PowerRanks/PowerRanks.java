@@ -197,6 +197,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			plg.disablePlugin(plg.getPlugin(PowerRanks.pdf.getName()));
 			break;
 		}
+		
+		this.createDir(PowerRanks.fileLoc);
+
+		try {
+			this.copyFiles(currentStorageType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.loadAllFiles(currentStorageType);
 
 		// Database
 		prdb = new PowerDatabase(this, currentStorageType, CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"), CachedConfig.getString("storage.database.password"),
@@ -216,8 +225,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			this.playerInjectPermissible(player);
 		}
 
-		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
 		for (final Player player : this.getServer().getOnlinePlayers()) {
+			HashMap<String, Object> new_user_data = new HashMap<String, Object>();
 			new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
 
 			if (!CachedPlayers.contains("players." + player.getUniqueId())) {
@@ -236,9 +245,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
 					new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 			}
-
+			CachedPlayers.updatePlayer(player, new_user_data);
 		}
-		CachedPlayers.set(new_user_data);
+//		CachedPlayers.set(new_user_data);
 
 		setupSoftDependencies();
 

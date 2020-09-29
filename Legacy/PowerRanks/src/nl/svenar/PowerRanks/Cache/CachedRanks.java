@@ -63,6 +63,7 @@ public class CachedRanks {
 			}
 		} else {
 			// TODO: Load from DB into Cache
+			ranks_data.put("Default", prdb.getDefaultRank());
 		}
 	}
 

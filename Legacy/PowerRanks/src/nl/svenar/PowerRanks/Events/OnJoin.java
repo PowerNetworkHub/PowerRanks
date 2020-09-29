@@ -57,7 +57,7 @@ public class OnJoin implements Listener {
 				new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 		}
 
-		CachedPlayers.set(new_user_data);
+		CachedPlayers.updatePlayer(player, new_user_data);
 		
 		this.m.playerInjectPermissible(player);
 		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));

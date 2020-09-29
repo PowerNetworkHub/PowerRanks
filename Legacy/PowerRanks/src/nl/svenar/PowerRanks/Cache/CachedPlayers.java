@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.database.PowerDatabase;
@@ -151,7 +152,7 @@ public class CachedPlayers {
 			} else {
 				// TODO: Set field in DB
 				players_data.put(field, data);
-				PowerRanks.log.info("[CachedPlayers] set(3), field: '" + field + "' value: '" + data + "'");
+//				PowerRanks.log.info("[CachedPlayers] set(3), field: '" + field + "' value: '" + data + "'");
 			}
 		}
 
@@ -161,27 +162,32 @@ public class CachedPlayers {
 		if (data.size() == 0) {
 			return;
 		}
-		if (!prdb.isDatabase()) {
 
-			final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-			final YamlConfiguration playersYaml = new YamlConfiguration();
+		final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+		final YamlConfiguration playersYaml = new YamlConfiguration();
 
-			try {
-				playersYaml.load(playersFile);
-				for (Entry<String, Object> kv : data.entrySet()) {
-					players_data.put(kv.getKey(), kv.getValue());
-					playersYaml.set(kv.getKey(), kv.getValue());
-				}
-				playersYaml.save(playersFile);
-				update();
-			} catch (IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
-			}
-		} else {
-			// TODO: Set field in DB
+		try {
+			playersYaml.load(playersFile);
 			for (Entry<String, Object> kv : data.entrySet()) {
 				players_data.put(kv.getKey(), kv.getValue());
-				PowerRanks.log.info("[CachedPlayers] set(1), field: '" + kv.getKey() + "' value: '" + kv.getValue() + "'");
+				playersYaml.set(kv.getKey(), kv.getValue());
+			}
+			playersYaml.save(playersFile);
+			update();
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void updatePlayer(Player player, HashMap<String, Object> data) {
+		if (!prdb.isDatabase()) {
+			set(data);
+		} else {
+			for (Entry<String, Object> kv : data.entrySet()) {
+				players_data.put(kv.getKey(), kv.getValue());
+				prdb.updatePlayer(player, kv.getKey(), (String) kv.getValue());
+//				PowerRanks.log.info("[CachedPlayers] set(1), field: '" + kv.getKey() + "' value: '" + kv.getValue() + "'");
 			}
 		}
 	}
