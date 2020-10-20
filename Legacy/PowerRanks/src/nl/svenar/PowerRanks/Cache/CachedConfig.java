@@ -19,6 +19,7 @@ public class CachedConfig {
 	private static HashMap<String, String> config_strings = new HashMap<String, String>();
 	private static HashMap<String, List<String>> config_string_lists = new HashMap<String, List<String>>();
 	private static HashMap<String, Boolean> config_booleans = new HashMap<String, Boolean>();
+	private static HashMap<String, Integer> config_ints = new HashMap<String, Integer>();
 	
 	private static PowerRanks pr;
 	
@@ -36,6 +37,7 @@ public class CachedConfig {
 		config_strings.clear();
 		config_string_lists.clear();
 		config_booleans.clear();
+		config_ints.clear();
 		
 		try {
 			configYaml.load(configFile);
@@ -50,6 +52,8 @@ public class CachedConfig {
 					config_string_lists.put(field, configYaml.getStringList(field));
 				} else if (configYaml.isBoolean(field)) {
 					config_booleans.put(field, configYaml.getBoolean(field));
+				} else if (configYaml.isInt(field)) {
+					config_ints.put(field, configYaml.getInt(field));
 				}
 			}
 		} catch (IOException | InvalidConfigurationException e) {
@@ -79,6 +83,10 @@ public class CachedConfig {
 
 	public static boolean contains(String field) {
 		return config_data.containsKey(field);
+	}
+	
+	public static int getInt(String field) {
+		return config_ints.get(field);
 	}
 
 	public static void set(String field, Object data) {

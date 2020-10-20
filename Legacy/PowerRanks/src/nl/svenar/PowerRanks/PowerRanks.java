@@ -46,6 +46,7 @@ import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.PowerRanks.database.PowerDatabase;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.metrics.Metrics;
 import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
@@ -105,6 +106,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
 	public Map<Player, Long> playerLoginTime = new HashMap<Player, Long>();
 
+	private PowerDatabase prdb;
+
+	public static enum StorageType {
+		INIT, YAML, MySQL, SQLite
+	}
+
+	private static StorageType currentStorageType = StorageType.INIT;
+
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
@@ -134,6 +143,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
 		new PowerRanksChatColor();
+		new PowerRanksExceptionsHandler(getDataFolder());
 
 		// TODO
 //		BungeeMessageListener bungee_message_listener = new BungeeMessageListener();
@@ -143,38 +153,80 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
-		this.createDir(PowerRanks.fileLoc);
-		this.configFile = new File(this.getDataFolder(), "config.yml");
-		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
-		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
-		this.langFile = new File(this.getDataFolder(), "lang.yml");
-		this.config = (FileConfiguration) new YamlConfiguration();
-		this.ranks = (FileConfiguration) new YamlConfiguration();
-		this.players = (FileConfiguration) new YamlConfiguration();
-		this.lang = (FileConfiguration) new YamlConfiguration();
-		try {
-			this.copyFiles();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		this.loadAllFiles();
-
-		new CachedConfig(this);
-		new CachedPlayers(this);
-		new CachedRanks(this);
-
 		if (handle_update_checking()) {
 			return;
 		}
 
-		ConfigFilesUpdater.updateConfigFiles(this);
+		ConfigFilesUpdater.updateConfigFiles(this, currentStorageType);
+
+		this.createDir(PowerRanks.fileLoc);
+
+		try {
+			this.copyFiles(currentStorageType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.loadAllFiles(currentStorageType);
+
+		new CachedConfig(this);
+
+		switch (CachedConfig.getString("storage.type").toLowerCase()) {
+		case "yaml":
+			currentStorageType = StorageType.YAML;
+			PowerRanks.log.info("Using storage type: YAML");
+			break;
+
+		case "mysql":
+			currentStorageType = StorageType.MySQL;
+			PowerRanks.log.info("Using storage type: MySQL");
+			break;
+
+		case "sqlite":
+			currentStorageType = StorageType.SQLite;
+			PowerRanks.log.info("Using storage type: SQLite");
+			break;
+
+		default:
+			PowerRanks.log.warning("===--------------------===");
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("WARNING PowerRanks is disabled!");
+			PowerRanks.log.warning("Unknown storage type: " + CachedConfig.getString("storage.type"));
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("===--------------------===");
+			PluginManager plg = Bukkit.getPluginManager();
+			plg.disablePlugin(plg.getPlugin(PowerRanks.pdf.getName()));
+			break;
+		}
+		
+		this.createDir(PowerRanks.fileLoc);
+
+		try {
+			this.copyFiles(currentStorageType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.loadAllFiles(currentStorageType);
+
+		// Database
+		prdb = new PowerDatabase(this, currentStorageType, CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"), CachedConfig.getString("storage.database.password"),
+				CachedConfig.getString("storage.database.database"));
+		
+		if (CachedConfig.getString("storage.type").equalsIgnoreCase("mysql")) {
+			prdb.connectMYSQL();
+		} else if (CachedConfig.getString("storage.type").equalsIgnoreCase("sqlite")) {
+			prdb.connectSQLITE();
+		}
+		// Database
+
+		new CachedPlayers(this, prdb);
+		new CachedRanks(this, prdb);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
 		}
 
-		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
 		for (final Player player : this.getServer().getOnlinePlayers()) {
+			HashMap<String, Object> new_user_data = new HashMap<String, Object>();
 			new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
 
 			if (!CachedPlayers.contains("players." + player.getUniqueId())) {
@@ -193,9 +245,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
 					new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 			}
-
+			CachedPlayers.updatePlayer(player, new_user_data);
 		}
-		CachedPlayers.set(new_user_data);
+//		CachedPlayers.set(new_user_data);
 
 		setupSoftDependencies();
 
@@ -390,15 +442,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.players = (FileConfiguration) new YamlConfiguration();
 		this.lang = (FileConfiguration) new YamlConfiguration();
 		try {
-			this.copyFiles();
+			this.copyFiles(currentStorageType);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.loadAllFiles();
+		this.loadAllFiles(currentStorageType);
 
 		new CachedConfig(this);
-		new CachedPlayers(this);
-		new CachedRanks(this);
+		new CachedPlayers(this, prdb);
+		new CachedRanks(this, prdb);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
@@ -441,8 +493,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.log.warning(fileName);
 			PowerRanks.log.warning(PowerRanks.pdf.getName() + " may not work with this config.");
 			PowerRanks.log.warning("Manual verification is required.");
-			PowerRanks.log.warning("To forcefuly get rid of this message with all its consequences use the following command:");
-			PowerRanks.log.warning("/pr forceupdateconfigversion");
+//			PowerRanks.log.warning("To forcefuly get rid of this message with all its consequences use the following command:");
+//			PowerRanks.log.warning("/pr forceupdateconfigversion");
 			PowerRanks.log.warning("Visit " + PowerRanks.pdf.getWebsite() + " for more info.");
 			PowerRanks.log.warning("===------------------------------===");
 		} else {
@@ -453,23 +505,38 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	private void copyFiles() throws Exception {
+	private void copyFiles(StorageType storageType) throws Exception {
+		this.configFile = new File(this.getDataFolder(), "config.yml");
+		this.config = (FileConfiguration) new YamlConfiguration();
+		this.langFile = new File(this.getDataFolder(), "lang.yml");
+		this.lang = (FileConfiguration) new YamlConfiguration();
+
+		if (storageType == StorageType.YAML) {
+			this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
+			this.ranks = (FileConfiguration) new YamlConfiguration();
+			this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
+			this.players = (FileConfiguration) new YamlConfiguration();
+		}
+
 		if (!this.configFile.exists()) {
 			this.configFile.getParentFile().mkdirs();
 			this.copy(this.getResource("config.yml"), this.configFile);
-		}
-		if (!this.ranksFile.exists()) {
-			this.ranksFile.getParentFile().mkdirs();
-			this.copy(this.getResource("Ranks.yml"), this.ranksFile);
-		}
-		if (!this.playersFile.exists()) {
-			this.playersFile.getParentFile().mkdirs();
-			this.copy(this.getResource("Players.yml"), this.playersFile);
 		}
 		if (!this.langFile.exists()) {
 			this.langFile.getParentFile().mkdirs();
 			this.copy(this.getResource("lang.yml"), this.langFile);
 		}
+		if (storageType == StorageType.YAML) {
+			if (!this.ranksFile.exists()) {
+				this.ranksFile.getParentFile().mkdirs();
+				this.copy(this.getResource("Ranks.yml"), this.ranksFile);
+			}
+			if (!this.playersFile.exists()) {
+				this.playersFile.getParentFile().mkdirs();
+				this.copy(this.getResource("Players.yml"), this.playersFile);
+			}
+		}
+
 	}
 
 	public void copy(final InputStream in, final File file) {
@@ -487,23 +554,29 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void saveAllFiles() {
+	public void saveAllFiles(StorageType storageType) {
 		try {
 			this.config.save(this.configFile);
-			this.ranks.save(this.ranksFile);
-			this.players.save(this.playersFile);
 			this.lang.save(this.langFile);
+			if (storageType == StorageType.YAML) {
+				this.ranks.save(this.ranksFile);
+				this.players.save(this.playersFile);
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void loadAllFiles() {
+	public void loadAllFiles(StorageType storageType) {
 		try {
 			this.config.load(this.configFile);
-			this.ranks.load(this.ranksFile);
-			this.players.load(this.playersFile);
 			this.lang.load(this.langFile);
+			if (storageType == StorageType.YAML) {
+				this.ranks.load(this.ranksFile);
+				this.players.load(this.playersFile);
+			}
+
 		} catch (Exception e) {
 			System.out.println("-----------------------------");
 			PowerRanks.log.warning("Failed to load the config files (If this is the first time PowerRanks starts you could ignore this message)");
@@ -1029,5 +1102,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static PowerRanksExpansion getPlaceholderapiExpansion() {
 		return placeholderapiExpansion;
+	}
+
+	public static StorageType getStorageType() {
+		return currentStorageType;
 	}
 }
