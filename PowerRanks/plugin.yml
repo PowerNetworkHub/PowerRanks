@@ -1,9 +1,9 @@
 name: PowerRanks
-version: 1.8
+version: 1.9 BETA
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
-softdepend: [Vault, PlaceholderAPI, DeluxeTags]
+softdepend: [Vault, PlaceholderAPI, DeluxeTags, NameTagEdit]
 load: startup
 website: 'https://svenar.nl/powerranks'
 commands:

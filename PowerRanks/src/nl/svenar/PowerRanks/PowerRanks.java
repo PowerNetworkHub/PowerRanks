@@ -88,6 +88,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static boolean vaultPermissionsEnabled = false;
 	public static PowerRanksExpansion placeholderapiExpansion;
 	public static boolean plugin_hook_deluxetags = false;
+	public static boolean plugin_hook_nametagedit = false;
 	// Soft Dependencies
 
 	File configFile;
@@ -257,6 +258,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		boolean has_vault_permissions = this.getServer().getPluginManager().getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_permissions");
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && getConfigBool("plugin_hook.placeholderapi");
 		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null && getConfigBool("plugin_hook.deluxetags");
+		boolean has_nametagedit = this.getServer().getPluginManager().getPlugin("NametagEdit") != null && getConfigBool("plugin_hook.nametagedit");
 
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 		if (has_vault_economy || has_vault_permissions) {
@@ -286,6 +288,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (has_deluxetags) {
 			PowerRanks.log.info("DeluxeTags found!");
 			plugin_hook_deluxetags = true;
+		}
+		
+		if (has_nametagedit) {
+			plugin_hook_nametagedit = true;
 		}
 
 		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags)

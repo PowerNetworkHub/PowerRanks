@@ -40,6 +40,7 @@
 # Vault (Permissions): used for plugins using the Vault API
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # DeluxeTags: used for user tags
+# NametagEdit: used for changing the players name displayed above the head
 # --------------------
 # Announcements
 # Enable or disable server-wide announcements.
@@ -73,6 +74,7 @@ plugin_hook:
   vault_permissions: false
   placeholderapi: false
   deluxetags: false
+  nametagedit: false
 announcements:
   rankup:
     enabled: false
