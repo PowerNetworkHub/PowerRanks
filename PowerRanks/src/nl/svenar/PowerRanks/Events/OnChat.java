@@ -129,15 +129,17 @@ public class OnChat implements Listener {
 				if (PowerRanks.placeholderapiExpansion != null) {
 					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
 				}
-				format = PowerRanks.chatColor(format, true);
-
-				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
 
 				for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 					PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 					format = prAddon.getValue().onPlayerChat(prPlayer, format, e.getMessage());
 				}
 
+				format = PowerRanks.chatColor(format, true);
+
+				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
+
+				
 				e.setFormat(format);
 			}
 		} catch (Exception e2) {

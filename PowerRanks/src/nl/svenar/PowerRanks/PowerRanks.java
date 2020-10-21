@@ -63,8 +63,11 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.google.common.collect.ImmutableMap;
+import com.nametagedit.plugin.NametagEdit;
+import com.nametagedit.plugin.api.INametagApi;
 
 import me.clip.deluxetags.DeluxeTag;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -82,6 +85,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String langFileLoc;
 	public static String factoryresetid = null;
 	public static Instant powerranks_start_time = Instant.now();
+	public boolean powerranks_enabled = false;
 
 	// Soft Dependencies
 	public static boolean vaultEconomyEnabled = false;
@@ -116,6 +120,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void onEnable() {
+		powerranks_enabled = true;
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.plugin = this;
 
@@ -230,6 +235,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
+		powerranks_enabled = false;
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
@@ -289,7 +295,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.log.info("DeluxeTags found!");
 			plugin_hook_deluxetags = true;
 		}
-		
+
 		if (has_nametagedit) {
 			plugin_hook_nametagedit = true;
 		}
@@ -826,66 +832,96 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PermissibleInjector.uninject(player);
 	}
 
+	private void updateNametagEditData(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor) {
+		if (plugin_hook_nametagedit) {
+			PowerRanksVerbose.log("updateNametagEditData", "Updating " + player.getName() + "'s nametag format");
+
+			BukkitScheduler scheduler = getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(this, new Runnable() {
+				@Override
+				public void run() {
+					String prefix_format = CachedConfig.getString("nametagedit.prefix");
+					String suffix_format = CachedConfig.getString("nametagedit.suffix");
+					if (prefix_format == null || suffix_format == null) {
+						if (prefix_format == null) {
+							PowerRanksVerbose.log("updateNametagEditData", "prefix_format is NULL");
+						}
+						
+						if (suffix_format == null) {
+							PowerRanksVerbose.log("updateNametagEditData", "suffix_format is NULL");
+						}
+						return;
+					}
+
+					prefix_format = Util.powerFormatter(prefix_format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).build(), '[', ']');
+
+					suffix_format = Util.powerFormatter(suffix_format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).build(), '[', ']');
+
+					prefix_format += nameColor;
+
+					prefix_format = PowerRanksChatColor.colorize(prefix_format, true);
+					suffix_format = PowerRanksChatColor.colorize(suffix_format, true);
+					
+					INametagApi nteAPI = NametagEdit.getApi();
+					if (nteAPI != null) {
+						nteAPI.setNametag(player, prefix_format + (prefix_format.length() > 0 ? " " : ""), (suffix_format.length() > 0 ? " " : "") + suffix_format);
+					}
+				}
+			}, 20L);
+		}
+	}
+
 	public void updateTablistName(Player player) {
-		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
+//		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
+		String uuid = player.getUniqueId().toString();
+
+		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+		String prefix = CachedRanks.getString("Groups." + rank + ".chat.prefix");
+		String suffix = CachedRanks.getString("Groups." + rank + ".chat.suffix");
+		String nameColor = CachedRanks.getString("Groups." + rank + ".chat.nameColor");
+
+		String subprefix = "";
+		String subsuffix = "";
+		String usertag = "";
+
 		try {
-			player.setPlayerListName(playerTablistNameBackup.get(player));
+			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+				for (String r : subranks.getKeys(false)) {
+					boolean in_world = false;
+					if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
+						in_world = true;
 
-			playerTablistNameBackup.put(player, player.getPlayerListName());
-			String uuid = player.getUniqueId().toString();
+						ArrayList<String> default_worlds = new ArrayList<String>();
+						default_worlds.add("All");
+						CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, false);
+					}
 
-			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
-				return;
-
-			String format = CachedConfig.getString("tablist_modification.format");
-			String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-			String prefix = CachedRanks.getString("Groups." + rank + ".chat.prefix");
-			String suffix = CachedRanks.getString("Groups." + rank + ".chat.suffix");
-			String namecolor = CachedRanks.getString("Groups." + rank + ".chat.nameColor");
-
-			String subprefix = "";
-			String subsuffix = "";
-			String usertag = "";
-
-			try {
-				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-					ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
-					for (String r : subranks.getKeys(false)) {
-						boolean in_world = false;
-						if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
+					String player_current_world = player.getWorld().getName();
+					List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+					for (String world : worlds) {
+						if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
 							in_world = true;
+						}
+					}
 
-							ArrayList<String> default_worlds = new ArrayList<String>();
-							default_worlds.add("All");
-							CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, false);
+					if (in_world) {
+						if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
+							subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null && CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
+									? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix") + " "
+									: "");
 						}
 
-						String player_current_world = player.getWorld().getName();
-						List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-						for (String world : worlds) {
-							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-								in_world = true;
-							}
-						}
+						if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
+							subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null && CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
+									? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix") + " "
+									: "");
 
-						if (in_world) {
-							if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-								subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null && CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
-										? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix") + " "
-										: "");
-							}
-
-							if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-								subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null && CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
-										? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix") + " "
-										: "");
-
-							}
 						}
 					}
 				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
 			}
 
 			subprefix = subprefix.trim();
@@ -913,29 +949,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 
-			if (format.contains("[name]")) {
-				String tmp_format = CachedConfig.getString("tablist_modification.format");
-				tmp_format = tmp_format.replace("[name]", "[player]");
-				CachedConfig.set("tablist_modification.format", tmp_format);
-				format = tmp_format;
-			}
+			updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
 
-			format = Util.powerFormatter(format,
-					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
-							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", namecolor + player.getPlayerListName())
-							.put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
-					'[', ']');
-
-			while (format.endsWith(" ")) {
-				format = format.substring(0, format.length() - 1);
-			}
-
-			if (PowerRanks.placeholderapiExpansion != null) {
-				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
-			}
-			format = PowerRanks.chatColor(format, true);
-
-			player.setPlayerListName(format);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -943,14 +958,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
+		
 		try {
+			updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
+			
+			if (!CachedConfig.getBoolean("tablist_modification.enabled") || plugin_hook_nametagedit)
+				return;
+
 			player.setPlayerListName(playerTablistNameBackup.get(player));
 
 			playerTablistNameBackup.put(player, player.getPlayerListName());
-
-			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
-				return;
-
+			
 			String format = CachedConfig.getString("tablist_modification.format");
 
 			if (format.contains("[name]")) {

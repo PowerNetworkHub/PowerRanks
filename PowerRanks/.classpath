@@ -8,14 +8,10 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/gson-2.8.6.jar"/>
-	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/Vault.jar"/>
-	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/PlaceholderAPI-2.10.6.jar"/>
-	<classpathentry kind="lib" path="/home/sven/Eclipse/libs/DeluxeTags-1.8.1-Release.jar"/>
-	<classpathentry kind="lib" path="/home/sven/Documents/minecraft/server_1_16_3/spigot.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
