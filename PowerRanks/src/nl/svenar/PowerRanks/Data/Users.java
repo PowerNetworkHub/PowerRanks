@@ -1227,7 +1227,7 @@ public class Users implements Listener {
 
 			if (CachedRanks.contains("Usertags")) {
 				boolean tagExists = false;
-				if (CachedRanks.getString("Usertags") != null) {
+				if (CachedRanks.getConfigurationSection("Usertags") != null) {
 					try {
 						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 						for (String key : tags.getKeys(false)) {
@@ -1243,8 +1243,6 @@ public class Users implements Listener {
 					CachedRanks.set("Usertags", null);
 					CachedRanks.set("Usertags." + tag, format);
 				}
-
-				PowerRanks.log.info("tagExists: " + tagExists);
 
 				if (!tagExists) {
 					CachedRanks.set("Usertags." + tag, format);
