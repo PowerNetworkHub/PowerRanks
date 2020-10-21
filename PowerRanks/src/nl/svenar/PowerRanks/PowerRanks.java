@@ -867,6 +867,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					INametagApi nteAPI = NametagEdit.getApi();
 					if (nteAPI != null) {
 						nteAPI.setNametag(player, prefix_format + (prefix_format.length() > 0 ? " " : ""), (suffix_format.length() > 0 ? " " : "") + suffix_format);
+						updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor, false);
 					}
 				}
 			}, 20L);
@@ -949,20 +950,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 
-			updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
+			updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor, true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor) {
+	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor, boolean updateNTE) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
 		
 		try {
-			updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
+			if (updateNTE) {
+				updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
+			}
 			
-			if (!CachedConfig.getBoolean("tablist_modification.enabled") || plugin_hook_nametagedit)
+			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
 				return;
 
 			player.setPlayerListName(playerTablistNameBackup.get(player));

@@ -137,7 +137,7 @@ public class OnChat implements Listener {
 
 				format = PowerRanks.chatColor(format, true);
 
-				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor); // TODO: Remove (DeluxeTags workaround)
+				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor, true); // TODO: Remove (DeluxeTags workaround)
 
 				
 				e.setFormat(format);
