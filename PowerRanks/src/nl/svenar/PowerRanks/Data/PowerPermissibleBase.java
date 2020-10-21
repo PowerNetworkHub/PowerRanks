@@ -132,20 +132,22 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		if (!doRecalculatePermissions) {
 			doRecalculatePermissions = true;
-			BukkitScheduler scheduler = plugin.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
-				@Override
-				public void run() {
-					oldPermissible.recalculatePermissions();
-					try {
-						if (player != null)
-							player.updateCommands();
-					} catch (NoSuchMethodError e) {
+			if (plugin.powerranks_enabled) {
+				BukkitScheduler scheduler = plugin.getServer().getScheduler();
+				scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						oldPermissible.recalculatePermissions();
+						try {
+							if (player != null)
+								player.updateCommands();
+						} catch (NoSuchMethodError e) {
+						}
+						doRecalculatePermissions = false;
+						PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated");
 					}
-					doRecalculatePermissions = false;
-					PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated");
-				}
-			}, 20L);
+				}, 20L);
+			}
 		} else {
 			PowerRanksVerbose.log("recalculatePermissions", "Already in queue");
 		}
