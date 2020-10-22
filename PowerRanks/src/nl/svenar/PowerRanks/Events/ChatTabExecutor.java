@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 
@@ -90,6 +91,8 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("verbose");
 				commands_list.add("addsubrankworld");
 				commands_list.add("delsubrankworld");
+				commands_list.add("buyrank");
+				commands_list.add("pluginhook");
 
 				for (String command : addon_commands) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -107,7 +110,8 @@ public class ChatTabExecutor implements TabCompleter {
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
 						|| args[0].equalsIgnoreCase("enablebuild") || args[0].equalsIgnoreCase("disablebuild") || args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
 						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
-						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon") || args[0].equalsIgnoreCase("listpermissions")) {
+						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon")
+						|| args[0].equalsIgnoreCase("listpermissions")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))
@@ -145,6 +149,18 @@ public class ChatTabExecutor implements TabCompleter {
 					list.add("startlive");
 					list.add("stop");
 					list.add("save");
+				}
+
+				if (args[0].equalsIgnoreCase("buyrank")) {
+					Users s = new Users(this.m);
+					for (String rank : s.getBuyableRanks(s.getGroup((Player) sender))) {
+						list.add(rank);
+					}
+				}
+
+				if (args[0].equalsIgnoreCase("pluginhook")) {
+					list.add("enable");
+					list.add("disable");
 				}
 			}
 
@@ -218,7 +234,8 @@ public class ChatTabExecutor implements TabCompleter {
 				}
 
 				if (args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix") || args[0].equalsIgnoreCase("enablesubranksuffix")
-						|| args[0].equalsIgnoreCase("disablesubranksuffix") || args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld")) {
+						|| args[0].equalsIgnoreCase("disablesubranksuffix") || args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("addsubrankworld")
+						|| args[0].equalsIgnoreCase("delsubrankworld")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getSubranks(args[1])) {
 						if (rank.toLowerCase().contains(args[2].toLowerCase()))
@@ -249,8 +266,18 @@ public class ChatTabExecutor implements TabCompleter {
 					list.add("1000");
 					list.add("10000");
 				}
+
+				if (args[0].equalsIgnoreCase("buyrank")) {
+					list.add("confirm");
+				}
+
+				if (args[0].equalsIgnoreCase("pluginhook")) {
+					for (String plugin : CachedConfig.getConfigurationSection("plugin_hook").getKeys(false)) {
+						list.add(plugin);
+					}
+				}
 			}
-			
+
 			if (args.length == 4) {
 				if (args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld")) {
 					for (World world : Bukkit.getServer().getWorlds()) {
