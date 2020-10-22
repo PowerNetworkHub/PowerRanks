@@ -166,6 +166,8 @@ public class ChatTabExecutor implements TabCompleter {
 				
 				if (args[0].equalsIgnoreCase("config")) {
 					list.add("removeworldtag");
+					list.add("enable");
+					list.add("disable");
 				}
 			}
 
@@ -280,6 +282,11 @@ public class ChatTabExecutor implements TabCompleter {
 					for (String plugin : CachedConfig.getConfigurationSection("plugin_hook").getKeys(false)) {
 						list.add(plugin);
 					}
+				}
+				
+				if (args[0].equalsIgnoreCase("config") && (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("disable"))) {
+					list.add("chat_formatting");
+					list.add("tablist_formatting");
 				}
 			}
 

@@ -1439,4 +1439,16 @@ public class Messages {
 		if (msg2.length() > 0)
 			sender.sendMessage(msg2);		
 	}
+
+	public static void configStateChanged(CommandSender sender, String target, String new_state) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg1 = getGeneralMessage(langYaml, "messages.config_state_changed");
+		String msg2 = getGeneralMessage(langYaml, "messages.suggest_restart");
+		msg1 = Util.replaceAll(msg1, "%argument_config_target%", target);
+		msg1 = Util.replaceAll(msg1, "%argument_new_state%", new_state);
+		if (msg1.length() > 0)
+			sender.sendMessage(msg1);
+		if (msg2.length() > 0)
+			sender.sendMessage(msg2);		
+	}
 }

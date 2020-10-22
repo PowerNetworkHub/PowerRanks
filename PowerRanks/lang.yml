@@ -19,8 +19,9 @@
 # %argument_external_plugin% | command argument external plugin name
 # %argument_addon% | command argument addon name
 # %argument_material% | command argument material name
-# %argument_plugin_name% | command argument material name
+# %argument_plugin_name% | command argument plugin hook plugin name
 # %argument_new_state% | command argument plugin hook state name
+# %argument_config_target% | command argument config target
 
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
@@ -111,6 +112,7 @@ messages:
    pluginhook_unknown_plugin: "%plugin_prefix% &cUnknown plugin!"
    pluginhook_unknown_state: "%plugin_prefix% &cUnknown state!"
    config_worldtag_removed: "%plugin_prefix% &aThe world tag has been removed from the config!"
+   config_state_changed: "%plugin_prefix% &aState of '%argument_config_target%' in the config has be changed to %argument_new_state%&a!"
    suggest_restart: "%plugin_prefix% &aChanges will take effect next restart."
 commands:
    usage_command_reload: "%plugin_prefix% &c/pr reload [config/plugin/all]"
@@ -165,7 +167,7 @@ commands:
    usage_command_verbose: "%plugin_prefix% &c/pr verbose <start/stop/save>"
    usage_command_buyrank: "%plugin_prefix% &c/pr buyrank [rankname] [confirm]"
    usage_command_pluginhook: "%plugin_prefix% &c/pr pluginhook [enable/disable] [plugin_name]"
-   usage_command_config: "%plugin_prefix% &c/pr config <removeworldtag>"
+   usage_command_config: "%plugin_prefix% &c/pr config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
    reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
@@ -225,6 +227,7 @@ commands:
    - "&a/pr setbuycost <rank> <cost>&2 - Set the buy cost of a rank"
    - "&a/pr setguiicon <rank>&2 - Set the icon of a rank to the current item in your hand"
    - "&a/pr pluginhook [enable/disable] [plugin_name]&2 - Enable or disable a plugin for PowerRanks to hook in to"
-   - "&a/pr config <removeworldtag>&2 - Edit the configuration file"
+   - "&a/pr addoninfo <addon_name>&2 - Show information about a specific add-on"
+   - "&a/pr config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>&2 - Edit the configuration file"
    - "&a/pr verbose <start/stop/save>&2 - Enable verbose logging, may result in lower performance! Only use for bug reporting"
    - "&a/pr stats&2 - Show stats about PowerRanks"

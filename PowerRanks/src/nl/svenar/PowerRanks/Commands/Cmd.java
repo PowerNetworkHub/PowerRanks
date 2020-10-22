@@ -1223,6 +1223,21 @@ public class Cmd implements CommandExecutor {
 							} else {
 								Messages.messageCommandUsageConfig(sender);
 							}
+						} else if (args.length == 3) {
+							if (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("disable")) {
+								boolean enable = args[1].equalsIgnoreCase("enable");
+								if (args[2].equalsIgnoreCase("chat_formatting")) {
+									CachedConfig.set("chat.enabled", enable);
+									Messages.configStateChanged(sender, "Chat formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+								} else if (args[2].equalsIgnoreCase("tablist_formatting")) {
+									CachedConfig.set("tablist_modification.enabled", enable);
+									Messages.configStateChanged(sender, "Tablist formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+								} else {
+									Messages.messageCommandUsageConfig(sender);
+								}
+							} else {
+								Messages.messageCommandUsageConfig(sender);
+							}
 						} else {
 							Messages.messageCommandUsageConfig(sender);
 						}
