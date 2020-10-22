@@ -1,11 +1,11 @@
 name: PowerRanks
-version: 1.9 BETA 2
+version: 1.9 BETA 3
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
 softdepend: [Vault, PlaceholderAPI, DeluxeTags, NametagEdit]
 load: startup
-website: 'https://svenar.nl/powerranks'
+website: 'https://powerranks.nl'
 commands:
   powerranks:
     description: Main Command
@@ -129,6 +129,8 @@ permissions:
   powerranks.cmd.setguiicon:
     default: op
   powerranks.cmd.verbose:
+    default: op
+  powerranks.cmd.pluginhook:
     default: op
   powerranks.signs.create:
     default: op

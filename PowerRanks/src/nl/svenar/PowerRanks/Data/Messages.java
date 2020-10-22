@@ -82,6 +82,17 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
+	
+	public static void messagePluginhookStats(CommandSender sender) {
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
+		sender.sendMessage(ChatColor.GREEN + "- Vault Economy (vault_economy): " + (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions (vault_permissions): " + (PowerRanks.vaultPermissionsEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI (placeholderapi): " + (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags (deluxetags): " + (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- NametagEdit (nametagedit): " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
 
 	public static void messageCommandFactoryReset(CommandSender sender) {
 		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
@@ -1377,5 +1388,38 @@ public class Messages {
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_buyrank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsagePluginhook(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_pluginhook");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+
+	public static void pluginhookStateChanged(CommandSender sender, String plugin_name, String new_state) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg1 = getGeneralMessage(langYaml, "messages.pluginhook_state_changed");
+		String msg2 = getGeneralMessage(langYaml, "messages.pluginhook_suggest_restart");
+		msg1 = Util.replaceAll(msg1, "%argument_plugin_name%", plugin_name);
+		msg1 = Util.replaceAll(msg1, "%argument_new_state%", new_state);
+		if (msg1.length() > 0)
+			sender.sendMessage(msg1);
+		if (msg2.length() > 0)
+			sender.sendMessage(msg2);
+	}
+
+	public static void pluginhookUnknownPlugin(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_plugin");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
+
+	public static void pluginhookUnknownState(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_state");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
 	}
 }

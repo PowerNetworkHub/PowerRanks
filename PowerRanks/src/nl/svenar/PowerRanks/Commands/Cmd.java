@@ -41,7 +41,7 @@ public class Cmd implements CommandExecutor {
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		final Users s = new Users(this.m);
-		if (sender instanceof Player) { // TODO nothing todo just easy navigation
+		if (sender instanceof Player) { // TODO nothing TODO just easy navigation
 			final Player player = (Player) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (PowerRanksVerbose.USE_VERBOSE) {
@@ -1171,6 +1171,29 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("pluginhook")) {
+					if (player.hasPermission("powerranks.cmd.pluginhook")) {
+						if (args.length == 1) {
+							 Messages.messagePluginhookStats(sender);
+						} else if (args.length == 3) {
+							String state = args[1];
+							String pluginname = args[2];
+							if ((state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) && CachedConfig.contains("plugin_hook." + pluginname.toLowerCase())) {
+								CachedConfig.set("plugin_hook." + pluginname.toLowerCase(), state.equalsIgnoreCase("enable"));
+								Messages.pluginhookStateChanged(sender, pluginname.toLowerCase(), (state.equalsIgnoreCase("enable") ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+							} else {
+								if (state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) {
+									Messages.pluginhookUnknownPlugin(sender);
+								} else {
+									Messages.pluginhookUnknownState(sender);
+								}
+							}
+						} else {
+							Messages.messageCommandUsagePluginhook(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
 				} else {
 					boolean addonCommandFound = false;
 					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -1183,7 +1206,7 @@ public class Cmd implements CommandExecutor {
 						Messages.unknownCommand(player);
 				}
 			}
-		} else if (sender instanceof ConsoleCommandSender) { // TODO nothing todo just easy navigation
+		} else if (sender instanceof ConsoleCommandSender) { // TODO nothing TODO just easy navigation
 			final ConsoleCommandSender console = (ConsoleCommandSender) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
@@ -1957,7 +1980,7 @@ public class Cmd implements CommandExecutor {
 						Messages.unknownCommand(console);
 				}
 			}
-		} else if (sender instanceof BlockCommandSender) { // TODO nothing todo just easy navigation
+		} else if (sender instanceof BlockCommandSender) { // TODO nothing TODO just easy navigation
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
 				if (args.length == 0) {
 				} else if (args[0].equalsIgnoreCase("reload")) {
