@@ -566,13 +566,46 @@ public class Users implements Listener {
 	}
 
 	public boolean deleteRank(String rank) {
-		try {
-			if (CachedRanks.get("Groups." + rank) != null) {
-				CachedRanks.set("Groups." + rank, (Object) null);
-				return true;
+		if (CachedRanks.getString("Default").equalsIgnoreCase(rank)) {
+			return false;
+		} else {
+			for (String uuid : CachedPlayers.getConfigurationSection("players").getKeys(false)) {
+				boolean setup_permissions = false;
+
+				String player_rank = CachedPlayers.getString("players." + uuid + ".rank");
+
+				if (player_rank.equalsIgnoreCase(rank)) {
+					CachedPlayers.set("players." + uuid + ".rank", CachedRanks.getString("Default"), false);
+					setup_permissions = true;
+				}
+
+				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+					for (String subrank : CachedPlayers.getConfigurationSection("players." + uuid + ".subranks").getKeys(false)) {
+						if (subrank.equalsIgnoreCase(rank)) {
+							CachedPlayers.set("players." + uuid + ".subranks." + subrank, null, false);
+							setup_permissions = true;
+						}
+					}
+				}
+
+				if (setup_permissions) {
+					Player target = Bukkit.getServer().getPlayer(CachedPlayers.getString("players." + uuid + ".name"));
+
+					if (target.isOnline()) {
+						this.m.setupPermissions(target);
+						this.m.updateTablistName(target);
+					}
+				}
+
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			try {
+				if (CachedRanks.get("Groups." + rank) != null) {
+					CachedRanks.set("Groups." + rank, (Object) null);
+					return true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return false;
 	}
