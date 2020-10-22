@@ -34,15 +34,15 @@ import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
 
 public class Cmd implements CommandExecutor {
-	PowerRanks m;
+	PowerRanks plugin;
 
-	public Cmd(PowerRanks m) {
-		this.m = m;
+	public Cmd(PowerRanks plugin) {
+		this.plugin = plugin;
 	}
 
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
-		final Users s = new Users(this.m);
+		final Users s = new Users(this.plugin);
 		if (sender instanceof Player) { // TODO nothing TODO just easy navigation
 			final Player player = (Player) sender;
 			if (cmd.getName().equalsIgnoreCase("powerranks") || cmd.getName().equalsIgnoreCase("pr")) {
@@ -72,11 +72,11 @@ public class Cmd implements CommandExecutor {
 					} else if (sender.hasPermission("powerranks.cmd.reload")) {
 						if (args[1].equalsIgnoreCase("config")) {
 							Messages.messageCommandReloadConfig(player);
-//							this.m.reloadConfig();
+//							this.plugin.reloadConfig();
 							CachedConfig.update();
 							CachedRanks.update();
 							CachedPlayers.update();
-							this.m.updateAllPlayersTABlist();
+							this.plugin.updateAllPlayersTABlist();
 							Messages.messageCommandReloadConfigDone(player);
 						} else if (args[1].equalsIgnoreCase("plugin")) {
 							Messages.messageCommandReloadPlugin(player);
@@ -96,7 +96,7 @@ public class Cmd implements CommandExecutor {
 							CachedConfig.update();
 							CachedRanks.update();
 							CachedPlayers.update();
-							this.m.updateAllPlayersTABlist();
+							this.plugin.updateAllPlayersTABlist();
 							Messages.messageCommandReloadConfigDone(player);
 						} else {
 							Messages.messageCommandUsageReload(player);
@@ -713,7 +713,7 @@ public class Cmd implements CommandExecutor {
 							} else {
 								String resetid = args[1];
 								if (resetid.equalsIgnoreCase(PowerRanks.factoryresetid))
-									this.m.factoryReset(sender);
+									this.plugin.factoryReset(sender);
 								else
 									Messages.messageCommandFactoryReset(player);
 							}
@@ -1080,7 +1080,7 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							final String addon_name = args[1];
 							PowerRanksAddon addon = null;
-							for (Entry<File, PowerRanksAddon> a : this.m.addonsManager.addonClasses.entrySet()) {
+							for (Entry<File, PowerRanksAddon> a : this.plugin.addonsManager.addonClasses.entrySet()) {
 								if (a.getValue().getIdentifier().equalsIgnoreCase(addon_name))
 									addon = a.getValue();
 							}
@@ -1197,36 +1197,42 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 				} else if (args[0].equalsIgnoreCase("config")) {
-					if (args.length == 2) {
-						if (args[1].equalsIgnoreCase("removeworldtag")) {
-							String world_tag_regex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}[\\[]world[\\]]([&][a-fA-F0-9k-oK-OrR]){0,1}[ ]{0,1}";
-							Pattern world_tag_pattern = Pattern.compile(world_tag_regex);
-							Matcher world_tag_matcher_chat = world_tag_pattern.matcher(CachedConfig.getString("chat.format").toLowerCase());
-							Matcher world_tag_matcher_tab = world_tag_pattern.matcher(CachedConfig.getString("tablist_modification.format").toLowerCase());
+					if (player.hasPermission("powerranks.cmd.config")) {
+						if (args.length == 2) {
+							if (args[1].equalsIgnoreCase("removeworldtag")) {
+								String world_tag_regex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}[\\[]world[\\]]([&][a-fA-F0-9k-oK-OrR]){0,1}[ ]{0,1}";
+								Pattern world_tag_pattern = Pattern.compile(world_tag_regex);
+								Matcher world_tag_matcher_chat = world_tag_pattern.matcher(CachedConfig.getString("chat.format").toLowerCase());
+								Matcher world_tag_matcher_tab = world_tag_pattern.matcher(CachedConfig.getString("tablist_modification.format").toLowerCase());
 
-							while (world_tag_matcher_chat.find()) {
-								int start = world_tag_matcher_chat.start();
-								int end = world_tag_matcher_chat.end();
-								CachedConfig.set("chat.format", CachedConfig.getString("chat.format").replace(CachedConfig.getString("chat.format").substring(start, end), ""));
+								while (world_tag_matcher_chat.find()) {
+									int start = world_tag_matcher_chat.start();
+									int end = world_tag_matcher_chat.end();
+									CachedConfig.set("chat.format", CachedConfig.getString("chat.format").replace(CachedConfig.getString("chat.format").substring(start, end), ""));
+								}
+
+								while (world_tag_matcher_tab.find()) {
+									int start = world_tag_matcher_tab.start();
+									int end = world_tag_matcher_tab.end();
+									CachedConfig.set("tablist_modification.format", CachedConfig.getString("tablist_modification.format").replace(CachedConfig.getString("tablist_modification.format").substring(start, end), ""));
+								}
+
+								plugin.updateAllPlayersTABlist();
+
+								Messages.configWorldTagRemoved(sender);
+							} else {
+								Messages.messageCommandUsageConfig(sender);
 							}
-
-							while (world_tag_matcher_tab.find()) {
-								int start = world_tag_matcher_tab.start();
-								int end = world_tag_matcher_tab.end();
-								CachedConfig.set("tablist_modification.format", CachedConfig.getString("tablist_modification.format").replace(CachedConfig.getString("tablist_modification.format").substring(start, end), ""));
-							}
-
-							Messages.configWorldTagRemoved(sender);
 						} else {
 							Messages.messageCommandUsageConfig(sender);
 						}
 					} else {
-						Messages.messageCommandUsageConfig(sender);
+						Messages.noPermission(player);
 					}
 				} else {
 					boolean addonCommandFound = false;
-					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+					for (Entry<File, PowerRanksAddon> prAddon : this.plugin.addonsManager.addonClasses.entrySet()) {
+						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.plugin, player);
 						if (prAddon.getValue().onPowerRanksCommand(prPlayer, true, args[0], args)) {
 							addonCommandFound = true;
 						}
@@ -1709,7 +1715,7 @@ public class Cmd implements CommandExecutor {
 						} else {
 							String resetid = args[1];
 							if (resetid.equalsIgnoreCase(PowerRanks.factoryresetid))
-								this.m.factoryReset(sender);
+								this.plugin.factoryReset(sender);
 							else
 								Messages.messageCommandFactoryReset(console);
 						}
@@ -1931,7 +1937,7 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						final String addon_name = args[1];
 						PowerRanksAddon addon = null;
-						for (Entry<File, PowerRanksAddon> a : this.m.addonsManager.addonClasses.entrySet()) {
+						for (Entry<File, PowerRanksAddon> a : this.plugin.addonsManager.addonClasses.entrySet()) {
 							if (a.getValue().getIdentifier().equalsIgnoreCase(addon_name))
 								addon = a.getValue();
 						}
@@ -1997,10 +2003,58 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageVerbose(console);
 					}
+				} else if (args[0].equalsIgnoreCase("pluginhook")) {
+					if (args.length == 1) {
+						Messages.messagePluginhookStats(sender);
+					} else if (args.length == 3) {
+						String state = args[1];
+						String pluginname = args[2];
+						if ((state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) && CachedConfig.contains("plugin_hook." + pluginname.toLowerCase())) {
+							CachedConfig.set("plugin_hook." + pluginname.toLowerCase(), state.equalsIgnoreCase("enable"));
+							Messages.pluginhookStateChanged(sender, pluginname.toLowerCase(), (state.equalsIgnoreCase("enable") ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+						} else {
+							if (state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) {
+								Messages.pluginhookUnknownPlugin(sender);
+							} else {
+								Messages.pluginhookUnknownState(sender);
+							}
+						}
+					} else {
+						Messages.messageCommandUsagePluginhook(sender);
+					}
+				} else if (args[0].equalsIgnoreCase("config")) {
+					if (args.length == 2) {
+						if (args[1].equalsIgnoreCase("removeworldtag")) {
+							String world_tag_regex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}[\\[]world[\\]]([&][a-fA-F0-9k-oK-OrR]){0,1}[ ]{0,1}";
+							Pattern world_tag_pattern = Pattern.compile(world_tag_regex);
+							Matcher world_tag_matcher_chat = world_tag_pattern.matcher(CachedConfig.getString("chat.format").toLowerCase());
+							Matcher world_tag_matcher_tab = world_tag_pattern.matcher(CachedConfig.getString("tablist_modification.format").toLowerCase());
+
+							while (world_tag_matcher_chat.find()) {
+								int start = world_tag_matcher_chat.start();
+								int end = world_tag_matcher_chat.end();
+								CachedConfig.set("chat.format", CachedConfig.getString("chat.format").replace(CachedConfig.getString("chat.format").substring(start, end), ""));
+							}
+
+							while (world_tag_matcher_tab.find()) {
+								int start = world_tag_matcher_tab.start();
+								int end = world_tag_matcher_tab.end();
+								CachedConfig.set("tablist_modification.format", CachedConfig.getString("tablist_modification.format").replace(CachedConfig.getString("tablist_modification.format").substring(start, end), ""));
+							}
+
+							plugin.updateAllPlayersTABlist();
+
+							Messages.configWorldTagRemoved(sender);
+						} else {
+							Messages.messageCommandUsageConfig(sender);
+						}
+					} else {
+						Messages.messageCommandUsageConfig(sender);
+					}
 				} else {
 					boolean addonCommandFound = false;
-					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, "CONSOLE");
+					for (Entry<File, PowerRanksAddon> prAddon : this.plugin.addonsManager.addonClasses.entrySet()) {
+						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.plugin, "CONSOLE");
 						if (prAddon.getValue().onPowerRanksCommand(prPlayer, false, args[0], args)) {
 							addonCommandFound = true;
 						}
