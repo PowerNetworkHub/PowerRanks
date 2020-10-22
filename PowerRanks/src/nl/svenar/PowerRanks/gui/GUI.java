@@ -47,6 +47,7 @@ public class GUI {
 		return is_powerranks_gui;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void clickedItem(Player player, int slot) {
 		GUIPage gui = guis.get(player);
 		if (gui == null || slot < 0 || slot > gui.getGUI().getSize())

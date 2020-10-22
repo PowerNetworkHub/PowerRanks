@@ -25,6 +25,7 @@ import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
 import org.bukkit.event.Listener;
 
+@SuppressWarnings("deprecation")
 public class Users implements Listener {
 	PowerRanks m;
 

@@ -38,6 +38,7 @@ public class Cmd implements CommandExecutor {
 		this.m = m;
 	}
 
+	@SuppressWarnings("deprecation")
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String commandLabel, final String[] args) {
 		final Users s = new Users(this.m);
 		if (sender instanceof Player) { // TODO nothing todo just easy navigation
