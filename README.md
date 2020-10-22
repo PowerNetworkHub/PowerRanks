@@ -14,15 +14,11 @@ PowerRanks is...
 * **Free** - Available for download and usage at no cost.
 * **Open-Source** - Together we can make PowerRanks better.
 
-## Different Versions
+## Different branches
 
-Legacy > PowerRanks V1.x
+master > PowerRanks V1.x
 
-Core > The new PowerRanks v2.0 core
-
-Bukkit > The new PowerRanks v2.0 version for Bukkit
-
-Bungee > The new PowerRanks v2.0 version for BungeeCord
+V2 > The new PowerRanks version
 
 ## Support me
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z314C2H)
