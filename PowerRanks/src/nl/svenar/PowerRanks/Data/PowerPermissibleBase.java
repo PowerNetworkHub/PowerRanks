@@ -303,6 +303,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 				} else {
 					PowerRanksVerbose.log("checkPermissionWildcardTree", "Error checking player '" + player.getName() + "' for permission: " + perm + "! playerAllowedPermissions did not contain the player.");
 					plugin.setupPermissions(player);
+					return false;
 				}
 			}
 			permission_split[i] = "";
