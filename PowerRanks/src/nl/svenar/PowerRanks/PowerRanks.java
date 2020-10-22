@@ -63,6 +63,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.google.common.collect.ImmutableMap;
@@ -298,10 +299,25 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		if (has_nametagedit) {
 			plugin_hook_nametagedit = true;
+			setup_nte();
 		}
 
-		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags)
+		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags && !has_nametagedit)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
+	}
+
+	private void setup_nte() {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (getServer().getPluginManager().isPluginEnabled("NametagEdit")) {
+					this.cancel();
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						updateTablistName(player);
+					}
+				}
+			}
+		}.runTaskTimer(this, 20, 20);
 	}
 
 	private boolean handle_update_checking() {
@@ -846,7 +862,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						if (prefix_format == null) {
 							PowerRanksVerbose.log("updateNametagEditData", "prefix_format is NULL");
 						}
-						
+
 						if (suffix_format == null) {
 							PowerRanksVerbose.log("updateNametagEditData", "suffix_format is NULL");
 						}
@@ -863,7 +879,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					prefix_format = PowerRanksChatColor.colorize(prefix_format, true);
 					suffix_format = PowerRanksChatColor.colorize(suffix_format, true);
-					
+
 					INametagApi nteAPI = NametagEdit.getApi();
 					if (nteAPI != null) {
 						nteAPI.setNametag(player, prefix_format + (prefix_format.length() > 0 ? " " : ""), (suffix_format.length() > 0 ? " " : "") + suffix_format);
@@ -959,19 +975,19 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor, boolean updateNTE) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
-		
+
 		try {
 			if (updateNTE) {
 				updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
 			}
-			
+
 			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
 				return;
 
 			player.setPlayerListName(playerTablistNameBackup.get(player));
 
 			playerTablistNameBackup.put(player, player.getPlayerListName());
-			
+
 			String format = CachedConfig.getString("tablist_modification.format");
 
 			if (format.contains("[name]")) {
