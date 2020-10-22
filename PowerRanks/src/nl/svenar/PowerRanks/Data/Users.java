@@ -1106,6 +1106,7 @@ public class Users implements Listener {
 			}
 
 			this.m.setupPermissions(player);
+			this.m.updateTablistName(player);
 
 			return true;
 		} catch (Exception e) {
@@ -1367,6 +1368,7 @@ public class Users implements Listener {
 
 					if (tagExists) {
 						CachedPlayers.set("players." + uuid + ".usertag", tag, false);
+						this.m.updateTablistName(player);
 						return true;
 					}
 				} catch (Exception e) {
@@ -1434,6 +1436,7 @@ public class Users implements Listener {
 		try {
 
 			CachedPlayers.set("players." + uuid + ".usertag", "", false);
+			this.m.updateTablistName(player);
 			return true;
 
 		} catch (Exception e) {
