@@ -296,8 +296,13 @@ public class PowerPermissibleBase extends PermissibleBase {
 			if (!perm.endsWith("*")) {
 				perm += ".*";
 				PowerRanksVerbose.log("checkPermissionWildcardTree", "Checking: " + perm);
-				if (plugin.playerAllowedPermissions.get(player).contains(perm)) {
-					return true;
+				if (plugin.playerAllowedPermissions.containsKey(player)) {
+					if (plugin.playerAllowedPermissions.get(player).contains(perm)) {
+						return true;
+					}
+				} else {
+					PowerRanksVerbose.log("checkPermissionWildcardTree", "Error checking player '" + player.getName() + "' for permission: " + perm + "! playerAllowedPermissions did not contain the player.");
+					plugin.setupPermissions(player);
 				}
 			}
 			permission_split[i] = "";
