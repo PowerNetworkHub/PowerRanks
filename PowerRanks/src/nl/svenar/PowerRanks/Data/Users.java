@@ -398,10 +398,14 @@ public class Users implements Listener {
 			if (!rank.equals("*")) {
 				if (CachedRanks.get("Groups." + rank) != null) {
 					List<String> list = (List<String>) CachedRanks.getStringList("Groups." + rank + ".permissions");
+					if (list == null) {
+						list = new ArrayList<String>();
+					}
 					if (!list.contains(permission)) {
 						list.add(permission);
 						CachedRanks.set("Groups." + rank + ".permissions", (Object) list);
 					}
+
 					this.m.updatePlayersWithRank(this, rank);
 					return true;
 				}
