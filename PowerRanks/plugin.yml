@@ -1,5 +1,5 @@
 name: PowerRanks
-version: 1.9 BETA 3
+version: 1.9 BETA 4
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
@@ -131,6 +131,8 @@ permissions:
   powerranks.cmd.verbose:
     default: op
   powerranks.cmd.pluginhook:
+    default: op
+  powerranks.cmd.config:
     default: op
   powerranks.signs.create:
     default: op

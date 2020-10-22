@@ -93,6 +93,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("delsubrankworld");
 				commands_list.add("buyrank");
 				commands_list.add("pluginhook");
+				commands_list.add("config");
 
 				for (String command : addon_commands) {
 					if (command.toLowerCase().contains(args[0].toLowerCase()))
@@ -161,6 +162,10 @@ public class ChatTabExecutor implements TabCompleter {
 				if (args[0].equalsIgnoreCase("pluginhook")) {
 					list.add("enable");
 					list.add("disable");
+				}
+				
+				if (args[0].equalsIgnoreCase("config")) {
+					list.add("removeworldtag");
 				}
 			}
 

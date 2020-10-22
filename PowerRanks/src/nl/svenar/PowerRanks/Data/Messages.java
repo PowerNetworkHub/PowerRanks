@@ -1396,11 +1396,18 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);		
 	}
+	
+	public static void messageCommandUsageConfig(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_config");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
+	}
 
 	public static void pluginhookStateChanged(CommandSender sender, String plugin_name, String new_state) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg1 = getGeneralMessage(langYaml, "messages.pluginhook_state_changed");
-		String msg2 = getGeneralMessage(langYaml, "messages.pluginhook_suggest_restart");
+		String msg2 = getGeneralMessage(langYaml, "messages.suggest_restart");
 		msg1 = Util.replaceAll(msg1, "%argument_plugin_name%", plugin_name);
 		msg1 = Util.replaceAll(msg1, "%argument_new_state%", new_state);
 		if (msg1.length() > 0)
@@ -1421,5 +1428,15 @@ public class Messages {
 		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_state");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);		
+	}
+
+	public static void configWorldTagRemoved(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg1 = getGeneralMessage(langYaml, "messages.config_worldtag_removed");
+		String msg2 = getGeneralMessage(langYaml, "messages.suggest_restart");
+		if (msg1.length() > 0)
+			sender.sendMessage(msg1);
+		if (msg2.length() > 0)
+			sender.sendMessage(msg2);		
 	}
 }

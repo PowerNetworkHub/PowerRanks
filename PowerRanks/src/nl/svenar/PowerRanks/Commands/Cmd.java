@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -1174,7 +1176,7 @@ public class Cmd implements CommandExecutor {
 				} else if (args[0].equalsIgnoreCase("pluginhook")) {
 					if (player.hasPermission("powerranks.cmd.pluginhook")) {
 						if (args.length == 1) {
-							 Messages.messagePluginhookStats(sender);
+							Messages.messagePluginhookStats(sender);
 						} else if (args.length == 3) {
 							String state = args[1];
 							String pluginname = args[2];
@@ -1189,10 +1191,37 @@ public class Cmd implements CommandExecutor {
 								}
 							}
 						} else {
-							Messages.messageCommandUsagePluginhook(player);
+							Messages.messageCommandUsagePluginhook(sender);
 						}
 					} else {
 						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("config")) {
+					if (args.length == 2) {
+						if (args[1].equalsIgnoreCase("removeworldtag")) {
+							String world_tag_regex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}[\\[]world[\\]]([&][a-fA-F0-9k-oK-OrR]){0,1}[ ]{0,1}";
+							Pattern world_tag_pattern = Pattern.compile(world_tag_regex);
+							Matcher world_tag_matcher_chat = world_tag_pattern.matcher(CachedConfig.getString("chat.format").toLowerCase());
+							Matcher world_tag_matcher_tab = world_tag_pattern.matcher(CachedConfig.getString("tablist_modification.format").toLowerCase());
+
+							while (world_tag_matcher_chat.find()) {
+								int start = world_tag_matcher_chat.start();
+								int end = world_tag_matcher_chat.end();
+								CachedConfig.set("chat.format", CachedConfig.getString("chat.format").replace(CachedConfig.getString("chat.format").substring(start, end), ""));
+							}
+
+							while (world_tag_matcher_tab.find()) {
+								int start = world_tag_matcher_tab.start();
+								int end = world_tag_matcher_tab.end();
+								CachedConfig.set("tablist_modification.format", CachedConfig.getString("tablist_modification.format").replace(CachedConfig.getString("tablist_modification.format").substring(start, end), ""));
+							}
+
+							Messages.configWorldTagRemoved(sender);
+						} else {
+							Messages.messageCommandUsageConfig(sender);
+						}
+					} else {
+						Messages.messageCommandUsageConfig(sender);
 					}
 				} else {
 					boolean addonCommandFound = false;
