@@ -142,12 +142,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
 		new PowerRanksChatColor();
-
-		// TODO
-//		BungeeMessageListener bungee_message_listener = new BungeeMessageListener();
-//		this.getServer().getMessenger().registerOutgoingPluginChannel(this, "powerranks:onjoin");
-//		this.getServer().getMessenger().registerIncomingPluginChannel(this, "powerranks:onjoin", (PluginMessageListener) bungee_message_listener);
-
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
