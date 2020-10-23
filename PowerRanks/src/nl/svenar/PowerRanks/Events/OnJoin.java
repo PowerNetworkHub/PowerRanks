@@ -60,13 +60,13 @@ public class OnJoin implements Listener {
 		CachedPlayers.set(new_user_data);
 		
 		this.m.playerInjectPermissible(player);
-		this.m.playerPermissionAttachment.put(player.getName(), player.addAttachment(this.m));
+		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
 
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
 
 		long time = new Date().getTime();
-		this.m.playerLoginTime.put(player, time);
+		this.m.playerLoginTime.put(player.getUniqueId(), time);
 
 		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
@@ -80,12 +80,12 @@ public class OnJoin implements Listener {
 		this.m.playerUninjectPermissible(player);
 		this.m.removePermissions(player);
 
-		this.m.playerPermissionAttachment.remove(player.getName());
+		this.m.playerPermissionAttachment.remove(player.getUniqueId());
 
 		long leave_time = new Date().getTime();
 		long join_time = leave_time;
 		try {
-			join_time = this.m.playerLoginTime.get(player);
+			join_time = this.m.playerLoginTime.get(player.getUniqueId());
 		} catch (Exception e1) {
 		}
 

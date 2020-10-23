@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import org.bukkit.permissions.Permissible;
@@ -105,11 +106,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	FileConfiguration players;
 	FileConfiguration lang;
 	public String updatemsg;
-	public Map<String, PermissionAttachment> playerPermissionAttachment = new HashMap<String, PermissionAttachment>();
-	public Map<Player, ArrayList<String>> playerDisallowedPermissions = new HashMap<Player, ArrayList<String>>();
-	public Map<Player, ArrayList<String>> playerAllowedPermissions = new HashMap<Player, ArrayList<String>>();
-	public Map<Player, String> playerTablistNameBackup = new HashMap<Player, String>();
-	public Map<Player, Long> playerLoginTime = new HashMap<Player, Long>();
+	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
+	public Map<UUID, ArrayList<String>> playerDisallowedPermissions = new HashMap<UUID, ArrayList<String>>();
+	public Map<UUID, ArrayList<String>> playerAllowedPermissions = new HashMap<UUID, ArrayList<String>>();
+	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
+	public Map<UUID, Long> playerLoginTime = new HashMap<UUID, Long>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -243,13 +244,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			this.playerUninjectPermissible(player);
 		}
 
-		for (Entry<String, PermissionAttachment> pa : playerPermissionAttachment.entrySet()) {
+		for (Entry<UUID, PermissionAttachment> pa : playerPermissionAttachment.entrySet()) {
 			pa.getValue().remove();
 		}
 		playerPermissionAttachment.clear();
 
-		for (Entry<Player, String> pa : playerTablistNameBackup.entrySet()) {
-			pa.getKey().setPlayerListName(pa.getValue());
+		for (Entry<UUID, String> pa : playerTablistNameBackup.entrySet()) {
+			Player player = getPlayerFromUUID(pa.getKey());
+			if (player != null) {
+				player.setPlayerListName(pa.getValue());
+			}
 		}
 		playerTablistNameBackup.clear();
 
@@ -258,6 +262,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
 			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		}
+	}
+
+	private Player getPlayerFromUUID(UUID uuid) {
+		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "===----------Checking UUID----------===");
+		Player player = null;
+		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
+			PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "Matching '" + online_player.getName() + "' " + (uuid == online_player.getUniqueId() ? "MATCH!" : "No match") + " (" + uuid + ", " + online_player.getUniqueId() + ")");
+			if (uuid == online_player.getUniqueId()) {
+				player = online_player;
+				break;
+			}
+		}
+		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "===---------------------------------===");
+		return player;
 	}
 
 	private void setupSoftDependencies() {
@@ -298,6 +316,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		if (has_nametagedit) {
+			PowerRanks.log.info("NametagEdit found!");
 			plugin_hook_nametagedit = true;
 			setup_nte();
 		}
@@ -551,16 +570,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void setupPermissions(Player player) {
 		PowerRanksVerbose.log("setupPermissions", "Setting up " + player.getName() + "'s permissions");
 		this.playerUninjectPermissible(player);
-		if (!playerPermissionAttachment.containsKey(player.getName())) {
+		if (!playerPermissionAttachment.containsKey(player.getUniqueId())) {
 			this.playerInjectPermissible(player);
 		}
 
 		clearPermissions(player);
 
-		playerDisallowedPermissions.put(player, new ArrayList<String>());
-		playerAllowedPermissions.put(player, new ArrayList<String>());
+		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
 
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
+		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
 		final String uuid = player.getUniqueId().toString();
 
 		try {
@@ -612,18 +631,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						boolean enabled = !permissions.get(j).startsWith("-");
 						if (enabled) {
 							attachment.setPermission((String) permissions.get(j), true);
-							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
+							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j));
 
-							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player).add((String) permissions.get(j));
+							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j));
 						} else {
 							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
-							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
+							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j).replaceFirst("-", ""));
 
-							if (playerAllowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player).remove((String) permissions.get(j).replaceFirst("-", ""));
+							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -638,18 +657,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							boolean enabled = !Permissions.get(j).startsWith("-");
 							if (enabled) {
 								attachment.setPermission((String) Permissions.get(j), true);
-								if (playerDisallowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
-									playerDisallowedPermissions.get(player).remove((String) Permissions.get(j));
+								if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
+									playerDisallowedPermissions.get(player.getUniqueId()).remove((String) Permissions.get(j));
 
-								if (!playerAllowedPermissions.get(player).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
-									playerAllowedPermissions.get(player).add((String) Permissions.get(j));
+								if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
+									playerAllowedPermissions.get(player.getUniqueId()).add((String) Permissions.get(j));
 							} else {
 								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
-								if (!playerDisallowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
-									playerDisallowedPermissions.get(player).add((String) Permissions.get(j).replaceFirst("-", ""));
+								if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
+									playerDisallowedPermissions.get(player.getUniqueId()).add((String) Permissions.get(j).replaceFirst("-", ""));
 
-								if (playerAllowedPermissions.get(player).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
-									playerAllowedPermissions.get(player).remove((String) Permissions.get(j).replaceFirst("-", ""));
+								if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
+									playerAllowedPermissions.get(player.getUniqueId()).remove((String) Permissions.get(j).replaceFirst("-", ""));
 							}
 						}
 					}
@@ -662,18 +681,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					boolean enabled = !GroupPermissions.get(i).startsWith("-");
 					if (enabled) {
 						attachment.setPermission((String) GroupPermissions.get(i), true);
-						if (playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
-							playerDisallowedPermissions.get(player).remove((String) GroupPermissions.get(i));
+						if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+							playerDisallowedPermissions.get(player.getUniqueId()).remove((String) GroupPermissions.get(i));
 
-						if (!playerAllowedPermissions.get(player).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
-							playerAllowedPermissions.get(player).add((String) GroupPermissions.get(i));
+						if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+							playerAllowedPermissions.get(player.getUniqueId()).add((String) GroupPermissions.get(i));
 					} else {
 						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
-						if (!playerDisallowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
-							playerDisallowedPermissions.get(player).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
+						if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
+							playerDisallowedPermissions.get(player.getUniqueId()).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
 
-						if (playerAllowedPermissions.get(player).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
-							playerAllowedPermissions.get(player).remove((String) GroupPermissions.get(i).replaceFirst("-", ""));
+						if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
+							playerAllowedPermissions.get(player.getUniqueId()).remove((String) GroupPermissions.get(i).replaceFirst("-", ""));
 					}
 				}
 			}
@@ -685,18 +704,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						boolean enabled = !permissions.get(i).startsWith("-");
 						if (enabled) {
 							attachment.setPermission((String) permissions.get(i), true);
-							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
-								playerDisallowedPermissions.get(player).remove((String) permissions.get(i));
+							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(i));
 
-							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
-								playerAllowedPermissions.get(player).add((String) permissions.get(i));
+							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(i));
 						} else {
 							attachment.setPermission((String) permissions.get(i).replaceFirst("-", ""), false);
-							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
-								playerDisallowedPermissions.get(player).add((String) permissions.get(i).replaceFirst("-", ""));
+							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
+								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(i).replaceFirst("-", ""));
 
-							if (playerAllowedPermissions.get(player).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
-								playerAllowedPermissions.get(player).remove((String) permissions.get(i).replaceFirst("-", ""));
+							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
+								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(i).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -710,11 +729,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void removePermissions(Player player) {
 		PowerRanksVerbose.log("removePermissions", "Removing " + player.getName() + "'s permissions");
-		if (playerPermissionAttachment.containsKey(player.getName())) {
+		if (playerPermissionAttachment.containsKey(player.getUniqueId())) {
 			this.playerInjectPermissible(player);
 		}
 
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
+		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
 		final String uuid = player.getUniqueId().toString();
 
 		try {
@@ -765,18 +784,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						boolean enabled = !permissions.get(j).startsWith("-");
 						if (enabled) {
 							attachment.setPermission((String) permissions.get(j), true);
-							if (playerDisallowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player).remove((String) permissions.get(j));
+							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j));
 
-							if (!playerAllowedPermissions.get(player).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player).add((String) permissions.get(j));
+							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j));
 						} else {
 							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
-							if (!playerDisallowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player).add((String) permissions.get(j).replaceFirst("-", ""));
+							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j).replaceFirst("-", ""));
 
-							if (playerAllowedPermissions.get(player).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player).remove((String) permissions.get(j).replaceFirst("-", ""));
+							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j).replaceFirst("-", ""));
 						}
 					}
 				}
@@ -813,20 +832,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 
-		playerDisallowedPermissions.put(player, new ArrayList<String>());
-		playerAllowedPermissions.put(player, new ArrayList<String>());
+		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
 	}
 
 	public void clearPermissions(Player player) {
 		PowerRanksVerbose.log("clearPermissions", "Clearing " + player.getName() + "'s permissions");
-		if (playerPermissionAttachment.containsKey(player.getName())) {
+		if (playerPermissionAttachment.containsKey(player.getUniqueId())) {
 			this.playerInjectPermissible(player);
 		}
 
-		playerDisallowedPermissions.put(player, new ArrayList<String>());
-		playerAllowedPermissions.put(player, new ArrayList<String>());
+		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
 
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getName());
+		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
 
 		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
 			attachment.unsetPermission(perm.getPermission());
@@ -839,8 +858,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
 		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
 
-		if (playerPermissionAttachment.get(player.getName()) == null)
-			playerPermissionAttachment.put(player.getName(), player.addAttachment(this));
+		if (playerPermissionAttachment.get(player.getUniqueId()) == null)
+			playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this));
 	}
 
 	public void playerUninjectPermissible(Player player) {
@@ -984,9 +1003,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
 				return;
 
-			player.setPlayerListName(playerTablistNameBackup.get(player));
+			player.setPlayerListName(playerTablistNameBackup.get(player.getUniqueId()));
 
-			playerTablistNameBackup.put(player, player.getPlayerListName());
+			playerTablistNameBackup.put(player.getUniqueId(), player.getPlayerListName());
 
 			String format = CachedConfig.getString("tablist_modification.format");
 
