@@ -82,7 +82,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
-	
+
 	public static void messagePluginhookStats(CommandSender sender) {
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
@@ -1394,14 +1394,14 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_pluginhook");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
-	
+
 	public static void messageCommandUsageConfig(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_config");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void pluginhookStateChanged(CommandSender sender, String plugin_name, String new_state) {
@@ -1420,14 +1420,14 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_plugin");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void pluginhookUnknownState(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_state");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
 	public static void configWorldTagRemoved(CommandSender sender) {
@@ -1437,7 +1437,7 @@ public class Messages {
 		if (msg1.length() > 0)
 			sender.sendMessage(msg1);
 		if (msg2.length() > 0)
-			sender.sendMessage(msg2);		
+			sender.sendMessage(msg2);
 	}
 
 	public static void configStateChanged(CommandSender sender, String target, String new_state) {
@@ -1449,6 +1449,15 @@ public class Messages {
 		if (msg1.length() > 0)
 			sender.sendMessage(msg1);
 		if (msg2.length() > 0)
-			sender.sendMessage(msg2);		
+			sender.sendMessage(msg2);
+	}
+
+	public static void messageUsertagNotFound(CommandSender sender, String usertag) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+
+		String msg = getGeneralMessage(langYaml, "messages.usertag_not_found");
+		msg = Util.replaceAll(msg, "%argument_usertag%", usertag);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
 	}
 }

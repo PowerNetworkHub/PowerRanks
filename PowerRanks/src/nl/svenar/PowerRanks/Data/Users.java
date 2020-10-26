@@ -1289,38 +1289,49 @@ public class Users implements Listener {
 		return false;
 	}
 
+	public boolean setUserTag(Player player, String tag) {
+		String uuid = player.getUniqueId().toString();
+
+		if (tag.length() > 0) {
+			try {
+				if (CachedRanks.contains("Usertags")) {
+					try {
+						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+						boolean tagExists = false;
+						for (String key : tags.getKeys(false)) {
+							if (key.equalsIgnoreCase(tag)) {
+								tagExists = true;
+								tag = key;
+								break;
+							}
+						}
+	
+						if (tagExists) {
+							CachedPlayers.set("players." + uuid + ".usertag", tag, false);
+							this.m.updateTablistName(player);
+							return true;
+						}
+					} catch (Exception e) {
+					}
+				}
+	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			CachedPlayers.set("players." + uuid + ".usertag", "", false);
+			this.m.updateTablistName(player);
+			return true;
+		}
+		return false;
+	}
+
 	public boolean setUserTag(String playername, String tag) {
 		Player player = Bukkit.getServer().getPlayer(playername);
 		if (player == null)
 			return false;
+		return setUserTag(player, tag);
 
-		String uuid = player.getUniqueId().toString();
-
-		try {
-			if (CachedRanks.contains("Usertags")) {
-				try {
-					ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-					boolean tagExists = false;
-					for (String key : tags.getKeys(false)) {
-						if (key.equalsIgnoreCase(tag)) {
-							tagExists = true;
-							break;
-						}
-					}
-
-					if (tagExists) {
-						CachedPlayers.set("players." + uuid + ".usertag", tag, false);
-						this.m.updateTablistName(player);
-						return true;
-					}
-				} catch (Exception e) {
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 	public Set<String> getUserTags() {

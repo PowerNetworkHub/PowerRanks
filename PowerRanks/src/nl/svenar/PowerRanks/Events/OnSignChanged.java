@@ -48,6 +48,25 @@ public class OnSignChanged implements Listener {
 					} else {
 						Messages.messageSignCreated(event.getPlayer());
 					}
+				} else if (sign_command.equalsIgnoreCase("usertag")) {
+					Set<String> usertags = s.getUserTags();
+					boolean usertag_exists = false;
+					if (sign_argument.length() > 0) {
+						for (String usertag : usertags) {
+							if (usertag.equalsIgnoreCase(sign_argument)) {
+								usertag_exists = true;
+								break;
+							}
+						}
+					} else {
+						usertag_exists = true;
+					}
+					if (!usertag_exists) {
+						Messages.messageUsertagNotFound(event.getPlayer(), sign_argument);
+						event.setLine(3, PowerRanks.chatColor("&4Error", true));
+					} else {
+						Messages.messageSignCreated(event.getPlayer());
+					}
 				} else if (sign_command.equalsIgnoreCase("rankup")) {
 					Set<String> ranks = s.getGroups();
 					if (sign_argument.length() == 0) {

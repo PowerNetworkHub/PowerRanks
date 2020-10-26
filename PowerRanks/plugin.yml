@@ -1,5 +1,5 @@
 name: PowerRanks
-version: 1.9.1 BETA 3
+version: 1.9.1 BETA 4
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
@@ -145,6 +145,8 @@ permissions:
   powerranks.signs.checkrank:
     default: op
   powerranks.signs.gui:
+    default: op
+  powerranks.signs.usertag:
     default: op
   powerranks.signs.rankup:
     default: op

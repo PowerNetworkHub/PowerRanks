@@ -32,6 +32,7 @@ messages:
    rank_set_target: "%plugin_prefix% You have been promoted to: %argument_rank% by %argument_sender%"
    player_not_found: "%plugin_prefix% &cPlayer '%argument_target%' not found!"
    group_not_found: "%plugin_prefix% &cGroup '%argument_rank%' not found!"
+   usertag_not_found: "%plugin_prefix% &cUsertag '%argument_usertag%' not found!"
    player_check_rank: "%plugin_prefix% %argument_target%'s rank is %argument_rank%"
    inheritance_added: "%plugin_prefix% &aInheritance '%argument_inheritance%' added to rank: %argument_rank%"
    inheritance_removed: "%plugin_prefix% &aInheritance '%argument_inheritance%' removed from rank: %argument_rank%"

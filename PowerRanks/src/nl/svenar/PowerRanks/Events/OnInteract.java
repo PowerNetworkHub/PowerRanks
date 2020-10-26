@@ -82,6 +82,20 @@ public class OnInteract implements Listener {
 				} else {
 					Messages.noPermission(player);
 				}
+			} else if (sign_command.equalsIgnoreCase("usertag")) {
+				if (player.hasPermission("powerranks.signs.usertag")) {
+					if(s.setUserTag(player, sign_argument)) {
+						if (sign_argument.length() > 0) {
+							Messages.messageCommandSetusertagSuccess(player, player.getName(), sign_argument);
+						} else {
+							Messages.messageCommandClearusertagSuccess(player, player.getName());
+						}
+					} else {
+						Messages.messageCommandSetusertagError(player, player.getName(), sign_argument);
+					}
+				} else {
+					Messages.noPermission(player);
+				}
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
 					if (sign_argument.length() == 0) {
