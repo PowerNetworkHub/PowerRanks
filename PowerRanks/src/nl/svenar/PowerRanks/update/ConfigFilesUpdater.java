@@ -68,12 +68,7 @@ public class ConfigFilesUpdater {
 						}
 					}
 				}
-
-				List<String> list = new ArrayList<String>();
-				for (String line : tmpYamlConf.getStringList("commands.help")) {
-					list.add(line);
-				}
-				yamlConf.set("commands.help", (Object) list);
+//				yamlConf.set("commands.help", null);
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
 			} catch (IOException | InvalidConfigurationException e) {
