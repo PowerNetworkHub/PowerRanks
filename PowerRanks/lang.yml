@@ -170,10 +170,10 @@ commands:
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
    usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
    unknown_command: "%plugin_prefix% &cUnknown command."
-   reload_config: "%plugin_prefix% &2Reloading (config) %plugin_name%"
-   reload_config_done: "%plugin_prefix% &2%plugin_name% Reloaded (config)!"
-   reload_plugin: "%plugin_prefix% &2Reloading (plugin) %plugin_name%"
-   reload_plugin_done: "%plugin_prefix% &2%plugin_name% Reloaded (plugin)!"
+   reload_config: "%plugin_prefix% &2Reloading config"
+   reload_config_done: "%plugin_prefix% &2Reloaded config!"
+   reload_plugin: "%plugin_prefix% &2Reloading plugin"
+   reload_plugin_done: "%plugin_prefix% &2Reloaded plugin!"
    help:
       help:
          command: "help [page_number]"
