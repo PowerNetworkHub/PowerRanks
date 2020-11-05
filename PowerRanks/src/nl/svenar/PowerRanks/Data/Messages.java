@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -149,6 +150,22 @@ public class Messages {
 		helpMenu(player, 0);
 	}
 
+	public static void helpMenu(final CommandSender sender) {
+		if (sender instanceof Player) {
+			helpMenu((Player) sender, 0);
+		} else if (sender instanceof ConsoleCommandSender) {
+			helpMenu((ConsoleCommandSender) sender);
+		}
+	}
+
+	public static void helpMenu(final CommandSender sender, int page) {
+		if (sender instanceof Player) {
+			helpMenu((Player) sender, page);
+		} else if (sender instanceof ConsoleCommandSender) {
+			helpMenu((ConsoleCommandSender) sender);
+		}
+	}
+
 	public static void helpMenu(final Player sender, int page) {
 		if (page < 0)
 			page = 0;
@@ -179,6 +196,7 @@ public class Messages {
 			for (int i = 0; i < lines_per_page; i++) {
 				if (lines_per_page * page + i < lines.size()) {
 					String line = lines.get(lines_per_page * page + i);
+					line = Util.replaceAll(line, "%base_cmd%", "/pr");
 					line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 					line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 					String msg = PowerRanks.chatColor(line, true);
@@ -193,12 +211,14 @@ public class Messages {
 	public static void helpMenu(final ConsoleCommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 
-		List<String> lines = (List<String>) langYaml.getStringList("commands.help");
+		ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
 		if (lines != null) {
 			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = langYaml.getString("general.prefix");
-			for (String line : lines) {
+			for (String section : lines.getKeys(false)) {
+				String line = "&a" + langYaml.getString("commands.help." + section + ".command") + "&2 - " + langYaml.getString("commands.help." + section + ".description");
+				line = Util.replaceAll(line, "%base_cmd%", "/pr");
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 				String msg = PowerRanks.chatColor(line, true);
