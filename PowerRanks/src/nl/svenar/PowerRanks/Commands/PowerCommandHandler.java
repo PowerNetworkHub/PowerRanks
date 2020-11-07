@@ -24,6 +24,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		this.plugin = plugin;
 
 		new cmd_help(plugin, "help", COMMAND_EXECUTOR.ALL);
+		new cmd_reload(plugin, "reload", COMMAND_EXECUTOR.ALL);
 //		new cmd_create(plugin, "create");
 //		new cmd_remove(plugin, "remove");
 //		new cmd_addpoint(plugin, "addpoint");

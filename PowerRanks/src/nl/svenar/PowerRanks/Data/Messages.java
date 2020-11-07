@@ -37,6 +37,7 @@ public class Messages {
 				String prefix = langYaml.getString("general.prefix");
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+				line = Util.replaceAll(line, "%base_cmd%", "/pr");
 				msg = PowerRanks.chatColor(line, true);
 			}
 		}
