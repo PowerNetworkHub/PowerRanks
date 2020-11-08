@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TimeZone;
@@ -168,45 +169,97 @@ public class Messages {
 	}
 
 	public static void helpMenu(final Player sender, int page) {
-		if (page < 0)
-			page = 0;
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String tellrawbase = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\"},{\"text\":\"/%cmd% %arg%\",\"color\":\"%color_command_allowed%\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/%cmd% %arg%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"/%cmd% %arg%\"}},{\"text\":\"]\",\"color\":\"black\"},{\"text\":\" %help%\",\"color\":\"dark_green\"}]";
+		String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
+				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%previous_page%"
+				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%previous_page%"
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%previous_page%"
+				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%next_page%"
+				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%next_page%"
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%next_page%" + "\"}}]";
 
-		List<String> lines = (List<String>) langYaml.getStringList("commands.help");
+		ArrayList<String> help_messages = new ArrayList<String>();
+
+		help_messages.add(
+				"tellraw %player% [\"\",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"%plugin%\",\"color\":\"aqua\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}]"
+						.replaceAll("%plugin%", PowerRanks.pdf.getName()).replaceAll("%player%", sender.getName()));
+
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
+
 		int lines_per_page = 5;
-		if (page > lines.size() / lines_per_page)
-			page = lines.size() / lines_per_page;
+
+		page = page < 0 ? 0 : page;
+		page = page > lines.getKeys(false).size() / lines_per_page ? lines.getKeys(false).size() / lines_per_page : page;
+
+		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
+		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
 
 		if (lines != null) {
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
-//			sender.sendMessage(ChatColor.DARK_AQUA + "Page: " + page + "[<] [>]");
-
-			String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
-					+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
-					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
-					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
-					+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
-					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
-					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1) + "\"}}]";
-
-			if (Messages.powerRanks != null)
-				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
-
-			String prefix = langYaml.getString("general.prefix");
-			for (int i = 0; i < lines_per_page; i++) {
-				if (lines_per_page * page + i < lines.size()) {
-					String line = lines.get(lines_per_page * page + i);
-					line = Util.replaceAll(line, "%base_cmd%", "/pr");
-					line = Util.replaceAll(line, "%plugin_prefix%", prefix);
-					line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
-					String msg = PowerRanks.chatColor(line, true);
-					if (msg.length() > 0)
-						sender.sendMessage(msg);
+			help_messages.add(page_selector_tellraw);
+			help_messages.add("tellraw %player% {\"text\":\"[optional] <required>\",\"color\":\"dark_aqua\"}".replaceAll("%player%", sender.getName()));
+			int line_index = 0;
+			for (String section : lines.getKeys(false)) {
+				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
+					String help_command = langYaml.getString("commands.help." + section + ".command");
+					String help_description = langYaml.getString("commands.help." + section + ".description");
+					help_messages.add(tellrawbase.replaceAll("%arg%", help_command).replaceAll("%help%", help_description).replaceAll("%player%", sender.getName()).replaceAll("%cmd%", "pr").replaceAll("%color_command_allowed%",
+							sender.hasPermission("powerranks.cmd." + section) ? "green" : "red"));
 				}
+				line_index += 1;
 			}
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
+
+		help_messages.add("tellraw %player% [\"\",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"------------------------------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}]".replaceAll("%player%", sender.getName()));
+
+		if (Messages.powerRanks != null)
+			for (String msg : help_messages)
+				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), msg);
+//		if (page < 0)
+//			page = 0;
+//		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+//
+//		Set<String> lines = langYaml.getConfigurationSection("commands.help").getKeys(false);
+//		int lines_per_page = 5;
+//		if (page > lines.size() / lines_per_page)
+//			page = lines.size() / lines_per_page;
+//
+//		if (lines != null) {
+//			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+//			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
+////			sender.sendMessage(ChatColor.DARK_AQUA + "Page: " + page + "[<] [>]");
+//
+//			String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
+//					+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
+//					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
+//					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page - 1)
+//					+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
+//					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1)
+//					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr help " + (page + 1) + "\"}}]";
+//
+//			if (Messages.powerRanks != null)
+//				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+//
+//			String prefix = langYaml.getString("general.prefix");
+//			
+//			for (String section : lines) {
+//				
+//			}
+//			
+////			for (int i = 0; i < lines_per_page; i++) {
+////				if (lines_per_page * page + i < lines.size()) {
+//////					String line = "&a/pr " + langYaml.getString("commands.help." + section + ".command") + "&2 - " + langYaml.getString("commands.help." + section + ".description");
+//////					String line = lines.get(lines_per_page * page + i);
+////					line = Util.replaceAll(line, "%base_cmd%", "/pr");
+////					line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+////					line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+////					String msg = PowerRanks.chatColor(line, true);
+////					if (msg.length() > 0)
+////						sender.sendMessage(msg);
+////				}
+////			}
+//			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+//		}
 	}
 
 	public static void helpMenu(final ConsoleCommandSender sender) {
@@ -218,7 +271,7 @@ public class Messages {
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = langYaml.getString("general.prefix");
 			for (String section : lines.getKeys(false)) {
-				String line = "&a" + langYaml.getString("commands.help." + section + ".command") + "&2 - " + langYaml.getString("commands.help." + section + ".description");
+				String line = "&a/pr " + langYaml.getString("commands.help." + section + ".command") + "&2 - " + langYaml.getString("commands.help." + section + ".description");
 				line = Util.replaceAll(line, "%base_cmd%", "/pr");
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
