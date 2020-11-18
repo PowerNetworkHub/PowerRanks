@@ -1066,11 +1066,12 @@ public class Users implements Listener {
 		String uuid = player.getUniqueId().toString();
 
 		try {
-
-			if (CachedPlayers.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) != null) {
-				CachedPlayers.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank), null, false);
-			} else {
-				return false;
+			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+				if (CachedPlayers.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) != null) {
+					CachedPlayers.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank), null, false);
+				} else {
+					return false;
+				}
 			}
 
 			this.m.setupPermissions(player);
@@ -1113,11 +1114,12 @@ public class Users implements Listener {
 		String uuid = player.getUniqueId().toString();
 
 		try {
-
-			if (CachedPlayers.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) != null) {
-				CachedPlayers.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + "." + field, value, false);
-			} else {
-				return false;
+			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+				if (CachedPlayers.get("players." + uuid + ".subranks." + getRankIgnoreCase(subrank)) != null) {
+					CachedPlayers.set("players." + uuid + ".subranks." + getRankIgnoreCase(subrank) + "." + field, value, false);
+				} else {
+					return false;
+				}
 			}
 
 			return true;
@@ -1157,7 +1159,7 @@ public class Users implements Listener {
 		String uuid = player.getUniqueId().toString();
 		try {
 
-			if (CachedPlayers.get("players." + uuid + ".subranks") != null) {
+			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
 				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 
 				for (String r : subranks.getKeys(false)) {
@@ -1180,7 +1182,7 @@ public class Users implements Listener {
 		String uuid = player.getUniqueId().toString();
 		try {
 
-			if (CachedPlayers.get("players." + uuid + ".subranks") != null) {
+			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
 				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 
 				for (String r : subranks.getKeys(false)) {
@@ -1305,7 +1307,7 @@ public class Users implements Listener {
 								break;
 							}
 						}
-	
+
 						if (tagExists) {
 							CachedPlayers.set("players." + uuid + ".usertag", tag, false);
 							this.m.updateTablistName(player);
@@ -1314,7 +1316,7 @@ public class Users implements Listener {
 					} catch (Exception e) {
 					}
 				}
-	
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

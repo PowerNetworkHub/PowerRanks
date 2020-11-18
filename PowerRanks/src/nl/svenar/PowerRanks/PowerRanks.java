@@ -27,6 +27,7 @@ import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Commands.Cmd;
+import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
@@ -201,7 +202,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 		}
-		CachedPlayers.set(new_user_data);
+		CachedPlayers.set(new_user_data, true);
 
 		setupSoftDependencies();
 
@@ -471,7 +472,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 		}
-		CachedPlayers.set(new_user_data);
+		CachedPlayers.set(new_user_data, true);
 
 		this.setupPermissions();
 
@@ -1062,7 +1063,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime").intValue();
 			}
 		}
-		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000, true);
+		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000, false);
 	}
 
 	public void updatePlayersWithRank(Users users, String rank) {

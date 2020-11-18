@@ -140,24 +140,31 @@ public class CachedPlayers {
 		}
 	}
 
-	public static void set(HashMap<String, Object> data) {
+	public static void set(HashMap<String, Object> data, boolean cache_only) {
 		if (data.size() == 0) {
 			return;
 		}
 
-		final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
-		final YamlConfiguration playersYaml = new YamlConfiguration();
-
-		try {
-			playersYaml.load(playersFile);
+		if (cache_only) {
 			for (Entry<String, Object> kv : data.entrySet()) {
 				players_data.put(kv.getKey(), kv.getValue());
-				playersYaml.set(kv.getKey(), kv.getValue());
 			}
-			playersYaml.save(playersFile);
-			update();
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
+		} else {
+
+			final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
+			final YamlConfiguration playersYaml = new YamlConfiguration();
+
+			try {
+				playersYaml.load(playersFile);
+				for (Entry<String, Object> kv : data.entrySet()) {
+					players_data.put(kv.getKey(), kv.getValue());
+					playersYaml.set(kv.getKey(), kv.getValue());
+				}
+				playersYaml.save(playersFile);
+				update();
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

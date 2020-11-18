@@ -28,37 +28,38 @@ public class OnJoin implements Listener {
 	@EventHandler(ignoreCancelled = false)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
-		
+
 		if (!CachedPlayers.is_ready())
 			CachedPlayers.update();
-		
-		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
-		
 
-		if (!CachedPlayers.contains("players." + player.getUniqueId())) {
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".name"))
-				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
-			else if (CachedPlayers.getString("players." + player.getUniqueId() + ".name") != player.getName())
-				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
-			
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
-				new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
+//		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
 
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
-				new_user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+//		if (!CachedPlayers.contains("players." + player.getUniqueId())) {
+//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".name"))
+//				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+//			else if (CachedPlayers.getString("players." + player.getUniqueId() + ".name") != player.getName())
+//				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+//
+//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
+//				new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
+//
+//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
+//				new_user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+//
+//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
+//				new_user_data.put("players." + player.getUniqueId() + ".subranks", "");
+//
+//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+//				new_user_data.put("players." + player.getUniqueId() + ".usertag", "");
+//
+//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
+//				new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
+//
+//			CachedPlayers.set(new_user_data, false);
+//		} else {
+			validatePlayerData(player);
+//		}
 
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
-				new_user_data.put("players." + player.getUniqueId() + ".subranks", "");
-
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
-				new_user_data.put("players." + player.getUniqueId() + ".usertag", "");
-			
-			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
-				new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
-		}
-
-		CachedPlayers.set(new_user_data);
-		
 		this.m.playerInjectPermissible(player);
 		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
 
@@ -80,6 +81,8 @@ public class OnJoin implements Listener {
 		this.m.playerUninjectPermissible(player);
 		this.m.removePermissions(player);
 
+		validatePlayerData(player);
+
 		this.m.playerPermissionAttachment.remove(player.getUniqueId());
 
 		long leave_time = new Date().getTime();
@@ -94,6 +97,34 @@ public class OnJoin implements Listener {
 		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 			prAddon.getValue().onPlayerLeave(prPlayer);
+		}
+	}
+
+	private void validatePlayerData(Player player) {
+		HashMap<String, Object> user_data = new HashMap<String, Object>();
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".name") || !CachedPlayers.getString("players." + player.getUniqueId() + ".name").equals(player.getName()))
+			user_data.put("players." + player.getUniqueId() + ".name", player.getName());
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
+			user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
+			user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
+			user_data.put("players." + player.getUniqueId() + ".subranks", "");
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
+			user_data.put("players." + player.getUniqueId() + ".usertag", "");
+
+		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
+			user_data.put("players." + player.getUniqueId() + ".playtime", 0);
+
+		for (Entry<String, Object> kv : user_data.entrySet()) {
+			PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
+		}
+		if (user_data.size() > 0) {
+			CachedPlayers.set(user_data, false);
 		}
 	}
 }
