@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
-	<artifactId>PowerRanks</artifactId>
+	<artifactId>powerranks</artifactId>
 	<version>1.9.2</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
@@ -26,6 +26,14 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+                <repository>
+                        <id>github</id>
+                        <name>GitHub svenar-nl Apache Maven Packages</name>
+                        <url>https://maven.pkg.github.com/svenar-nl/PowerRanks</url>
+                </repository>
+        </distributionManagement>
 
 	<repositories>
 		<repository>
