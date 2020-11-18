@@ -20,7 +20,7 @@ public class cmd_reload extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args, boolean subcommandFailed) {
 		if (sender.hasPermission("powerranks.cmd.reload")) {
 			if (args.length != 1) {
 				Messages.messageCommandUsageReload(sender);
