@@ -9,7 +9,7 @@ public abstract class PowerCommand {
 	
 	protected PowerRanks plugin;
 	
-	enum COMMAND_EXECUTOR {
+	public enum COMMAND_EXECUTOR {
 		NONE,
 		PLAYER,
 		CONSOLE,
@@ -25,7 +25,7 @@ public abstract class PowerCommand {
 		this.ce = ce;
 	}
 	
-	public abstract boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args);
+	public abstract boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args, boolean subcommandFailed);
 	
 	public COMMAND_EXECUTOR getCommandExecutor() {
 		return this.ce;

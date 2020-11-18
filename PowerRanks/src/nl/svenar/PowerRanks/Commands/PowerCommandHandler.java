@@ -1,7 +1,10 @@
 package nl.svenar.PowerRanks.Commands;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
@@ -13,10 +16,14 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand.COMMAND_EXECUTOR;
+import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.addons.PowerRanksAddon;
+import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
 public class PowerCommandHandler implements CommandExecutor {
 
 	private static HashMap<String, PowerCommand> power_commands = new HashMap<String, PowerCommand>();
+	private static HashMap<PowerCommand, ArrayList<PowerSubCommand>> power_sub_commands = new HashMap<PowerCommand, ArrayList<PowerSubCommand>>();
 
 	private PowerRanks plugin;
 
@@ -56,12 +63,38 @@ public class PowerCommandHandler implements CommandExecutor {
 						|| (sender instanceof ConsoleCommandSender && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.CONSOLE || command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL))
 						|| (sender instanceof BlockCommandSender && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.COMMANDBLOCK || command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL));
 				if (is_allowed) {
-					return command_handler.onCommand(sender, cmd, commandLabel, Arrays.copyOfRange(args, 1, args.length));
+					if (args.length >= 2 && power_sub_commands.containsKey(command_handler)) {
+						String sub_command = args[1];
+						PowerSubCommand psc = get_power_sub_command(command_handler, sub_command);
+						if (psc == null) {
+							return command_handler.onCommand(sender, cmd, commandLabel, Arrays.copyOfRange(args, 1, args.length), true);
+						} else {
+							psc.onSubCommand(sender, cmd, commandLabel, Arrays.copyOfRange(args, 2, args.length));
+						}
+					} else {
+						return command_handler.onCommand(sender, cmd, commandLabel, Arrays.copyOfRange(args, 1, args.length), false);
+					}
 				} else {
 					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Only players can use this command");
 				}
 			} else {
-				sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Unknown Command");
+				boolean addonCommandFound = false;
+				PowerRanksPlayer prPlayer = null;
+				if (sender instanceof Player) {
+					prPlayer = new PowerRanksPlayer(this.plugin, (Player) sender);
+				} else {
+					prPlayer = new PowerRanksPlayer(this.plugin, "CONSOLE");
+				}
+
+				if (prPlayer != null) {
+					for (Entry<File, PowerRanksAddon> prAddon : this.plugin.addonsManager.addonClasses.entrySet()) {
+						if (prAddon.getValue().onPowerRanksCommand(prPlayer, true, args[0], args)) {
+							addonCommandFound = true;
+						}
+					}
+				}
+				if (!addonCommandFound)
+					Messages.unknownCommand(sender);
 			}
 
 		}
@@ -74,5 +107,14 @@ public class PowerCommandHandler implements CommandExecutor {
 
 	public static void add_power_command(String command_name, PowerCommand command_handler) {
 		power_commands.put(command_name.toLowerCase(), command_handler);
+	}
+	
+	public static PowerSubCommand get_power_sub_command(PowerCommand command_handler, String sub_command_name) {
+		for (PowerSubCommand psc : power_sub_commands.get(command_handler)) {
+			if (psc.commandName().equalsIgnoreCase(sub_command_name)) {
+				return psc;
+			}
+		}
+		return null;
 	}
 }
