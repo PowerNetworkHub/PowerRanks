@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.PowerConfigurationSection;
 import nl.svenar.PowerRanks.Commands.Cmd;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
@@ -34,6 +35,7 @@ import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Database.PowerDatabase;
 import nl.svenar.PowerRanks.Events.OnBuild;
 import nl.svenar.PowerRanks.Events.OnChat;
 import nl.svenar.PowerRanks.Events.OnInteract;
@@ -55,7 +57,6 @@ import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
 import nl.svenar.PowerRanks.update.Updater.UpdateType;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.io.File;
@@ -113,6 +114,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
 	public Map<UUID, Long> playerLoginTime = new HashMap<UUID, Long>();
 
+	private PowerDatabase prdb;
+
+	public static enum StorageType {
+		INIT, YAML, MySQL, SQLite
+	}
+
+	private static StorageType currentStorageType = StorageType.INIT;
+
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]" + ChatColor.RESET + " ";
@@ -139,10 +148,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
 		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
-		
+
 //		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new PowerCommandHandler(this));
 //		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new PowerCommandHandler(this));
-		
+
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
@@ -150,31 +159,89 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
+//		this.createDir(PowerRanks.fileLoc);
+//		this.configFile = new File(this.getDataFolder(), "config.yml");
+//		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
+//		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
+//		this.langFile = new File(this.getDataFolder(), "lang.yml");
+//		this.config = (FileConfiguration) new YamlConfiguration();
+//		this.ranks = (FileConfiguration) new YamlConfiguration();
+//		this.players = (FileConfiguration) new YamlConfiguration();
+//		this.lang = (FileConfiguration) new YamlConfiguration();
+//		try {
+//			this.copyFiles();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		this.loadAllFiles();
+
 		this.createDir(PowerRanks.fileLoc);
-		this.configFile = new File(this.getDataFolder(), "config.yml");
-		this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
-		this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
-		this.langFile = new File(this.getDataFolder(), "lang.yml");
-		this.config = (FileConfiguration) new YamlConfiguration();
-		this.ranks = (FileConfiguration) new YamlConfiguration();
-		this.players = (FileConfiguration) new YamlConfiguration();
-		this.lang = (FileConfiguration) new YamlConfiguration();
+
 		try {
-			this.copyFiles();
+			this.copyFiles(currentStorageType);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.loadAllFiles();
+		this.loadAllFiles(currentStorageType);
 
 		new CachedConfig(this);
-		new CachedPlayers(this);
-		new CachedRanks(this);
+
+		ConfigFilesUpdater.updateConfigFiles(this, currentStorageType);
+
+		switch (CachedConfig.getString("storage.type").toLowerCase()) {
+		case "yaml":
+			currentStorageType = StorageType.YAML;
+			PowerRanks.log.info("Using storage type: YAML");
+			break;
+
+		case "mysql":
+			currentStorageType = StorageType.MySQL;
+			PowerRanks.log.info("Using storage type: MySQL");
+			break;
+
+		case "sqlite":
+			currentStorageType = StorageType.SQLite;
+			PowerRanks.log.info("Using storage type: SQLite");
+			break;
+
+		default:
+			PowerRanks.log.warning("===--------------------===");
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("WARNING PowerRanks is disabled!");
+			PowerRanks.log.warning("Unknown storage type: " + CachedConfig.getString("storage.type"));
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("===--------------------===");
+			PluginManager plg = Bukkit.getPluginManager();
+			plg.disablePlugin(plg.getPlugin(PowerRanks.pdf.getName()));
+			break;
+		}
+
+		this.createDir(PowerRanks.fileLoc);
+
+		try {
+			this.copyFiles(currentStorageType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.loadAllFiles(currentStorageType);
+
+		// Database
+		prdb = new PowerDatabase(this, currentStorageType, CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"),
+				CachedConfig.getString("storage.database.password"), CachedConfig.getString("storage.database.database"));
+
+		if (CachedConfig.getString("storage.type").equalsIgnoreCase("mysql")) {
+			prdb.connectMYSQL();
+		} else if (CachedConfig.getString("storage.type").equalsIgnoreCase("sqlite")) {
+			prdb.connectSQLITE();
+		}
+		// Database
+
+		new CachedPlayers(this, this.prdb);
+		new CachedRanks(this, this.prdb);
 
 		if (handle_update_checking()) {
 			return;
 		}
-
-		ConfigFilesUpdater.updateConfigFiles(this);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
@@ -436,15 +503,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.players = (FileConfiguration) new YamlConfiguration();
 		this.lang = (FileConfiguration) new YamlConfiguration();
 		try {
-			this.copyFiles();
+			this.copyFiles(currentStorageType);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.loadAllFiles();
+		this.loadAllFiles(currentStorageType);
 
 		new CachedConfig(this);
-		new CachedPlayers(this);
-		new CachedRanks(this);
+		new CachedPlayers(this, this.prdb);
+		new CachedRanks(this, this.prdb);
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
@@ -499,22 +566,36 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	private void copyFiles() throws Exception {
+	private void copyFiles(StorageType storageType) throws Exception {
+		this.configFile = new File(this.getDataFolder(), "config.yml");
+		this.config = (FileConfiguration) new YamlConfiguration();
+		this.langFile = new File(this.getDataFolder(), "lang.yml");
+		this.lang = (FileConfiguration) new YamlConfiguration();
+
+		if (storageType == StorageType.YAML) {
+			this.ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
+			this.ranks = (FileConfiguration) new YamlConfiguration();
+			this.playersFile = new File(PowerRanks.fileLoc, "Players.yml");
+			this.players = (FileConfiguration) new YamlConfiguration();
+		}
+
 		if (!this.configFile.exists()) {
 			this.configFile.getParentFile().mkdirs();
 			this.copy(this.getResource("config.yml"), this.configFile);
 		}
-		if (!this.ranksFile.exists()) {
-			this.ranksFile.getParentFile().mkdirs();
-			this.copy(this.getResource("Ranks.yml"), this.ranksFile);
-		}
-		if (!this.playersFile.exists()) {
-			this.playersFile.getParentFile().mkdirs();
-			this.copy(this.getResource("Players.yml"), this.playersFile);
-		}
 		if (!this.langFile.exists()) {
 			this.langFile.getParentFile().mkdirs();
 			this.copy(this.getResource("lang.yml"), this.langFile);
+		}
+		if (storageType == StorageType.YAML) {
+			if (!this.ranksFile.exists()) {
+				this.ranksFile.getParentFile().mkdirs();
+				this.copy(this.getResource("Ranks.yml"), this.ranksFile);
+			}
+			if (!this.playersFile.exists()) {
+				this.playersFile.getParentFile().mkdirs();
+				this.copy(this.getResource("Players.yml"), this.playersFile);
+			}
 		}
 	}
 
@@ -544,12 +625,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void loadAllFiles() {
+	public void loadAllFiles(StorageType storageType) {
 		try {
 			this.config.load(this.configFile);
-			this.ranks.load(this.ranksFile);
-			this.players.load(this.playersFile);
 			this.lang.load(this.langFile);
+			if (storageType == StorageType.YAML) {
+				this.ranks.load(this.ranksFile);
+				this.players.load(this.playersFile);
+			}
+
 		} catch (Exception e) {
 			System.out.println("-----------------------------");
 			PowerRanks.log.warning("Failed to load the config files (If this is the first time PowerRanks starts you could ignore this message)");
@@ -590,7 +674,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			try {
 				if (CachedPlayers.contains("players." + uuid + ".subranks")) {
 
-					ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+					PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 					if (subranks != null) {
 						for (String r : subranks.getKeys(false)) {
 							boolean in_world = false;
@@ -649,7 +733,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			if (Inheritances != null) {
 				for (int i = 0; i < Inheritances.size(); i++) {
-					List<String> Permissions = (List<String>) CachedRanks.get("Groups." + Inheritances.get(i) + ".permissions");
+//					List<String> Permissions = (List<String>) CachedRanks.get("Groups." + Inheritances.get(i) + ".permissions");
+					List<String> Permissions = CachedRanks.getStringList("Groups." + Inheritances.get(i) + ".permissions");
 					if (Permissions != null) {
 						for (int j = 0; j < Permissions.size(); j++) {
 
@@ -743,7 +828,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			try {
 				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-					ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+					PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 					if (subranks != null) {
 						for (String r : subranks.getKeys(false)) {
 							boolean in_world = false;
@@ -923,7 +1008,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		try {
 			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+				PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 				for (String r : subranks.getKeys(false)) {
 					boolean in_world = false;
 					if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
@@ -974,7 +1059,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
 
 				if (CachedRanks.getConfigurationSection("Usertags") != null) {
-					ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+					PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 					for (String key : tags.getKeys(false)) {
 						if (key.equalsIgnoreCase(tmp_usertag)) {
 							usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
@@ -1015,8 +1100,18 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = tmp_format;
 			}
 
-			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
-					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
+			format = Util
+					.powerFormatter(format, ImmutableMap.<String, String>builder()
+							.put("prefix", prefix)
+							.put("suffix", suffix)
+							.put("subprefix", subprefix)
+							.put("subsuffix", subsuffix)
+							.put("usertag", usertag)
+					.put("player", nameColor + player.getPlayerListName())
+					.put("world", player.getWorld().getName()
+							.replace("world_nether", "Nether")
+							.replace("world_the_end", "End"))
+					.build(), '[', ']');
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
@@ -1054,13 +1149,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void updatePlaytime(Player player, long join_time, long leave_time) {
 		int current_playtime = 0;
+//		current_playtime = (int) CachedPlayers.get("players." + player.getUniqueId() + ".playtime");
 		try {
 			current_playtime = CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime");
+			PowerRanks.log.info("INTEGER");
+			PowerRanks.log.info("" + current_playtime);
 		} catch (Exception e) {
 			try {
 				current_playtime = CachedPlayers.getDouble("players." + player.getUniqueId() + ".playtime").intValue();
+				PowerRanks.log.info("DOUBLE");
+				PowerRanks.log.info("" + current_playtime);
 			} catch (Exception e1) {
 				current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime").intValue();
+				PowerRanks.log.info("LONG");
+				PowerRanks.log.info("" + current_playtime);
 			}
 		}
 		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000, false);
@@ -1090,5 +1192,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static PowerRanksExpansion getPlaceholderapiExpansion() {
 		return placeholderapiExpansion;
+	}
+
+	public static StorageType getStorageType() {
+		return currentStorageType;
 	}
 }

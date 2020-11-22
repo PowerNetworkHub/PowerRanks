@@ -1313,8 +1313,10 @@ public class Cmd implements CommandExecutor {
 							console.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
 							int index = 0;
 							for (String permission : permissions) {
+//								if (permission.length() > 0) {
 								index++;
 								console.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+//								}
 							}
 							console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 						} else {

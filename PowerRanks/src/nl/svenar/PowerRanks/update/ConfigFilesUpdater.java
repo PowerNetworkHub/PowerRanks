@@ -9,15 +9,16 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.PowerRanks.StorageType;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class ConfigFilesUpdater {
 
-	public static void updateConfigFiles(PowerRanks plugin) {
+	public static void updateConfigFiles(PowerRanks plugin, StorageType storageType) {
 		boolean updateConfigYAML = checkVersion(PowerRanks.configFileLoc, "config.yml", plugin);
 		boolean updateLangYAML = checkVersion(PowerRanks.configFileLoc, "lang.yml", plugin);
-		boolean updateRanksYAML = checkVersion(PowerRanks.fileLoc, "Ranks.yml", plugin);
-		boolean updatePlayersYAML = checkVersion(PowerRanks.fileLoc, "Players.yml", plugin);
+		boolean updateRanksYAML = storageType == StorageType.YAML && checkVersion(PowerRanks.fileLoc, "Ranks.yml", plugin);
+		boolean updatePlayersYAML = storageType == StorageType.YAML && checkVersion(PowerRanks.fileLoc, "Players.yml", plugin);
 
 		if (updateConfigYAML) {
 			copyTmpFile(plugin, "config.yml");

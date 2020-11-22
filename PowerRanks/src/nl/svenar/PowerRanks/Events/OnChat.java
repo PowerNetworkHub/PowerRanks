@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +20,7 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.PowerConfigurationSection;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
@@ -52,7 +52,7 @@ public class OnChat implements Listener {
 
 				try {
 					if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-						ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+						PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 						for (String r : subranks.getKeys(false)) {
 							boolean in_world = false;
 							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
@@ -106,7 +106,7 @@ public class OnChat implements Listener {
 					String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
 
 					if (CachedRanks.getConfigurationSection("Usertags") != null) {
-						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+						PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 						for (String key : tags.getKeys(false)) {
 							if (key.equalsIgnoreCase(tmp_usertag)) {
 								usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;

@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.PowerRanks.StorageType;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.addons.AddonsManager;
@@ -74,6 +75,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
 		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN + format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
 		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
+		sender.sendMessage(ChatColor.GREEN + "PowerRanks Storage Type: " + ChatColor.DARK_GREEN + (PowerRanks.getStorageType() == StorageType.YAML ? "YAML" : (PowerRanks.getStorageType() == StorageType.MySQL ? "MySQL" : (PowerRanks.getStorageType() == StorageType.SQLite ? "SQLite" : "Unknown"))));
 		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);

@@ -32,33 +32,7 @@ public class OnJoin implements Listener {
 		if (!CachedPlayers.is_ready())
 			CachedPlayers.update();
 
-//		HashMap<String, Object> new_user_data = new HashMap<String, Object>();
-
-//		if (!CachedPlayers.contains("players." + player.getUniqueId())) {
-//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".name"))
-//				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
-//			else if (CachedPlayers.getString("players." + player.getUniqueId() + ".name") != player.getName())
-//				new_user_data.put("players." + player.getUniqueId() + ".name", player.getName());
-//
-//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
-//				new_user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
-//
-//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
-//				new_user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
-//
-//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
-//				new_user_data.put("players." + player.getUniqueId() + ".subranks", "");
-//
-//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
-//				new_user_data.put("players." + player.getUniqueId() + ".usertag", "");
-//
-//			if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
-//				new_user_data.put("players." + player.getUniqueId() + ".playtime", 0);
-//
-//			CachedPlayers.set(new_user_data, false);
-//		} else {
-			validatePlayerData(player);
-//		}
+		validatePlayerData(player);
 
 		this.m.playerInjectPermissible(player);
 		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
@@ -120,9 +94,10 @@ public class OnJoin implements Listener {
 		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
 			user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 
-		for (Entry<String, Object> kv : user_data.entrySet()) {
-			PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
-		}
+//		for (Entry<String, Object> kv : user_data.entrySet()) {
+//			PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
+//		}
+		
 		if (user_data.size() > 0) {
 			CachedPlayers.set(user_data, false);
 		}

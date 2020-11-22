@@ -3,7 +3,6 @@ package nl.svenar.PowerRanks;
 import java.util.ArrayList;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -12,6 +11,7 @@ import com.google.common.collect.Iterables;
 import net.milkbowl.vault.permission.Permission;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.PowerConfigurationSection;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
@@ -221,7 +221,7 @@ public class PowerRanksVaultPermission extends Permission {
 		PowerRanksVerbose.log("PowerRanksVaultPermission.getPlayerGroups(...)", "Called, player: " + player.getName());
 		ArrayList<String> groups = new ArrayList<String>();
 		groups.add(CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
-		ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
+		PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
 		if (subranks != null) {
 			for (String subrank : subranks.getKeys(false)) {
 				groups.add(subrank);
