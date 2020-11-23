@@ -20,13 +20,14 @@ import nl.svenar.PowerRanks.PowerRanksExceptionsHandler;
 
 @SuppressWarnings("unchecked")
 public class PowerDatabase {
-	
+
 	private Connection mysqlConnection;
 	private String host, database, username, password;
 	public String table_users, table_ranks, table_usertags, table_data;
 	private int port;
 	private StorageType storageType;
 	private PowerRanks plugin;
+	private boolean connection_error = false;
 
 	public PowerDatabase(PowerRanks plugin, StorageType storageType, String host, int port, String username, String password, String database) {
 		this.host = host;
@@ -53,18 +54,32 @@ public class PowerDatabase {
 
 					Class.forName("com.mysql.jdbc.Driver");
 					this.mysqlConnection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port/* + "/" + this.database */ + "?autoReconnect=true&useSSL=false", this.username, this.password);
-//					PowerRanks.log.info("Connected: " + this.mysqlConnection.isValid(1));
-
-					setupMYSQLDatabase();
-
-					PowerRanks.log.info("MYSQL CONNECTED");
 				}
 			} catch (SQLException e) {
-				PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
+				PowerRanksExceptionsHandler.silent_except(this.getClass().getName(), e.toString());
+				PowerRanks.log.severe("");
+				PowerRanks.log.severe("===------------------------===");
+				PowerRanks.log.severe("Connection to database failed!");
+				PowerRanks.log.severe(e.toString());
+				PowerRanks.log.severe("===------------------------===");
+				PowerRanks.log.severe("");
+				connection_error = true;
 				return false;
 			} catch (ClassNotFoundException e) {
 				PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
 				return false;
+			}
+
+			if (!connection_error) {
+				try {
+					// PowerRanks.log.info("Connected: " + this.mysqlConnection.isValid(1));
+					setupMYSQLDatabase();
+
+					PowerRanks.log.info("MYSQL CONNECTED");
+				} catch (SQLException e) {
+					PowerRanksExceptionsHandler.except(this.getClass().getName(), e.toString());
+					return false;
+				}
 			}
 		}
 		return true;
@@ -121,13 +136,111 @@ public class PowerDatabase {
 				result = this.mysqlConnection.createStatement().executeUpdate(sql_create_table_data);
 				PowerRanks.log.info("Table: " + this.table_data + " created! (status: " + result + ")");
 
-				setupMYSQLDefaultData();
+				if (!mergeYAMLtoDatabase()) {
+					PowerRanks.log.info("[DB] Created default configuration");
+					setupMYSQLDefaultData();
+				} else {
+					PowerRanks.log.info("[DB] Merged existing configuration");
+				}
 
 			} else {
 				PowerRanksExceptionsHandler.exceptCustom(this.getClass().getName(), "There was a error creating the database: " + this.database + " are the permissions set correctly?");
 			}
 			PowerRanks.log.info("===--------------------===");
 		}
+	}
+
+	private boolean mergeYAMLtoDatabase() throws SQLException {
+		File ranksFile = new File(PowerRanks.fileLoc, "Ranks.yml");
+		File playersFile = new File(PowerRanks.fileLoc, "Players.yml");
+		boolean files_exists = false;
+
+		files_exists = ranksFile.exists() && playersFile.exists();
+		if (files_exists) {
+			YamlConfiguration ranksYaml = new YamlConfiguration();
+			YamlConfiguration playersYaml = new YamlConfiguration();
+
+			try {
+				ranksYaml.load(ranksFile);
+				playersYaml.load(playersFile);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+
+			// === Ranks.yml ===
+			String sql_set_default_rank = "INSERT INTO `" + this.database + "`.`" + this.table_data + "`(`key`, `value`) VALUES ('default_rank', '" + ranksYaml.getString("Default") + "');";
+			String sql_create_rank = "INSERT INTO `" + this.database + "`.`" + this.table_ranks
+					+ "` (`name`, `permissions`, `inheritance`, `build`, `prefix`, `suffix`, `chat_color`, `name_color`, `level_promote`, `level_demote`, `economy_buyable`, `economy_cost`, `gui_icon`) VALUES ('%rank_name%', '%rank_permissions%', '%rank_inheritance%', '%rank_build%', '%rank_prefix%', '%rank_suffix%', '%rank_chatcolor%', '%rank_namecolor%', '%rank_promote%', '%rank_demote%', '%rank_buyable%', '%rank_cost%', '%rank_gui_icon%')";
+			String sql_create_usertag = "INSERT INTO `" + this.database + "`.`" + this.table_usertags + "`(`name`, `value`) VALUES ('%name%', '%value%');";
+			
+			this.mysqlConnection.createStatement().executeUpdate(sql_set_default_rank);
+
+			for (String key : ranksYaml.getConfigurationSection("Groups").getKeys(false)) {
+				this.mysqlConnection.createStatement()
+						.executeUpdate(sql_create_rank
+								.replace("%rank_name%", key)
+								.replace("%rank_permissions%", String.join(",", ranksYaml.getStringList("Groups." + key + ".permissions")))
+								.replace("%rank_inheritance%", String.join(",", ranksYaml.getStringList("Groups." + key + ".inheritance")))
+								.replace("%rank_build%", ranksYaml.getBoolean("Groups." + key + ".build") ? "1" : "0")
+								.replace("%rank_prefix%", (String) ranksYaml.get("Groups." + key + ".chat.prefix"))
+								.replace("%rank_suffix%", (String) ranksYaml.get("Groups." + key + ".chat.suffix"))
+								.replace("%rank_chatcolor%", (String) ranksYaml.get("Groups." + key + ".chat.chatColor"))
+								.replace("%rank_namecolor%", (String) ranksYaml.get("Groups." + key + ".chat.nameColor"))
+								.replace("%rank_promote%", (String) ranksYaml.get("Groups." + key + ".level.promote"))
+								.replace("%rank_demote%", (String) ranksYaml.get("Groups." + key + ".level.demote"))
+								.replace("%rank_buyable%", String.join(",", ranksYaml.getStringList("Groups." + key + ".economy.buyable")))
+								.replace("%rank_cost%", String.valueOf(ranksYaml.get("Groups." + key + ".economy.cost")))
+								.replace("%rank_gui_icon%", (String) ranksYaml.get("Groups." + key + ".gui.icon")));
+			}
+			
+			if (ranksYaml.isConfigurationSection("Usertags")) {
+				for (String key : ranksYaml.getConfigurationSection("Usertags").getKeys(false)) {
+					this.mysqlConnection.createStatement()
+					.executeUpdate(sql_create_usertag
+							.replace("%name%", key)
+							.replace("%value%", ranksYaml.getString("Usertags." + key))
+							);
+				}
+			}
+			// === Ranks.yml ===
+
+			// === Players.yml ===
+			String sql_create_player = "INSERT INTO `" + this.database + "`.`" + this.table_users + "`(`uuid`, `name`, `rank`, `subranks`, `usertag`, `permissions`, `playtime`) VALUES ('%uuid%', '%name%', '%rank%', '%subranks%', '%usertag%', '%permissions%', '%playtime%');";
+			for (String key : playersYaml.getConfigurationSection("players").getKeys(false)) {
+				String subranks = "";
+				
+				// TODO subranks; test if it works
+				if (playersYaml.isConfigurationSection("players." + key + ".subranks")) {
+					for (String subrank_key : playersYaml.getConfigurationSection("players." + key + ".subranks").getKeys(false)) {
+						if (subranks.length() > 0)
+							subranks += "&";
+						
+						subranks += subrank_key + ";";
+						subranks += "use_prefix:" + (playersYaml.getBoolean("players." + key + ".subranks." + subrank_key + ".use_prefix") ? "1" : "0") + ";";
+						subranks += "use_suffix:" + (playersYaml.getBoolean("players." + key + ".subranks." + subrank_key + ".use_suffix") ? "1" : "0") + ";";
+						subranks += "use_permissions:" + (playersYaml.getBoolean("players." + key + ".subranks." + subrank_key + ".use_permissions") ? "1" : "0") + ";";
+						subranks += "worlds:(" + String.join(",", playersYaml.getStringList("players." + key + ".subranks." + subrank_key + ".worlds")) + ")";
+					}
+				}
+				
+				this.mysqlConnection.createStatement()
+				.executeUpdate(sql_create_player
+						.replace("%uuid%", key)
+						.replace("%name%", playersYaml.getString("players." + key + ".name"))
+						.replace("%rank%", playersYaml.getString("players." + key + ".rank"))
+						.replace("%subranks%", subranks)
+						.replace("%usertag%", playersYaml.getString("players." + key + ".usertag"))
+						.replace("%permissions%", String.join(",", playersYaml.getStringList("players." + key + ".permissions")))
+						.replace("%playtime%", String.valueOf(playersYaml.get("players." + key + ".playtime")))
+						);
+			}
+			// === Players.yml ===
+
+			ranksFile.delete();
+			playersFile.delete();
+		}
+
+		return files_exists;
 	}
 
 	private void setupMYSQLDefaultData() throws SQLException {
@@ -229,7 +342,7 @@ public class PowerDatabase {
 	public void setField(String table_name, String key, Object value) {
 		String[] _split = key.split("\\.");
 //		PowerRanks.log.info("--->>> " + key + " (" + _split.length + "): " + value);
-		
+
 		if (table_name == table_ranks) {
 			String rankname = _split[1];
 			String target_key = _split[_split.length - 1];
@@ -246,7 +359,7 @@ public class PowerDatabase {
 			if (target_key.equals("build")) {
 				value = (boolean) value ? 1 : 0;
 			}
-			
+
 			String sql = "INSERT INTO `" + table_name + "` (`name`, `" + target_key + "`) VALUES('" + rankname + "', '" + value + "') ON DUPLICATE KEY UPDATE `" + target_key + "`='" + value + "';";
 //			PowerRanks.log.info("<<<--- " + sql);
 			try {
@@ -258,7 +371,7 @@ public class PowerDatabase {
 				e.printStackTrace();
 			}
 		}
-		
+
 		if (table_name == table_users) {
 			String uuid = _split[1];
 			if (value instanceof ArrayList<?>) {
@@ -297,13 +410,13 @@ public class PowerDatabase {
 					boolean build = rs.getBoolean("build");
 					String prefix = rs.getString("prefix");
 					String suffix = rs.getString("suffix");
-					String chatcolor = rs.getString("chatcolor");
-					String namecolor = rs.getString("namecolor");
-					String promote = rs.getString("promote");
-					String demote = rs.getString("demote");
-					String buyable = rs.getString("buyable");
-					int cost = rs.getInt("cost");
-					String icon = rs.getString("icon");
+					String chatcolor = rs.getString("chat_color");
+					String namecolor = rs.getString("name_color");
+					String promote = rs.getString("level_promote");
+					String demote = rs.getString("level_demote");
+					String buyable = rs.getString("economy_buyable");
+					int cost = rs.getInt("economy_cost");
+					String icon = rs.getString("gui_icon");
 
 					ranknames.add(rankname);
 
@@ -335,7 +448,7 @@ public class PowerDatabase {
 					String usertag = rs.getString("usertag");
 					String permissions = rs.getString("permissions");
 					int playtime = rs.getInt("playtime");
-					
+
 					players.add(uuid);
 
 					output.put("players." + uuid + ".name", name);

@@ -14,6 +14,14 @@ public class PowerRanksExceptionsHandler {
 	}
 
 	public static void except(String className, String errorlog) {
+		except(className, errorlog, false);
+	}
+
+	public static void silent_except(String className, String errorlog) {
+		except(className, errorlog, true);		
+	}
+	
+	private static void except(String className, String errorlog, boolean silent) {
 		Date date = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd_MM_yyyy");
 
@@ -21,11 +29,13 @@ public class PowerRanksExceptionsHandler {
 		file_log.mkdirs();
 		file_log = new File(data_directory, "logs" + File.separator + dateFormat.format(date) + ".log");
 
-		PowerRanks.log.warning("----------------------------------------");
-		PowerRanks.log.warning(PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
-		PowerRanks.log.warning("An error occurred in " + className);
-		PowerRanks.log.warning("Detailed error log is available in: " + file_log.getPath());
-		PowerRanks.log.warning("----------------------------------------");
+		if (!silent) {
+			PowerRanks.log.warning("----------------------------------------");
+			PowerRanks.log.warning(PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
+			PowerRanks.log.warning("An error occurred in " + className);
+			PowerRanks.log.warning("Detailed error log is available in: " + file_log.getPath());
+			PowerRanks.log.warning("----------------------------------------");
+		}
 		FileWriter fr;
 		try {
 			fr = new FileWriter(file_log, true);
@@ -40,7 +50,7 @@ public class PowerRanksExceptionsHandler {
 				if (line.toLowerCase().contains("powerranks")) {
 					String name = line.contains("(") ? (line.contains(":") ? line.split("\\(")[1].split(":")[0] : line.split("\\(")[1]) : "<UNKNOWN FILE>";
 					String lineNumber = line.contains(":") ? line.replace(")", "").split(":")[1] : "<UNKNOWN LINE>";
-					PowerRanks.log.warning("File: " + name + " >> " + lineNumber);
+					if (!silent) PowerRanks.log.warning("File: " + name + " >> " + lineNumber);
 				}
 			}
 			fr.write("----------------------------------------" + System.lineSeparator());
@@ -48,7 +58,7 @@ public class PowerRanksExceptionsHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		PowerRanks.log.warning("----------------------------------------");
+		if (!silent) PowerRanks.log.warning("----------------------------------------");		
 	}
 
 	public static void exceptCustom(String className, String error) {
