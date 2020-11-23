@@ -227,7 +227,14 @@ public class PowerRanksVaultPermission extends Permission {
 				groups.add(subrank);
 			}
 		}
-		return (String[]) groups.toArray();
+//		return (String[]) groups.toArray();
+//		return groups/*.stream()*/.toArray(new String[0]);
+		String[] output = new String[groups.size()];
+
+		for (int i = 0; i < groups.size(); i++) {
+			output[i] = groups.get(i);
+		}
+		return output;
 	}
 
 	@Override
