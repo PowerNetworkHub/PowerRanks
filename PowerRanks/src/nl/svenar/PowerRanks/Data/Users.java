@@ -35,7 +35,9 @@ public class Users implements Listener {
 
 	public void setGroup(Player player, String t, String rank, boolean fireAddonEvent) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		
 		if (player != null) {
+			PowerRanksVerbose.log("setGroup(Player, String, String, boolean)", player.getName() + " Changed " + t + "'s rank to: " + rank);
 			if (player.hasPermission("powerranks.cmd.set") || player.hasPermission("powerranks.cmd.set." + rank)) {
 				Player target = Bukkit.getServer().getPlayer(t);
 
@@ -108,6 +110,7 @@ public class Users implements Listener {
 				}
 			}
 		} else {
+			PowerRanksVerbose.log("setGroup(Player, String, String, boolean)", "Unknown Changed " + t + "'s rank to: " + rank);
 			ConsoleCommandSender console = Bukkit.getConsoleSender();
 			Player target2 = Bukkit.getServer().getPlayer(t);
 
@@ -181,6 +184,7 @@ public class Users implements Listener {
 	}
 
 	public boolean setGroup(Player player, String rank, boolean fireAddonEvent) {
+		PowerRanksVerbose.log("setGroup(Player, String, boolean)", " Changed " + player.getName() + "'s rank to: " + rank);
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		boolean success = false;
 		try {
