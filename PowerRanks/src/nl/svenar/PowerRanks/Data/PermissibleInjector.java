@@ -65,7 +65,7 @@ public final class PermissibleInjector {
 		try {
 			Permissible permissible = (Permissible) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(p);
 			if (permissible instanceof PowerPermissibleBase) {
-				HUMAN_ENTITY_PERMISSIBLE_FIELD.set(p, ((PowerPermissibleBase) permissible).getOldPermissible());
+				//HUMAN_ENTITY_PERMISSIBLE_FIELD.set(p, ((PowerPermissibleBase) permissible).getOldPermissible());
 				return (PowerPermissibleBase) permissible;
 			}
 
