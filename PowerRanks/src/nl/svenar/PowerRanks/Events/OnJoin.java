@@ -35,7 +35,7 @@ public class OnJoin implements Listener {
 		validatePlayerData(player);
 
 		this.m.playerInjectPermissible(player);
-		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
+//		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
 
 		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
