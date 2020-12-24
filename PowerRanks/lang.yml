@@ -44,6 +44,8 @@ messages:
    error_delete_rank: "%plugin_prefix% &cCould not delete rank: %argument_rank%"
    rank_created: "%plugin_prefix% &aRank '%argument_rank%' created"
    rank_deleted: "%plugin_prefix% &aRank '%argument_rank%' deleted"
+   rank_created_warning_characters: "%plugin_prefix% &cWarning the created rank contains special characters, if this is intended you can ignore this message."
+   rank_created_warning_characters_color: "%plugin_prefix% &cWarning the created rank contains characters related to colors, if this is intended you can ignore this message. Color codes in the rank name do not work, change the prefix instead."
    player_promoted: "%plugin_prefix% &aPlayer %argument_target% promoted!"
    player_demoted: "%plugin_prefix% &aPlayer %argument_target% demoted!"
    error_player_promote: "%plugin_prefix% &aCould not promote player %argument_target%!"

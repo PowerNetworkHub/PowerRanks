@@ -75,7 +75,8 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
 		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN + format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
 		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
-		sender.sendMessage(ChatColor.GREEN + "PowerRanks Storage Type: " + ChatColor.DARK_GREEN + (PowerRanks.getStorageType() == StorageType.YAML ? "YAML" : (PowerRanks.getStorageType() == StorageType.MySQL ? "MySQL" : (PowerRanks.getStorageType() == StorageType.SQLite ? "SQLite" : "Unknown"))));
+		sender.sendMessage(ChatColor.GREEN + "PowerRanks Storage Type: " + ChatColor.DARK_GREEN
+				+ (PowerRanks.getStorageType() == StorageType.YAML ? "YAML" : (PowerRanks.getStorageType() == StorageType.MySQL ? "MySQL" : (PowerRanks.getStorageType() == StorageType.SQLite ? "SQLite" : "Unknown"))));
 		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
@@ -201,8 +202,10 @@ public class Messages {
 
 		if (lines != null) {
 			help_messages.add(page_selector_tellraw);
-			help_messages.add("tellraw %player% [\"\",{\"text\":\"Arguments: \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"blue\"},{\"text\":\"optional\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between [] are not required.\"}},{\"text\":\"]\",\"color\":\"blue\"},{\"text\":\" <\",\"color\":\"blue\"},{\"text\":\"required\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between <> are required.\"}},{\"text\":\">\",\"color\":\"blue\"}]".replaceAll("%player%", sender.getName()));
-			
+			help_messages.add(
+					"tellraw %player% [\"\",{\"text\":\"Arguments: \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"blue\"},{\"text\":\"optional\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between [] are not required.\"}},{\"text\":\"]\",\"color\":\"blue\"},{\"text\":\" <\",\"color\":\"blue\"},{\"text\":\"required\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between <> are required.\"}},{\"text\":\">\",\"color\":\"blue\"}]"
+							.replaceAll("%player%", sender.getName()));
+
 			int line_index = 0;
 			for (String section : lines.getKeys(false)) {
 				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
@@ -640,6 +643,20 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_create_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+
+	public static void messageCommandCreateRankCharacterWarning(CommandSender console, String rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.rank_created_warning_characters");
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+	
+	public static void messageCommandCreateRankColorCharacterWarning(CommandSender console, String rank) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.rank_created_warning_characters_color");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
