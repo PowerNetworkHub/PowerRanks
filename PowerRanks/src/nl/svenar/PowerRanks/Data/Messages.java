@@ -1383,6 +1383,13 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
+	
+	public static void messageCommandVerboseCleared(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_verbose_cleared");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
 
 	public static void messageCommandVerboseStopped(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();

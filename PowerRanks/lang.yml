@@ -109,6 +109,7 @@ messages:
    error_verbose_must_stop_before_save: "%plugin_prefix% &cCannot save log wile verbose is running!"
    success_verbose_started: "%plugin_prefix% &aVerbose logging started! &cWarning: enabling verbose may decrease server performance, only use verbose for bug reporting!"
    success_verbose_stopped: "%plugin_prefix% &aVerbose logging stopped! To save the log use the command: %base_cmd% verbose save"
+   success_verbose_cleared: "%plugin_prefix% &aVerbose logging cleared!"
    error_saving_verbose: "%plugin_prefix% &cError saving verbose log! Did you start logging?"
    success_verbose_saved: "%plugin_prefix% &aVerbose log saved!"
    pluginhook_state_changed: "%plugin_prefix% &aState of plugin '%argument_plugin_name%' has be changed to %argument_new_state%&a!"
@@ -343,7 +344,7 @@ commands:
          command: "config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
          description: "Edit the configuration file"
       verbose:
-         command: "verbose <start/stop/save>"
+         command: "verbose <start/stop/save/clear>"
          description: "Enable verbose logging, may result in lower performance! Only use for bug reporting"
       stats:
          command: "stats"
