@@ -2,6 +2,7 @@ package nl.svenar.PowerRanks;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -56,6 +57,10 @@ public class Util {
 	public static boolean isPowerRanksSign(PowerRanks main, Sign sign) {
 		String sign_header = sign.getLine(0);
 		return isPowerRanksSign(main, sign_header);
+	}
+	
+	public static boolean stringContainsItemFromList(String inputStr, String[] items) {
+	    return Arrays.stream(items).anyMatch(inputStr::contains);
 	}
 
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
@@ -131,4 +136,15 @@ public class Util {
 		
 		return output;
 	}
+	
+	public static <T> T[] array_push(T[] arr, T item) {
+        T[] tmp = Arrays.copyOf(arr, arr.length + 1);
+        tmp[tmp.length - 1] = item;
+        return tmp;
+    }
+
+    public static <T> T[] array_pop(T[] arr) {
+        T[] tmp = Arrays.copyOf(arr, arr.length - 1);
+        return tmp;
+    }
 }
