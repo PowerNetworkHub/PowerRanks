@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.CommandExecutor;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
@@ -579,8 +580,17 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.createRank(rank2);
+							String[] forbiddenColorCharacters = {"&", "#"};
+							String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
 							if (success) {
 								Messages.messageCommandCreateRankSuccess(player, rank2);
+								if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
+									Messages.messageCommandCreateRankColorCharacterWarning(player, rank2);
+								}
+								
+								if (Util.stringContainsItemFromList(rank2, forbiddenCharacters)) {
+									Messages.messageCommandCreateRankCharacterWarning(player, rank2);
+								}
 							} else {
 								Messages.messageCommandCreateRankError(player, rank2);
 							}
