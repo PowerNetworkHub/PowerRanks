@@ -37,7 +37,7 @@ public class OnJoin implements Listener {
 		this.m.playerInjectPermissible(player);
 //		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
 
-		this.m.setupPermissions(player);
+//		this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
 
 		long time = new Date().getTime();
@@ -52,8 +52,8 @@ public class OnJoin implements Listener {
 	@EventHandler(ignoreCancelled = false)
 	public void onPlayerLeave(final PlayerQuitEvent e) {
 		final Player player = e.getPlayer();
-		this.m.playerUninjectPermissible(player);
-		this.m.removePermissions(player);
+//		this.m.playerUninjectPermissible(player);
+//		this.m.removePermissions(player);
 
 		validatePlayerData(player);
 

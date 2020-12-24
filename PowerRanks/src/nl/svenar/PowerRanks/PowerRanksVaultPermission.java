@@ -21,7 +21,6 @@ public class PowerRanksVaultPermission extends Permission {
 	final PowerRanks plugin;
 	final Users users;
 	final PowerRanksAPI prapi;
-	private boolean playerHasErrorQueueNull = false;
 	private boolean playerHasErrorQueueOffline = false;
 
 	PowerRanksVaultPermission(PowerRanks plugin) {
@@ -101,27 +100,6 @@ public class PowerRanksVaultPermission extends Permission {
 	@Override
 	public boolean playerHas(String world, OfflinePlayer player, String permission) {
 		if (player.isOnline()) {
-
-			if (this.plugin.playerAllowedPermissions.get(player.getUniqueId()) == null) {
-				if (!playerHasErrorQueueNull) {
-					playerHasErrorQueueNull = true;
-					PowerRanks.log.warning("===----------WARNING----------===");
-					PowerRanks.log.warning("PowerRanksVaultPermission.playerHas(...)");
-					PowerRanks.log.warning("The UUID of player '" + player.getName() + "' is not registered in PowerRanks!");
-					PowerRanks.log.warning("===---------------------------===");
-
-					BukkitScheduler scheduler = plugin.getServer().getScheduler();
-					scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
-						@Override
-						public void run() {
-							playerHasErrorQueueNull = false;
-						}
-					}, 20L);
-
-				}
-
-				return false;
-			}
 //			boolean hasPermission = this.plugin.playerAllowedPermissions.get(player.getUniqueId()).contains(permission);
 			boolean hasPermission = ((Player) player).hasPermission(permission);
 

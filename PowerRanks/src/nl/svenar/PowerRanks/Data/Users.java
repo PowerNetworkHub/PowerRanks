@@ -44,7 +44,7 @@ public class Users implements Listener {
 				if (target != null) {
 					try {
 						if (CachedRanks.get("Groups." + rank) != null) {
-							this.m.removePermissions(player);
+//							this.m.removePermissions(player);
 							String oldRank = CachedPlayers.getString("players." + target.getUniqueId() + ".rank");
 							CachedPlayers.set("players." + target.getUniqueId() + ".rank", (Object) rank, false);
 							if (CachedConfig.contains("announcements.rankup.enabled")) {
@@ -64,7 +64,7 @@ public class Users implements Listener {
 
 							Messages.messageSetRankSuccessSender(player, t, rank);
 							Messages.messageSetRankSuccessTarget(target, player.getName(), rank);
-							this.m.setupPermissions(target);
+							// this.m.setupPermissions(target);
 							this.m.updateTablistName(target);
 
 						} else {
@@ -117,7 +117,7 @@ public class Users implements Listener {
 			if (target2 != null) {
 				try {
 					if (CachedRanks.get("Groups." + rank) != null) {
-						this.m.removePermissions(target2);
+//						this.m.removePermissions(target2);
 						String oldRank = CachedPlayers.getString("players." + target2.getUniqueId() + ".rank");
 						CachedPlayers.set("players." + target2.getUniqueId() + ".rank", (Object) rank, false);
 						if (CachedConfig.contains("announcements.rankup.enabled")) {
@@ -135,7 +135,7 @@ public class Users implements Listener {
 
 						Messages.messageSetRankSuccessSender(console, t, rank);
 						Messages.messageSetRankSuccessTarget(target2, console.getName(), rank);
-						this.m.setupPermissions(target2);
+						// this.m.setupPermissions(target2);
 						this.m.updateTablistName(target2);
 
 					} else {
@@ -189,7 +189,7 @@ public class Users implements Listener {
 		boolean success = false;
 		try {
 			if (CachedRanks.get("Groups." + rank) != null) {
-				this.m.removePermissions(player);
+//				this.m.removePermissions(player);
 				String oldRank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 				CachedPlayers.set("players." + player.getUniqueId() + ".rank", (Object) rank, false);
 				CachedPlayers.update();
@@ -206,7 +206,7 @@ public class Users implements Listener {
 						prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, true);
 					}
 
-				this.m.setupPermissions(player);
+				// this.m.setupPermissions(player);
 				this.m.updateTablistName(player);
 
 				Messages.messageSetRankSuccessSender(player, player.getName(), rank);
@@ -556,7 +556,7 @@ public class Users implements Listener {
 					Player target = Bukkit.getServer().getPlayer(CachedPlayers.getString("players." + uuid + ".name"));
 
 					if (target.isOnline()) {
-						this.m.setupPermissions(target);
+						// this.m.setupPermissions(target);
 						this.m.updateTablistName(target);
 					}
 				}
@@ -941,7 +941,7 @@ public class Users implements Listener {
 						list.add(permission);
 						CachedPlayers.set("players." + target_player.getUniqueId() + ".permissions", (Object) list, false);
 					}
-					this.m.setupPermissions(target_player);
+					// this.m.setupPermissions(target_player);
 
 					return true;
 				} else {
@@ -994,7 +994,7 @@ public class Users implements Listener {
 						list.remove(permission);
 						CachedPlayers.set("players." + target_player.getUniqueId() + ".permissions", (Object) list, false);
 					}
-					this.m.setupPermissions(target_player);
+					// this.m.setupPermissions(target_player);
 
 					return true;
 				} else {
@@ -1052,7 +1052,7 @@ public class Users implements Listener {
 				return false;
 			}
 
-			this.m.setupPermissions(player);
+			// this.m.setupPermissions(player);
 			this.m.updateTablistName(player);
 
 			return true;
@@ -1079,7 +1079,7 @@ public class Users implements Listener {
 				}
 			}
 
-			this.m.setupPermissions(player);
+			// this.m.setupPermissions(player);
 
 			return true;
 		} catch (Exception e) {
