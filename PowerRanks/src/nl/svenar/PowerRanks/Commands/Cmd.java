@@ -1164,6 +1164,9 @@ public class Cmd implements CommandExecutor {
 								} else {
 									Messages.messageCommandVerboseNotRunning(player);
 								}
+							} else if (verboseType.equals("clear")) {
+									PowerRanksVerbose.clear();
+									Messages.messageCommandVerboseCleared(player);
 							} else if (verboseType.equals("save")) {
 								if (!PowerRanksVerbose.USE_VERBOSE) {
 									if (PowerRanksVerbose.save()) {
@@ -1640,7 +1643,16 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						final String rank2 = s.getRankIgnoreCase(args[1]);
 						final boolean success = s.createRank(rank2);
+						String[] forbiddenColorCharacters = {"&", "#"};
+						String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
 						if (success) {
+							if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
+								Messages.messageCommandCreateRankColorCharacterWarning(console, rank2);
+							}
+							
+							if (Util.stringContainsItemFromList(rank2, forbiddenCharacters)) {
+								Messages.messageCommandCreateRankCharacterWarning(console, rank2);
+							}
 							Messages.messageCommandCreateRankSuccess(console, rank2);
 						} else {
 							Messages.messageCommandCreateRankError(console, rank2);
@@ -2014,6 +2026,9 @@ public class Cmd implements CommandExecutor {
 							} else {
 								Messages.messageCommandVerboseNotRunning(console);
 							}
+						} else if (verboseType.equals("clear")) {
+							PowerRanksVerbose.clear();
+							Messages.messageCommandVerboseCleared(console);
 						} else if (verboseType.equals("save")) {
 							if (!PowerRanksVerbose.USE_VERBOSE) {
 								if (PowerRanksVerbose.save()) {

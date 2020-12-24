@@ -32,6 +32,10 @@ public class PowerRanksVerbose {
 		USE_VERBOSE = false;
 		USE_VERBOSE_LIVE = false;
 	}
+	
+	public static void clear() {
+		VERBOSE_LOG.clear();
+	}
 
 	public static void log(String functionName, String msg) {
 		if (!USE_VERBOSE)
