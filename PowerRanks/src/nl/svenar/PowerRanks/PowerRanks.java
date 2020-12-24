@@ -9,12 +9,11 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.time.Instant;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -28,9 +27,7 @@ import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Cache.PowerConfigurationSection;
 import nl.svenar.PowerRanks.Commands.Cmd;
-import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
-import nl.svenar.PowerRanks.Data.PermissibleInjector;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
@@ -109,10 +106,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	FileConfiguration lang;
 	public String updatemsg;
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
+//	private Map<UUID, PowerPermissibleBase> playerPowerPermissableBase = new HashMap<UUID, PowerPermissibleBase>();
 	public Map<UUID, ArrayList<String>> playerDisallowedPermissions = new HashMap<UUID, ArrayList<String>>();
 	public Map<UUID, ArrayList<String>> playerAllowedPermissions = new HashMap<UUID, ArrayList<String>>();
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
 	public Map<UUID, Long> playerLoginTime = new HashMap<UUID, Long>();
+	public Map<UUID, Boolean> playerSetupPermissionsQueue = new HashMap<UUID, Boolean>();
 
 	private PowerDatabase prdb;
 
@@ -135,7 +134,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		powerranks_enabled = true;
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.plugin = this;
-		
+
 		new PowerRanksExceptionsHandler(getDataFolder());
 
 //		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
@@ -199,18 +198,32 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		case "mysql":
 			currentStorageType = StorageType.MySQL;
 			PowerRanks.log.info("Using storage type: MySQL");
+			PowerRanks.log.warning("===----------WARNING----------===");
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("Using MySQL as storage is not yet ready");
+			PowerRanks.log.warning("Crashes or data loss may occur");
+			PowerRanks.log.warning("Bug reports regarding MySQL will be ignored!");
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("===---------------------------===");
 			break;
 
 		case "sqlite":
 			currentStorageType = StorageType.SQLite;
 			PowerRanks.log.info("Using storage type: SQLite");
+			PowerRanks.log.warning("===----------WARNING----------===");
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("Using SQLite as storage is not yet ready");
+			PowerRanks.log.warning("Crashes or data loss may occur");
+			PowerRanks.log.warning("Bug reports regarding SQLite will be ignored!");
+			PowerRanks.log.warning("");
+			PowerRanks.log.warning("===---------------------------===");
 			break;
 
 		default:
 			PowerRanks.log.warning("===--------------------===");
 			PowerRanks.log.warning("");
 			PowerRanks.log.warning("WARNING PowerRanks is disabled!");
-			PowerRanks.log.warning("Unknown storage type: " + CachedConfig.getString("storage.type"));
+			PowerRanks.log.warning("Unknown storage type configured: " + CachedConfig.getString("storage.type"));
 			PowerRanks.log.warning("");
 			PowerRanks.log.warning("===--------------------===");
 			PluginManager plg = Bukkit.getPluginManager();
@@ -651,306 +664,414 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public void setupPermissions(Player player) {
-		PowerRanksVerbose.log("setupPermissions", "Setting up " + player.getName() + "'s permissions");
-		this.playerUninjectPermissible(player);
-		if (!playerPermissionAttachment.containsKey(player.getUniqueId())) {
-			this.playerInjectPermissible(player);
-		}
-
-		clearPermissions(player);
-
-		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
-		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
-
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
-		final String uuid = player.getUniqueId().toString();
-
-		try {
-			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
-			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
-			final List<String> Subranks = new ArrayList<String>();
-
-			try {
-				if (CachedPlayers.contains("players." + uuid + ".subranks")) {
-
-					PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
-					if (subranks != null) {
-						for (String r : subranks.getKeys(false)) {
-							boolean in_world = false;
-							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
-								in_world = true;
-
-								ArrayList<String> default_worlds = new ArrayList<String>();
-								default_worlds.add("All");
-								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
-							}
-
-							String player_current_world = player.getWorld().getName();
-							List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-							for (String world : worlds) {
-								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-									in_world = true;
-								}
-							}
-
-							if (in_world) {
-								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-									Subranks.add(r);
-								}
-							}
-						}
-					}
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-
-			for (int i = 0; i < Subranks.size(); i++) {
-				List<String> permissions = (List<String>) CachedRanks.get("Groups." + Subranks.get(i) + ".permissions");
-				if (permissions != null) {
-					for (int j = 0; j < permissions.size(); j++) {
-
-						boolean enabled = !permissions.get(j).startsWith("-");
-						if (enabled) {
-							attachment.setPermission((String) permissions.get(j), true);
-							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j));
-
-							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j));
-						} else {
-							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
-							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j).replaceFirst("-", ""));
-
-							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j).replaceFirst("-", ""));
-						}
-					}
-				}
-			}
-
-			if (Inheritances != null) {
-				for (int i = 0; i < Inheritances.size(); i++) {
-//					List<String> Permissions = (List<String>) CachedRanks.get("Groups." + Inheritances.get(i) + ".permissions");
-					List<String> Permissions = CachedRanks.getStringList("Groups." + Inheritances.get(i) + ".permissions");
-					if (Permissions != null) {
-						for (int j = 0; j < Permissions.size(); j++) {
-
-							boolean enabled = !Permissions.get(j).startsWith("-");
-							if (enabled) {
-								attachment.setPermission((String) Permissions.get(j), true);
-								if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
-									playerDisallowedPermissions.get(player.getUniqueId()).remove((String) Permissions.get(j));
-
-								if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
-									playerAllowedPermissions.get(player.getUniqueId()).add((String) Permissions.get(j));
-							} else {
-								attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
-								if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
-									playerDisallowedPermissions.get(player.getUniqueId()).add((String) Permissions.get(j).replaceFirst("-", ""));
-
-								if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
-									playerAllowedPermissions.get(player.getUniqueId()).remove((String) Permissions.get(j).replaceFirst("-", ""));
-							}
-						}
-					}
-				}
-			}
-
-			if (GroupPermissions != null) {
-				for (int i = 0; i < GroupPermissions.size(); i++) {
-
-					boolean enabled = !GroupPermissions.get(i).startsWith("-");
-					if (enabled) {
-						attachment.setPermission((String) GroupPermissions.get(i), true);
-						if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
-							playerDisallowedPermissions.get(player.getUniqueId()).remove((String) GroupPermissions.get(i));
-
-						if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
-							playerAllowedPermissions.get(player.getUniqueId()).add((String) GroupPermissions.get(i));
-					} else {
-						attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
-						if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
-							playerDisallowedPermissions.get(player.getUniqueId()).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
-
-						if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
-							playerAllowedPermissions.get(player.getUniqueId()).remove((String) GroupPermissions.get(i).replaceFirst("-", ""));
-					}
-				}
-			}
-
-			if (CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
-				List<String> permissions = CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions");
-				if (permissions != null) {
-					for (int i = 0; i < permissions.size(); i++) {
-						boolean enabled = !permissions.get(i).startsWith("-");
-						if (enabled) {
-							attachment.setPermission((String) permissions.get(i), true);
-							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
-								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(i));
-
-							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
-								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(i));
-						} else {
-							attachment.setPermission((String) permissions.get(i).replaceFirst("-", ""), false);
-							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
-								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(i).replaceFirst("-", ""));
-
-							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
-								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(i).replaceFirst("-", ""));
-						}
-					}
-				}
-			} else {
-				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]", false);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		if (playerSetupPermissionsQueue.containsKey(player.getUniqueId())) {
+//			if (playerSetupPermissionsQueue.get(player.getUniqueId())) {
+//				return;
+//			}
+//		}
+//		playerSetupPermissionsQueue.put(player.getUniqueId(), true);
+////		PowerRanks.log.info("");
+////		PowerRanks.log.info("===--------------------===");
+////		PowerRanks.log.info("Setting up " + player.getName() + "'s permissions");
+//
+//		PowerRanksVerbose.log("setupPermissions", "Setting up " + player.getName() + "'s permissions");
+//		PowerRanks.log.warning("Setting up " + player.getName() + "'s permissions");
+//
+////		Instant start = Instant.now();
+//		PowerRanks self = this;
+////		BukkitScheduler scheduler = getServer().getScheduler();
+////		scheduler.scheduleSyncDelayedTask(this, new Runnable() {
+//		new BukkitRunnable() {
+//
+//			@Override
+//			public void run() {
+//				Instant start = Instant.now();
+////				Instant step1 = null, step2 = null, step3 = null, step4 = null, step5 = null, step6 = null, step7 = null, step8 = null, step9 = null;
+//
+//				// self.playerUninjectPermissible(player);
+//				if (!playerPermissionAttachment.containsKey(player.getUniqueId())) {
+//					self.playerInjectPermissible(player);
+//					PowerRanks.log.warning("Player not yet injected");
+//				} else {
+//					PowerRanks.log.warning("Player is already injected");
+//				}
+//
+////				step1 = Instant.now();
+//
+//				clearPermissions(player);
+//
+////				step2 = Instant.now();
+//
+//				playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+//				playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+//
+//				final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
+//				final String uuid = player.getUniqueId().toString();
+//				
+//				PowerRanks.log.warning("attachment permissions size 1 " + attachment.getPermissions().size());
+//				
+//				//((PowerPermissibleBase) attachment.getPermissible()).setReadyToRecalculatePermissions(false); // TODO
+//				playerPowerPermissableBase.get(player.getUniqueId()).setReadyToRecalculatePermissions(false);
+//
+////				step3 = Instant.now();
+//
+//				try {
+//					final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+//					final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
+//					final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
+//					final List<String> Subranks = new ArrayList<String>();
+//
+////					step4 = Instant.now();
+//
+//					try {
+//						if (CachedPlayers.contains("players." + uuid + ".subranks")) {
+//
+//							PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+//							if (subranks != null) {
+//								for (String r : subranks.getKeys(false)) {
+//									boolean in_world = false;
+//									if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
+//										in_world = true;
+//
+//										ArrayList<String> default_worlds = new ArrayList<String>();
+//							String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");			default_worlds.add("All");
+//										CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
+//									}
+//
+//									String player_current_world = player.getWorld().getName();
+//									List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+//									for (String world : worlds) {
+//										if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+//											in_world = true;
+//										}
+//									}
+//
+//									if (in_world) {
+//										if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+//											Subranks.add(r);
+//										}
+//									}
+//								}
+//							}
+//						}
+//					} catch (Exception e1) {
+//						e1.printStackTrace();
+//					}
+//
+////					step5 = Instant.now();
+//
+//					for (int i = 0; i < Subranks.size(); i++) {
+//						List<String> permissions = (List<String>) CachedRanks.get("Groups." + Subranks.get(i) + ".permissions");
+//						if (permissions != null) {
+//							for (int j = 0; j < permissions.size(); j++) {
+//
+//								boolean enabled = !permissions.get(j).startsWith("-");
+//								if (enabled) {
+//									attachment.setPermission((String) permissions.get(j), true);
+//									if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+//										playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j));
+//
+//									if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+//										playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j));
+//								} else {
+//									attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
+//									if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+//										playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j).replaceFirst("-", ""));
+//
+//									if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+//										playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j).replaceFirst("-", ""));
+//								}
+//							}
+//						}
+//					}
+//
+////					step6 = Instant.now();
+//
+//					if (Inheritances != null) {
+//						for (int i = 0; i < Inheritances.size(); i++) {
+////							List<String> Permissions = (List<String>) CachedRanks.get("Groups." + Inheritances.get(i) + ".permissions");
+//							List<String> Permissions = CachedRanks.getStringList("Groups." + Inheritances.get(i) + ".permissions");
+//							if (Permissions != null) {
+//								for (int j = 0; j < Permissions.size(); j++) {
+//
+//									boolean enabled = !Permissions.get(j).startsWith("-");
+//									if (enabled) {
+//										attachment.setPermission((String) Permissions.get(j), true);
+//										if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
+//											playerDisallowedPermissions.get(player.getUniqueId()).remove((String) Permissions.get(j));
+//
+//										if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j)) && !Permissions.get(j).equals("*"))
+//											playerAllowedPermissions.get(player.getUniqueId()).add((String) Permissions.get(j));
+//									} else {
+//										attachment.setPermission((String) Permissions.get(j).replaceFirst("-", ""), false);
+//										if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
+//											playerDisallowedPermissions.get(player.getUniqueId()).add((String) Permissions.get(j).replaceFirst("-", ""));
+//
+//										if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) Permissions.get(j).replaceFirst("-", "")) && !Permissions.get(j).equals("*"))
+//											playerAllowedPermissions.get(player.getUniqueId()).remove((String) Permissions.get(j).replaceFirst("-", ""));
+//									}
+//								}
+//							}
+//						}
+//					}
+//
+////					step7 = Instant.now();
+//
+//					if (GroupPermissions != null) {
+//						for (int i = 0; i < GroupPermissions.size(); i++) {
+//
+//							boolean enabled = !GroupPermissions.get(i).startsWith("-");
+//							if (enabled) {
+//								attachment.setPermission((String) GroupPermissions.get(i), true);
+//								if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+//									playerDisallowedPermissions.get(player.getUniqueId()).remove((String) GroupPermissions.get(i));
+//
+//								if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i)) && !GroupPermissions.get(i).equals("*"))
+//									playerAllowedPermissions.get(player.getUniqueId()).add((String) GroupPermissions.get(i));
+//							} else {
+//								attachment.setPermission((String) GroupPermissions.get(i).replaceFirst("-", ""), false);
+//								if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
+//									playerDisallowedPermissions.get(player.getUniqueId()).add((String) GroupPermissions.get(i).replaceFirst("-", ""));
+//
+//								if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) GroupPermissions.get(i).replaceFirst("-", "")) && !GroupPermissions.get(i).equals("*"))
+//									playerAllowedPermissions.get(player.getUniqueId()).remove((String) GroupPermissions.get(i).replaceFirst("-", ""));
+//							}
+//						}
+//					}
+//
+////					step8 = Instant.now();
+//
+//					if (CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
+//						List<String> permissions = CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions");
+//						if (permissions != null) {
+//							for (int i = 0; i < permissions.size(); i++) {
+//								boolean enabled = !permissions.get(i).startsWith("-");
+//								if (enabled) {
+//									attachment.setPermission((String) permissions.get(i), true);
+//									if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+//										playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(i));
+//
+//									if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i)) && !permissions.get(i).equals("*"))
+//										playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(i));
+//								} else {
+//									attachment.setPermission((String) permissions.get(i).replaceFirst("-", ""), false);
+//									if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
+//										playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(i).replaceFirst("-", ""));
+//
+//									if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(i).replaceFirst("-", "")) && !permissions.get(i).equals("*"))
+//										playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(i).replaceFirst("-", ""));
+//								}
+//							}
+//						}
+//					} else {
+//						CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]", false);
+//					}
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				
+//				PowerRanks.log.warning("attachment permissions size 2 " + attachment.getPermissions().size());
+//				PowerRanks.log.warning("playerAllowedPermissions size 2 " + playerAllowedPermissions.size());
+//				PowerRanks.log.warning("playerDisallowedPermissions size 2 " + playerDisallowedPermissions.size());
+//				PowerRanks.log.warning("--------------------------------------");
+//				
+//				playerPowerPermissableBase.get(player.getUniqueId()).setReadyToRecalculatePermissions(true);
+//				playerPowerPermissableBase.get(player.getUniqueId()).recalculatePermissions();
+//
+////				step9 = Instant.now();
+//
+////				PowerRanks.log.info("Step 1: " + Duration.between(start, step1));
+////				PowerRanks.log.info("Step 2: " + Duration.between(step1, step2));
+////				PowerRanks.log.info("Step 3: " + Duration.between(step2, step3));
+////				PowerRanks.log.info("Step 4: " + Duration.between(step3, step4));
+////				PowerRanks.log.info("Step 5: " + Duration.between(step4, step5));
+////				PowerRanks.log.info("Step 6: " + Duration.between(step5, step6));
+////				PowerRanks.log.info("Step 7: " + Duration.between(step6, step7));
+////				PowerRanks.log.info("Step 8: " + Duration.between(step7, step8));
+////				PowerRanks.log.info("Step 9: " + Duration.between(step8, step9));
+////				PowerRanks.log.info("Total: " + Duration.between(start, step9));
+//				
+//				self.playerSetupPermissionsQueue.put(player.getUniqueId(), false);
+//				
+//				Instant end = Instant.now();
+//				PowerRanksVerbose.log("setupPermissions", "Permissions setup finished (time: " + Duration.between(start, end) + ")");
+////				 (time: " + Duration.between(start, end) + ")"
+//				return;
+//			}
+//
+//		}.runTaskLater(this, 20);
+////		}, 1L);
+//
+////		Instant end = Instant.now();
+//
+////		PowerRanks.log.info("===--------------------===");
+////		PowerRanks.log.info("End: " + Duration.between(start, end));
+////		PowerRanks.log.info("===--------------------===");
+////		PowerRanks.log.info("");
 	}
 
 	public void removePermissions(Player player) {
-		PowerRanksVerbose.log("removePermissions", "Removing " + player.getName() + "'s permissions");
-		if (playerPermissionAttachment.containsKey(player.getUniqueId())) {
-			this.playerInjectPermissible(player);
-		}
-
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
-		final String uuid = player.getUniqueId().toString();
-
-		try {
-			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
-			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
-			final List<String> Subranks = new ArrayList<String>();
-
-			try {
-				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-					PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
-					if (subranks != null) {
-						for (String r : subranks.getKeys(false)) {
-							boolean in_world = false;
-							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
-								in_world = true;
-
-								ArrayList<String> default_worlds = new ArrayList<String>();
-								default_worlds.add("All");
-								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
-							}
-
-							String player_current_world = player.getWorld().getName();
-							List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-							for (String world : worlds) {
-								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-									in_world = true;
-								}
-							}
-
-							if (in_world) {
-								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
-									Subranks.add(r);
-								}
-							}
-						}
-					}
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-
-			for (int i = 0; i < Subranks.size(); i++) {
-				List<String> permissions = CachedRanks.getStringList("Groups." + Subranks.get(i) + ".permissions");
-				if (permissions != null) {
-					for (int j = 0; j < permissions.size(); j++) {
-
-						boolean enabled = !permissions.get(j).startsWith("-");
-						if (enabled) {
-							attachment.setPermission((String) permissions.get(j), true);
-							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j));
-
-							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j));
-						} else {
-							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
-							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j).replaceFirst("-", ""));
-
-							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
-								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j).replaceFirst("-", ""));
-						}
-					}
-				}
-			}
-
-			if (GroupPermissions != null) {
-				for (int i = 0; i < GroupPermissions.size(); ++i) {
-					attachment.unsetPermission((String) GroupPermissions.get(i));
-				}
-			}
-
-			if (Inheritances != null) {
-				for (int i = 0; i < Inheritances.size(); ++i) {
-					final List<String> Permissions = (List<String>) CachedRanks.getStringList("Groups." + Inheritances.get(i) + ".permissions");
-					if (Permissions != null) {
-						for (int j = 0; j < Permissions.size(); ++j) {
-							attachment.unsetPermission((String) Permissions.get(j));
-						}
-					}
-				}
-			}
-
-			if (CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
-				List<String> permissions = (List<String>) CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions");
-				if (permissions != null) {
-					for (int i = 0; i < permissions.size(); i++) {
-						attachment.unsetPermission((String) permissions.get(i));
-					}
-				}
-			} else {
-				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]", false);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
-		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+//		PowerRanksVerbose.log("removePermissions", "Removing " + player.getName() + "'s permissions");
+//		if (playerPermissionAttachment.containsKey(player.getUniqueId())) {
+//			this.playerInjectPermissible(player);
+//		}
+//
+//		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
+//		final String uuid = player.getUniqueId().toString();
+//
+//		try {
+//			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+//			final List<String> GroupPermissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
+//			final List<String> Inheritances = CachedRanks.getStringList("Groups." + rank + ".inheritance");
+//			final List<String> Subranks = new ArrayList<String>();
+//
+//			try {
+//				if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
+//					PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+//					if (subranks != null) {
+//						for (String r : subranks.getKeys(false)) {
+//							boolean in_world = false;
+//							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
+//								in_world = true;
+//
+//								ArrayList<String> default_worlds = new ArrayList<String>();
+//								default_worlds.add("All");
+//								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
+//							}
+//
+//							String player_current_world = player.getWorld().getName();
+//							List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
+//							for (String world : worlds) {
+//								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+//									in_world = true;
+//								}
+//							}
+//
+//							if (in_world) {
+//								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_permissions")) {
+//									Subranks.add(r);
+//								}
+//							}
+//						}
+//					}
+//				}
+//			} catch (Exception e1) {
+//				e1.printStackTrace();
+//			}
+//
+//			for (int i = 0; i < Subranks.size(); i++) {
+//				List<String> permissions = CachedRanks.getStringList("Groups." + Subranks.get(i) + ".permissions");
+//				if (permissions != null) {
+//					for (int j = 0; j < permissions.size(); j++) {
+//
+//						boolean enabled = !permissions.get(j).startsWith("-");
+//						if (enabled) {
+//							attachment.setPermission((String) permissions.get(j), true);
+//							if (playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+//								playerDisallowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j));
+//
+//							if (!playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j)) && !permissions.get(j).equals("*"))
+//								playerAllowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j));
+//						} else {
+//							attachment.setPermission((String) permissions.get(j).replaceFirst("-", ""), false);
+//							if (!playerDisallowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+//								playerDisallowedPermissions.get(player.getUniqueId()).add((String) permissions.get(j).replaceFirst("-", ""));
+//
+//							if (playerAllowedPermissions.get(player.getUniqueId()).contains((String) permissions.get(j).replaceFirst("-", "")) && !permissions.get(j).equals("*"))
+//								playerAllowedPermissions.get(player.getUniqueId()).remove((String) permissions.get(j).replaceFirst("-", ""));
+//						}
+//					}
+//				}
+//			}
+//
+//			if (GroupPermissions != null) {
+//				for (int i = 0; i < GroupPermissions.size(); ++i) {
+//					attachment.unsetPermission((String) GroupPermissions.get(i));
+//				}
+//			}
+//
+//			if (Inheritances != null) {
+//				for (int i = 0; i < Inheritances.size(); ++i) {
+//					final List<String> Permissions = (List<String>) CachedRanks.getStringList("Groups." + Inheritances.get(i) + ".permissions");
+//					if (Permissions != null) {
+//						for (int j = 0; j < Permissions.size(); ++j) {
+//							attachment.unsetPermission((String) Permissions.get(j));
+//						}
+//					}
+//				}
+//			}
+//
+//			if (CachedPlayers.contains("players." + player.getUniqueId() + ".permissions")) {
+//				List<String> permissions = (List<String>) CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions");
+//				if (permissions != null) {
+//					for (int i = 0; i < permissions.size(); i++) {
+//						attachment.unsetPermission((String) permissions.get(i));
+//					}
+//				}
+//			} else {
+//				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", "[]", false);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+//		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
 	}
 
 	public void clearPermissions(Player player) {
-		PowerRanksVerbose.log("clearPermissions", "Clearing " + player.getName() + "'s permissions");
-		if (playerPermissionAttachment.containsKey(player.getUniqueId())) {
-			this.playerInjectPermissible(player);
-		}
-
-		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
-		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
-
-		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
-
-		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
-			attachment.unsetPermission(perm.getPermission());
-		}
+//		Instant start = Instant.now();
+//		if (playerPermissionAttachment.containsKey(player.getUniqueId())) {
+//			this.playerInjectPermissible(player);
+//		}
+//
+//		playerDisallowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+//		playerAllowedPermissions.put(player.getUniqueId(), new ArrayList<String>());
+//
+//		final PermissionAttachment attachment = playerPermissionAttachment.get(player.getUniqueId());
+//
+////		for (PermissionAttachmentInfo perm : player.getEffectivePermissions()) {
+////			attachment.unsetPermission(perm.getPermission());
+////		}
+//		for (String perm : attachment.getPermissions().keySet()) {
+//			attachment.unsetPermission(perm);
+//		}
+//		Instant end = Instant.now();
+//		PowerRanksVerbose.log("clearPermissions", "Cleared " + player.getName() + "'s permissions (time: " + Duration.between(start, end) + ")");
 	}
 
 	public void playerInjectPermissible(Player player) {
-		PowerRanksVerbose.log("playerInjectPermissible", "Injecting permissions handler in " + player.getName());
-		Permissible permissible = new PowerPermissibleBase(player, this);
-		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
-		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
-
-		if (playerPermissionAttachment.get(player.getUniqueId()) == null)
-			playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this));
+		try {
+			Field f = Util.obcClass("entity.CraftHumanEntity").getDeclaredField("perm");
+			f.setAccessible(true);
+			f.set(player, new PowerPermissibleBase(player, this));
+			f.setAccessible(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+////		PowerRanksVerbose.log("playerInjectPermissible", "Injecting permissions handler in " + player.getName());
+//		Instant start = Instant.now();
+//		Permissible permissible = new PowerPermissibleBase(player, this);
+//		Permissible oldPermissible = PermissibleInjector.inject(player, permissible);
+//		((PowerPermissibleBase) permissible).setOldPermissible(oldPermissible);
+//		playerPowerPermissableBase.put(player.getUniqueId(), (PowerPermissibleBase) permissible);
+//
+//		if (playerPermissionAttachment.get(player.getUniqueId()) == null)
+//			playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this));
+//		
+//		Instant end = Instant.now();
+//		PowerRanksVerbose.log("playerInjectPermissible", "Injected permissions handler in " + player.getName() + " (time: " + Duration.between(start, end) + ")");
 	}
 
 	public void playerUninjectPermissible(Player player) {
-		PowerRanksVerbose.log("playerUninjectPermissible", "Uninjecting permissions handler from " + player.getName());
-		PermissibleInjector.uninject(player);
+//		Instant start = Instant.now();
+////		PowerRanksVerbose.log("playerUninjectPermissible", "Uninjecting permissions handler from " + player.getName());
+//		PermissibleInjector.uninject(player);
+//		playerPowerPermissableBase.remove(player.getUniqueId());
+//		Instant end = Instant.now();
+//		PowerRanksVerbose.log("playerUninjectPermissible", "Uninjected permissions handler from" + player.getName() + " (time: " + Duration.between(start, end) + ")");
 	}
 
 	private void updateNametagEditData(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor) {
@@ -1102,18 +1223,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = tmp_format;
 			}
 
-			format = Util
-					.powerFormatter(format, ImmutableMap.<String, String>builder()
-							.put("prefix", prefix)
-							.put("suffix", suffix)
-							.put("subprefix", subprefix)
-							.put("subsuffix", subsuffix)
-							.put("usertag", usertag)
-					.put("player", nameColor + player.getPlayerListName())
-					.put("world", player.getWorld().getName()
-							.replace("world_nether", "Nether")
-							.replace("world_the_end", "End"))
-					.build(), '[', ']');
+			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
+					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
@@ -1198,5 +1309,56 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static StorageType getStorageType() {
 		return currentStorageType;
+	}
+
+	public ArrayList<String> getEffectivePlayerPermissions(Player player) {
+		ArrayList<String> permissions = new ArrayList<>();
+
+		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+
+		for (String permission : CachedRanks.getStringList("Groups." + rank + ".permissions"))
+			permissions.add(permission);
+
+		for (String inheritance : CachedRanks.getStringList("Groups." + rank + ".inheritance"))
+			for (String permission : CachedRanks.getStringList("Groups." + inheritance + ".permissions"))
+				permissions.add(permission);
+
+		for (String permission : CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions"))
+			permissions.add(permission);
+
+		ArrayList<String> useable_subranks = new ArrayList<String>();
+		PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
+		if (subranks != null) {
+			for (String r : subranks.getKeys(false)) {
+				boolean in_world = false;
+				if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks." + r + ".worlds")) {
+					in_world = true;
+
+					ArrayList<String> default_worlds = new ArrayList<String>();
+					default_worlds.add("All");
+					CachedPlayers.set("players." + player.getUniqueId() + ".subranks." + r + ".worlds", default_worlds, true);
+				}
+
+				String player_current_world = player.getWorld().getName();
+				List<String> worlds = CachedPlayers.getStringList("players." + player.getUniqueId() + ".subranks." + r + ".worlds");
+				for (String world : worlds) {
+					if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+						in_world = true;
+					}
+				}
+
+				if (in_world) {
+					if (CachedPlayers.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_permissions")) {
+						useable_subranks.add(r);
+					}
+				}
+			}
+		}
+
+		for (String inheritance : useable_subranks)
+			for (String permission : CachedRanks.getStringList("Groups." + inheritance + ".permissions"))
+				permissions.add(permission);
+
+		return permissions;
 	}
 }

@@ -1,24 +1,20 @@
 package nl.svenar.PowerRanks.Data;
 
-import java.util.Set;
+import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.PermissibleBase;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Util;
 
 public class PowerPermissibleBase extends PermissibleBase {
 
-	private Permissible oldPermissible = new PermissibleBase(null);
+//	private Permissible oldPermissible = new PermissibleBase(null);
 	private PowerRanks plugin;
 	private Player player;
-	private boolean doRecalculatePermissions = false;
+//	private boolean doRecalculatePermissions = false;
+//	private boolean readyToRecalculatePermissions = false;
 
 	public PowerPermissibleBase(Player player, PowerRanks main) {
 		super(player);
@@ -26,8 +22,43 @@ public class PowerPermissibleBase extends PermissibleBase {
 		this.plugin = main;
 		PowerRanksVerbose.log("PowerPermissibleBase", "created");
 	}
+	
+	@Override
+    public boolean hasPermission(String permission) {
+        ArrayList<String> permissions = plugin.getEffectivePlayerPermissions(player);
 
-	public Permissible getOldPermissible() {
+        if (permissions.contains("-" + permission)){
+            return false;
+        }
+        
+        if (permissions.contains("*") || player.isOp()){
+            return true;
+        }
+        
+        boolean contains_wildcard = false;
+        for (String p : generateWildcardList(permission)) {
+        	if (permissions.contains(p)) {
+        		contains_wildcard = true;
+        		break;
+        	}
+        }
+        return permissions.contains(permission) || contains_wildcard;
+    }
+
+	private ArrayList<String> generateWildcardList(String permission) {
+		ArrayList<String> output = new ArrayList<String>();
+		String[] permission_split = permission.split("\\.");
+		
+		permission_split = Util.array_pop(permission_split);
+		for (int i = 0; i < permission_split.length + 1; i++) {
+			output.add(String.join(".", permission_split) + ".*");
+			permission_split = Util.array_pop(permission_split);
+		}
+		
+		return output;
+	}
+
+	/*public Permissible getOldPermissible() {
 		PowerRanksVerbose.log("getOldPermissible", "called");
 		return oldPermissible;
 	}
@@ -54,7 +85,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		}
 
 		PowerRanksVerbose.log("", "");
-		PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "---------------------START");
+		PowerRanksVerbose.log("hasPermission(String)", "[start | " + permission + "]");
 
 		boolean hasPerm = oldPermissible.hasPermission(permission);
 		boolean isDisallowed = plugin.playerDisallowedPermissions.get(player.getUniqueId()) != null ? plugin.playerDisallowedPermissions.get(player.getUniqueId()).contains(permission) : false;
@@ -79,15 +110,16 @@ public class PowerPermissibleBase extends PermissibleBase {
 			} else {
 				playerDisallowedPermissions = "ERROR: Player not cached";
 			}
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "----------------FINALCHECK");
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | " + player.getName() + "'s  allowed permissions: " + playerAllowedPermissions);
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | " + player.getName() + "'s  disallowed permissions: " + playerDisallowedPermissions);
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasPerm: " + hasPerm);
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | isDisallowed: " + isDisallowed);
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasAllPerms: " + hasAllPerms);
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + " | hasWildcardTree: " + hasWildcardTree);
-
-			PowerRanksVerbose.log("hasPermission(String)", "Permission: " + permission + "-----------------------END");
+			PowerRanksVerbose.log("hasPermission(String)", "[finalcheck | " + permission + "]");
+			PowerRanksVerbose.log("hasPermission(String)", " | permission: " + permission);
+			PowerRanksVerbose.log("hasPermission(String)", " | " + player.getName() + "'s allowed permissions: " + playerAllowedPermissions);
+			PowerRanksVerbose.log("hasPermission(String)", " | " + player.getName() + "'s disallowed permissions: " + playerDisallowedPermissions);
+			PowerRanksVerbose.log("hasPermission(String)", " | hasPerm: " + hasPerm);
+			PowerRanksVerbose.log("hasPermission(String)", " | isDisallowed: " + isDisallowed);
+			PowerRanksVerbose.log("hasPermission(String)", " | hasAllPerms: " + hasAllPerms);
+			PowerRanksVerbose.log("hasPermission(String)", " | hasWildcardTree: " + hasWildcardTree);
+			PowerRanksVerbose.log("hasPermission(String)", "[end | " + permission + "]");
+			PowerRanksVerbose.log("", "");
 		}
 
 		return (hasPerm && !isDisallowed) || (hasAllPerms && !isDisallowed) || (hasWildcardTree && !isDisallowed);
@@ -117,26 +149,36 @@ public class PowerPermissibleBase extends PermissibleBase {
 		PowerRanksVerbose.log("hasPermission(Permission)", "hasPerm: " + permission.getName());
 		return hasPermission(permission.getName());
 	}
+	
+	public void setReadyToRecalculatePermissions(boolean ready) {
+		this.readyToRecalculatePermissions = ready;
+	}
 
 	@Override
 	public void recalculatePermissions() {
-		if (oldPermissible == null) {
-			super.recalculatePermissions();
-			try {
-				if (player != null)
-					player.updateCommands();
-			} catch (NoSuchMethodError e) {
-			}
+		if (!readyToRecalculatePermissions)
 			return;
-		}
-
+		
 		if (!doRecalculatePermissions) {
 			doRecalculatePermissions = true;
+
+			if (oldPermissible == null) {
+//				super.recalculatePermissions();
+				try {
+					if (player != null)
+						player.updateCommands();
+				} catch (NoSuchMethodError e) {
+				}
+				return;
+			}
+
 			if (plugin.powerranks_enabled) {
-				BukkitScheduler scheduler = plugin.getServer().getScheduler();
-				scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+//				BukkitScheduler scheduler = plugin.getServer().getScheduler();
+//				scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
+				new BukkitRunnable() {
 					@Override
 					public void run() {
+						Instant start = Instant.now();
 						oldPermissible.recalculatePermissions();
 						try {
 							if (player != null)
@@ -144,9 +186,12 @@ public class PowerPermissibleBase extends PermissibleBase {
 						} catch (NoSuchMethodError e) {
 						}
 						doRecalculatePermissions = false;
-						PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated");
+						Instant end = Instant.now();
+						PowerRanksVerbose.log("recalculatePermissions", "Permissions recalculated (time: " + Duration.between(start, end) + ")");
+						return;
 					}
-				}, 20L);
+				}.runTaskLater(this.plugin, 20);
+//				}, 20L);
 			}
 		} else {
 			PowerRanksVerbose.log("recalculatePermissions", "Already in queue");
@@ -310,5 +355,5 @@ public class PowerPermissibleBase extends PermissibleBase {
 		}
 
 		return false;
-	}
+	}*/
 }
