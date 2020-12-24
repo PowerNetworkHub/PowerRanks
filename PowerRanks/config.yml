@@ -90,11 +90,11 @@ signs:
   enabled: true
   title_format: "&0[&b%plugin_name%&0]"
 plugin_hook:
-  vault_economy: false
-  vault_permissions: false
-  placeholderapi: false
+  vault_economy: true
+  vault_permissions: true
+  placeholderapi: true
   deluxetags: false
-  nametagedit: false
+  nametagedit: true
 announcements:
   rankup:
     enabled: false
