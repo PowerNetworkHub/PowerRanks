@@ -17,8 +17,6 @@ public class ConfigFilesUpdater {
 	public static void updateConfigFiles(PowerRanks plugin, StorageType storageType) {
 		boolean updateConfigYAML = checkVersion(PowerRanks.configFileLoc, "config.yml", plugin);
 		boolean updateLangYAML = checkVersion(PowerRanks.configFileLoc, "lang.yml", plugin);
-		boolean updateRanksYAML = storageType == StorageType.YAML && checkVersion(PowerRanks.fileLoc, "Ranks.yml", plugin);
-		boolean updatePlayersYAML = storageType == StorageType.YAML && checkVersion(PowerRanks.fileLoc, "Players.yml", plugin);
 
 		if (updateConfigYAML) {
 			copyTmpFile(plugin, "config.yml");
@@ -78,6 +76,15 @@ public class ConfigFilesUpdater {
 			deleteTmpFile(plugin, "lang.yml");
 		}
 
+		if (new File(plugin.getDataFolder() + File.separator + "tmp").exists()) {
+			new File(plugin.getDataFolder() + File.separator + "tmp").delete();
+		}
+	}
+
+	public static void updateDataFiles(PowerRanks plugin, StorageType storageType) {
+		boolean updateRanksYAML = storageType == StorageType.YAML && checkVersion(PowerRanks.fileLoc, "Ranks.yml", plugin);
+		boolean updatePlayersYAML = storageType == StorageType.YAML && checkVersion(PowerRanks.fileLoc, "Players.yml", plugin);
+		
 		if (updateRanksYAML) {
 			copyTmpFile(plugin, "Ranks.yml");
 			final File file = new File(plugin.getDataFolder() + File.separator + "Ranks", "Ranks.yml");
@@ -160,8 +167,9 @@ public class ConfigFilesUpdater {
 		if (new File(plugin.getDataFolder() + File.separator + "tmp").exists()) {
 			new File(plugin.getDataFolder() + File.separator + "tmp").delete();
 		}
+		
 	}
-
+	
 	private static void copyTmpFile(PowerRanks plugin, String yamlFileName) {
 		File tmp_file = new File(plugin.getDataFolder() + File.separator + "tmp", yamlFileName);
 		if (!tmp_file.exists())

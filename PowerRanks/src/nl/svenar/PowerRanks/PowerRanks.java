@@ -184,7 +184,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			e.printStackTrace();
 		}
 		this.loadAllFiles(currentStorageType);
-
+		
+		ConfigFilesUpdater.updateConfigFiles(this, currentStorageType);
+		
 		new CachedConfig(this);
 
 		switch (CachedConfig.getString("storage.type").toLowerCase()) {
@@ -238,7 +240,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 		this.loadAllFiles(currentStorageType);
 		
-		ConfigFilesUpdater.updateConfigFiles(this, currentStorageType);
+		ConfigFilesUpdater.updateDataFiles(this, currentStorageType);
 
 		// Database
 		prdb = new PowerDatabase(this, currentStorageType, CachedConfig.getString("storage.database.host"), CachedConfig.getInt("storage.database.port"), CachedConfig.getString("storage.database.username"),
