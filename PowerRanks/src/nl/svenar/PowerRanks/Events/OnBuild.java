@@ -24,8 +24,11 @@ public class OnBuild implements Listener {
 
 		if (CachedConfig.getBoolean("build_modification.enabled")) {
 			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-			final boolean canBuild = CachedRanks.getBoolean("Groups." + rank + ".build");
-			e.setCancelled(!canBuild);
+			try {
+				final boolean canBuild = CachedRanks.getBoolean("Groups." + rank + ".build");
+				e.setCancelled(!canBuild);
+			} catch (Exception ex) {
+			}
 		}
 
 	}
@@ -33,11 +36,14 @@ public class OnBuild implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerBreak(final BlockBreakEvent e) {
 		final Player player = e.getPlayer();
-		
+
 		if (CachedConfig.getBoolean("build_modification.enabled")) {
 			final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-			final boolean canBuild = CachedRanks.getBoolean("Groups." + rank + ".build");
-			e.setCancelled(!canBuild);
+			try {
+				final boolean canBuild = CachedRanks.getBoolean("Groups." + rank + ".build");
+				e.setCancelled(!canBuild);
+			} catch (Exception ex) {
+			}
 		}
 	}
 }
