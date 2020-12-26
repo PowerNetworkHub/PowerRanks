@@ -1,9 +1,7 @@
 package nl.svenar.PowerRanks.Commands.rank;
 
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
