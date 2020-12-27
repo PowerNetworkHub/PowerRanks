@@ -94,9 +94,12 @@ public class PowerDatabase {
 
 		String sql_create_table_users = "CREATE TABLE `" + this.database + "`.`" + this.table_users
 				+ "` ( `uuid` VARCHAR(50) NOT NULL , `name` VARCHAR(30) NOT NULL , `rank` VARCHAR(32) NOT NULL , `subranks` LONGTEXT NOT NULL , `usertag` VARCHAR(32) NOT NULL , `permissions` LONGTEXT NOT NULL , `playtime` INT NOT NULL , UNIQUE `uuid` (`uuid`));";
-
+//
+//		String sql_create_table_ranks = "CREATE TABLE `" + this.database + "`.`" + this.table_ranks
+//				+ "` ( `name` VARCHAR(32) NOT NULL , `permissions` LONGTEXT NOT NULL , `inheritance` LONGTEXT NOT NULL , `build` BOOLEAN NOT NULL , `prefix` VARCHAR(64) NOT NULL , `suffix` VARCHAR(64) NOT NULL , `chat_color` VARCHAR(16) NOT NULL , `name_color` VARCHAR(16) NOT NULL , `level_promote` VARCHAR(32) NOT NULL , `level_demote` VARCHAR(32) NOT NULL , `economy_buyable` LONGTEXT NOT NULL , `economy_cost` INT NOT NULL , `gui_icon` VARCHAR(32) NOT NULL , UNIQUE `name` (`name`));";
+		
 		String sql_create_table_ranks = "CREATE TABLE `" + this.database + "`.`" + this.table_ranks
-				+ "` ( `name` VARCHAR(32) NOT NULL , `permissions` LONGTEXT NOT NULL , `inheritance` LONGTEXT NOT NULL , `build` BOOLEAN NOT NULL , `prefix` VARCHAR(64) NOT NULL , `suffix` VARCHAR(64) NOT NULL , `chat_color` VARCHAR(16) NOT NULL , `name_color` VARCHAR(16) NOT NULL , `level_promote` VARCHAR(32) NOT NULL , `level_demote` VARCHAR(32) NOT NULL , `economy_buyable` LONGTEXT NOT NULL , `economy_cost` INT NOT NULL , `gui_icon` VARCHAR(32) NOT NULL , UNIQUE `name` (`name`));";
+				+ "` ( `name` VARCHAR(32) NOT NULL , `permissions` LONGTEXT NOT NULL , `inheritance` LONGTEXT NOT NULL , `prefix` VARCHAR(64) NOT NULL , `suffix` VARCHAR(64) NOT NULL , `chat_color` VARCHAR(16) NOT NULL , `name_color` VARCHAR(16) NOT NULL , `level_promote` VARCHAR(32) NOT NULL , `level_demote` VARCHAR(32) NOT NULL , `economy_buyable` LONGTEXT NOT NULL , `economy_cost` INT NOT NULL , `gui_icon` VARCHAR(32) NOT NULL , UNIQUE `name` (`name`));";
 
 		String sql_create_table_usertags = "CREATE TABLE `" + this.database + "`.`" + this.table_usertags + "` ( `name` VARCHAR(32) NOT NULL , `value` VARCHAR(64) NOT NULL , UNIQUE `name` (`name`));";
 
@@ -170,7 +173,7 @@ public class PowerDatabase {
 			// === Ranks.yml ===
 			String sql_set_default_rank = "INSERT INTO `" + this.database + "`.`" + this.table_data + "`(`key`, `value`) VALUES ('default_rank', '" + ranksYaml.getString("Default") + "');";
 			String sql_create_rank = "INSERT INTO `" + this.database + "`.`" + this.table_ranks
-					+ "` (`name`, `permissions`, `inheritance`, `build`, `prefix`, `suffix`, `chat_color`, `name_color`, `level_promote`, `level_demote`, `economy_buyable`, `economy_cost`, `gui_icon`) VALUES ('%rank_name%', '%rank_permissions%', '%rank_inheritance%', '%rank_build%', '%rank_prefix%', '%rank_suffix%', '%rank_chatcolor%', '%rank_namecolor%', '%rank_promote%', '%rank_demote%', '%rank_buyable%', '%rank_cost%', '%rank_gui_icon%')";
+					+ "` (`name`, `permissions`, `inheritance`, `prefix`, `suffix`, `chat_color`, `name_color`, `level_promote`, `level_demote`, `economy_buyable`, `economy_cost`, `gui_icon`) VALUES ('%rank_name%', '%rank_permissions%', '%rank_inheritance%', '%rank_prefix%', '%rank_suffix%', '%rank_chatcolor%', '%rank_namecolor%', '%rank_promote%', '%rank_demote%', '%rank_buyable%', '%rank_cost%', '%rank_gui_icon%')";
 			String sql_create_usertag = "INSERT INTO `" + this.database + "`.`" + this.table_usertags + "`(`name`, `value`) VALUES ('%name%', '%value%');";
 			
 			this.mysqlConnection.createStatement().executeUpdate(sql_set_default_rank);
@@ -181,7 +184,7 @@ public class PowerDatabase {
 								.replace("%rank_name%", key)
 								.replace("%rank_permissions%", String.join(",", ranksYaml.getStringList("Groups." + key + ".permissions")))
 								.replace("%rank_inheritance%", String.join(",", ranksYaml.getStringList("Groups." + key + ".inheritance")))
-								.replace("%rank_build%", ranksYaml.getBoolean("Groups." + key + ".build") ? "1" : "0")
+//								.replace("%rank_build%", ranksYaml.getBoolean("Groups." + key + ".build") ? "1" : "0")
 								.replace("%rank_prefix%", (String) ranksYaml.get("Groups." + key + ".chat.prefix"))
 								.replace("%rank_suffix%", (String) ranksYaml.get("Groups." + key + ".chat.suffix"))
 								.replace("%rank_chatcolor%", (String) ranksYaml.get("Groups." + key + ".chat.chatColor"))
@@ -255,12 +258,13 @@ public class PowerDatabase {
 
 		String sql_set_default_rank = "INSERT INTO `" + this.database + "`.`" + this.table_data + "`(`key`, `value`) VALUES ('default_rank', '" + tmpYamlConf.getString("Default") + "');";
 		String sql_create_rank = "INSERT INTO `" + this.database + "`.`" + this.table_ranks
-				+ "` (`name`, `permissions`, `inheritance`, `build`, `prefix`, `suffix`, `chat_color`, `name_color`, `level_promote`, `level_demote`, `economy_buyable`, `economy_cost`, `gui_icon`) VALUES ('%rank_name%', '%rank_permissions%', '%rank_inheritance%', '%rank_build%', '%rank_prefix%', '%rank_suffix%', '%rank_chatcolor%', '%rank_namecolor%', '%rank_promote%', '%rank_demote%', '%rank_buyable%', '%rank_cost%', '%rank_gui_icon%')";
+				+ "` (`name`, `permissions`, `inheritance`, `prefix`, `suffix`, `chat_color`, `name_color`, `level_promote`, `level_demote`, `economy_buyable`, `economy_cost`, `gui_icon`) VALUES ('%rank_name%', '%rank_permissions%', '%rank_inheritance%', '%rank_prefix%', '%rank_suffix%', '%rank_chatcolor%', '%rank_namecolor%', '%rank_promote%', '%rank_demote%', '%rank_buyable%', '%rank_cost%', '%rank_gui_icon%')";
 		this.mysqlConnection.createStatement().executeUpdate(sql_set_default_rank);
 
 		for (String key : tmpYamlConf.getConfigurationSection("Groups").getKeys(false)) {
 			this.mysqlConnection.createStatement()
-					.executeUpdate(sql_create_rank.replace("%rank_name%", key).replace("%rank_permissions%", "").replace("%rank_inheritance%", "").replace("%rank_build%", tmpYamlConf.getBoolean("Groups." + key + ".build") ? "1" : "0")
+					.executeUpdate(sql_create_rank.replace("%rank_name%", key).replace("%rank_permissions%", "").replace("%rank_inheritance%", "")
+//							.replace("%rank_build%", tmpYamlConf.getBoolean("Groups." + key + ".build") ? "1" : "0")
 							.replace("%rank_prefix%", (String) tmpYamlConf.get("Groups." + key + ".chat.prefix")).replace("%rank_suffix%", (String) tmpYamlConf.get("Groups." + key + ".chat.suffix"))
 							.replace("%rank_chatcolor%", (String) tmpYamlConf.get("Groups." + key + ".chat.chatColor")).replace("%rank_namecolor%", (String) tmpYamlConf.get("Groups." + key + ".chat.nameColor"))
 							.replace("%rank_promote%", (String) tmpYamlConf.get("Groups." + key + ".level.promote")).replace("%rank_demote%", (String) tmpYamlConf.get("Groups." + key + ".level.demote")).replace("%rank_buyable%", "")
@@ -356,9 +360,9 @@ public class PowerDatabase {
 //			target_key = target_key == "buyable" ? "economy_buyable" : target_key;
 //			target_key = target_key == "cost" ? "economy_cost" : target_key;
 //			target_key = target_key == "icon" ? "gui_icon" : target_key;
-			if (target_key.equals("build")) {
-				value = (boolean) value ? 1 : 0;
-			}
+//			if (target_key.equals("build")) {
+//				value = (boolean) value ? 1 : 0;
+//			}
 
 			String sql = "INSERT INTO `" + table_name + "` (`name`, `" + target_key + "`) VALUES('" + rankname + "', '" + value + "') ON DUPLICATE KEY UPDATE `" + target_key + "`='" + value + "';";
 //			PowerRanks.log.info("<<<--- " + sql);
@@ -407,7 +411,7 @@ public class PowerDatabase {
 					String rankname = rs.getString("name");
 					String permissions = rs.getString("permissions");
 					String inheritance = rs.getString("inheritance");
-					boolean build = rs.getBoolean("build");
+//					boolean build = rs.getBoolean("build");
 					String prefix = rs.getString("prefix");
 					String suffix = rs.getString("suffix");
 					String chatcolor = rs.getString("chat_color");
@@ -423,7 +427,7 @@ public class PowerDatabase {
 					output.put("Groups." + rankname, "0");
 					output.put("Groups." + rankname + ".permissions", permissions);
 					output.put("Groups." + rankname + ".inheritance", inheritance);
-					output.put("Groups." + rankname + ".build", build);
+//					output.put("Groups." + rankname + ".build", build);
 					output.put("Groups." + rankname + ".chat.prefix", prefix);
 					output.put("Groups." + rankname + ".chat.suffix", suffix);
 					output.put("Groups." + rankname + ".chat.chatcolor", chatcolor);

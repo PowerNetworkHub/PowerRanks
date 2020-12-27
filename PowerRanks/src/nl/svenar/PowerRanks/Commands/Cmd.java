@@ -616,38 +616,38 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-					if (sender.hasPermission("powerranks.cmd.enablebuild")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.setBuild(rank2, true);
-							if (success) {
-								Messages.messageCommandBuildEnabled(player, rank2);
-							} else {
-								Messages.messageGroupNotFound(player, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageEnableBuild(player);
-						}
-					} else {
-						Messages.noPermission(player);
-					}
-				} else if (args[0].equalsIgnoreCase("disablebuild")) {
-					if (sender.hasPermission("powerranks.cmd.disablebuild")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							final boolean success = s.setBuild(rank2, false);
-							if (success) {
-								Messages.messageCommandBuildDisabled(player, rank2);
-							} else {
-								Messages.messageGroupNotFound(player, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageDisableBuild(player);
-						}
-					} else {
-						Messages.noPermission(player);
-					}
+//				} else if (args[0].equalsIgnoreCase("enablebuild")) {
+//					if (sender.hasPermission("powerranks.cmd.enablebuild")) {
+//						if (args.length == 2) {
+//							final String rank2 = s.getRankIgnoreCase(args[1]);
+//							final boolean success = s.setBuild(rank2, true);
+//							if (success) {
+//								Messages.messageCommandBuildEnabled(player, rank2);
+//							} else {
+//								Messages.messageGroupNotFound(player, rank2);
+//							}
+//						} else {
+//							Messages.messageCommandUsageEnableBuild(player);
+//						}
+//					} else {
+//						Messages.noPermission(player);
+//					}
+//				} else if (args[0].equalsIgnoreCase("disablebuild")) {
+//					if (sender.hasPermission("powerranks.cmd.disablebuild")) {
+//						if (args.length == 2) {
+//							final String rank2 = s.getRankIgnoreCase(args[1]);
+//							final boolean success = s.setBuild(rank2, false);
+//							if (success) {
+//								Messages.messageCommandBuildDisabled(player, rank2);
+//							} else {
+//								Messages.messageGroupNotFound(player, rank2);
+//							}
+//						} else {
+//							Messages.messageCommandUsageDisableBuild(player);
+//						}
+//					} else {
+//						Messages.noPermission(player);
+//					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (sender.hasPermission("powerranks.cmd.promote")) {
 						if (args.length == 2) {
@@ -1690,30 +1690,30 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageDeleteRank(console);
 					}
-				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-					if (args.length == 2) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
-						final boolean success = s.setBuild(rank2, true);
-						if (success) {
-							Messages.messageCommandBuildEnabled(console, rank2);
-						} else {
-							Messages.messageGroupNotFound(console, rank2);
-						}
-					} else {
-						Messages.messageCommandUsageEnableBuild(console);
-					}
-				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
-					if (args.length == 2) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
-						final boolean success = s.setBuild(rank2, false);
-						if (success) {
-							Messages.messageCommandBuildDisabled(console, rank2);
-						} else {
-							Messages.messageGroupNotFound(console, rank2);
-						}
-					} else {
-						Messages.messageCommandUsageDisableBuild(console);
-					}
+//				} else if (args[0].equalsIgnoreCase("enablebuild")) {
+//					if (args.length == 2) {
+//						final String rank2 = s.getRankIgnoreCase(args[1]);
+//						final boolean success = s.setBuild(rank2, true);
+//						if (success) {
+//							Messages.messageCommandBuildEnabled(console, rank2);
+//						} else {
+//							Messages.messageGroupNotFound(console, rank2);
+//						}
+//					} else {
+//						Messages.messageCommandUsageEnableBuild(console);
+//					}
+//				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
+//					if (args.length == 2) {
+//						final String rank2 = s.getRankIgnoreCase(args[1]);
+//						final boolean success = s.setBuild(rank2, false);
+//						if (success) {
+//							Messages.messageCommandBuildDisabled(console, rank2);
+//						} else {
+//							Messages.messageGroupNotFound(console, rank2);
+//						}
+//					} else {
+//						Messages.messageCommandUsageDisableBuild(console);
+//					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (args.length == 2) {
 						final String playername = args[1];
@@ -2241,18 +2241,18 @@ public class Cmd implements CommandExecutor {
 							s.deleteRank(rank2);
 						}
 					}
-				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-					if (sender.hasPermission("powerranks.cmd.set")) {
-						if (args.length == 2) {
-							final String rank2 = s.getRankIgnoreCase(args[1]);
-							s.setBuild(rank2, true);
-						}
-					}
-				} else if (args[0].equalsIgnoreCase("disablebuild")) {
-					if (args.length == 2) {
-						final String rank2 = s.getRankIgnoreCase(args[1]);
-						s.setBuild(rank2, false);
-					}
+//				} else if (args[0].equalsIgnoreCase("enablebuild")) {
+//					if (sender.hasPermission("powerranks.cmd.set")) {
+//						if (args.length == 2) {
+//							final String rank2 = s.getRankIgnoreCase(args[1]);
+//							s.setBuild(rank2, true);
+//						}
+//					}
+//				} else if (args[0].equalsIgnoreCase("disablebuild")) {
+//					if (args.length == 2) {
+//						final String rank2 = s.getRankIgnoreCase(args[1]);
+//						s.setBuild(rank2, false);
+//					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (args.length == 2) {
 						final String playername = args[1];

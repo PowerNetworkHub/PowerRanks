@@ -50,8 +50,6 @@ messages:
    player_demoted: "%plugin_prefix% &aPlayer %argument_target% demoted!"
    error_player_promote: "%plugin_prefix% &aCould not promote player %argument_target%!"
    error_player_demote: "%plugin_prefix% &aCould not demote player %argument_target%!"
-   build_enabled: "%plugin_prefix% &aBuilding enabled on rank: %argument_rank%"
-   build_disabled: "%plugin_prefix% &aBuilding disabled on rank: %argument_rank%"
    permission_added: "%plugin_prefix% &aPermission '%argument_permission%' added to rank: %argument_rank%"
    permission_removed: "%plugin_prefix% &aPermission '%argument_permission%' removed from rank: %argument_rank%"
    permission_added_to_all_ranks: "%plugin_prefix% &aPermission '%argument_permission%' added to all ranks."
@@ -143,8 +141,6 @@ commands:
    usage_command_set_name_color: "%plugin_prefix% &c%base_cmd% setnamecolor <rank> <color>"
    usage_command_create_rank: "%plugin_prefix% &c%base_cmd% createrank <rank_name>"
    usage_command_delete_rank: "%plugin_prefix% &c%base_cmd% deleterank <rank_name>"
-   usage_command_enable_build: "%plugin_prefix% &c%base_cmd% enablebuild <rank_name>"
-   usage_command_disable_build: "%plugin_prefix% &c%base_cmd% disblebuild <rank_name>"
    usage_command_promote: "%plugin_prefix% &c%base_cmd% promote <player_name>"
    usage_command_demote: "%plugin_prefix% &c%base_cmd% demote <player_name>"
    usage_command_listpermissions: "%plugin_prefix% &c%base_cmd% listpermissions <rank_name>"
@@ -284,12 +280,6 @@ commands:
       delinheritance:
          command: "delinheritance <rank> <inheritance>"
          description: "Remove a inheritance from a rank"
-      enablebuild:
-         command: "enablebuild <rank>"
-         description: "Enable building on a rank"
-      disablebuild:
-         command: "disablebuild <rank>"
-         description: "Disable building on a rank"
       renamerank:
          command: "renamerank <from_rank> <to_rank>"
          description: "Rename a rank"

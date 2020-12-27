@@ -510,7 +510,7 @@ public class Users implements Listener {
 			if (CachedRanks.get("Groups." + rank) == null) {
 				CachedRanks.set("Groups." + rank + ".permissions", new ArrayList<String>());
 				CachedRanks.set("Groups." + rank + ".inheritance", new ArrayList<String>());
-				CachedRanks.set("Groups." + rank + ".build", true);
+//				CachedRanks.set("Groups." + rank + ".build", true);
 				CachedRanks.set("Groups." + rank + ".chat.prefix", "[&7" + rank + "&r]");
 				CachedRanks.set("Groups." + rank + ".chat.suffix", "");
 				CachedRanks.set("Groups." + rank + ".chat.chatColor", "&f");
@@ -574,17 +574,17 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean setBuild(String rank, boolean enabled) {
-		try {
-			if (CachedRanks.get("Groups." + rank) != null) {
-				CachedRanks.set("Groups." + rank + ".build", (Object) enabled);
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+//	public boolean setBuild(String rank, boolean enabled) {
+//		try {
+//			if (CachedRanks.get("Groups." + rank) != null) {
+//				CachedRanks.set("Groups." + rank + ".build", (Object) enabled);
+//				return true;
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return false;
+//	}
 
 	public boolean promote(String playername) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
@@ -729,7 +729,7 @@ public class Users implements Listener {
 			}
 			CachedRanks.set("Groups." + to + ".inheritance", (Object) listInheritance);
 
-			CachedRanks.set("Groups." + to + ".build", CachedRanks.get("Groups." + rank + ".build"));
+//			CachedRanks.set("Groups." + to + ".build", CachedRanks.get("Groups." + rank + ".build"));
 			CachedRanks.set("Groups." + to + ".chat.prefix", CachedRanks.get("Groups." + rank + ".chat.prefix"));
 			CachedRanks.set("Groups." + to + ".chat.suffix", CachedRanks.get("Groups." + rank + ".chat.suffix"));
 			CachedRanks.set("Groups." + to + ".chat.chatColor", CachedRanks.get("Groups." + rank + ".chat.chatColor"));

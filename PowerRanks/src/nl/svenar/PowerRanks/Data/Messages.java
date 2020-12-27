@@ -568,19 +568,19 @@ public class Messages {
 			console.sendMessage(msg);
 	}
 
-	public static void messageCommandUsageEnableBuild(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_enable_build");
-		if (msg.length() > 0)
-			console.sendMessage(msg);
-	}
-
-	public static void messageCommandUsageDisableBuild(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_disable_build");
-		if (msg.length() > 0)
-			console.sendMessage(msg);
-	}
+//	public static void messageCommandUsageEnableBuild(CommandSender console) {
+//		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+//		String msg = getGeneralMessage(langYaml, "commands.usage_command_enable_build");
+//		if (msg.length() > 0)
+//			console.sendMessage(msg);
+//	}
+//
+//	public static void messageCommandUsageDisableBuild(CommandSender console) {
+//		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+//		String msg = getGeneralMessage(langYaml, "commands.usage_command_disable_build");
+//		if (msg.length() > 0)
+//			console.sendMessage(msg);
+//	}
 
 	public static void messageCommandUsagePromote(CommandSender console) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
@@ -728,21 +728,21 @@ public class Messages {
 			console.sendMessage(msg);
 	}
 
-	public static void messageCommandBuildEnabled(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.build_enabled");
-		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0)
-			console.sendMessage(msg);
-	}
-
-	public static void messageCommandBuildDisabled(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.build_disabled");
-		msg = Util.replaceAll(msg, "%argument_rank%", rank);
-		if (msg.length() > 0)
-			console.sendMessage(msg);
-	}
+//	public static void messageCommandBuildEnabled(CommandSender console, String rank) {
+//		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+//		String msg = getGeneralMessage(langYaml, "messages.build_enabled");
+//		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+//		if (msg.length() > 0)
+//			console.sendMessage(msg);
+//	}
+//
+//	public static void messageCommandBuildDisabled(CommandSender console, String rank) {
+//		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+//		String msg = getGeneralMessage(langYaml, "messages.build_disabled");
+//		msg = Util.replaceAll(msg, "%argument_rank%", rank);
+//		if (msg.length() > 0)
+//			console.sendMessage(msg);
+//	}
 
 	public static void messageCommandRenameRankSuccess(CommandSender console, String rank) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();

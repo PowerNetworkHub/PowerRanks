@@ -64,8 +64,6 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("setnamecolor");
 				commands_list.add("addinheritance");
 				commands_list.add("delinheritance");
-				commands_list.add("enablebuild");
-				commands_list.add("disablebuild");
 				commands_list.add("renamerank");
 				commands_list.add("setdefaultrank");
 				commands_list.add("reload");
@@ -110,10 +108,9 @@ public class ChatTabExecutor implements TabCompleter {
 			if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("setownrank") || args[0].equalsIgnoreCase("addperm") || args[0].equalsIgnoreCase("delperm") || args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
-						|| args[0].equalsIgnoreCase("enablebuild") || args[0].equalsIgnoreCase("disablebuild") || args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
-						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
-						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon")
-						|| args[0].equalsIgnoreCase("listpermissions")) {
+						|| args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank") || args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank")
+						|| args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank") || args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank")
+						|| args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon") || args[0].equalsIgnoreCase("listpermissions")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))
@@ -164,7 +161,7 @@ public class ChatTabExecutor implements TabCompleter {
 					list.add("enable");
 					list.add("disable");
 				}
-				
+
 				if (args[0].equalsIgnoreCase("config")) {
 					list.add("removeworldtag");
 					list.add("enable");
@@ -284,7 +281,7 @@ public class ChatTabExecutor implements TabCompleter {
 						list.add(plugin);
 					}
 				}
-				
+
 				if (args[0].equalsIgnoreCase("config") && (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("disable"))) {
 					list.add("chat_formatting");
 					list.add("tablist_formatting");

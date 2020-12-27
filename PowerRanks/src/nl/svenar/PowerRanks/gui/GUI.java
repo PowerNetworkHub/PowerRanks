@@ -117,8 +117,8 @@ public class GUI {
 					if (cmdField.equalsIgnoreCase("setnamecolor"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_RANK);
 					
-					if (cmdField.equalsIgnoreCase("allowbuild"))
-						openGUI(player, GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK);
+//					if (cmdField.equalsIgnoreCase("allowbuild"))
+//						openGUI(player, GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK);
 					
 					if (cmdField.equalsIgnoreCase("setdefaultrank"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK);
@@ -247,27 +247,27 @@ public class GUI {
 			}
 		}
 		
-		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK.getID()) {
-			if (slot < gui.getGUI().getSize() - 9) {
-				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-				openGUI(player, GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN);
-				gui.setData(player.getName() + ":rankname", rankname);
-			}
-		}
-		
-		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN.getID()) {
-			if (slot < gui.getGUI().getSize() - 9) {
-				boolean allow = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0).equalsIgnoreCase("true");
-				String rankname = gui.getData(player.getName() + ":rankname");
-				Users users = new Users(powerRanks);
-				users.setBuild(rankname, allow);
-				if (allow)
-					Messages.messageCommandBuildEnabled(player, rankname);
-				else
-					Messages.messageCommandBuildDisabled(player, rankname);
-				closeGUI(player);
-			}
-		}
+//		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK.getID()) {
+//			if (slot < gui.getGUI().getSize() - 9) {
+//				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
+//				openGUI(player, GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN);
+//				gui.setData(player.getName() + ":rankname", rankname);
+//			}
+//		}
+//		
+//		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN.getID()) {
+//			if (slot < gui.getGUI().getSize() - 9) {
+//				boolean allow = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0).equalsIgnoreCase("true");
+//				String rankname = gui.getData(player.getName() + ":rankname");
+//				Users users = new Users(powerRanks);
+//				users.setBuild(rankname, allow);
+//				if (allow)
+//					Messages.messageCommandBuildEnabled(player, rankname);
+//				else
+//					Messages.messageCommandBuildDisabled(player, rankname);
+//				closeGUI(player);
+//			}
+//		}
 		
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
