@@ -861,17 +861,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 //		current_playtime = (int) CachedPlayers.get("players." + player.getUniqueId() + ".playtime");
 		try {
 			current_playtime = CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime");
-			PowerRanks.log.info("INTEGER");
-			PowerRanks.log.info("" + current_playtime);
+//			PowerRanks.log.info("INTEGER");
+//			PowerRanks.log.info("" + current_playtime);
 		} catch (Exception e) {
 			try {
 				current_playtime = CachedPlayers.getDouble("players." + player.getUniqueId() + ".playtime").intValue();
-				PowerRanks.log.info("DOUBLE");
-				PowerRanks.log.info("" + current_playtime);
+//				PowerRanks.log.info("DOUBLE");
+//				PowerRanks.log.info("" + current_playtime);
 			} catch (Exception e1) {
 				current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime").intValue();
-				PowerRanks.log.info("LONG");
-				PowerRanks.log.info("" + current_playtime);
+//				PowerRanks.log.info("LONG");
+//				PowerRanks.log.info("" + current_playtime);
 			}
 		}
 		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000, false);
