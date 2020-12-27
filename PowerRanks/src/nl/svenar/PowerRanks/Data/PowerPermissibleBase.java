@@ -21,46 +21,48 @@ public class PowerPermissibleBase extends PermissibleBase {
 	}
 	
 	@Override
-    public boolean hasPermission(String permission) {
-        ArrayList<String> permissions = plugin.getEffectivePlayerPermissions(player);
-        
-        boolean contains_wildcard = false;
-        for (String p : generateWildcardList(permission)) {
-        	if (permissions.contains(p)) {
-        		contains_wildcard = true;
-        		break;
-        	}
-        }
-        
-        PowerRanksVerbose.log("hasPermission", "");
-        PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
-        PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
-        PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
-        PowerRanksVerbose.log("hasPermission", "Return: " + (!permissions.contains("-" + permission) && (permissions.contains("*") || player.isOp() || super.hasPermission(permission) || permissions.contains(permission) || contains_wildcard)));
-        PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
-        PowerRanksVerbose.log("hasPermission", "");
+	public boolean hasPermission(String permission) {
+		ArrayList<String> permissions = plugin.getEffectivePlayerPermissions(player);
 
-        if (permissions.contains("-" + permission)){
-            return false;
-        }
-        
-        if (permissions.contains("*") || player.isOp()){
-            return true;
-        }
-        
-        return super.hasPermission(permission) || permissions.contains(permission) || contains_wildcard;
-    }
+		boolean contains_wildcard = false;
+		for (String p : generateWildcardList(permission)) {
+			if (permissions.contains(p)) {
+				contains_wildcard = true;
+				break;
+			}
+		}
+		
+		PowerRanksVerbose.log("hasPermission", "");
+		PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
+		PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
+		PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
+		PowerRanksVerbose.log("hasPermission", "Return: " + (!permissions.contains("-" + permission) && (permissions.contains("*") || player.isOp() || super.hasPermission(permission) || permissions.contains(permission) || contains_wildcard)));
+		PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
+		PowerRanksVerbose.log("hasPermission", "");
+		
+		if (permissions.contains("-" + permission)) {
+			return false;
+		}
+
+		if (permissions.contains("*") || player.isOp()) {
+			return true;
+		}
+
+		return super.hasPermission(permission) || permissions.contains(permission) || contains_wildcard;
+	}
 
 	private ArrayList<String> generateWildcardList(String permission) {
 		ArrayList<String> output = new ArrayList<String>();
 		String[] permission_split = permission.split("\\.");
-		
+
 		permission_split = Util.array_pop(permission_split);
 		for (int i = 0; i < permission_split.length + 1; i++) {
+			if (permission_split.length == 0)
+				break;
 			output.add(String.join(".", permission_split) + ".*");
 			permission_split = Util.array_pop(permission_split);
 		}
-		
+
 		return output;
 	}
 }
