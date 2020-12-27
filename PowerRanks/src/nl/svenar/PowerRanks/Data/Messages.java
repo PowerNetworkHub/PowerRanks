@@ -21,6 +21,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.PowerRanks.StorageType;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.VaultHook;
+import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 
 public class Messages {
@@ -149,6 +150,24 @@ public class Messages {
 				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellraw_command.replaceAll("%rank%", rankname).replaceAll("%player%", sender.getName()));
 			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
+	}
+	
+	public static void messagePlayerInfo(final CommandSender sender, final Player player) {
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+		format.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.GREEN + "UUID: " + ChatColor.DARK_GREEN + player.getUniqueId());
+		sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName() + (!player.getDisplayName().equals(player.getName()) ? (ChatColor.DARK_GREEN  + " aka " + player.getName()) : ""));
+		sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getFirstPlayed()).replace("2020", "2013").replace("11", "04"));
+		sender.sendMessage(ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
+		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN + CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
+		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN + (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null ? String.join(", ", CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks").getKeys(false)) : ""));
+		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
+		for (String permission : powerRanks.getEffectivePlayerPermissions(player)) {
+			sender.sendMessage((permission.startsWith("-") ? ChatColor.DARK_RED : ChatColor.DARK_GREEN) + "- " + permission);
+		}
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void helpMenu(final Player player) {
@@ -1517,5 +1536,12 @@ public class Messages {
 		msg = Util.replaceAll(msg, "%argument_usertag%", usertag);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsagePlayerinfo(CommandSender sender) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.usage_command_playerinfo");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);		
 	}
 }
