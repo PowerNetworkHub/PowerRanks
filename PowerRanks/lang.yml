@@ -122,7 +122,7 @@ commands:
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/all]"
    usage_command_setrank: "%plugin_prefix% &c%base_cmd% setrank <username> <rank>"
    usage_command_setownrank: "%plugin_prefix% &c%base_cmd% setownrank <rank>"
-   usage_command_check: "%plugin_prefix% &c%base_cmd% check [playername]"
+   usage_command_check: "%plugin_prefix% &c%base_cmd% check [player_name]"
    usage_command_add_permission: "%plugin_prefix% &c%base_cmd% addperm <rank> <permission>"
    usage_command_remove_permission: "%plugin_prefix% &c%base_cmd% delperm <rank> <permission>"
    usage_command_add_subrank: "%plugin_prefix% &c%base_cmd% addsubrank <player> <rank>"
@@ -141,25 +141,25 @@ commands:
    usage_command_set_suffix: "%plugin_prefix% &c%base_cmd% setsuffix <rank> <suffix>"
    usage_command_set_chat_color: "%plugin_prefix% &c%base_cmd% setchatcolor <rank> <color>"
    usage_command_set_name_color: "%plugin_prefix% &c%base_cmd% setnamecolor <rank> <color>"
-   usage_command_create_rank: "%plugin_prefix% &c%base_cmd% createrank <rankName>"
-   usage_command_delete_rank: "%plugin_prefix% &c%base_cmd% deleterank <rankName>"
-   usage_command_enable_build: "%plugin_prefix% &c%base_cmd% enablebuild <rankName>"
-   usage_command_disable_build: "%plugin_prefix% &c%base_cmd% disblebuild <rankName>"
-   usage_command_promote: "%plugin_prefix% &c%base_cmd% promote <playerName>"
-   usage_command_demote: "%plugin_prefix% &c%base_cmd% demote <playerName>"
-   usage_command_listpermissions: "%plugin_prefix% &c%base_cmd% listpermissions <rankName>"
-   usage_command_listplayerpermissions: "%plugin_prefix% &c%base_cmd% listplayerpermissions <playerName>"
-   usage_command_listsubranks: "%plugin_prefix% &c%base_cmd% listsubranks <playerName>"
-   usage_command_add_buyable_rank: "%plugin_prefix% &c%base_cmd% addbuyablerank <rankName> <buyableRankName>"
-   usage_command_del_buyable_rank: "%plugin_prefix% &c%base_cmd% delbuyablerank <rankName> <buyableRankName>"
-   usage_command_set_cost: "%plugin_prefix% &c%base_cmd% setcost <rankName> <cost>"
+   usage_command_create_rank: "%plugin_prefix% &c%base_cmd% createrank <rank_name>"
+   usage_command_delete_rank: "%plugin_prefix% &c%base_cmd% deleterank <rank_name>"
+   usage_command_enable_build: "%plugin_prefix% &c%base_cmd% enablebuild <rank_name>"
+   usage_command_disable_build: "%plugin_prefix% &c%base_cmd% disblebuild <rank_name>"
+   usage_command_promote: "%plugin_prefix% &c%base_cmd% promote <player_name>"
+   usage_command_demote: "%plugin_prefix% &c%base_cmd% demote <player_name>"
+   usage_command_listpermissions: "%plugin_prefix% &c%base_cmd% listpermissions <rank_name>"
+   usage_command_listplayerpermissions: "%plugin_prefix% &c%base_cmd% listplayerpermissions <player_name>"
+   usage_command_listsubranks: "%plugin_prefix% &c%base_cmd% listsubranks <player_name>"
+   usage_command_add_buyable_rank: "%plugin_prefix% &c%base_cmd% addbuyablerank <rank_name> <buyablerank_name>"
+   usage_command_del_buyable_rank: "%plugin_prefix% &c%base_cmd% delbuyablerank <rank_name> <buyablerank_name>"
+   usage_command_set_cost: "%plugin_prefix% &c%base_cmd% setcost <rank_name> <cost>"
    usage_command_add_player_permission: "%plugin_prefix% &c%base_cmd% addplayerperm <player_name> <permission>"
    usage_command_remove_player_permission: "%plugin_prefix% &c%base_cmd% delplayerperm <player_name> <permission>"
    usage_command_create_usertag: "%plugin_prefix% &c%base_cmd% createusertag <tagName> <text>"
    usage_command_edit_usertag: "%plugin_prefix% &c%base_cmd% editusertag <tagName> <text>"
    usage_command_remove_usertag: "%plugin_prefix% &c%base_cmd% removeusertag <tagName>"
-   usage_command_set_usertag: "%plugin_prefix% &c%base_cmd% setusertag [playerName] <tagName>"
-   usage_command_clear_usertag: "%plugin_prefix% &c%base_cmd% clearusertag [playerName] <tagName>"
+   usage_command_set_usertag: "%plugin_prefix% &c%base_cmd% setusertag [player_name] <tagName>"
+   usage_command_clear_usertag: "%plugin_prefix% &c%base_cmd% clearusertag [player_name] <tagName>"
    usage_command_list_usertags: "%plugin_prefix% &c%base_cmd% listusertags"
    usage_command_set_promoterank: "%plugin_prefix% &c%base_cmd% setpromoterank <rank> <promoteRank>"
    usage_command_set_demoterank: "%plugin_prefix% &c%base_cmd% setdemoterank <rank> <promoteRank>"
@@ -168,8 +168,9 @@ commands:
    usage_command_addoninfo: "%plugin_prefix% &c%base_cmd% addoninfo <addon_name>"
    usage_command_factoryreset: "%plugin_prefix% &c%base_cmd% factoryreset"
    usage_command_seticon: "%plugin_prefix% &c%base_cmd% seticon <rank>"
+   usage_command_playerinfo: "%plugin_prefix% &c%base_cmd% playerinfo <player_name>"
    usage_command_verbose: "%plugin_prefix% &c%base_cmd% verbose <start/stop/save>"
-   usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rankname] [confirm]"
+   usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rank_name] [confirm]"
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
    usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
    unknown_command: "%plugin_prefix% &cUnknown command."
@@ -182,49 +183,49 @@ commands:
          command: "help [page_number]"
          description: "Shows this menu"
       createrank:
-         command: "createrank <rankName>"
+         command: "createrank <rank_name>"
          description: "Create a new rank"
       deleterank:
-         command: "deleterank <rankName>"
+         command: "deleterank <rank_name>"
          description: "Delete a rank"
       setrank:
-         command: "setrank <playerName> <rankName>"
+         command: "setrank <player_name> <rank_name>"
          description: "Set someone's rank"
       setownrank:
-         command: "setownrank <rankName>"
+         command: "setownrank <rank_name>"
          description: "Set your own rank"
       promote:
-         command: "promote <playerName>"
+         command: "promote <player_name>"
          description: "Promote a player to the next rank"
       demote:
-         command: "demote <playerName>"
+         command: "demote <player_name>"
          description: "Demote a player to the previous rank"
       setpromoterank:
-         command: "setpromoterank <rankName> <promoteRankName>"
+         command: "setpromoterank <rank_name> <promoterank_name>"
          description: "Change the rank to promote to"
       setdemoterank:
-         command: "setdemoterank <rankName> <demoteRankName>"
+         command: "setdemoterank <rank_name> <demoterank_name>"
          description: "Change the rank to demote to"
       clearpromoterank:
-         command: "clearpromoterank <rankName>"
+         command: "clearpromoterank <rank_name>"
          description: "Clear the promote rank"
       cleardemoterank:
-         command: "cleardemoterank <rankName>"
+         command: "cleardemoterank <rank_name>"
          description: "Clear the demote rank"
       checkrank:
-         command: "checkrank [playerName]"
+         command: "checkrank [player_name]"
          description: "Check someone's rank"
       listranks:
          command: "listranks"
          description: "List all ranks"
       listpermissions:
-         command: "listpermissions <rankName>"
+         command: "listpermissions <rank_name>"
          description: "List all permissions in a rank"
       listplayerpermissions:
-         command: "listplayerpermissions <playerName>"
+         command: "listplayerpermissions <player_name>"
          description: "List all permissions of a player"
       listsubranks:
-         command: "listsubranks <playerName>"
+         command: "listsubranks <player_name>"
          description: "List all subranks of a player"
       reload:
          command: "reload [config/plugin/all]"
@@ -236,34 +237,34 @@ commands:
          command: "delperm <rank> <permission>"
          description: "Remove a permission from a rank"
       addplayerperm:
-         command: "addplayerperm <playerName> <permission>"
+         command: "addplayerperm <player_name> <permission>"
          description: "Add a permission to a player"
       delplayerperm:
-         command: "delplayerperm <playerName> <permission>"
+         command: "delplayerperm <player_name> <permission>"
          description: "Remove a permission from a player"
       addsubrank:
-         command: "addsubrank <playerName> <rankName>"
+         command: "addsubrank <player_name> <rank_name>"
          description: "Add a sub rank to a player"
       delsubrank:
-         command: "delsubrank <playerName> <rankName>"
+         command: "delsubrank <player_name> <rank_name>"
          description: "Remove a sub rank from a player"
       enablesubrankprefix:
-         command: "enablesubrankprefix <playerName> <subrankName>"
+         command: "enablesubrankprefix <player_name> <subrank_name>"
          description: "Show the subranks prefix"
       disablesubrankprefix:
-         command: "disablesubrankprefix <playerName> <subrankName>"
+         command: "disablesubrankprefix <player_name> <subrank_name>"
          description: "Stop showing the subranks prefix"
       enablesubranksuffix:
-         command: "enablesubranksuffix <playerName> <subrankName>"
+         command: "enablesubranksuffix <player_name> <subrank_name>"
          description: "Show the subranks suffix"
       disablesubranksuffix:
-         command: "disablesubranksuffix <playerName> <subrankName>"
+         command: "disablesubranksuffix <player_name> <subrank_name>"
          description: "Stop showing the subranks suffix"
       enablesubrankpermissions:
-         command: "enablesubrankpermissions <playerName> <subrankName>"
+         command: "enablesubrankpermissions <player_name> <subrank_name>"
          description: "Use the subranks permissions"
       disablesubrankpermissions:
-         command: "disablesubrankpermissions <playerName> <subrankName>"
+         command: "disablesubrankpermissions <player_name> <subrank_name>"
          description: "Stop using the subranks permissions"
       setprefix:
          command: "setprefix <rank> <prefix>"
@@ -305,10 +306,10 @@ commands:
          command: "removeusertag <tag>"
          description: "Delete a user tag"
       setusertag:
-         command: "setusertag [player] <tag>"
+         command: "setusertag [player_name] <tag>"
          description: "Assign a user tag"
       clearusertag:
-         command: "clearusertag [player] <tag>"
+         command: "clearusertag [player_name] <tag>"
          description: "Remove a user tag"
       listusertags:
          command: "listusertags"
@@ -320,7 +321,7 @@ commands:
          command: "rankup"
          description: "Buy a rank"
       buyrank:
-         command: "buyrank [rankname] [confirm]"
+         command: "buyrank [rank_name] [confirm]"
          description: "Buy a rank"
       addbuyablerank:
          command: "addbuyablerank <rank> <buyable_rank>"
@@ -346,6 +347,9 @@ commands:
       verbose:
          command: "verbose <start/stop/save/clear>"
          description: "Enable verbose logging, may result in lower performance! Only use for bug reporting"
+      playerinfo:
+         command: "playerinfo <player_name>"
+         description: "Show information about a player"
       stats:
          command: "stats"
          description: "Show stats about PowerRanks"
