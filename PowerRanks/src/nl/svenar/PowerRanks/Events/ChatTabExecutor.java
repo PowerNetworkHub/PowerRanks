@@ -88,6 +88,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("cleardemoterank");
 				commands_list.add("addoninfo");
 				commands_list.add("setguiicon");
+				commands_list.add("playerinfo");
 				commands_list.add("verbose");
 				commands_list.add("addsubrankworld");
 				commands_list.add("delsubrankworld");
@@ -124,7 +125,7 @@ public class ChatTabExecutor implements TabCompleter {
 						|| args[0].equalsIgnoreCase("delsubrank") || args[0].equalsIgnoreCase("listsubranks") || args[0].equalsIgnoreCase("addplayerperm") || args[0].equalsIgnoreCase("delplayerperm")
 						|| args[0].equalsIgnoreCase("enablesubrankprefix") || args[0].equalsIgnoreCase("disablesubrankprefix") || args[0].equalsIgnoreCase("enablesubranksuffix") || args[0].equalsIgnoreCase("disablesubranksuffix")
 						|| args[0].equalsIgnoreCase("enablesubrankpermissions") || args[0].equalsIgnoreCase("disablesubrankpermissions") || args[0].equalsIgnoreCase("setusertag") || args[0].equalsIgnoreCase("clearusertag")
-						|| args[0].equalsIgnoreCase("listplayerpermissions") || args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld")) {
+						|| args[0].equalsIgnoreCase("listplayerpermissions") || args[0].equalsIgnoreCase("addsubrankworld") || args[0].equalsIgnoreCase("delsubrankworld") || args[0].equalsIgnoreCase("playerinfo")) {
 					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 						if (player.getName().toLowerCase().contains(args[1].toLowerCase()))
 							list.add(player.getName());
