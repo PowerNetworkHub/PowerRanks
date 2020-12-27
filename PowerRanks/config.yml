@@ -21,9 +21,6 @@
 # Example, use the current chat format and adding the rank's prefix:
 # format: '[prefix] [format]'
 # --------------------
-# Build Modification
-# Enable or disable processing the 'build' tag in Ranks.yml
-# --------------------
 # Tablist Modification
 # Change the player's name in the tablist
 # Available options:
