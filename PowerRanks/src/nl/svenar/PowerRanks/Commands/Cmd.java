@@ -580,14 +580,14 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.createRank(rank2);
-							String[] forbiddenColorCharacters = {"&", "#"};
-							String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
+							String[] forbiddenColorCharacters = { "&", "#" };
+							String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
 							if (success) {
 								Messages.messageCommandCreateRankSuccess(player, rank2);
 								if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
 									Messages.messageCommandCreateRankColorCharacterWarning(player, rank2);
 								}
-								
+
 								if (Util.stringContainsItemFromList(rank2, forbiddenCharacters)) {
 									Messages.messageCommandCreateRankCharacterWarning(player, rank2);
 								}
@@ -1137,6 +1137,24 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 
+				} else if (args[0].equalsIgnoreCase("playerinfo")) {
+					if (player.hasPermission("powerranks.cmd.playerinfo")) {
+						if (args.length == 2) {
+							String target_player_name = args[1];
+							Player target_player = Util.getPlayerByName(target_player_name);
+							if (target_player != null) {
+								Messages.messagePlayerInfo(player, target_player);
+							} else {
+								Messages.messagePlayerNotFound(player, target_player_name);
+							}
+
+						} else {
+							Messages.messageCommandUsagePlayerinfo(player);
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+
 				} else if (args[0].equalsIgnoreCase("verbose")) {
 					if (player.hasPermission("powerranks.cmd.verbose")) {
 						if (args.length == 1) {
@@ -1165,8 +1183,8 @@ public class Cmd implements CommandExecutor {
 									Messages.messageCommandVerboseNotRunning(player);
 								}
 							} else if (verboseType.equals("clear")) {
-									PowerRanksVerbose.clear();
-									Messages.messageCommandVerboseCleared(player);
+								PowerRanksVerbose.clear();
+								Messages.messageCommandVerboseCleared(player);
 							} else if (verboseType.equals("save")) {
 								if (!PowerRanksVerbose.USE_VERBOSE) {
 									if (PowerRanksVerbose.save()) {
@@ -1643,13 +1661,13 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						final String rank2 = s.getRankIgnoreCase(args[1]);
 						final boolean success = s.createRank(rank2);
-						String[] forbiddenColorCharacters = {"&", "#"};
-						String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
+						String[] forbiddenColorCharacters = { "&", "#" };
+						String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
 						if (success) {
 							if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
 								Messages.messageCommandCreateRankColorCharacterWarning(console, rank2);
 							}
-							
+
 							if (Util.stringContainsItemFromList(rank2, forbiddenCharacters)) {
 								Messages.messageCommandCreateRankCharacterWarning(console, rank2);
 							}
@@ -2000,6 +2018,21 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageAddoninfo(console);
 					}
+
+				} else if (args[0].equalsIgnoreCase("playerinfo")) {
+					if (args.length == 2) {
+						String target_player_name = args[1];
+						Player target_player = Util.getPlayerByName(target_player_name);
+						if (target_player != null) {
+							Messages.messagePlayerInfo(console, target_player);
+						} else {
+							Messages.messagePlayerNotFound(console, target_player_name);
+						}
+
+					} else {
+						Messages.messageCommandUsagePlayerinfo(console);
+					}
+
 				} else if (args[0].equalsIgnoreCase("verbose")) {
 					if (args.length == 1) {
 						Messages.checkVerbose(console);
