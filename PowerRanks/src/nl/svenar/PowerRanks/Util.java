@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 public class Util {
 
@@ -147,4 +148,15 @@ public class Util {
         T[] tmp = Arrays.copyOf(arr, arr.length - 1);
         return tmp;
     }
+
+	public static Player getPlayerByName(String target_player_name) {
+		Player target_player = null;
+		for (Player online_player : Bukkit.getOnlinePlayers()) {
+			if (online_player.getName().equalsIgnoreCase(target_player_name)) {
+				target_player = online_player;
+				break;
+			}
+		}
+		return target_player;
+	}
 }
