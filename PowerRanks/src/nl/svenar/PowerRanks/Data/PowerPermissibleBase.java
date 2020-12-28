@@ -22,7 +22,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		super(player);
 		this.player = player;
 		this.plugin = main;
-		PowerRanksVerbose.log("PowerPermissibleBase", "attached to player " + player.getName());
+		PowerRanksVerbose.log("PowerPermissibleBase", "attached to player " + (player == null ? "null" : player.getName()));
 	}
 	
 	/*

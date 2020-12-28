@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Commands;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -67,6 +68,27 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+
+				} else if (args[0].equalsIgnoreCase("cs")) {
+					if (sender.hasPermission("powerranks.cmd.cs")) {
+						if (args.length == 2) {
+							String server_name = args[1];
+							plugin.bungee_message_handler.change_server(player, server_name);
+						} else {
+							player.sendMessage("/pr cs <server_name>");
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+
+				} else if (args[0].equalsIgnoreCase("b")) {
+					if (sender.hasPermission("powerranks.cmd.b")) {
+						player.sendMessage("Sending: " + String.join(", ", Arrays.copyOfRange(args, 1, args.length)));
+						plugin.power_bungee_events.sendRaw(Arrays.copyOfRange(args, 1, args.length));
+					} else {
+						Messages.noPermission(player);
+					}
+
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length != 2) {
 						Messages.messageCommandUsageReload(player);

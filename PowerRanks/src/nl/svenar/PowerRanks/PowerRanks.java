@@ -46,6 +46,8 @@ import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.PowerRanks.bungee.BungeeMessageHandler;
+import nl.svenar.PowerRanks.bungee.PowerBungeeEvents;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.metrics.Metrics;
 import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
@@ -86,6 +88,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String factoryresetid = null;
 	public static Instant powerranks_start_time = Instant.now();
 	public boolean powerranks_enabled = false;
+	public BungeeMessageHandler bungee_message_handler;
+	public PowerBungeeEvents power_bungee_events;
 
 	// Soft Dependencies
 	public static boolean vaultEconomyEnabled = false;
@@ -297,6 +301,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Loading add-ons");
 		addonsManager = new AddonsManager(this);
 		addonsManager.setup();
+
+		if (CachedConfig.getBoolean("bungeecord.enabled")) {
+			PowerRanks.log.info("");
+			PowerRanks.log.info("Loading BungeeCord");
+			bungee_message_handler = new BungeeMessageHandler(this);
+			PowerRanks.log.info("Loaded BungeeCord");
+//			this.getServer().getMessenger().registerOutgoingPluginChannel(this, "powerranks:onjoin");
+//			this.getServer().getMessenger().registerIncomingPluginChannel(this, "powerranks:onjoin", (PluginMessageListener) bungee_message_listener);
+		}
+		power_bungee_events = new PowerBungeeEvents(this);
+
 		PowerRanks.log.info("----------------------");
 
 		PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());

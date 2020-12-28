@@ -47,6 +47,8 @@ public class OnJoin implements Listener {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 			prAddon.getValue().onPlayerJoin(prPlayer);
 		}
+		
+		m.power_bungee_events.eventJoin(player);
 	}
 
 	@EventHandler(ignoreCancelled = false)
@@ -72,6 +74,8 @@ public class OnJoin implements Listener {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 			prAddon.getValue().onPlayerLeave(prPlayer);
 		}
+		
+		m.power_bungee_events.eventLeave(player);
 	}
 
 	private void validatePlayerData(Player player) {

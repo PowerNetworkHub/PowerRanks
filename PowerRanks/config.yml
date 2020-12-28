@@ -72,6 +72,8 @@ storage:
     username: ''
     password: ''
     database: 'powerranks'
+bungeecord:
+   enabled: true
 chat:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
