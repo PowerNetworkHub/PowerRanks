@@ -48,7 +48,7 @@ public class OnJoin implements Listener {
 			prAddon.getValue().onPlayerJoin(prPlayer);
 		}
 		
-		m.power_bungee_events.eventJoin(player);
+//		m.power_bungee_events.eventJoin(player);
 	}
 
 	@EventHandler(ignoreCancelled = false)
@@ -75,7 +75,7 @@ public class OnJoin implements Listener {
 			prAddon.getValue().onPlayerLeave(prPlayer);
 		}
 		
-		m.power_bungee_events.eventLeave(player);
+//		m.power_bungee_events.eventLeave(player);
 	}
 
 	private void validatePlayerData(Player player) {

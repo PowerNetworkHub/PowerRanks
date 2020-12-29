@@ -89,7 +89,7 @@ public class BungeeMessageHandler implements PluginMessageListener {
 		output_self.writeShort(bytes.length);
 		output_self.write(bytes);
 		
-		PowerRanks.log.info(">>> Sending: " + String.join(", ", args));
+//		PowerRanks.log.info(">>> Sending: " + String.join(", ", args));
 
 		if (player != null) {
 			player.sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers

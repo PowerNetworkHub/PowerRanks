@@ -61,6 +61,8 @@ public class CachedRanks {
 						ranks_booleans.put(field, ranksYaml.getBoolean(field));
 					} else if (ranksYaml.isInt(field)) {
 						ranks_ints.put(field, ranksYaml.getInt(field));
+					} else if (ranksYaml.isDouble(field)) {
+						ranks_ints.put(field, (int) ranksYaml.getDouble(field));
 					}
 				}
 			} catch (IOException | InvalidConfigurationException e) {

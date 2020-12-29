@@ -117,7 +117,7 @@ public class CachedPlayers {
 	}
 
 	public static void save() {
-		if (!prdb.isDatabase()) {
+		if (prdb == null || !prdb.isDatabase()) {
 			final File playersFile = new File(String.valueOf(PowerRanks.fileLoc) + "Players" + ".yml");
 			final YamlConfiguration playersYaml = new YamlConfiguration();
 

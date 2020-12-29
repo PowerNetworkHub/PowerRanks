@@ -834,7 +834,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
-					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(), '[', ']');
+					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName()).build(), '[', ']');
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
@@ -920,13 +920,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<String> getEffectivePlayerPermissions(Player player) {
-		ArrayList<String> permissions = new ArrayList<>();
+		ArrayList<String> permissions = new ArrayList<String>();
 
 		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 
 		try {
-			for (String permission : CachedRanks.getStringList("Groups." + rank + ".permissions"))
-				permissions.add(permission);
+			if (CachedRanks.getStringList("Groups." + rank + ".permissions") != null) {
+				for (String permission : CachedRanks.getStringList("Groups." + rank + ".permissions"))
+					permissions.add(permission);
+			} else {
+				CachedRanks.set("Groups." + rank + ".permissions", new ArrayList<String>());
+			}
 		} catch (Exception e) {
 			PowerRanks.log.warning("===== ---------- An error occured ---------- =====");
 			PowerRanks.log.warning("Exception catched in PowerRanks.getEffectivePlayerPermissions");
@@ -935,9 +939,19 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		try {
-			for (String inheritance : CachedRanks.getStringList("Groups." + rank + ".inheritance"))
-				for (String permission : CachedRanks.getStringList("Groups." + inheritance + ".permissions"))
-					permissions.add(permission);
+			if (CachedRanks.getStringList("Groups." + rank + ".inheritance") != null) {
+				for (String inheritance : CachedRanks.getStringList("Groups." + rank + ".inheritance")) {
+					if (CachedRanks.getStringList("Groups." + inheritance + ".permissions") != null) {
+						for (String permission : CachedRanks.getStringList("Groups." + inheritance + ".permissions")) {
+							permissions.add(permission);
+						}
+					} else {
+						CachedRanks.set("Groups." + inheritance + ".permissions", new ArrayList<String>());
+					}
+				}
+			} else {
+				CachedRanks.set("Groups." + rank + ".inheritance", new ArrayList<String>());
+			}
 		} catch (Exception e) {
 			PowerRanks.log.warning("===== ---------- An error occured ---------- =====");
 			PowerRanks.log.warning("Exception catched in PowerRanks.getEffectivePlayerPermissions");
@@ -946,22 +960,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		try {
-			for (String permission : CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions"))
-				permissions.add(permission);
+			if (CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions") != null) {
+				for (String permission : CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions"))
+					permissions.add(permission);
+			} else {
+				CachedPlayers.set("players." + player.getUniqueId() + ".permissions", new ArrayList<String>(), false);
+			}
 		} catch (Exception e) {
 			PowerRanks.log.warning("===== ---------- An error occured ---------- =====");
 			PowerRanks.log.warning("Exception catched in PowerRanks.getEffectivePlayerPermissions");
 			PowerRanks.log.warning("Players.yml 'players." + player.getUniqueId() + ".permissions' was not found (Player's permissions)");
-			PowerRanks.log.warning("===== ---------- An error occured ---------- =====");
-		}
-
-		try {
-			for (String permission : CachedPlayers.getStringList("players." + player.getUniqueId() + ".permissions"))
-				permissions.add(permission);
-		} catch (Exception e) {
-			PowerRanks.log.warning("===== ---------- An error occured ---------- =====");
-			PowerRanks.log.warning("Exception catched in PowerRanks.getEffectivePlayerPermissions");
-			PowerRanks.log.warning("Ranks.yml 'players." + player.getUniqueId() + ".permissions' was not found (Player's permissions)");
 			PowerRanks.log.warning("===== ---------- An error occured ---------- =====");
 		}
 

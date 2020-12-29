@@ -55,6 +55,8 @@ public class CachedConfig {
 					config_booleans.put(field, configYaml.getBoolean(field));
 				} else if (configYaml.isInt(field)) {
 					config_ints.put(field, configYaml.getInt(field));
+				} else if (configYaml.isDouble(field)) {
+					config_ints.put(field, (int) configYaml.getDouble(field));
 				}
 			}
 		} catch (IOException | InvalidConfigurationException e) {

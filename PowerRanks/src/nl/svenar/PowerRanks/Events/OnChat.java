@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -115,17 +117,23 @@ public class OnChat implements Listener {
 						}
 					}
 				}
-				
-				nameColor = nameColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
-				chatColor = chatColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
-				nameColor = "&r" + nameColor;
-				chatColor = "&r" + chatColor;
+
+				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + applyColor(nameColor, player.getDisplayName());
+				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + applyColor(chatColor, e.getMessage());
 
 				format = Util.powerFormatter(format,
-						ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
-								.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player)).put("player", nameColor + "%1$s").put("msg", chatColor + "%2$s").put("format", e.getFormat()).put("world", player.getWorld().getName().replace("world_nether", "Nether").replace("world_the_end", "End")).build(),
+						ImmutableMap.<String, String>builder()
+							.put("prefix", prefix)
+							.put("suffix", suffix)
+							.put("subprefix", subprefix)
+							.put("subsuffix", subsuffix)
+							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
+							.put("player", player_formatted_name)
+							.put("msg", player_formatted_chat_msg)
+							.put("format", e.getFormat())
+							.put("world", player.getWorld().getName()).build(),
 						'[', ']');
-				
+
 				if (PowerRanks.placeholderapiExpansion != null) {
 					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
 				}
@@ -137,15 +145,40 @@ public class OnChat implements Listener {
 
 				format = PowerRanks.chatColor(format, true);
 
-
 				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor, true); // TODO: Remove (DeluxeTags workaround)
 
-				
 				e.setFormat(format);
 			}
 		} catch (Exception e2) {
 			e2.printStackTrace();
 			e.setFormat("%1$s: %2$s");
 		}
+	}
+
+	private String applyColor(String rawColors, String text) {
+		String regexColors = "(&[a-fA-F0-9])|(#[a-fA-F0-9]{6})";
+		String output = "";
+
+		Pattern p = Pattern.compile(regexColors);
+		Matcher m = p.matcher(rawColors);
+		ArrayList<String> colors = new ArrayList<String>();
+		while (m.find()) {
+			String color = m.group(0);
+			colors.add(color);
+		}
+
+		String[] textSplit = text.split("");
+
+		if (colors.size() > 1) {
+			int index = 0;
+			for (String character : textSplit) {
+				output += colors.get(index % colors.size()) + character;
+				index++;
+			}
+		} else {
+			output = rawColors + text;
+		}
+
+		return output;
 	}
 }

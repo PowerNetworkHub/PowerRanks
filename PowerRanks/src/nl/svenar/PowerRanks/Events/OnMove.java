@@ -26,10 +26,13 @@ public class OnMove implements Listener {
 
 		boolean cancelled = false;
 
-		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-			if (prAddon.getValue().onPlayerMove(prPlayer))
-				cancelled = true;
+		try {
+			for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
+				PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+				if (prAddon.getValue().onPlayerMove(prPlayer))
+					cancelled = true;
+			}
+		} catch (Exception ex) {
 		}
 
 		e.setCancelled(cancelled);

@@ -4,7 +4,6 @@ Groups:
    Member:
       permissions: []
       inheritance: []
-      build: true
       chat:
          prefix: '[&aMember&r]'
          suffix: ''
@@ -21,7 +20,6 @@ Groups:
    Moderator:
       permissions: []
       inheritance: []
-      build: true
       chat:
          prefix: '[&5Moderator&r]'
          suffix: ''
@@ -38,7 +36,6 @@ Groups:
    Admin:
       permissions: []
       inheritance: []
-      build: true
       chat:
          prefix: '[&4Admin&r]'
          suffix: ''
@@ -55,7 +52,6 @@ Groups:
    Owner:
       permissions: []
       inheritance: []
-      build: true
       chat:
          prefix: '[&bOwner&r]'
          suffix: ''
