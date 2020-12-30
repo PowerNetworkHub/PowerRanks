@@ -45,8 +45,8 @@
 			<url>https://jitpack.io</url>
 		</repository>
 		<repository>
-			<id>upstream</id>
-			<url>http://ci.nametagedit.com/plugin/repository/everything/</url>
+			<id>svenar.nl</id>
+			<url>https://svenar.nl/repo/</url>
 		</repository>
 	</repositories>
 
