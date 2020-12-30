@@ -73,7 +73,7 @@ storage:
     password: ''
     database: 'powerranks'
 bungeecord:
-   enabled: false
+   enabled: true
 chat:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'

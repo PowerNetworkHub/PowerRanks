@@ -1,15 +1,11 @@
 package nl.svenar.PowerRanks.bungee;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -67,40 +63,41 @@ public class BungeeMessageHandler implements PluginMessageListener {
 	}
 
 	public void sendRaw(Player player, String[] args) throws IOException {
-		ByteArrayDataOutput output = ByteStreams.newDataOutput();
-		ByteArrayDataOutput output_self = ByteStreams.newDataOutput();
-
-		ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
-		DataOutputStream msgout = new DataOutputStream(msgbytes);
-
-		output.writeUTF("Forward"); // So BungeeCord knows to forward it
-		output.writeUTF("ALL");
-		output.writeUTF(subchannel_name);
-
-		for (String data : args) {
-			msgout.writeUTF(data + "\n");
-		}
-
-		byte[] bytes = msgbytes.toByteArray();
-		output.writeShort(bytes.length);
-		output.write(bytes);
-
-		output_self.writeUTF(subchannel_name);
-		output_self.writeShort(bytes.length);
-		output_self.write(bytes);
-		
-//		PowerRanks.log.info(">>> Sending: " + String.join(", ", args));
-
-		if (player != null) {
-			player.sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers
-		} else {
-//			Bukkit.getServer().sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers
-//			PowerRanks.log.info(plugin.getServer().getOnlinePlayers().size() + "");
-			player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
-			if (player != null) {
-				player.sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers
-			}
-		}
-//		onPluginMessageReceived(channel_name, player, output_self.toByteArray()); // Also trigger own handler
+		return;
+//		ByteArrayDataOutput output = ByteStreams.newDataOutput();
+//		ByteArrayDataOutput output_self = ByteStreams.newDataOutput();
+//
+//		ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+//		DataOutputStream msgout = new DataOutputStream(msgbytes);
+//
+//		output.writeUTF("Forward"); // So BungeeCord knows to forward it
+//		output.writeUTF("ALL");
+//		output.writeUTF(subchannel_name);
+//
+//		for (String data : args) {
+//			msgout.writeUTF(data + "\n");
+//		}
+//
+//		byte[] bytes = msgbytes.toByteArray();
+//		output.writeShort(bytes.length);
+//		output.write(bytes);
+//
+//		output_self.writeUTF(subchannel_name);
+//		output_self.writeShort(bytes.length);
+//		output_self.write(bytes);
+//		
+////		PowerRanks.log.info(">>> Sending: " + String.join(", ", args));
+//
+//		if (player != null) {
+//			player.sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers
+//		} else {
+////			Bukkit.getServer().sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers
+////			PowerRanks.log.info(plugin.getServer().getOnlinePlayers().size() + "");
+//			player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+//			if (player != null) {
+//				player.sendPluginMessage(plugin, channel_name, output.toByteArray()); // Send to other servers
+//			}
+//		}
+////		onPluginMessageReceived(channel_name, player, output_self.toByteArray()); // Also trigger own handler
 	}
 }

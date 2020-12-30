@@ -69,26 +69,32 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 
-				} else if (args[0].equalsIgnoreCase("cs")) {
-					if (sender.hasPermission("powerranks.cmd.cs")) {
-						if (args.length == 2) {
-							String server_name = args[1];
-							plugin.bungee_message_handler.change_server(player, server_name);
-						} else {
-							player.sendMessage("/pr cs <server_name>");
-						}
-					} else {
-						Messages.noPermission(player);
-					}
-
-				} else if (args[0].equalsIgnoreCase("b")) {
-					if (sender.hasPermission("powerranks.cmd.b")) {
-						player.sendMessage("Sending: " + String.join(", ", Arrays.copyOfRange(args, 1, args.length)));
-						plugin.power_bungee_events.sendRaw(Arrays.copyOfRange(args, 1, args.length));
-					} else {
-						Messages.noPermission(player);
-					}
-
+					
+					
+					
+					
+//				} else if (args[0].equalsIgnoreCase("cs")) {
+//					if (args.length == 2) {
+//						String server_name = args[1];
+//						plugin.bungee_message_handler.change_server(player, server_name);
+//					} else {
+//						player.sendMessage("/pr cs <server_name>");
+//					}
+//					
+//
+//				} else if (args[0].equalsIgnoreCase("b")) {
+//					player.sendMessage("Sending: " + String.join(", ", Arrays.copyOfRange(args, 1, args.length)));
+//					plugin.power_bungee_events.sendRaw(Arrays.copyOfRange(args, 1, args.length));
+//					
+//					
+//				} else if (args[0].equalsIgnoreCase("cr")) {
+//					for (String r : CachedRanks.getConfigurationSection("Groups").getKeys(false)) {
+//						player.sendMessage("Cached Rank: " + r);
+//					}
+					
+					
+					
+					
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length != 2) {
 						Messages.messageCommandUsageReload(player);
@@ -1285,6 +1291,9 @@ public class Cmd implements CommandExecutor {
 								} else if (args[2].equalsIgnoreCase("tablist_formatting")) {
 									CachedConfig.set("tablist_modification.enabled", enable);
 									Messages.configStateChanged(sender, "Tablist formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+								} else if (args[2].equalsIgnoreCase("bungeecord")) {
+									CachedConfig.set("bungeecord.enabled", enable);
+									Messages.configStateChanged(sender, "BungeeCord", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
 								} else {
 									Messages.messageCommandUsageConfig(sender);
 								}
@@ -2142,6 +2151,24 @@ public class Cmd implements CommandExecutor {
 							plugin.updateAllPlayersTABlist();
 
 							Messages.configWorldTagRemoved(sender);
+						} else {
+							Messages.messageCommandUsageConfig(sender);
+						}
+					} else if (args.length == 3) {
+						if (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("disable")) {
+							boolean enable = args[1].equalsIgnoreCase("enable");
+							if (args[2].equalsIgnoreCase("chat_formatting")) {
+								CachedConfig.set("chat.enabled", enable);
+								Messages.configStateChanged(sender, "Chat formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+							} else if (args[2].equalsIgnoreCase("tablist_formatting")) {
+								CachedConfig.set("tablist_modification.enabled", enable);
+								Messages.configStateChanged(sender, "Tablist formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+							} else if (args[2].equalsIgnoreCase("bungeecord")) {
+								CachedConfig.set("bungeecord.enabled", enable);
+								Messages.configStateChanged(sender, "BungeeCord", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+							} else {
+								Messages.messageCommandUsageConfig(sender);
+							}
 						} else {
 							Messages.messageCommandUsageConfig(sender);
 						}

@@ -331,6 +331,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				return String.valueOf(addonCount);
 			}
 		}));
+		
+		metrics.addCustomChart(new Metrics.SimplePie("bungeecord_enabled", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				
+				return CachedConfig.getBoolean("bungeecord.enabled") ? "true" : "false";
+			}
+		}));
 	}
 
 	public void onDisable() {

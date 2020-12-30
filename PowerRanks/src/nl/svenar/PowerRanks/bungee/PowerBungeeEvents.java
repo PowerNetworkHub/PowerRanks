@@ -129,7 +129,7 @@ public class PowerBungeeEvents {
 	 * Send rank (as master) to a specified server
 	 */
 	private void sendRank(String targetServerID, String rankName) {
-		String rank_data_to_send = dataManager.serializeRank(rankName);
+		String rank_data_to_send = dataManager.serializeRank(rankName, true);
 		PowerRanks.log.info(">>> " + rank_data_to_send);
 		String[] rank_data_to_send_split = Util.splitStringEvery(rank_data_to_send, 32);
 		PowerRanks.log.info(">>>> " + String.join("", rank_data_to_send_split));
@@ -194,7 +194,7 @@ public class PowerBungeeEvents {
 						if (!local_rankhashed.containsKey(entry.getKey())) {
 							PowerRanks.log.info("Rank " + entry.getKey() + " not found");
 						} else {
-							PowerRanks.log.info("Rank " + entry.getKey() + " " + (entry.getValue().equals(local_rankhashed.get(entry.getKey())) ? "is the same" : "is different"));
+							PowerRanks.log.info("Rank " + entry.getKey() + " " + (entry.getValue().equals(local_rankhashed.get(entry.getKey())) ? "is the same" : "is different") + " (" + entry.getValue() + ", " + local_rankhashed.get(entry.getKey()) + ")");
 						}
 
 						if (local_rankhashed.containsKey(entry.getKey()) && !entry.getValue().equals(local_rankhashed.get(entry.getKey()))) {
@@ -211,7 +211,7 @@ public class PowerBungeeEvents {
 
 					if (isMaster()) {
 						for (String rank_to_send : ranks_to_send) {
-							// PowerRanks.log.info(">>> " + rank_to_send);
+							 PowerRanks.log.info("SEND: " + rank_to_send);
 							sendRank(senderid, rank_to_send);
 						}
 					}
@@ -230,7 +230,7 @@ public class PowerBungeeEvents {
 					updateRank(received_rank_data);
 
 //					PowerRanks.log.info("RECV: " + received_rank_data);
-//					PowerRanks.log.info("RECV: " + dataManager.deserializeRank(received_rank_data));
+					PowerRanks.log.info("RECV: " + dataManager.deserializeRank(received_rank_data).get("name"));
 				}
 			} else {
 				int i = 0;

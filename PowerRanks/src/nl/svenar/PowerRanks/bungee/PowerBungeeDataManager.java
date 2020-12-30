@@ -14,13 +14,13 @@ public class PowerBungeeDataManager {
 		HashMap<String, String> output = new HashMap<String, String>();
 		
 		for (String key : CachedRanks.getConfigurationSection("Groups").getKeys(false)) {
-			output.put(key, String.valueOf(serializeRank(key).hashCode()));
+			output.put(key, String.valueOf(serializeRank(key, false).hashCode()));
 		}
 		
 		return output;
 	}
 	
-	public String serializeRank(String rankName) {
+	public String serializeRank(String rankName, boolean encode) {
 		String output = "";
 		String permissions = "";
 		try {
@@ -59,7 +59,11 @@ public class PowerBungeeDataManager {
 		output += "economyCost:" + economyCost + ";";
 		output += "guiIcon:" + guiIcon + ";";
 		
-		return new String(Base64.getEncoder().encode(output.getBytes()));
+		if (encode) {
+			return new String(Base64.getEncoder().encode(output.getBytes()));
+		} else {
+			return output;
+		}
 	}
 	
 	public HashMap<String, String> deserializeRank(String rankData) {
@@ -76,23 +80,28 @@ public class PowerBungeeDataManager {
 //		if (!CachedRanks.contains("Groups." + rankData.get("name"))) {
 //			prAPI.createRank(rankData.get("name"));
 //		}
+		PowerRanks.log.info("CREATING RANK: " + rankData.get("name"));
 		
-		if (rankData.get("name").length() == 0) {
-			return;
+		try {
+			if (rankData.get("name").length() == 0) {
+				return;
+			}
+			
+			CachedRanks.set("Groups." + rankData.get("name") + ".permissions", rankData.get("permissions").split(",").length > 0 ? rankData.get("permissions").split(",") : new ArrayList<String>());
+			CachedRanks.set("Groups." + rankData.get("name") + ".inheritance", rankData.get("inheritance").split(",").length > 0 ? rankData.get("inheritance").split(",") : new ArrayList<String>());
+			CachedRanks.set("Groups." + rankData.get("name") + ".chat.prefix", rankData.get("prefix"));
+			CachedRanks.set("Groups." + rankData.get("name") + ".chat.suffix", rankData.get("suffix"));
+			CachedRanks.set("Groups." + rankData.get("name") + ".chat.chatColor", rankData.get("chatColor"));
+			CachedRanks.set("Groups." + rankData.get("name") + ".chat.nameColor", rankData.get("nameColor"));
+			CachedRanks.set("Groups." + rankData.get("name") + ".level.promote", rankData.get("levelPromote"));
+			CachedRanks.set("Groups." + rankData.get("name") + ".level.demote", rankData.get("levelDemote"));
+			CachedRanks.set("Groups." + rankData.get("name") + ".economy.buyable", rankData.get("economyBuyable").split(",").length > 0 ? rankData.get("economyBuyable").split(",") : new ArrayList<String>());
+			CachedRanks.set("Groups." + rankData.get("name") + ".economy.cost", Integer.parseInt(rankData.get("economyCost")));
+			CachedRanks.set("Groups." + rankData.get("name") + ".gui.icon", rankData.get("guiIcon"));
+			CachedRanks.update();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		CachedRanks.set("Groups." + rankData.get("name") + ".permissions", rankData.get("permissions").split(",").length > 0 ? rankData.get("permissions").split(",") : new ArrayList<String>());
-		CachedRanks.set("Groups." + rankData.get("name") + ".inheritance", rankData.get("inheritance").split(",").length > 0 ? rankData.get("inheritance").split(",") : new ArrayList<String>());
-		CachedRanks.set("Groups." + rankData.get("name") + ".chat.prefix", rankData.get("prefix"));
-		CachedRanks.set("Groups." + rankData.get("name") + ".chat.suffix", rankData.get("suffix"));
-		CachedRanks.set("Groups." + rankData.get("name") + ".chat.chatColor", rankData.get("chatColor"));
-		CachedRanks.set("Groups." + rankData.get("name") + ".chat.nameColor", rankData.get("nameColor"));
-		CachedRanks.set("Groups." + rankData.get("name") + ".level.promote", rankData.get("levelPromote"));
-		CachedRanks.set("Groups." + rankData.get("name") + ".level.demote", rankData.get("levelDemote"));
-		CachedRanks.set("Groups." + rankData.get("name") + ".economy.buyable", rankData.get("economyBuyable").split(",").length > 0 ? rankData.get("economyBuyable").split(",") : new ArrayList<String>());
-		CachedRanks.set("Groups." + rankData.get("name") + ".economy.cost", Integer.parseInt(rankData.get("economyCost")));
-		CachedRanks.set("Groups." + rankData.get("name") + ".gui.icon", rankData.get("guiIcon"));
-		CachedRanks.update();
 		
 		//PowerRanks.log.info(String.join("\n", rankData.keySet()));
 	}
