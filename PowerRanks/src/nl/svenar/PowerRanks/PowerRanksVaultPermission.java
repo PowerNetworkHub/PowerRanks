@@ -108,10 +108,10 @@ public class PowerRanksVaultPermission extends Permission {
 		} else {
 			if (!playerHasErrorQueueOffline) {
 				playerHasErrorQueueOffline = true;
-				PowerRanks.log.warning("===----------WARNING----------===");
-				PowerRanks.log.warning("PowerRanksVaultPermission.playerHas(...)");
-				PowerRanks.log.warning("The UUID of player '" + player.getName() + "' is offline and permissions can't be checked!");
-				PowerRanks.log.warning("===---------------------------===");
+				PowerRanksVerbose.log("PowerRanksVaultPermission.playerHas(...)", "===----------WARNING----------===");
+				PowerRanksVerbose.log("PowerRanksVaultPermission.playerHas(...)", "PowerRanksVaultPermission.playerHas(...)");
+				PowerRanksVerbose.log("PowerRanksVaultPermission.playerHas(...)", "The UUID of player '" + player.getName() + "' is offline and permissions can't be checked!");
+				PowerRanksVerbose.log("PowerRanksVaultPermission.playerHas(...)", "===---------------------------===");
 
 				BukkitScheduler scheduler = plugin.getServer().getScheduler();
 				scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
