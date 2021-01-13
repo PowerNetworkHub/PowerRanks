@@ -29,7 +29,7 @@ public class OnMove implements Listener {
 		try {
 			for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 				PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-				if (prAddon.getValue().onPlayerMove(prPlayer))
+				if (prAddon.getValue().onPlayerMove(prPlayer, e.getFrom(), e.getTo()))
 					cancelled = true;
 			}
 		} catch (Exception ex) {

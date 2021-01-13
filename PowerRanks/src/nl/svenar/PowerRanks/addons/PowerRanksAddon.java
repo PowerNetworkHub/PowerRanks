@@ -2,7 +2,9 @@ package nl.svenar.PowerRanks.addons;
 
 import java.util.ArrayList;
 
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
@@ -15,6 +17,21 @@ public abstract class PowerRanksAddon {
 
 	public enum RankChangeCause {
 		SET, PROMOTE, DEMOTE
+	}
+	
+	public enum BlockChangeCause {
+		BREAK, // Called when a block is broken by a player.
+		PLACE, // Called when a block is placed by a player.
+		
+		MOISTURE, // Called when the moisture level of a soil block changes.
+		FERTILIZE, // Called with the block changes resulting from a player fertilizing a given block with bonemeal.
+		GROW, // Called when a block grows naturally in the world.
+		
+		IGNITE, // Called when a block is ignited.
+		EXPLODE, // Called when a block explodes
+		BURN, // Called when a block is destroyed as a result of being burnt by fire.
+		
+		REDSTONE // Called when a redstone current changes
 	}
 
 	// Create a configuration file with the same name as the add-on (identifier) if
@@ -87,7 +104,7 @@ public abstract class PowerRanksAddon {
 	// Player movement handler
 	// Executed when a player has moved
 	// return true to cancel the event
-	public boolean onPlayerMove(PowerRanksPlayer prPlayer) {
+	public boolean onPlayerMove(PowerRanksPlayer prPlayer, Location from, Location to) {
 		return false;
 	}
 
@@ -113,5 +130,13 @@ public abstract class PowerRanksAddon {
 	// Player world change handler
 	// Executed when a player has entered a different world
 	public void onPlayerWorldChange(PowerRanksPlayer prPlayer, World world, World world2) {
+	}
+	
+	// Block change handler
+	// prPlayer.getPlayer() may be null for events not caused by a player
+	// Executed when a block changes
+	// return true to cancel the event
+	public boolean onBlockChange(PowerRanksPlayer prPlayer, Block block, BlockChangeCause blockChangeCause) {
+		return false;
 	}
 }
