@@ -15,6 +15,7 @@ Groups:
       economy:
          buyable: []
          cost: 0
+         description: ''
       gui:
          icon: stick
    Moderator:
@@ -31,6 +32,7 @@ Groups:
       economy:
          buyable: []
          cost: 0
+         description: ''
       gui:
          icon: stone
    Admin:
@@ -47,6 +49,7 @@ Groups:
       economy:
          buyable: []
          cost: 0
+         description: ''
       gui:
          icon: redstone
    Owner:
@@ -63,5 +66,6 @@ Groups:
       economy:
          buyable: []
          cost: 0
+         description: ''
       gui:
          icon: diamond

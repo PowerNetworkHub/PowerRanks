@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.gui;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -133,10 +134,11 @@ public class GUIPage {
 									icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 								}
 								int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
+								String description = users.getRanksConfigFieldString(rank, "economy.description");
 								if (icon != null)
-									new_gui.setItem(i, createGuiItem(icon, rank, ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true), "Cost: " + String.valueOf(cost)));
+									new_gui.setItem(i, createGuiItem(icon, rank, ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true), description.replaceAll("\n", File.separator), File.separator, "Cost: " + String.valueOf(cost)));
 								else
-									PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+									PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
 							} else {
 								PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
 							}
