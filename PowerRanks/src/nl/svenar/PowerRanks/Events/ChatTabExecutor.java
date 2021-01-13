@@ -50,6 +50,7 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("listsubranks");
 				commands_list.add("listpermissions");
 				commands_list.add("listplayerpermissions");
+				commands_list.add("listaddons");
 				commands_list.add("addsubrank");
 				commands_list.add("delsubrank");
 				commands_list.add("enablesubrankprefix");

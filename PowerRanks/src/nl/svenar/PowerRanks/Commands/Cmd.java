@@ -1,7 +1,8 @@
 package nl.svenar.PowerRanks.Commands;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -69,10 +70,6 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 
-					
-					
-					
-					
 //				} else if (args[0].equalsIgnoreCase("cs")) {
 //					if (args.length == 2) {
 //						String server_name = args[1];
@@ -91,10 +88,7 @@ public class Cmd implements CommandExecutor {
 //					for (String r : CachedRanks.getConfigurationSection("Groups").getKeys(false)) {
 //						player.sendMessage("Cached Rank: " + r);
 //					}
-					
-					
-					
-					
+
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length != 2) {
 						Messages.messageCommandUsageReload(player);
@@ -249,6 +243,21 @@ public class Cmd implements CommandExecutor {
 							Messages.messageCommandUsageListPlayerPermissions(player);
 						}
 
+					} else {
+						Messages.noPermission(player);
+					}
+				} else if (args[0].equalsIgnoreCase("listaddons")) {
+					if (sender.hasPermission("powerranks.cmd.listaddons")) {
+						Collection<PowerRanksAddon> addons = this.plugin.addonsManager.getAddons();
+						sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+						sender.sendMessage(ChatColor.DARK_GREEN + "Number of add-ons: " + ChatColor.GREEN + addons.size());
+						int index = 0;
+						for (Iterator<PowerRanksAddon> iterator = addons.iterator(); iterator.hasNext();) {
+							PowerRanksAddon addon = iterator.next();
+							index++;
+							sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GREEN + addon.getIdentifier() + " v" + addon.getVersion());
+						}
+						sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 					} else {
 						Messages.noPermission(player);
 					}
@@ -1406,7 +1415,18 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageListPlayerPermissions(console);
 					}
-				} else if (args[0].equalsIgnoreCase("check")) {
+				} else if (args[0].equalsIgnoreCase("listaddons")) {
+					Collection<PowerRanksAddon> addons = this.plugin.addonsManager.getAddons();
+					sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+					sender.sendMessage(ChatColor.DARK_GREEN + "Number of add-ons: " + ChatColor.GREEN + addons.size());
+					int index = 0;
+					for (Iterator<PowerRanksAddon> iterator = addons.iterator(); iterator.hasNext();) {
+						PowerRanksAddon addon = iterator.next();
+						index++;
+						sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GREEN + addon.getIdentifier() + " v" + addon.getVersion());
+					}
+					sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+				} else if (args[0].equalsIgnoreCase("checkrank")) {
 					if (args.length == 2) {
 						s.getGroup(null, args[1]);
 					} else {
