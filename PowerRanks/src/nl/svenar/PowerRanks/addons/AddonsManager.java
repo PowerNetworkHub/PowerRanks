@@ -3,6 +3,7 @@ package nl.svenar.PowerRanks.addons;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -89,5 +90,9 @@ public class AddonsManager {
 			return true;
 		}
 		return false;
+	}
+
+	public Collection<PowerRanksAddon> getAddons() {
+		return addonClasses.values();
 	}
 }
