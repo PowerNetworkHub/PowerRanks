@@ -42,6 +42,7 @@ import nl.svenar.PowerRanks.Events.OnSignChanged;
 import nl.svenar.PowerRanks.Events.OnWorldChange;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
+import nl.svenar.PowerRanks.Events.OnBlockChange;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
@@ -78,6 +79,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
 	public ArrayList<String> donation_urls = new ArrayList<String>(Arrays.asList("https://ko-fi.com/svenar", "https://patreon.com/svenar"));
 
+	private static PowerRanks instance;
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
 	public String plp;
@@ -134,6 +136,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void onEnable() {
+		instance = this;
+		
 		powerranks_enabled = true;
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.plugin = this;
@@ -143,7 +147,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 //		Bukkit.getServer().getPluginManager().registerEvents((Listener) this, (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
-//		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBuild(this), (Plugin) this);
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBlockChange(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInventory(this), (Plugin) this);
@@ -929,6 +933,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public ArrayList<String> getEffectivePlayerPermissions(Player player) {
 		ArrayList<String> permissions = new ArrayList<String>();
+		
+		player.recalculatePermissions();
 
 		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 
@@ -1022,5 +1028,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		return permissions;
+	}
+
+	public static PowerRanks getInstance() {
+		return instance;
 	}
 }
