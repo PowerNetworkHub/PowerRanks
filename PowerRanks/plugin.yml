@@ -1,5 +1,5 @@
 name: PowerRanks
-version: 1.9.5
+version: 1.9.6 BETA 1
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
@@ -123,6 +123,8 @@ permissions:
   powerranks.cmd.clearpromoterank:
     default: op
   powerranks.cmd.cleardemoterank:
+    default: op
+  powerranks.cmd.listaddons:
     default: op
   powerranks.cmd.addoninfo:
     default: op
