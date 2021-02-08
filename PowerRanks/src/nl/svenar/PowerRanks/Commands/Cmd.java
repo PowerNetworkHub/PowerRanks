@@ -31,6 +31,7 @@ import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.addons.DownloadableAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.PowerRanks.gui.GUI;
@@ -69,26 +70,6 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-
-//				} else if (args[0].equalsIgnoreCase("cs")) {
-//					if (args.length == 2) {
-//						String server_name = args[1];
-//						plugin.bungee_message_handler.change_server(player, server_name);
-//					} else {
-//						player.sendMessage("/pr cs <server_name>");
-//					}
-//					
-//
-//				} else if (args[0].equalsIgnoreCase("b")) {
-//					player.sendMessage("Sending: " + String.join(", ", Arrays.copyOfRange(args, 1, args.length)));
-//					plugin.power_bungee_events.sendRaw(Arrays.copyOfRange(args, 1, args.length));
-//					
-//					
-//				} else if (args[0].equalsIgnoreCase("cr")) {
-//					for (String r : CachedRanks.getConfigurationSection("Groups").getKeys(false)) {
-//						player.sendMessage("Cached Rank: " + r);
-//					}
-
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					if (args.length != 2) {
 						Messages.messageCommandUsageReload(player);
@@ -108,6 +89,11 @@ public class Cmd implements CommandExecutor {
 							plg.disablePlugin(plgname);
 							plg.enablePlugin(plgname);
 							Messages.messageCommandReloadPluginDone(player);
+						} else if (args[1].equalsIgnoreCase("addons")) {
+							Messages.messageCommandReloadAddons(player);
+							PowerRanks.getInstance().addonsManager.disable();
+							PowerRanks.getInstance().addonsManager.setup();
+							Messages.messageCommandReloadAddonsDone(player);
 						} else if (args[1].equalsIgnoreCase("all")) {
 							Messages.messageCommandReloadPlugin(player);
 							final PluginManager plg = Bukkit.getPluginManager();
@@ -121,6 +107,10 @@ public class Cmd implements CommandExecutor {
 							CachedPlayers.update();
 							this.plugin.updateAllPlayersTABlist();
 							Messages.messageCommandReloadConfigDone(player);
+							Messages.messageCommandReloadAddons(player);
+							PowerRanks.getInstance().addonsManager.disable();
+							PowerRanks.getInstance().addonsManager.setup();
+							Messages.messageCommandReloadAddonsDone(player);
 						} else {
 							Messages.messageCommandUsageReload(player);
 						}
@@ -617,8 +607,8 @@ public class Cmd implements CommandExecutor {
 						if (args.length == 2) {
 							final String rank2 = s.getRankIgnoreCase(args[1]);
 							final boolean success = s.createRank(rank2);
-							String[] forbiddenColorCharacters = { "&", "#" };
-							String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
+							String[] forbiddenColorCharacters = {"&", "#"};
+							String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
 							if (success) {
 								Messages.messageCommandCreateRankSuccess(player, rank2);
 								if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
@@ -653,38 +643,6 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
-//				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-//					if (sender.hasPermission("powerranks.cmd.enablebuild")) {
-//						if (args.length == 2) {
-//							final String rank2 = s.getRankIgnoreCase(args[1]);
-//							final boolean success = s.setBuild(rank2, true);
-//							if (success) {
-//								Messages.messageCommandBuildEnabled(player, rank2);
-//							} else {
-//								Messages.messageGroupNotFound(player, rank2);
-//							}
-//						} else {
-//							Messages.messageCommandUsageEnableBuild(player);
-//						}
-//					} else {
-//						Messages.noPermission(player);
-//					}
-//				} else if (args[0].equalsIgnoreCase("disablebuild")) {
-//					if (sender.hasPermission("powerranks.cmd.disablebuild")) {
-//						if (args.length == 2) {
-//							final String rank2 = s.getRankIgnoreCase(args[1]);
-//							final boolean success = s.setBuild(rank2, false);
-//							if (success) {
-//								Messages.messageCommandBuildDisabled(player, rank2);
-//							} else {
-//								Messages.messageGroupNotFound(player, rank2);
-//							}
-//						} else {
-//							Messages.messageCommandUsageDisableBuild(player);
-//						}
-//					} else {
-//						Messages.noPermission(player);
-//					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (sender.hasPermission("powerranks.cmd.promote")) {
 						if (args.length == 2) {
@@ -788,6 +746,11 @@ public class Cmd implements CommandExecutor {
 									if (cost >= 0 && player_balance >= cost) {
 										VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 										s.setGroup(player, rankname, true);
+										if (CachedConfig.getBoolean("rankup.buy_command.enabled")) {
+											if (CachedConfig.getString("rankup.buy_command.command").length() > 0) {
+												this.plugin.getServer().dispatchCommand((CommandSender) this.plugin.getServer().getConsoleSender(), CachedConfig.getString("rankup.buy_command.command").replaceAll("%playername%", sender.getName()).replaceAll("%rankname%", rankname));
+											}
+										}
 										Messages.messageBuyRankSuccess(player, rankname);
 									} else {
 										Messages.messageBuyRankError(player, rankname);
@@ -1155,6 +1118,80 @@ public class Cmd implements CommandExecutor {
 						Messages.noPermission(player);
 					}
 
+				} else if (args[0].equalsIgnoreCase("addonmanager")) {
+					if (player.hasPermission("powerranks.cmd.addonmanager")) {
+						if (args.length == 1) {
+							Messages.addonManagerListAddons(sender, 0);
+						} else {
+							String addonmanagerCommand = args[1].toLowerCase();
+							if (addonmanagerCommand.equals("acceptterms")) {
+								CachedConfig.set("addon_manager.accepted_terms", true);
+								Messages.addonManagerTermsAccepted(sender);
+							}
+
+							if (addonmanagerCommand.equals("declineterms")) {
+								CachedConfig.set("addon_manager.accepted_terms", false);
+								Messages.addonManagerTermsDeclined(sender);
+							}
+
+							if (addonmanagerCommand.equals("page")) {
+								int page = Integer.parseInt(args[2].replaceAll("[a-zA-Z]", ""));
+								Messages.addonManagerListAddons(sender, page);
+							}
+
+							if (addonmanagerCommand.equals("info")) {
+								String addonname = args[2];
+								Messages.addonManagerInfoAddon(sender, addonname);
+							}
+
+							if (addonmanagerCommand.equals("download")) {
+								String addonname = args[2];
+								DownloadableAddon addon = null;
+								for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
+									if (dlAddon.getName().equalsIgnoreCase(addonname)) {
+										addon = dlAddon;
+										break;
+									}
+								}
+
+								if (addon.isDownloadable()) {
+									if (addon.isCompatible()) {
+										if (addon.download()) {
+											Messages.addonManagerDownloadComplete(sender, addon.getName());
+										} else {
+											Messages.addonManagerDownloadFailed(sender, addon.getName());
+										}
+									} else {
+										Messages.addonManagerDownloadNotAvailable(sender);
+									}
+								} else {
+									Messages.addonManagerDownloadNotAvailable(sender);
+								}
+							}
+
+							if (addonmanagerCommand.equals("uninstall")) {
+								String addonname = args[2];
+
+								DownloadableAddon addon = null;
+								for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
+									if (dlAddon.getName().equalsIgnoreCase(addonname)) {
+										addon = dlAddon;
+										break;
+									}
+								}
+
+								if (addon != null) {
+									addon.uninstall();
+									Messages.addonManagerUninstallComplete(sender, addon.getName());
+								} else {
+									Messages.messageCommandErrorAddonNotFound(sender, args[2]);
+								}
+							}
+						}
+					} else {
+						Messages.noPermission(player);
+					}
+
 				} else if (args[0].equalsIgnoreCase("setguiicon")) {
 					if (player.hasPermission("powerranks.cmd.setguiicon")) {
 						if (args.length == 2) {
@@ -1300,9 +1337,6 @@ public class Cmd implements CommandExecutor {
 								} else if (args[2].equalsIgnoreCase("tablist_formatting")) {
 									CachedConfig.set("tablist_modification.enabled", enable);
 									Messages.configStateChanged(sender, "Tablist formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
-								} else if (args[2].equalsIgnoreCase("bungeecord")) {
-									CachedConfig.set("bungeecord.enabled", enable);
-									Messages.configStateChanged(sender, "BungeeCord", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
 								} else {
 									Messages.messageCommandUsageConfig(sender);
 								}
@@ -1333,10 +1367,50 @@ public class Cmd implements CommandExecutor {
 				if (args.length == 0) {
 					Messages.messageNoArgs(console);
 				} else if (args[0].equalsIgnoreCase("reload")) {
-					final PluginManager plg = Bukkit.getPluginManager();
-					final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
-					plg.disablePlugin(plgname);
-					plg.enablePlugin(plgname);
+					if (args.length != 2) {
+						Messages.messageCommandUsageReload(sender);
+					} else {
+						if (args[1].equalsIgnoreCase("config")) {
+							Messages.messageCommandReloadConfig(sender);
+//							this.plugin.reloadConfig();
+							CachedConfig.update();
+							CachedRanks.update();
+							CachedPlayers.update();
+							this.plugin.updateAllPlayersTABlist();
+							Messages.messageCommandReloadConfigDone(sender);
+						} else if (args[1].equalsIgnoreCase("plugin")) {
+							Messages.messageCommandReloadPlugin(sender);
+							final PluginManager plg = Bukkit.getPluginManager();
+							final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
+							plg.disablePlugin(plgname);
+							plg.enablePlugin(plgname);
+							Messages.messageCommandReloadPluginDone(sender);
+						} else if (args[1].equalsIgnoreCase("addons")) {
+							Messages.messageCommandReloadAddons(sender);
+							PowerRanks.getInstance().addonsManager.disable();
+							PowerRanks.getInstance().addonsManager.setup();
+							Messages.messageCommandReloadAddonsDone(sender);
+						} else if (args[1].equalsIgnoreCase("all")) {
+							Messages.messageCommandReloadPlugin(sender);
+							final PluginManager plg = Bukkit.getPluginManager();
+							final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
+							plg.disablePlugin(plgname);
+							plg.enablePlugin(plgname);
+							Messages.messageCommandReloadPluginDone(sender);
+							Messages.messageCommandReloadConfig(sender);
+							CachedConfig.update();
+							CachedRanks.update();
+							CachedPlayers.update();
+							this.plugin.updateAllPlayersTABlist();
+							Messages.messageCommandReloadConfigDone(sender);
+							Messages.messageCommandReloadAddons(sender);
+							PowerRanks.getInstance().addonsManager.disable();
+							PowerRanks.getInstance().addonsManager.setup();
+							Messages.messageCommandReloadAddonsDone(sender);
+						} else {
+							Messages.messageCommandUsageReload(sender);
+						}
+					}
 				} else if (args[0].equalsIgnoreCase("help")) {
 					Messages.helpMenu(console);
 				} else if (args[0].equalsIgnoreCase("setrank")) {
@@ -1384,10 +1458,8 @@ public class Cmd implements CommandExecutor {
 							console.sendMessage(ChatColor.DARK_GREEN + "Number of permissions: " + ChatColor.GREEN + permissions.size());
 							int index = 0;
 							for (String permission : permissions) {
-//								if (permission.length() > 0) {
 								index++;
 								console.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + (permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
-//								}
 							}
 							console.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 						} else {
@@ -1712,8 +1784,8 @@ public class Cmd implements CommandExecutor {
 					if (args.length == 2) {
 						final String rank2 = s.getRankIgnoreCase(args[1]);
 						final boolean success = s.createRank(rank2);
-						String[] forbiddenColorCharacters = { "&", "#" };
-						String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
+						String[] forbiddenColorCharacters = {"&", "#"};
+						String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
 						if (success) {
 							if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
 								Messages.messageCommandCreateRankColorCharacterWarning(console, rank2);
@@ -1741,30 +1813,6 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageDeleteRank(console);
 					}
-//				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-//					if (args.length == 2) {
-//						final String rank2 = s.getRankIgnoreCase(args[1]);
-//						final boolean success = s.setBuild(rank2, true);
-//						if (success) {
-//							Messages.messageCommandBuildEnabled(console, rank2);
-//						} else {
-//							Messages.messageGroupNotFound(console, rank2);
-//						}
-//					} else {
-//						Messages.messageCommandUsageEnableBuild(console);
-//					}
-//				} else if (args[0].equalsIgnoreCase("disablebuild") && sender.hasPermission("powerranks.cmd.set")) {
-//					if (args.length == 2) {
-//						final String rank2 = s.getRankIgnoreCase(args[1]);
-//						final boolean success = s.setBuild(rank2, false);
-//						if (success) {
-//							Messages.messageCommandBuildDisabled(console, rank2);
-//						} else {
-//							Messages.messageGroupNotFound(console, rank2);
-//						}
-//					} else {
-//						Messages.messageCommandUsageDisableBuild(console);
-//					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (args.length == 2) {
 						final String playername = args[1];
@@ -2070,6 +2118,92 @@ public class Cmd implements CommandExecutor {
 						Messages.messageCommandUsageAddoninfo(console);
 					}
 
+				} else if (args[0].equalsIgnoreCase("addonmanager")) {
+					boolean hasAcceptedTerms = CachedConfig.getBoolean("addon_manager.accepted_terms");
+					if (args.length == 1) {
+						Messages.addonManagerListAddons(sender, 0);
+					} else {
+						String addonmanagerCommand = args[1].toLowerCase();
+						if (addonmanagerCommand.equals("acceptterms")) {
+							CachedConfig.set("addon_manager.accepted_terms", true);
+							Messages.addonManagerTermsAccepted(sender);
+							this.plugin.addonsManager.setupAddonDownloader();
+						}
+
+						if (addonmanagerCommand.equals("declineterms")) {
+							CachedConfig.set("addon_manager.accepted_terms", false);
+							Messages.addonManagerTermsDeclined(sender);
+						}
+
+						if (addonmanagerCommand.equals("page")) {
+							int page = Integer.parseInt(args[2].replaceAll("[a-zA-Z]", ""));
+							Messages.addonManagerListAddons(sender, page);
+						}
+
+						if (addonmanagerCommand.equals("info")) {
+							if (hasAcceptedTerms) {
+								String addonname = args[2];
+								Messages.addonManagerInfoAddon(sender, addonname);
+							} else {
+								Messages.addonManagerListAddons(sender, 0);
+							}
+						}
+
+						if (addonmanagerCommand.equals("download")) {
+							if (hasAcceptedTerms) {
+								String addonname = args[2];
+								DownloadableAddon addon = null;
+								for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
+									if (dlAddon.getName().equalsIgnoreCase(addonname)) {
+										addon = dlAddon;
+										break;
+									}
+								}
+
+								if (addon.isDownloadable()) {
+									if (addon.isCompatible()) {
+										if (addon.download()) {
+											Messages.addonManagerDownloadComplete(sender, addon.getName());
+										} else {
+											Messages.addonManagerDownloadFailed(sender, addon.getName());
+										}
+									} else {
+										Messages.addonManagerDownloadNotAvailable(sender);
+									}
+								} else {
+									Messages.addonManagerDownloadNotAvailable(sender);
+								}
+							} else {
+								Messages.addonManagerListAddons(sender, 0);
+							}
+						}
+
+						if (addonmanagerCommand.equals("uninstall")) {
+							if (hasAcceptedTerms) {
+								String addonname = args[2];
+
+								DownloadableAddon addon = null;
+								if (PowerRanks.getInstance().addonsManager.getAddonDownloader() != null) {
+									for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
+										if (dlAddon.getName().equalsIgnoreCase(addonname)) {
+											addon = dlAddon;
+											break;
+										}
+									}
+								}
+
+								if (addon != null) {
+									addon.uninstall();
+									Messages.addonManagerUninstallComplete(sender, addon.getName());
+								} else {
+									Messages.messageCommandErrorAddonNotFound(sender, args[2]);
+								}
+							} else {
+								Messages.addonManagerListAddons(sender, 0);
+							}
+						}
+					}
+
 				} else if (args[0].equalsIgnoreCase("playerinfo")) {
 					if (args.length == 2) {
 						String target_player_name = args[1];
@@ -2171,24 +2305,6 @@ public class Cmd implements CommandExecutor {
 							plugin.updateAllPlayersTABlist();
 
 							Messages.configWorldTagRemoved(sender);
-						} else {
-							Messages.messageCommandUsageConfig(sender);
-						}
-					} else if (args.length == 3) {
-						if (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("disable")) {
-							boolean enable = args[1].equalsIgnoreCase("enable");
-							if (args[2].equalsIgnoreCase("chat_formatting")) {
-								CachedConfig.set("chat.enabled", enable);
-								Messages.configStateChanged(sender, "Chat formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
-							} else if (args[2].equalsIgnoreCase("tablist_formatting")) {
-								CachedConfig.set("tablist_modification.enabled", enable);
-								Messages.configStateChanged(sender, "Tablist formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
-							} else if (args[2].equalsIgnoreCase("bungeecord")) {
-								CachedConfig.set("bungeecord.enabled", enable);
-								Messages.configStateChanged(sender, "BungeeCord", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
-							} else {
-								Messages.messageCommandUsageConfig(sender);
-							}
 						} else {
 							Messages.messageCommandUsageConfig(sender);
 						}
@@ -2310,18 +2426,6 @@ public class Cmd implements CommandExecutor {
 							s.deleteRank(rank2);
 						}
 					}
-//				} else if (args[0].equalsIgnoreCase("enablebuild")) {
-//					if (sender.hasPermission("powerranks.cmd.set")) {
-//						if (args.length == 2) {
-//							final String rank2 = s.getRankIgnoreCase(args[1]);
-//							s.setBuild(rank2, true);
-//						}
-//					}
-//				} else if (args[0].equalsIgnoreCase("disablebuild")) {
-//					if (args.length == 2) {
-//						final String rank2 = s.getRankIgnoreCase(args[1]);
-//						s.setBuild(rank2, false);
-//					}
 				} else if (args[0].equalsIgnoreCase("promote")) {
 					if (args.length == 2) {
 						final String playername = args[1];

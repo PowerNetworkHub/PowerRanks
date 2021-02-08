@@ -1,5 +1,5 @@
-name: PowerRanks
-version: 1.9.6 BETA 1
+name: ${project.name}
+version: ${project.version}
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
@@ -127,6 +127,8 @@ permissions:
   powerranks.cmd.listaddons:
     default: op
   powerranks.cmd.addoninfo:
+    default: op
+  powerranks.cmd.addonmanager:
     default: op
   powerranks.cmd.setguiicon:
     default: op

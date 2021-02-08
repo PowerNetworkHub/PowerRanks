@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +23,6 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
-import nl.svenar.PowerRanks.Cache.PowerConfigurationSection;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
@@ -54,7 +54,7 @@ public class OnChat implements Listener {
 
 				try {
 					if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-						PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+						ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 						for (String r : subranks.getKeys(false)) {
 							boolean in_world = false;
 							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
@@ -108,7 +108,7 @@ public class OnChat implements Listener {
 					String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
 
 					if (CachedRanks.getConfigurationSection("Usertags") != null) {
-						PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 						for (String key : tags.getKeys(false)) {
 							if (key.equalsIgnoreCase(tmp_usertag)) {
 								usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
@@ -117,23 +117,28 @@ public class OnChat implements Listener {
 						}
 					}
 				}
+				
+				// nameColor = nameColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
+				// chatColor = chatColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
+				// nameColor = "&r" + nameColor;
+				// chatColor = "&r" + chatColor;
 
 				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + applyColor(nameColor, player.getDisplayName());
 				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + applyColor(chatColor, e.getMessage());
 
 				format = Util.powerFormatter(format,
-						ImmutableMap.<String, String>builder()
-							.put("prefix", prefix)
-							.put("suffix", suffix)
-							.put("subprefix", subprefix)
-							.put("subsuffix", subsuffix)
-							.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
-							.put("player", player_formatted_name)
-							.put("msg", player_formatted_chat_msg)
-							.put("format", e.getFormat())
-							.put("world", player.getWorld().getName()).build(),
-						'[', ']');
-
+				ImmutableMap.<String, String>builder()
+					.put("prefix", prefix)
+					.put("suffix", suffix)
+					.put("subprefix", subprefix)
+					.put("subsuffix", subsuffix)
+					.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
+					.put("player", player_formatted_name)
+					.put("msg", player_formatted_chat_msg)
+					.put("format", e.getFormat())
+					.put("world", player.getWorld().getName()).build(),
+				'[', ']');
+				
 				if (PowerRanks.placeholderapiExpansion != null) {
 					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
 				}
@@ -145,8 +150,10 @@ public class OnChat implements Listener {
 
 				format = PowerRanks.chatColor(format, true);
 
+
 				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor, true); // TODO: Remove (DeluxeTags workaround)
 
+				
 				e.setFormat(format);
 			}
 		} catch (Exception e2) {

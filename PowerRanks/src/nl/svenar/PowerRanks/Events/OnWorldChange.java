@@ -23,7 +23,7 @@ public class OnWorldChange implements Listener {
 	public void onWorldChange(final PlayerChangedWorldEvent e) {
 		Player player = e.getPlayer();
 		this.powerRanks.updateTablistName(player);
-//		this.powerRanks.setupPermissions(player);
+		// this.powerRanks.setupPermissions(player);
 
 		for (Entry<File, PowerRanksAddon> prAddon : this.powerRanks.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.powerRanks, player);

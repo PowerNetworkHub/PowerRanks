@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.VaultHook;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
@@ -74,16 +76,23 @@ public class GUI {
 			if (slot < gui.getGUI().getSize() - 9) {
 				Users users = new Users(powerRanks);
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-				int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
-				double player_balance = VaultHook.getVaultEconomy().getBalance(player);
-				if (cost >= 0 && player_balance >= cost) {
-					VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
-					users.setGroup(player, rankname, true);
-					Messages.messageBuyRankSuccess(player, rankname);
-				} else {
-					Messages.messageBuyRankError(player, rankname);
+				if (users.rankExists(rankname)) {
+					int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
+					double player_balance = VaultHook.getVaultEconomy().getBalance(player);
+					if (cost >= 0 && player_balance >= cost) {
+						VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
+						users.setGroup(player, rankname, true);
+						if (CachedConfig.getBoolean("rankup.buy_command.enabled")) {
+							if (CachedConfig.getString("rankup.buy_command.command").length() > 0) {
+								powerRanks.getServer().dispatchCommand((CommandSender) powerRanks.getServer().getConsoleSender(), CachedConfig.getString("rankup.buy_command.command").replaceAll("%playername%", player.getName()).replaceAll("%rankname%", rankname));
+							}
+						}
+						Messages.messageBuyRankSuccess(player, rankname);
+					} else {
+						Messages.messageBuyRankError(player, rankname);
+					}
+					closeGUI(player);
 				}
-				closeGUI(player);
 			}
 		}
 
@@ -116,9 +125,6 @@ public class GUI {
 					
 					if (cmdField.equalsIgnoreCase("setnamecolor"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_RANK);
-					
-//					if (cmdField.equalsIgnoreCase("allowbuild"))
-//						openGUI(player, GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK);
 					
 					if (cmdField.equalsIgnoreCase("setdefaultrank"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK);
@@ -246,28 +252,6 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
-//		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK.getID()) {
-//			if (slot < gui.getGUI().getSize() - 9) {
-//				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-//				openGUI(player, GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN);
-//				gui.setData(player.getName() + ":rankname", rankname);
-//			}
-//		}
-//		
-//		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN.getID()) {
-//			if (slot < gui.getGUI().getSize() - 9) {
-//				boolean allow = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0).equalsIgnoreCase("true");
-//				String rankname = gui.getData(player.getName() + ":rankname");
-//				Users users = new Users(powerRanks);
-//				users.setBuild(rankname, allow);
-//				if (allow)
-//					Messages.messageCommandBuildEnabled(player, rankname);
-//				else
-//					Messages.messageCommandBuildDisabled(player, rankname);
-//				closeGUI(player);
-//			}
-//		}
 		
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {

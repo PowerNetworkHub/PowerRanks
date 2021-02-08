@@ -1,13 +1,4 @@
 # --------------------
-# PowerRanks storage
-# 'type': YAML or MYSQL
-# 'database':
-# - 'host': database host
-# - 'port': database port
-# - 'username': database username
-# - 'password': database password
-# - 'database': database name
-# --------------------
 # Chat format
 # Available options:
 # [prefix] rank prefix
@@ -64,16 +55,6 @@
 # 'automatic_update_config_files' Update the configuration files to the newest version.
 # --------------------
 
-storage:
-  type: 'YAML'
-  database:
-    host: 'localhost'
-    port: 3306
-    username: ''
-    password: ''
-    database: 'powerranks'
-bungeecord:
-   enabled: true
 chat:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
@@ -106,3 +87,9 @@ updates:
    enable_update_checking: true
    automatic_download_updates: false
    automatic_update_config_files: true
+addon_manager:
+  accepted_terms: false
+rankup:
+  buy_command:
+    enabled: false
+    command: 'say %playername% just bought the rank %rankname%'

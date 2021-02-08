@@ -1,27 +1,4 @@
 # All PowerRanks messages can be changed here
-# Available options:
-# options starting with plugin_ are always available.
-# options starting with argument_ are available for certain commands only!
-# %plugin_name% | name of the plugin
-# %plugin_prefix% | see general.prefix
-# %argument_rank% | command argument rank name
-# %argument_target_rank% | command argument target rank name
-# %argument_subrank% | command argument subrank
-# %argument_sender% | command argument sender name
-# %argument_target% | command argument target name
-# %argument_permission% | command argument permission node
-# %argument_prefix% | command argument prefix
-# %argument_suffix% | command argument suffix
-# %argument_color% | command argument color
-# %argument_cost% | command argument cost
-# %argument_usertag_tag% | command argument usertag tag
-# %argument_usertag_text% | command argument usertag text
-# %argument_external_plugin% | command argument external plugin name
-# %argument_addon% | command argument addon name
-# %argument_material% | command argument material name
-# %argument_plugin_name% | command argument plugin hook plugin name
-# %argument_new_state% | command argument plugin hook state name
-# %argument_config_target% | command argument config target
 
 general:
    prefix: "&0[&b%plugin_name%&0]&r"
@@ -116,8 +93,14 @@ messages:
    config_worldtag_removed: "%plugin_prefix% &aThe world tag has been removed from the config!"
    config_state_changed: "%plugin_prefix% &aState of '%argument_config_target%' in the config has be changed to %argument_new_state%&a!"
    suggest_restart: "%plugin_prefix% &aChanges will take effect next restart."
+   addonmanager_terms_accepted: "%plugin_prefix% &aAdd-on manager terms accepted, to use the add-on manager run the add-on manager command again"
+   addonmanager_terms_declined: "%plugin_prefix% &cAdd-on manager terms declined, to use the add-on manager please accept the terms"
+   addonmanager_download_not_available: "%plugin_prefix% &cThis add-on can't be downloaded right now"
+   addonmanager_download_complete: "%plugin_prefix% &aSuccessfully downloaded add-on: %addonname%. Do '/pr addoninfo %addonname%' for more info"
+   addonmanager_download_failed: "%plugin_prefix% &cDownload failed for add-on: %addonname%"
+   addonmanager_uninstall_complete: "%plugin_prefix% &aSuccessfully uninstalled add-on: %addonname%."
 commands:
-   usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/all]"
+   usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"
    usage_command_setrank: "%plugin_prefix% &c%base_cmd% setrank <username> <rank>"
    usage_command_setownrank: "%plugin_prefix% &c%base_cmd% setownrank <rank>"
    usage_command_check: "%plugin_prefix% &c%base_cmd% check [player_name]"
@@ -151,11 +134,11 @@ commands:
    usage_command_set_cost: "%plugin_prefix% &c%base_cmd% setcost <rank_name> <cost>"
    usage_command_add_player_permission: "%plugin_prefix% &c%base_cmd% addplayerperm <player_name> <permission>"
    usage_command_remove_player_permission: "%plugin_prefix% &c%base_cmd% delplayerperm <player_name> <permission>"
-   usage_command_create_usertag: "%plugin_prefix% &c%base_cmd% createusertag <tagName> <text>"
-   usage_command_edit_usertag: "%plugin_prefix% &c%base_cmd% editusertag <tagName> <text>"
-   usage_command_remove_usertag: "%plugin_prefix% &c%base_cmd% removeusertag <tagName>"
-   usage_command_set_usertag: "%plugin_prefix% &c%base_cmd% setusertag [player_name] <tagName>"
-   usage_command_clear_usertag: "%plugin_prefix% &c%base_cmd% clearusertag [player_name] <tagName>"
+   usage_command_create_usertag: "%plugin_prefix% &c%base_cmd% createusertag <tag_name> <text>"
+   usage_command_edit_usertag: "%plugin_prefix% &c%base_cmd% editusertag <tag_name> <text>"
+   usage_command_remove_usertag: "%plugin_prefix% &c%base_cmd% removeusertag <tag_name>"
+   usage_command_set_usertag: "%plugin_prefix% &c%base_cmd% setusertag [player_name] <tag_name>"
+   usage_command_clear_usertag: "%plugin_prefix% &c%base_cmd% clearusertag [player_name] <tag_name>"
    usage_command_list_usertags: "%plugin_prefix% &c%base_cmd% listusertags"
    usage_command_set_promoterank: "%plugin_prefix% &c%base_cmd% setpromoterank <rank> <promoteRank>"
    usage_command_set_demoterank: "%plugin_prefix% &c%base_cmd% setdemoterank <rank> <promoteRank>"
@@ -164,8 +147,8 @@ commands:
    usage_command_addoninfo: "%plugin_prefix% &c%base_cmd% addoninfo <addon_name>"
    usage_command_factoryreset: "%plugin_prefix% &c%base_cmd% factoryreset"
    usage_command_seticon: "%plugin_prefix% &c%base_cmd% seticon <rank>"
+   usage_command_verbose: "%plugin_prefix% &c%base_cmd% verbose <start/stop/save/clear>"
    usage_command_playerinfo: "%plugin_prefix% &c%base_cmd% playerinfo <player_name>"
-   usage_command_verbose: "%plugin_prefix% &c%base_cmd% verbose <start/stop/save>"
    usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rank_name] [confirm]"
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
    usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
@@ -174,6 +157,8 @@ commands:
    reload_config_done: "%plugin_prefix% &2Reloaded config!"
    reload_plugin: "%plugin_prefix% &2Reloading plugin"
    reload_plugin_done: "%plugin_prefix% &2Reloaded plugin!"
+   reload_addons: "%plugin_prefix% &2Reloading plugin"
+   reload_addons_done: "%plugin_prefix% &2Reloaded plugin!"
    help:
       help:
          command: "help [page_number]"
@@ -224,7 +209,7 @@ commands:
          command: "listsubranks <player_name>"
          description: "List all subranks of a player"
       reload:
-         command: "reload [config/plugin/all]"
+         command: "reload [config/plugin/addons/all]"
          description: "Reload PowerRanks"
       addperm:
          command: "addperm <rank> <permission>"
@@ -296,10 +281,10 @@ commands:
          command: "removeusertag <tag>"
          description: "Delete a user tag"
       setusertag:
-         command: "setusertag [player_name] <tag>"
+         command: "setusertag [player] <tag>"
          description: "Assign a user tag"
       clearusertag:
-         command: "clearusertag [player_name] <tag>"
+         command: "clearusertag [player] <tag>"
          description: "Remove a user tag"
       listusertags:
          command: "listusertags"
@@ -331,6 +316,9 @@ commands:
       addoninfo:
          command: "addoninfo <addon_name>"
          description: "Show information about a specific add-on"
+      addonmanager:
+         command: "addonmanager"
+         description: "Manage the PowerRanks add-ons"
       config:
          command: "config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
          description: "Edit the configuration file"

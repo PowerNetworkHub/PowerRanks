@@ -35,9 +35,9 @@ public class OnJoin implements Listener {
 		validatePlayerData(player);
 
 		this.m.playerInjectPermissible(player);
-//		this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
+		// this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
 
-//		this.m.setupPermissions(player);
+		// this.m.setupPermissions(player);
 		this.m.updateTablistName(player);
 
 		long time = new Date().getTime();
@@ -46,16 +46,18 @@ public class OnJoin implements Listener {
 		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 			prAddon.getValue().onPlayerJoin(prPlayer);
+			if (!prAddon.getValue().onPlayerJoinMessage(prPlayer)) {
+				e.setJoinMessage("");
+			}
+			
 		}
-		
-//		m.power_bungee_events.eventJoin(player);
 	}
 
 	@EventHandler(ignoreCancelled = false)
 	public void onPlayerLeave(final PlayerQuitEvent e) {
 		final Player player = e.getPlayer();
-//		this.m.playerUninjectPermissible(player);
-//		this.m.removePermissions(player);
+		// this.m.playerUninjectPermissible(player);
+		// this.m.removePermissions(player);
 
 		validatePlayerData(player);
 
@@ -74,8 +76,6 @@ public class OnJoin implements Listener {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
 			prAddon.getValue().onPlayerLeave(prPlayer);
 		}
-		
-//		m.power_bungee_events.eventLeave(player);
 	}
 
 	private void validatePlayerData(Player player) {
@@ -98,10 +98,9 @@ public class OnJoin implements Listener {
 		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
 			user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 
-//		for (Entry<String, Object> kv : user_data.entrySet()) {
-//			PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
-//		}
-		
+		for (Entry<String, Object> kv : user_data.entrySet()) {
+			PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
+		}
 		if (user_data.size() > 0) {
 			CachedPlayers.set(user_data, false);
 		}

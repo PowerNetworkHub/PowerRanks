@@ -10,15 +10,25 @@ import java.util.Map.Entry;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
 
 public class AddonsManager {
 
 	public static HashMap<File, Boolean> loadedAddons = new HashMap<File, Boolean>(); // file_path, is_loaded
 	public HashMap<File, PowerRanksAddon> addonClasses = new HashMap<File, PowerRanksAddon>(); // file_path, PowerRanksAddon
 	private PowerRanks powerranks;
+	private AddonDownloader addonDownloader;
 
 	public AddonsManager(PowerRanks powerranks) {
 		this.powerranks = powerranks;
+
+		if (CachedConfig.getBoolean("addon_manager.accepted_terms")) {
+			setupAddonDownloader();
+		}
+	}
+
+	public void setupAddonDownloader() {
+		this.addonDownloader = new AddonDownloader();
 	}
 
 	public void setup() {
@@ -84,6 +94,29 @@ public class AddonsManager {
 		PowerRanks.log.info("Loaded " + addonCount + " add-on(s)!");
 	}
 
+	public void disable() {
+		for (Entry<File, Boolean> prAddonLoaded : loadedAddons.entrySet()) {
+			if (prAddonLoaded.getKey().exists()) {
+				if (prAddonLoaded.getValue()) {
+					PowerRanksAddon addon = null;
+					for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
+						if (prAddon.getKey().getAbsolutePath().equals(prAddonLoaded.getKey().getAbsolutePath())) {
+							addon = prAddon.getValue();
+							break;
+						}
+					}
+
+					if (addon != null) {
+						addon.unload();
+					}
+				}
+			}
+		}
+
+		loadedAddons.clear();
+		addonClasses.clear();
+	}
+
 	private boolean isJar(File path) {
 		String extension = ".jar";
 		if (path.getName().toLowerCase().endsWith(extension)) {
@@ -94,5 +127,9 @@ public class AddonsManager {
 
 	public Collection<PowerRanksAddon> getAddons() {
 		return addonClasses.values();
+	}
+
+	public AddonDownloader getAddonDownloader() {
+		return this.addonDownloader;
 	}
 }

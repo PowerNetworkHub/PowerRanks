@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 
@@ -18,7 +19,6 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
-import nl.svenar.PowerRanks.Cache.PowerConfigurationSection;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon.RankChangeCause;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
@@ -35,16 +35,15 @@ public class Users implements Listener {
 
 	public void setGroup(Player player, String t, String rank, boolean fireAddonEvent) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		
 		if (player != null) {
-			PowerRanksVerbose.log("setGroup(Player, String, String, boolean)", player.getName() + " Changed " + t + "'s rank to: " + rank);
 			if (player.hasPermission("powerranks.cmd.set") || player.hasPermission("powerranks.cmd.set." + rank)) {
+				PowerRanksVerbose.log("setGroup(Player, String, String, boolean)", player.getName() + " Changed " + t + "'s rank to: " + rank);
 				Player target = Bukkit.getServer().getPlayer(t);
 
 				if (target != null) {
 					try {
 						if (CachedRanks.get("Groups." + rank) != null) {
-//							this.m.removePermissions(player);
+							// this.m.removePermissions(player);
 							String oldRank = CachedPlayers.getString("players." + target.getUniqueId() + ".rank");
 							CachedPlayers.set("players." + target.getUniqueId() + ".rank", (Object) rank, false);
 							if (CachedConfig.contains("announcements.rankup.enabled")) {
@@ -117,7 +116,7 @@ public class Users implements Listener {
 			if (target2 != null) {
 				try {
 					if (CachedRanks.get("Groups." + rank) != null) {
-//						this.m.removePermissions(target2);
+						// this.m.removePermissions(target2);
 						String oldRank = CachedPlayers.getString("players." + target2.getUniqueId() + ".rank");
 						CachedPlayers.set("players." + target2.getUniqueId() + ".rank", (Object) rank, false);
 						if (CachedConfig.contains("announcements.rankup.enabled")) {
@@ -189,7 +188,7 @@ public class Users implements Listener {
 		boolean success = false;
 		try {
 			if (CachedRanks.get("Groups." + rank) != null) {
-//				this.m.removePermissions(player);
+				// this.m.removePermissions(player);
 				String oldRank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 				CachedPlayers.set("players." + player.getUniqueId() + ".rank", (Object) rank, false);
 				CachedPlayers.update();
@@ -510,7 +509,6 @@ public class Users implements Listener {
 			if (CachedRanks.get("Groups." + rank) == null) {
 				CachedRanks.set("Groups." + rank + ".permissions", new ArrayList<String>());
 				CachedRanks.set("Groups." + rank + ".inheritance", new ArrayList<String>());
-//				CachedRanks.set("Groups." + rank + ".build", true);
 				CachedRanks.set("Groups." + rank + ".chat.prefix", "[&7" + rank + "&r]");
 				CachedRanks.set("Groups." + rank + ".chat.suffix", "");
 				CachedRanks.set("Groups." + rank + ".chat.chatColor", "&f");
@@ -520,7 +518,6 @@ public class Users implements Listener {
 				CachedRanks.set("Groups." + rank + ".economy.buyable", new ArrayList<String>());
 				CachedRanks.set("Groups." + rank + ".economy.cost", 0);
 				CachedRanks.set("Groups." + rank + ".gui.icon", "stone");
-				CachedRanks.update();
 				return true;
 			}
 		} catch (Exception e) {
@@ -564,7 +561,7 @@ public class Users implements Listener {
 			}
 			try {
 				if (CachedRanks.get("Groups." + rank) != null) {
-					CachedRanks.removeRank(rank);
+					CachedRanks.set("Groups." + rank, (Object) null);
 					return true;
 				}
 			} catch (Exception e) {
@@ -573,18 +570,6 @@ public class Users implements Listener {
 		}
 		return false;
 	}
-
-//	public boolean setBuild(String rank, boolean enabled) {
-//		try {
-//			if (CachedRanks.get("Groups." + rank) != null) {
-//				CachedRanks.set("Groups." + rank + ".build", (Object) enabled);
-//				return true;
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
 
 	public boolean promote(String playername) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
@@ -729,7 +714,6 @@ public class Users implements Listener {
 			}
 			CachedRanks.set("Groups." + to + ".inheritance", (Object) listInheritance);
 
-//			CachedRanks.set("Groups." + to + ".build", CachedRanks.get("Groups." + rank + ".build"));
 			CachedRanks.set("Groups." + to + ".chat.prefix", CachedRanks.get("Groups." + rank + ".chat.prefix"));
 			CachedRanks.set("Groups." + to + ".chat.suffix", CachedRanks.get("Groups." + rank + ".chat.suffix"));
 			CachedRanks.set("Groups." + to + ".chat.chatColor", CachedRanks.get("Groups." + rank + ".chat.chatColor"));
@@ -745,7 +729,7 @@ public class Users implements Listener {
 			CachedRanks.set("Groups." + to + ".economy.cost", CachedRanks.get("Groups." + rank + ".economy.cost"));
 			CachedRanks.set("Groups." + to + ".gui.icon", CachedRanks.get("Groups." + rank + ".gui.icon"));
 
-			PowerConfigurationSection players = CachedPlayers.getConfigurationSection("players");
+			ConfigurationSection players = CachedPlayers.getConfigurationSection("players");
 			for (String p : players.getKeys(false)) {
 				if (CachedPlayers.getString("players." + p + ".rank") != null) {
 					if (CachedPlayers.getString("players." + p + ".rank").equalsIgnoreCase(rank)) {
@@ -772,7 +756,7 @@ public class Users implements Listener {
 		String rank = rankname;
 
 		try {
-			PowerConfigurationSection ranks = CachedRanks.getConfigurationSection("Groups");
+			ConfigurationSection ranks = CachedRanks.getConfigurationSection("Groups");
 			for (String r : ranks.getKeys(false)) {
 				if (r.equalsIgnoreCase(rankname)) {
 					rank = r;
@@ -799,7 +783,7 @@ public class Users implements Listener {
 	}
 
 	public Set<String> getCachedPlayers() {
-		PowerConfigurationSection players = null;
+		ConfigurationSection players = null;
 		try {
 			players = CachedPlayers.getConfigurationSection("players");
 		} catch (Exception e) {
@@ -1099,7 +1083,7 @@ public class Users implements Listener {
 
 		try {
 			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-				PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 				for (String r : subranks.getKeys(false)) {
 					ranks.add(getRankIgnoreCase(r));
 				}
@@ -1165,7 +1149,7 @@ public class Users implements Listener {
 		try {
 
 			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-				PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 
 				for (String r : subranks.getKeys(false)) {
 					if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
@@ -1188,7 +1172,7 @@ public class Users implements Listener {
 		try {
 
 			if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-				PowerConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
+				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
 
 				for (String r : subranks.getKeys(false)) {
 					if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
@@ -1213,7 +1197,7 @@ public class Users implements Listener {
 				boolean tagExists = false;
 				if (CachedRanks.getConfigurationSection("Usertags") != null) {
 					try {
-						PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 						for (String key : tags.getKeys(false)) {
 							if (key.equalsIgnoreCase(tag)) {
 								tagExists = true;
@@ -1245,7 +1229,7 @@ public class Users implements Listener {
 
 			if (CachedRanks.contains("Usertags")) {
 				try {
-					PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+					ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 					boolean tagExists = false;
 					for (String key : tags.getKeys(false)) {
 						if (key.equalsIgnoreCase(tag)) {
@@ -1273,7 +1257,7 @@ public class Users implements Listener {
 
 			if (CachedRanks.contains("Usertags")) {
 				try {
-					PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+					ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 					boolean tagExists = false;
 					for (String key : tags.getKeys(false)) {
 						if (key.equalsIgnoreCase(tag)) {
@@ -1303,7 +1287,7 @@ public class Users implements Listener {
 			try {
 				if (CachedRanks.contains("Usertags")) {
 					try {
-						PowerConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
 						boolean tagExists = false;
 						for (String key : tags.getKeys(false)) {
 							if (key.equalsIgnoreCase(tag)) {
@@ -1348,7 +1332,7 @@ public class Users implements Listener {
 
 			if (CachedRanks.getConfigurationSection("Usertags") != null) {
 				try {
-					PowerConfigurationSection tmp_tags = CachedRanks.getConfigurationSection("Usertags");
+					ConfigurationSection tmp_tags = CachedRanks.getConfigurationSection("Usertags");
 					tags = tmp_tags.getKeys(false);
 				} catch (Exception e) {
 				}
@@ -1424,7 +1408,7 @@ public class Users implements Listener {
 	public ArrayList<String> getPlayerNames() {
 		ArrayList<String> player_names = new ArrayList<String>();
 
-		PowerConfigurationSection players_section = CachedPlayers.getConfigurationSection("players");
+		ConfigurationSection players_section = CachedPlayers.getConfigurationSection("players");
 		for (String key : players_section.getKeys(false)) {
 			player_names.add(CachedPlayers.getString("players." + key + ".name"));
 		}
@@ -1485,5 +1469,9 @@ public class Users implements Listener {
 		}
 
 		return false;
+	}
+
+	public boolean rankExists(String rankname) {
+		return CachedRanks.get("Groups." + rankname) != null;
 	}
 }

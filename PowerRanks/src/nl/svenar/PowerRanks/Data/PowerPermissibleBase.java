@@ -86,6 +86,9 @@ public class PowerPermissibleBase extends PermissibleBase {
 	public void recalculatePermissions() {
 		PowerRanksVerbose.log("recalculatePermissions()", "called");
 		super.recalculatePermissions();
+		if (player != null) {
+			// player.updateCommands();
+		}
 	}
 	
 	/*

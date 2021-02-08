@@ -21,18 +21,18 @@ public class PowerRanksVerbose {
 	public PowerRanksVerbose(PowerRanks plugin) {
 		PowerRanksVerbose.plugin = plugin;
 	}
-
+	
 	public static void start(boolean live) {
 		USE_VERBOSE = true;
 		USE_VERBOSE_LIVE = live;
 		VERBOSE_LOG.clear();
 	}
-
+	
 	public static void stop() {
 		USE_VERBOSE = false;
 		USE_VERBOSE_LIVE = false;
 	}
-	
+
 	public static void clear() {
 		VERBOSE_LOG.clear();
 	}
@@ -43,6 +43,12 @@ public class PowerRanksVerbose {
 
 		Date date = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+		// String text = "[" + dateFormat.format(date) + "] [" + functionName + "] " + msg;
+		// VERBOSE_LOG.add(text);
+		// if (USE_VERBOSE_LIVE) {
+		// 	PowerRanks.log.info("[verbose] " + text);
+		// }
 
 		if (functionName.length() == 0 && msg.length() == 0) {
 			VERBOSE_LOG.add("");
@@ -103,14 +109,14 @@ public class PowerRanksVerbose {
 			}
 
 			writer.close();
-
+			
 			VERBOSE_LOG.clear();
-
+			
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		return false;
 	}
 

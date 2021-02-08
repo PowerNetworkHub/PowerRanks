@@ -18,19 +18,19 @@ public abstract class PowerRanksAddon {
 	public enum RankChangeCause {
 		SET, PROMOTE, DEMOTE
 	}
-	
+
 	public enum BlockChangeCause {
 		BREAK, // Called when a block is broken by a player.
 		PLACE, // Called when a block is placed by a player.
-		
+
 		MOISTURE, // Called when the moisture level of a soil block changes.
 		FERTILIZE, // Called with the block changes resulting from a player fertilizing a given block with bonemeal.
 		GROW, // Called when a block grows naturally in the world.
-		
+
 		IGNITE, // Called when a block is ignited.
 		EXPLODE, // Called when a block explodes
 		BURN, // Called when a block is destroyed as a result of being burnt by fire.
-		
+
 		REDSTONE // Called when a redstone current changes
 	}
 
@@ -93,8 +93,18 @@ public abstract class PowerRanksAddon {
 	// This function is called once on add-on load
 	public void setup() {}
 
+	// This function is called once on add-on unload
+	public void unload() {}
+
 	// Called when a player joins the server
 	public void onPlayerJoin(PowerRanksPlayer prPlayer) {
+	}
+
+	// Called when a player joins the server
+	// Used for custom join messages
+	// Return 'false' to cancel the default join message
+	public boolean onPlayerJoinMessage(PowerRanksPlayer prPlayer) {
+		return true;
 	}
 
 	// Called when a player leaves the server
@@ -131,7 +141,7 @@ public abstract class PowerRanksAddon {
 	// Executed when a player has entered a different world
 	public void onPlayerWorldChange(PowerRanksPlayer prPlayer, World world, World world2) {
 	}
-	
+
 	// Block change handler
 	// prPlayer.getPlayer() may be null for events not caused by a player
 	// Executed when a block changes

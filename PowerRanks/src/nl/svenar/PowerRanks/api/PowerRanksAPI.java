@@ -100,6 +100,16 @@ public class PowerRanksAPI {
 		return value;
 	}
 	
+	@Deprecated
+	public boolean isBuildingEnabled(String rank) {
+		return false;
+	}
+
+	@Deprecated
+	public boolean setBuildingEnabled(String rank, boolean new_value) {
+		return false;
+	}
+	
 	public String getPromoteRank(String rank) {
 		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote");
 		return value;
@@ -170,15 +180,5 @@ public class PowerRanksAPI {
 
 	public boolean addPermission(Player player, String permission) {
 		return s.addPlayerPermission(player.getName(), permission);
-	}
-	
-	@Deprecated
-	public boolean isBuildingEnabled(String rank) {
-		return false;
-	}
-	
-	@Deprecated
-	public boolean setBuildingEnabled(String rank, boolean new_value) {
-		return false;
 	}
 }

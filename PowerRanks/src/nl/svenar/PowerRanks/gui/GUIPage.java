@@ -39,7 +39,6 @@ public class GUIPage {
 
 		CMD_SETCHATCOLOR_INPUT_RANK(7, "select rank"), CMD_SETCHATCOLOR_INPUT_COLOR(8, "select color"), CMD_SETCHATCOLOR_INPUT_SPECIAL(9, "select color modifier"), CMD_SETNAMECOLOR_INPUT_RANK(10, "select rank"),
 		CMD_SETNAMECOLOR_INPUT_COLOR(11, "select color"), CMD_SETNAMECOLOR_INPUT_SPECIAL(12, "select color modifier"),
-//		CMD_ALLOWBUILD_INPUT_RANK(13, "select rank"), CMD_ALLOWBUILD_INPUT_BOOLEAN(14, "select option"),
 		CMD_SETDEFAULTRANK_INPUT_RANK(15, "select rank"), CMD_ADDINHERITANCE_INPUT_RANK(16, "select rank"), CMD_ADDINHERITANCE_INPUT_RANK2(17, "select inheritance"), CMD_DELINHERITANCE_INPUT_RANK(18, "select rank"),
 		CMD_DELINHERITANCE_INPUT_RANK2(19, "select inheritance"), CMD_ADDBUYABLERANK_INPUT_RANK(20, "select rank"), CMD_ADDBUYABLERANK_INPUT_RANK2(21, "select buyable rank"), CMD_DELBUYABLERANK_INPUT_RANK(22, "select rank"),
 		CMD_DELBUYABLERANK_INPUT_RANK2(23, "select buyable rank");
@@ -157,7 +156,6 @@ public class GUIPage {
 			new_gui.setItem(3, createGuiItem(Material.BEDROCK, ChatColor.GREEN + "Demote a player", ChatColor.BLACK + "cmd:demote", ChatColor.RESET + "/pr demote <player>"));
 			new_gui.setItem(4, createGuiItem(Material.DIAMOND, ChatColor.GREEN + "Change the chat color of a rank", ChatColor.BLACK + "cmd:setchatcolor", ChatColor.RESET + "/pr setchatcolor <rank> <color>"));
 			new_gui.setItem(5, createGuiItem(Material.GOLD_INGOT, ChatColor.GREEN + "Change the name color of a rank", ChatColor.BLACK + "cmd:setnamecolor", ChatColor.RESET + "/pr setnamecolor <rank> <color>"));
-//			new_gui.setItem(6, createGuiItem(Material.GRASS, ChatColor.GREEN + "Allow building for a specific rank", ChatColor.BLACK + "cmd:allowbuild", ChatColor.RESET + "/pr enablebuild /pr disablebuild"));
 			new_gui.setItem(7, createGuiItem(Material.STONE, ChatColor.GREEN + "Set the default rank for new player", ChatColor.BLACK + "cmd:setdefaultrank", ChatColor.RESET + "/pr setdefaultrank <rank>"));
 
 			new_gui.setItem(8, createGuiItem(Material.GOLD_BLOCK, ChatColor.GREEN + "Add a inheritance to a rank", ChatColor.BLACK + "cmd:addinheritance", ChatColor.RESET + "/pr delinheritance <rank> <inheritance>"));
@@ -192,7 +190,6 @@ public class GUIPage {
 		}
 
 		if (pageID.getID() == GUI_PAGE_ID.CMD_SETRANK_INPUT_RANK.getID() || pageID.getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_RANK.getID() || pageID.getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_RANK.getID()
-//				|| pageID.getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_RANK.getID()
 				|| pageID.getID() == GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK.getID() || pageID.getID() == GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK.getID()
 				|| pageID.getID() == GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK.getID() || pageID.getID() == GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK.getID() || pageID.getID() == GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK.getID()) {
 			Object[] ranks = users.getGroups().toArray();
@@ -395,16 +392,6 @@ public class GUIPage {
 				new_gui.setItem(5, createGuiItem(Material.STICK, "Strike", "&m", ChatColor.RED + "Cannot show color icon"));
 			}
 		}
-
-//		if (pageID.getID() == GUI_PAGE_ID.CMD_ALLOWBUILD_INPUT_BOOLEAN.getID()) {
-//			try {
-//				new_gui.setItem(12, createGuiItem(Material.GREEN_WOOL, "Yes", "True"));
-//				new_gui.setItem(14, createGuiItem(Material.RED_WOOL, "No", "False"));
-//			} catch (NoSuchFieldError e) {
-//				new_gui.setItem(12, createGuiItem(Material.CACTUS, "Yes", "True", ChatColor.RED + "Cannot show intended icon"));
-//				new_gui.setItem(14, createGuiItem(Material.REDSTONE, "No", "False", ChatColor.RED + "Cannot show intended icon"));
-//			}
-//		}
 
 		return new_gui;
 	}

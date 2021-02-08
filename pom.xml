@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.9.6</version>
+	<version>1.9.7</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 	
@@ -14,7 +14,18 @@
     	</properties>
     
 	<build>
-		<sourceDirectory>PowerRanks/src</sourceDirectory>
+		<defaultGoal>clean compile package</defaultGoal>
+		<finalName>${project.name}</finalName>
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory></directory>
+				<includes>
+					<include>*.yml</include>
+				</includes>
+				<filtering>true</filtering>
+			 </resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -28,12 +39,12 @@
 	</build>
 
 	<distributionManagement>
-                <repository>
-                        <id>github</id>
-                        <name>GitHub svenar-nl Apache Maven Packages</name>
-                        <url>https://maven.pkg.github.com/svenar-nl/PowerRanks</url>
-                </repository>
-        </distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub svenar-nl Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/svenar-nl/PowerRanks</url>
+		</repository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
@@ -53,7 +64,7 @@
 			<url>https://jitpack.io</url>
 		</repository>
 		<repository>
-			<id>svenar.nl</id>
+			<id>svenar</id>
 			<url>https://svenar.nl/repo/</url>
 		</repository>
 	</repositories>
@@ -86,7 +97,7 @@
 		<dependency>
 			<groupId>com.nametagedit</groupId>
 			<artifactId>nametagedit</artifactId>
-			<version>4.1.0</version>
+			<version>4.4.12</version>
 		</dependency>
 	</dependencies>
 </project>

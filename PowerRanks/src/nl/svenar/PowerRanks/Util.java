@@ -1,12 +1,20 @@
 package nl.svenar.PowerRanks;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,6 +22,44 @@ import org.bukkit.entity.Player;
 
 public class Util {
 
+	public static String getServerVersion(Server server) {
+        try {
+            Matcher matcher = Pattern.compile("\\d{1,3}.\\d{1,3}.\\d{1,3}").matcher(server.getVersion());
+
+            List<String> results = new ArrayList<String>();
+            while (matcher.find()) {
+                if (matcher.groupCount() > 0) {
+                    results.add(matcher.group(1));
+                } else {
+                    results.add(matcher.group());
+                }
+            }
+
+            return results.get(0);
+        } catch (Exception e) {
+            return "Unknown";
+        }
+    }
+
+    public static String getServerType(Server server) {
+        try {
+            Matcher matcher = Pattern.compile("-\\w{1,32}-").matcher(server.getVersion());
+
+            List<String> results = new ArrayList<String>();
+            while (matcher.find()) {
+                if (matcher.groupCount() > 0) {
+                    results.add(matcher.group(1));
+                } else {
+                    results.add(matcher.group());
+                }
+            }
+
+            return results.get(0).replaceAll("-", "");
+        } catch (Exception e) {
+            return "Unknown";
+        }
+	}
+	
 	public static String replaceAll(String source, String key, String value) {
 		String[] split = source.split(Pattern.quote(key));
 		if (split.length > 0) {
@@ -31,21 +77,6 @@ public class Util {
 		} else {
 			return source;
 		}
-	}
-	
-	public static String[] splitStringEvery(String s, int interval) {
-	    int arrayLength = (int) Math.ceil(((s.length() / (double) interval)));
-	    String[] result = new String[arrayLength];
-
-	    int j = 0;
-	    int lastIndex = result.length - 1;
-	    for (int i = 0; i < lastIndex; i++) {
-	        result[i] = s.substring(j, j + interval);
-	        j += interval;
-	    }
-	    result[lastIndex] = s.substring(j);
-
-	    return result;
 	}
 
 	public static String powerFormatter(String text, Map<String, String> values, char openChar, char closeChar) {
@@ -74,10 +105,6 @@ public class Util {
 		String sign_header = sign.getLine(0);
 		return isPowerRanksSign(main, sign_header);
 	}
-	
-	public static boolean stringContainsItemFromList(String inputStr, String[] items) {
-	    return Arrays.stream(items).anyMatch(inputStr::contains);
-	}
 
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
 		final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
@@ -88,6 +115,10 @@ public class Util {
 			e.printStackTrace();
 		}
 		return sign_header.toLowerCase().contains("powerranks") && configYaml.getBoolean("signs.enabled");
+	}
+
+	public static boolean stringContainsItemFromList(String inputStr, String[] items) {
+	    return Arrays.stream(items).anyMatch(inputStr::contains);
 	}
 
 	public String getCraftBukkitClassName(String simpleName) {
@@ -128,16 +159,8 @@ public class Util {
 	
 	public static int calculateVersionFromString(String input) {
 		int output = 0;
-		input = input.replaceAll("[a-zA-Z ]", "");
+		input = input.replaceAll("[a-zA-Z- ]", "");
 		String[] input_split = input.split("\\.");
-//		String calcString = "1";
-//		for (int i = input_split.length - 1; i >= 0; i--) {
-//			if (input_split[i].length() != 0) {
-//				int num = Integer.parseInt(input_split[i]) * Integer.parseInt(calcString);
-//				calcString += "0";
-//				output += num;
-//			}
-//		}
 		
 		String calcString = "1000000";
 		for (int i = 0; i < input_split.length; i++) {
@@ -152,7 +175,7 @@ public class Util {
 		
 		return output;
 	}
-	
+
 	public static <T> T[] array_push(T[] arr, T item) {
         T[] tmp = Arrays.copyOf(arr, arr.length + 1);
         tmp[tmp.length - 1] = item;
@@ -174,4 +197,51 @@ public class Util {
 		}
 		return target_player;
 	}
+
+	public static String[] splitStringEvery(String s, int interval) {
+	    int arrayLength = (int) Math.ceil(((s.length() / (double) interval)));
+	    String[] result = new String[arrayLength];
+
+	    int j = 0;
+	    int lastIndex = result.length - 1;
+	    for (int i = 0; i < lastIndex; i++) {
+	        result[i] = s.substring(j, j + interval);
+	        j += interval;
+	    }
+	    result[lastIndex] = s.substring(j);
+
+	    return result;
+	}
+
+	public static URLConnection getURL(String urlString) throws Exception {
+        int MAX_REDIRECTS = 10;
+
+		URLConnection urlConnection = new URL(urlString).openConnection();
+        String redirect = urlConnection.getHeaderField("Location");
+        for (int i = 0; i < MAX_REDIRECTS ; i++) {
+            if (redirect != null) {
+                urlConnection = new URL(redirect).openConnection();
+                redirect = urlConnection.getHeaderField("Location");
+            } else {
+                break;
+            }
+        }
+
+        return urlConnection;
+	}
+	
+	public static String readUrl(String urlString) throws Exception {
+        String output = "";
+
+        URLConnection urlConnection = getURL(urlString);
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            output += line + "\n";
+        }
+        bufferedReader.close();
+
+        return output;
+    }
 }

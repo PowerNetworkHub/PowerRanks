@@ -29,7 +29,7 @@ public class ChatTabExecutor implements TabCompleter {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		if (sender instanceof Player) {
+		// if (sender instanceof Player) {
 //			Player p = (Player) sender;
 			List<String> list = new ArrayList<String>();
 			if (args.length == 1) {
@@ -51,6 +51,8 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("listpermissions");
 				commands_list.add("listplayerpermissions");
 				commands_list.add("listaddons");
+				commands_list.add("listusertags");
+				commands_list.add("addonmanager");
 				commands_list.add("addsubrank");
 				commands_list.add("delsubrank");
 				commands_list.add("enablesubrankprefix");
@@ -79,7 +81,6 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("editusertag");
 				commands_list.add("removeusertag");
 				commands_list.add("setusertag");
-				commands_list.add("listusertags");
 				commands_list.add("clearusertag");
 				commands_list.add("setpromoterank");
 				commands_list.add("setdemoterank");
@@ -87,8 +88,8 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("cleardemoterank");
 				commands_list.add("addoninfo");
 				commands_list.add("setguiicon");
-				commands_list.add("playerinfo");
 				commands_list.add("verbose");
+				commands_list.add("playerinfo");
 				commands_list.add("addsubrankworld");
 				commands_list.add("delsubrankworld");
 				commands_list.add("buyrank");
@@ -109,9 +110,10 @@ public class ChatTabExecutor implements TabCompleter {
 			if (args.length == 2) {
 				if (args[0].equalsIgnoreCase("setownrank") || args[0].equalsIgnoreCase("addperm") || args[0].equalsIgnoreCase("delperm") || args[0].equalsIgnoreCase("setprefix") || args[0].equalsIgnoreCase("setsuffix")
 						|| args[0].equalsIgnoreCase("setchatcolor") || args[0].equalsIgnoreCase("setnamecolor") || args[0].equalsIgnoreCase("addinheritance") || args[0].equalsIgnoreCase("delinheritance")
-						|| args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank") || args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank")
-						|| args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank") || args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank")
-						|| args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon") || args[0].equalsIgnoreCase("listpermissions")) {
+						|| args[0].equalsIgnoreCase("renamerank") || args[0].equalsIgnoreCase("setdefaultrank")
+						|| args[0].equalsIgnoreCase("addbuyablerank") || args[0].equalsIgnoreCase("delbuyablerank") || args[0].equalsIgnoreCase("setpromoterank") || args[0].equalsIgnoreCase("setdemoterank")
+						|| args[0].equalsIgnoreCase("clearpromoterank") || args[0].equalsIgnoreCase("cleardemoterank") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("seticon")
+						|| args[0].equalsIgnoreCase("listpermissions")) {
 					Users s = new Users(this.m);
 					for (String rank : s.getGroups()) {
 						if (rank.toLowerCase().contains(args[1].toLowerCase()))
@@ -162,7 +164,7 @@ public class ChatTabExecutor implements TabCompleter {
 					list.add("enable");
 					list.add("disable");
 				}
-
+				
 				if (args[0].equalsIgnoreCase("config")) {
 					list.add("removeworldtag");
 					list.add("enable");
@@ -282,7 +284,7 @@ public class ChatTabExecutor implements TabCompleter {
 						list.add(plugin);
 					}
 				}
-
+				
 				if (args[0].equalsIgnoreCase("config") && (args[1].equalsIgnoreCase("enable") || args[1].equalsIgnoreCase("disable"))) {
 					list.add("chat_formatting");
 					list.add("tablist_formatting");
@@ -298,8 +300,8 @@ public class ChatTabExecutor implements TabCompleter {
 			}
 
 			return list;
-		}
-		return null;
+		// }
+		// return null;
 	}
 
 	public static void addAddonCommand(String command) {
