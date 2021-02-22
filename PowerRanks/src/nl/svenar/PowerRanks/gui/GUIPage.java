@@ -133,11 +133,12 @@ public class GUIPage {
 									icon = Material.getMaterial(Util.replaceAll(users.getRanksConfigFieldString(rank, "gui.icon"), " ", "_").toUpperCase());
 								}
 								int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
-								String description = users.getRanksConfigFieldString(rank, "economy.description");
-								if (icon != null)
-									new_gui.setItem(i, createGuiItem(icon, rank, ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true), description.replaceAll("\n", File.separator), File.separator, "Cost: " + String.valueOf(cost)));
-								else
-									PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
+								final String description = this.users.getRanksConfigFieldString(rank, "economy.description");
+                                if (icon != null) {
+                                    new_gui.setItem(i, createGuiItem(icon, rank, ChatColor.WHITE + PowerRanks.chatColorAlt(this.users.getPrefix(rank).replaceAll("&r", "&r&f"), true), "", ChatColor.WHITE + "Description:", PowerRanks.chatColor(description, true), "", ChatColor.WHITE + "Cost: ", ChatColor.GREEN + String.valueOf(cost)));
+                                } else {
+                                    PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
+                                }
 							} else {
 								PowerRanks.log.warning("Rank '" + rank + "' has no icon!");
 							}
