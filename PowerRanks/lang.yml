@@ -99,6 +99,10 @@ messages:
    addonmanager_download_complete: "%plugin_prefix% &aSuccessfully downloaded add-on: %addonname%. Do '/pr addoninfo %addonname%' for more info"
    addonmanager_download_failed: "%plugin_prefix% &cDownload failed for add-on: %addonname%"
    addonmanager_uninstall_complete: "%plugin_prefix% &aSuccessfully uninstalled add-on: %addonname%."
+   success_set_buydescription: "%plugin_prefix% &aChanged buy description to '%argument_description%' on rank: %argument_rank%"
+   error_set_buydescription: "%plugin_prefix% &cFailed to set buy description to '%argument_description%' on rank: %argument_rank%"
+   success_set_buycommand: "%plugin_prefix% &aChanged buy command to '%argument_command%' on rank: %argument_rank%"
+   error_set_buycommand: "%plugin_prefix% &cFailed to set buy command to '%argument_command%' on rank: %argument_rank%"
 commands:
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"
    usage_command_setrank: "%plugin_prefix% &c%base_cmd% setrank <username> <rank>"
@@ -147,6 +151,8 @@ commands:
    usage_command_addoninfo: "%plugin_prefix% &c%base_cmd% addoninfo <addon_name>"
    usage_command_factoryreset: "%plugin_prefix% &c%base_cmd% factoryreset"
    usage_command_seticon: "%plugin_prefix% &c%base_cmd% seticon <rank>"
+   usage_command_setbuydescription: "%plugin_prefix% &c%base_cmd% setbuydescription <rank> <buy description>"
+   usage_command_setbuycommand: "%plugin_prefix% &c%base_cmd% setbuycommand <rank> <command to execute>"
    usage_command_verbose: "%plugin_prefix% &c%base_cmd% verbose <start/stop/save/clear>"
    usage_command_playerinfo: "%plugin_prefix% &c%base_cmd% playerinfo <player_name>"
    usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rank_name] [confirm]"
@@ -229,6 +235,12 @@ commands:
       delsubrank:
          command: "delsubrank <player_name> <rank_name>"
          description: "Remove a sub rank from a player"
+      addsubrankworld:
+         command: "addsubrankworld <player_name> <rank_name> <world_name>"
+         description: "Add  a world where a sub rank is usable"
+      delsubrankworld:
+         command: "delsubrankworld <player_name> <subrank_name> <world_name>"
+         description: "Remove a world where a sub rank is usable"
       enablesubrankprefix:
          command: "enablesubrankprefix <player_name> <subrank_name>"
          description: "Show the subranks prefix"
@@ -310,6 +322,12 @@ commands:
       setguiicon:
          command: "setguiicon <rank>"
          description: "Set the icon of a rank to the current item in your hand"
+      setbuydescription:
+         command: "setbuydescription <rank> <buy description>"
+         description: "Set the description of a buyable rank"
+      setbuycommand:
+         command: "setbuycommand <rank> <command to execute>"
+         description: "Set the command that will be executed after that rank is bought"
       pluginhook:
          command: "pluginhook [enable/disable] [plugin_name]"
          description: "Enable or disable a plugin for PowerRanks to hook in to"

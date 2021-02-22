@@ -96,6 +96,10 @@ permissions:
     default: op
   powerranks.cmd.setbuycost:
     default: op
+  powerranks.cmd.setbuydescription:
+    default: op
+  powerranks.cmd.setbuycommand:
+    default: op
   powerranks.cmd.addplayerperm:
     default: op
   powerranks.cmd.delplayerperm:
@@ -157,4 +161,6 @@ permissions:
   powerranks.signs.rankup:
     default: op
   powerranks.signs.admin:
+    default: op
+  powerranks.chat.chatcolor:
     default: op
