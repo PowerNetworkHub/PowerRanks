@@ -17,14 +17,21 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.google.common.collect.ImmutableMap;
+
+import me.clip.deluxetags.DeluxeTag;
+import me.clip.placeholderapi.PlaceholderAPI;
+
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
+import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.addons.DownloadableAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
+import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
 public class Messages {
 	private static PowerRanks powerRanks = null;
@@ -161,6 +168,7 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName() + (!player.getDisplayName().equals(player.getName()) ? (ChatColor.DARK_GREEN  + " aka " + player.getName()) : ""));
 		sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getFirstPlayed()));
 		sender.sendMessage(ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
+		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
 		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN + CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
 		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN + (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null ? (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks").getKeys(false).size() > 0 ? String.join(", ", CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks").getKeys(false)) : "None") : "None"));
 		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
@@ -168,6 +176,118 @@ public class Messages {
 			sender.sendMessage((permission.startsWith("-") ? ChatColor.DARK_RED : ChatColor.DARK_GREEN) + "- " + permission);
 		}
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	}
+
+	private static String getSampleChatFormat(Player player) {
+		String playersChatMessage = "message";
+
+		String format = CachedConfig.getString("chat.format");
+		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+		String prefix = (CachedRanks.getString("Groups." + rank + ".chat.prefix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.prefix") : "";
+		String suffix = (CachedRanks.getString("Groups." + rank + ".chat.suffix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.suffix") : "";
+		String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.chatColor") : "";
+		String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.nameColor") : "";
+		String subprefix = "";
+		String subsuffix = "";
+		String usertag = "";
+
+		try {
+			if (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null) {
+				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
+				for (String r : subranks.getKeys(false)) {
+					boolean in_world = false;
+					if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks." + r + ".worlds")) {
+						in_world = true;
+
+						ArrayList<String> default_worlds = new ArrayList<String>();
+						default_worlds.add("All");
+						CachedPlayers.set("players." + player.getUniqueId() + ".subranks." + r + ".worlds", default_worlds, true);
+					}
+
+					String player_current_world = player.getWorld().getName();
+					List<String> worlds = CachedPlayers.getStringList("players." + player.getUniqueId() + ".subranks." + r + ".worlds");
+					for (String world : worlds) {
+						if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
+							in_world = true;
+						}
+					}
+
+					if (in_world) {
+						if (CachedPlayers.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_prefix")) {
+							subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null && CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
+									? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix") + " "
+									: "");
+						}
+
+						if (CachedPlayers.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_suffix")) {
+							subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null && CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
+									? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix") + " "
+									: "");
+
+						}
+					}
+				}
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		subprefix = subprefix.trim();
+		subsuffix = subsuffix.trim();
+
+		if (subsuffix.endsWith(" ")) {
+			subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
+		}
+
+		if (subsuffix.replaceAll(" ", "").length() == 0) {
+			subsuffix = "";
+		}
+
+		if (CachedPlayers.contains("players." + player.getUniqueId() + ".usertag") && CachedPlayers.getString("players." + player.getUniqueId() + ".usertag").length() > 0) {
+			String tmp_usertag = CachedPlayers.getString("players." + player.getUniqueId() + ".usertag");
+
+			if (CachedRanks.getConfigurationSection("Usertags") != null) {
+				ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+				for (String key : tags.getKeys(false)) {
+					if (key.equalsIgnoreCase(tmp_usertag)) {
+						usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
+						break;
+					}
+				}
+			}
+		}
+		
+		if (!player.hasPermission("powerranks.chat.chatcolor")) {
+			playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");
+		}
+		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
+		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
+		
+
+		format = Util.powerFormatter(format,
+		ImmutableMap.<String, String>builder()
+			.put("prefix", prefix)
+			.put("suffix", suffix)
+			.put("subprefix", subprefix)
+			.put("subsuffix", subsuffix)
+			.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
+			.put("player", player_formatted_name)
+			.put("msg", player_formatted_chat_msg)
+			.put("world", player.getWorld().getName()).build(),
+		'[', ']');
+		
+		if (PowerRanks.placeholderapiExpansion != null) {
+			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
+		}
+
+		for (Entry<File, PowerRanksAddon> prAddon : PowerRanks.getInstance().addonsManager.addonClasses.entrySet()) {
+			PowerRanksPlayer prPlayer = new PowerRanksPlayer(PowerRanks.getInstance(), player);
+			format = prAddon.getValue().onPlayerChat(prPlayer, format, playersChatMessage);
+		}
+
+		format = PowerRanks.chatColor(format, true);
+
+		return format;
 	}
 
 	public static void helpMenu(final Player player) {
@@ -1822,4 +1942,60 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);		
 	}
+
+	public static void messageCommandSetbuydescriptionSuccess(final CommandSender sender, final String rankname, final String description) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        String msg = getGeneralMessage(langYaml, "messages.success_set_buydescription");
+        msg = Util.replaceAll(msg, "%argument_description%", description);
+        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+    
+    public static void messageCommandSetbuydescriptionError(final CommandSender sender, final String rankname, final String description) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        String msg = getGeneralMessage(langYaml, "messages.error_set_buydescription");
+        msg = Util.replaceAll(msg, "%argument_description%", description);
+        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+    
+    public static void messageCommandUsageSetbuydescription(final CommandSender sender) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuydescription");
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+    
+    public static void messageCommandSetbuycommandSuccess(final CommandSender sender, final String rankname, final String command) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        String msg = getGeneralMessage(langYaml, "messages.success_set_buycommand");
+        msg = Util.replaceAll(msg, "%argument_command%", command);
+        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+    
+    public static void messageCommandSetbuycommandError(final CommandSender sender, final String rankname, final String command) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        String msg = getGeneralMessage(langYaml, "messages.error_set_buycommand");
+        msg = Util.replaceAll(msg, "%argument_command%", command);
+        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+    
+    public static void messageCommandUsageSetbuycommand(final CommandSender sender) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuycommand");
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
 }
