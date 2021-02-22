@@ -123,8 +123,13 @@ public class OnChat implements Listener {
 				// nameColor = "&r" + nameColor;
 				// chatColor = "&r" + chatColor;
 
-				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + applyColor(nameColor, player.getDisplayName());
-				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + applyColor(chatColor, e.getMessage());
+				String playersChatMessage = e.getMessage();
+				if (!e.getPlayer().hasPermission("powerranks.chat.chatcolor")) {
+					playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");
+				}
+				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
+				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
+				
 
 				format = Util.powerFormatter(format,
 				ImmutableMap.<String, String>builder()
@@ -149,10 +154,7 @@ public class OnChat implements Listener {
 				}
 
 				format = PowerRanks.chatColor(format, true);
-
-
-				this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor, true); // TODO: Remove (DeluxeTags workaround)
-
+				//this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor, true); // TODO: Remove (DeluxeTags workaround)
 				
 				e.setFormat(format);
 			}
@@ -160,32 +162,5 @@ public class OnChat implements Listener {
 			e2.printStackTrace();
 			e.setFormat("%1$s: %2$s");
 		}
-	}
-
-	private String applyColor(String rawColors, String text) {
-		String regexColors = "(&[a-fA-F0-9])|(#[a-fA-F0-9]{6})";
-		String output = "";
-
-		Pattern p = Pattern.compile(regexColors);
-		Matcher m = p.matcher(rawColors);
-		ArrayList<String> colors = new ArrayList<String>();
-		while (m.find()) {
-			String color = m.group(0);
-			colors.add(color);
-		}
-
-		String[] textSplit = text.split("");
-
-		if (colors.size() > 1) {
-			int index = 0;
-			for (String character : textSplit) {
-				output += colors.get(index % colors.size()) + character;
-				index++;
-			}
-		} else {
-			output = rawColors + text;
-		}
-
-		return output;
 	}
 }
