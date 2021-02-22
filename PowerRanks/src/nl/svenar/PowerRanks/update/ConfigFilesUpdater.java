@@ -44,9 +44,10 @@ public class ConfigFilesUpdater {
 						}
 					}
 				}
-				// yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				// yamlConf.save(file);
-				CachedConfig.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				yamlConf.save(file);
+				CachedConfig.update();
+				//CachedConfig.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
@@ -125,9 +126,10 @@ public class ConfigFilesUpdater {
 				if (!yamlConf.isSet("Usertags"))
 					yamlConf.set("Usertags", tmpYamlConf.get("Usertags"));
 
-				// yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				// yamlConf.save(file);
-				CachedRanks.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				yamlConf.save(file);
+				CachedRanks.update();
+				//CachedRanks.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
@@ -154,9 +156,10 @@ public class ConfigFilesUpdater {
 					} catch (Exception e) {
 					}
 				}
-				// yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				// yamlConf.save(file);
-				CachedPlayers.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""), false);
+				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				yamlConf.save(file);
+				CachedPlayers.update();
+				//CachedPlayers.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""), false);
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
