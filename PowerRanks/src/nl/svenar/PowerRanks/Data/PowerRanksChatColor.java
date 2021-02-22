@@ -41,16 +41,27 @@ public class PowerRanksChatColor {
 	}
 
 	public static String colorize(String text, boolean special) {
+		return colorizeRaw(text, special, true);
+	}
+
+	public static String colorizeRaw(String text, boolean special, boolean addLeadingReset) {
 		String output = "";
 
-		boolean is_hex_compatible = (Bukkit.getVersion().toLowerCase().contains("spigot") || Bukkit.getVersion().toLowerCase().contains("paper")) && Bukkit.getVersion().contains("1.16");
 		boolean is_hex_used = false;
+
+		if (addLeadingReset) {
+            if (text.length() == 0 || text.charAt(0) != PowerRanksChatColor.unformatted_default_char) {
+                text = String.valueOf(PowerRanksChatColor.unformatted_default_char) + "r" + text;
+            }
+        } else if (text.length() == 0 || text.charAt(0) != PowerRanksChatColor.unformatted_default_char) {
+            text = String.valueOf(PowerRanksChatColor.unformatted_default_char) + "f" + text;
+        }
 
 		if (text.length() == 0 || text.charAt(0) != unformatted_default_char) {
 			text = unformatted_default_char + "r" + text;
 		}
 
-		String pattern = "(?<=&[iIjJ]).*?(?=&[0-9a-fA-FrR])";
+		String pattern = "(?<=&[iIjJ]).*?((?=&[0-9a-fA-FrR])|$)";
 		Pattern hex_color_pattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
 		Pattern r = Pattern.compile(pattern);
@@ -61,41 +72,31 @@ public class PowerRanksChatColor {
 			int end = m.end() - 2;
 			String format_char = "";
 
-			Matcher re = Pattern.compile("&[lLnNoOkKmM]").matcher(text.substring(start, end));
-			while (re.find()) {
-				int re_start = start + re.start();
-				int re_end = start + re.end();
-				format_char = text.substring(re_start, re_end);
-				text = text.replace(text.substring(re_start, re_end), "");
-			}
+			if (end > start) {
+				Matcher re = Pattern.compile("&[lLnNoOkKmM]").matcher(text.substring(start, end));
+				while (re.find()) {
+					int re_start = start + re.start();
+					int re_end = start + re.end();
+					format_char = text.substring(re_start, re_end);
+					text = text.replace(text.substring(re_start, re_end), "");
+				}
 
-			text = text.replace(text.substring(start - 2, end), colorStyle(text.substring(start - 2, end)).special(format_char, true));
-//			ChatColor.of
-//			ChatColor c = Color.fromRGB(1, 0, 1);
+				if (special) {
+					text = text.replace(text.substring(start - 2, end + 2), colorStyle(text.substring(start - 2, end + 2)).special(format_char, true));
+				}
+			}
 		}
 
 		Matcher hex_color_matcher = hex_color_pattern.matcher(text);
 		while (hex_color_matcher.find()) {
 			is_hex_used = true;
 			String hex_color = text.substring(hex_color_matcher.start(), hex_color_matcher.end());
-//			text = text.replace(hex_color, is_hex_compatible ? net.md_5.bungee.api.ChatColor.of(hex_color) + "" : "");
-			if (is_hex_compatible) {
+			try {
 				text = text.replace(hex_color, net.md_5.bungee.api.ChatColor.of(hex_color) + "");
-			} else {
+			} catch(Exception e) {
 				text = text.replace(hex_color, hex_compatibility_converter(hex_color) + "");
 			}
 			hex_color_matcher = hex_color_pattern.matcher(text);
-		}
-
-		if (!is_hex_compatible && is_hex_used) {
-//			PowerRanks.log.warning("--------------------");
-//			PowerRanks.log.warning("PowerRanks encountered an error");
-//			PowerRanks.log.warning("--------------------");
-//			PowerRanks.log.warning("HEX colors detected!");
-//			PowerRanks.log.warning("This server type/version is unable to process HEX colors.");
-//			PowerRanks.log.warning("Consider updating this server to Spigot/Paper 1.16+ to use HEX colors.");
-//			PowerRanks.log.warning("Or remove the HEX colors");
-//			PowerRanks.log.warning("--------------------");
 		}
 
 		String[] text_split = text.split(String.valueOf(unformatted_default_char));
@@ -108,10 +109,6 @@ public class PowerRanksChatColor {
 				if (String.valueOf(color_char).matches("[0-9a-fA-F]")) {
 					text_to_format = colorStyle(unformatted_default_char + s).format();
 				}
-
-//				if (special && String.valueOf(color_char).matches("[iIjJ]")) {
-//					text_to_format = colorStyle(unformatted_default_char + s).special();
-//				}
 
 				if (String.valueOf(color_char).matches("[lLnNoOkKmMRr]")) {
 					text_to_format = colorStyle(unformatted_default_char + s).format();
