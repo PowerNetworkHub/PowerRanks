@@ -837,6 +837,49 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.noPermission(player);
 					}
+				} else if (args[0].equalsIgnoreCase("setbuydescription")) {
+                    if (sender.hasPermission("powerranks.cmd.setbuydescription")) {
+                        if (args.length >= 3) {
+                            final String rankname = s.getRankIgnoreCase(args[1]);
+                            String description = "";
+                            for (int i = 2; i < args.length; i++) {
+                                description = String.valueOf(description) + args[i] + " ";
+                            }
+                            description = description.substring(0, description.length() - 1);
+                            final boolean success2 = s.setBuyDescription(rankname, description);
+                            if (success2) {
+                                Messages.messageCommandSetbuydescriptionSuccess((CommandSender)player, rankname, description);
+                            } else {
+                                Messages.messageCommandSetbuydescriptionError((CommandSender)player, rankname, description);
+                            }
+                        } else {
+                            Messages.messageCommandUsageSetbuydescription((CommandSender)player);
+                        }
+                    }
+                    else {
+                        Messages.noPermission(player);
+                    }
+                } else if (args[0].equalsIgnoreCase("setbuycommand")) {
+                    if (sender.hasPermission("powerranks.cmd.setbuycommand")) {
+                        if (args.length >= 3) {
+                            final String rankname = s.getRankIgnoreCase(args[1]);
+                            String command2 = "";
+                            for (int i = 2; i < args.length; i++) {
+                                command2 = String.valueOf(command2) + args[i] + " ";
+                            }
+                            command2 = command2.substring(0, command2.length() - 1);
+                            final boolean success2 = s.setBuyCommand(rankname, command2);
+                            if (success2) {
+                                Messages.messageCommandSetbuycommandSuccess((CommandSender)player, rankname, command2);
+                            } else {
+                                Messages.messageCommandSetbuycommandError((CommandSender)player, rankname, command2);
+                            }
+                        } else {
+                            Messages.messageCommandUsageSetbuycommand((CommandSender)player);
+                        }
+                    } else {
+                        Messages.noPermission(player);
+                    }
 				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
 					if (sender.hasPermission("powerranks.cmd.addplayerperm")) {
 						if (args.length == 3) {
@@ -1919,7 +1962,41 @@ public class Cmd implements CommandExecutor {
 					} else {
 						Messages.messageCommandUsageSetcost(console);
 					}
-				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
+				} else if (args[0].equalsIgnoreCase("setbuydescription")) {
+                    if (args.length >= 3) {
+                        final String rankname = s.getRankIgnoreCase(args[1]);
+                        String description = "";
+                        for (int i = 2; i < args.length; i++) {
+                            description = String.valueOf(description) + args[i] + " ";
+                        }
+                        description = description.substring(0, description.length() - 1);
+                        final boolean success2 = s.setBuyDescription(rankname, description);
+                        if (success2) {
+                            Messages.messageCommandSetbuydescriptionSuccess((CommandSender)console, rankname, description);
+                        } else {
+                            Messages.messageCommandSetbuydescriptionError((CommandSender)console, rankname, description);
+                        }
+                    } else {
+                        Messages.messageCommandUsageSetbuydescription((CommandSender)console);
+                    }
+                } else if (args[0].equalsIgnoreCase("setbuycommand")) {
+                    if (args.length >= 3) {
+                        final String rankname = s.getRankIgnoreCase(args[1]);
+                        String command2 = "";
+                        for (int i = 2; i < args.length; i++) {
+                            command2 = String.valueOf(command2) + args[i] + " ";
+                        }
+                        command2 = command2.substring(0, command2.length() - 1);
+                        final boolean success2 = s.setBuyCommand(rankname, command2);
+                        if (success2) {
+                            Messages.messageCommandSetbuycommandSuccess((CommandSender)console, rankname, command2);
+                        } else {
+                            Messages.messageCommandSetbuycommandError((CommandSender)console, rankname, command2);
+                        }
+                    } else {
+                        Messages.messageCommandUsageSetbuycommand((CommandSender)console);
+                    }
+                } else if (args[0].equalsIgnoreCase("addplayerperm")) {
 					if (args.length == 3) {
 						final String target_player = args[1];
 						final String permission = args[2];
@@ -2464,6 +2541,26 @@ public class Cmd implements CommandExecutor {
 						final String rankname = s.getRankIgnoreCase(args[1]);
 						final String cost = s.getRankIgnoreCase(args[2]);
 						s.setBuyCost(rankname, cost);
+					}
+				} else if (args[0].equalsIgnoreCase("setbuydescription")) {
+					if (args.length >= 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						String description = "";
+						for (int j = 2; j < args.length; j++) {
+							description = String.valueOf(description) + args[j] + " ";
+						}
+						description = description.substring(0, description.length() - 1);
+						s.setBuyDescription(rankname, description);
+					}
+				} else if (args[0].equalsIgnoreCase("setbuycommand")) {
+					if (args.length >= 3) {
+						final String rankname = s.getRankIgnoreCase(args[1]);
+						String command = "";
+						for (int j = 2; j < args.length; j++) {
+							command = String.valueOf(command) + args[j] + " ";
+						}
+						command = command.substring(0, command.length() - 1);
+						s.setBuyCommand(rankname, command);
 					}
 				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
 					if (args.length == 3) {
