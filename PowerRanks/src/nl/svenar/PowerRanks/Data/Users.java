@@ -910,6 +910,34 @@ public class Users implements Listener {
 		return cost;
 	}
 
+	public boolean setBuyDescription(String rankname, final String description) {
+        rankname = this.getRankIgnoreCase(rankname);
+        try {
+            if (CachedRanks.get("Groups." + rankname) != null) {
+                CachedRanks.set("Groups." + rankname + ".economy.description", description);
+                return true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean setBuyCommand(String rankname, final String command) {
+        rankname = this.getRankIgnoreCase(rankname);
+        try {
+            if (CachedRanks.get("Groups." + rankname) != null) {
+                CachedRanks.set("Groups." + rankname + ".economy.command", command);
+                return true;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 	public boolean addPlayerPermission(String target_player_name, String permission) {
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
