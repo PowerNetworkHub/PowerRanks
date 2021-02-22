@@ -1,5 +1,8 @@
 package nl.svenar.PowerRanks;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -255,6 +258,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				return String.valueOf(addonCount);
 			}
 		}));
+
+		metrics.addCustomChart(new Metrics.SimplePie("accepted_addon_manager_terms", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				boolean accepterAddonManagerTerms = CachedConfig.getBoolean("addon_manager.accepted_terms");
+				return String.valueOf(accepterAddonManagerTerms ? "true" : "false");
+			}
+		}));
 	}
 
 	public void onDisable() {
@@ -315,7 +326,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					PowerRanks.log.info("Enabling Vault Economy integration.");
 				}
 				if (has_vault_permissions) {
-					PowerRanks.log.info("Enabling Vault Permission integration (experimental).");
+					PowerRanks.log.info("Enabling Vault Permission integration.");
 				}
 				VaultHook vaultHook = new VaultHook();
 				vaultHook.hook(this, has_vault_permissions, has_vault_economy);
@@ -722,6 +733,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix, String usertag, String nameColor, boolean updateNTE) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
 
+		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + applyMultiColorFlow(nameColor, player.getDisplayName());
+
 		try {
 			if (updateNTE) {
 				updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
@@ -743,8 +756,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = tmp_format;
 			}
 
-			format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
-					.put("player", nameColor + player.getPlayerListName()).put("world", player.getWorld().getName()).build(), '[', ']');
+			format = Util.powerFormatter(format,
+			ImmutableMap.<String, String>builder()
+			.put("prefix", prefix)
+			.put("suffix", suffix)
+			.put("subprefix", subprefix)
+			.put("subsuffix", subsuffix)
+			.put("usertag", usertag)
+			.put("player", player_formatted_name)
+			.put("world", player.getWorld().getName())
+			.build(), '[', ']');
 
 			while (format.endsWith(" ")) {
 				format = format.substring(0, format.length() - 1);
@@ -763,6 +784,37 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static String chatColor(String textToTranslate, boolean custom_colors) {
 		return PowerRanksChatColor.colorize(textToTranslate, custom_colors);
+	}
+
+	public static String chatColorAlt(final String textToTranslate, final boolean custom_colors) {
+        return PowerRanksChatColor.colorizeRaw(textToTranslate, custom_colors, false);
+    }
+
+	public static String applyMultiColorFlow(String rawColors, String text) {
+		String regexColors = "(&[a-fA-F0-9])|(#[a-fA-F0-9]{6})";
+		String output = "";
+
+		Pattern p = Pattern.compile(regexColors);
+		Matcher m = p.matcher(rawColors);
+		ArrayList<String> colors = new ArrayList<String>();
+		while (m.find()) {
+			String color = m.group(0);
+			colors.add(color);
+		}
+
+		String[] textSplit = text.split("");
+
+		if (colors.size() > 1) {
+			int index = 0;
+			for (String character : textSplit) {
+				output += colors.get(index % colors.size()) + character;
+				index++;
+			}
+		} else {
+			output = rawColors + text;
+		}
+
+		return output;
 	}
 
 	public static YamlConfiguration loadLangFile() {
