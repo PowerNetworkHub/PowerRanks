@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.9.7</version>
+	<version>1.9.8</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 	
@@ -16,10 +16,10 @@
 	<build>
 		<defaultGoal>clean compile package</defaultGoal>
 		<finalName>${project.name}</finalName>
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>PowerRanks/src</sourceDirectory>
 		<resources>
 			<resource>
-				<directory></directory>
+				<directory>PowerRanks</directory>
 				<includes>
 					<include>*.yml</include>
 				</includes>
