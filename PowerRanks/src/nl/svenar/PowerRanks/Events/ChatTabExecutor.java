@@ -76,6 +76,8 @@ public class ChatTabExecutor implements TabCompleter {
 				commands_list.add("addbuyablerank");
 				commands_list.add("delbuyablerank");
 				commands_list.add("setbuycost");
+				commands_list.add("setbuydescription");
+				commands_list.add("setbuycommand");
 				commands_list.add("stats");
 				commands_list.add("createusertag");
 				commands_list.add("editusertag");
