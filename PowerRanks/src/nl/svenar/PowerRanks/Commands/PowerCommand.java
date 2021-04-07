@@ -1,5 +1,7 @@
 package nl.svenar.PowerRanks.Commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -25,9 +27,11 @@ public abstract class PowerCommand {
 		this.ce = ce;
 	}
 	
-	public abstract boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args, boolean subcommandFailed);
+	public abstract boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args);
 	
 	public COMMAND_EXECUTOR getCommandExecutor() {
 		return this.ce;
 	}
+	
+	public abstract ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args);
 }

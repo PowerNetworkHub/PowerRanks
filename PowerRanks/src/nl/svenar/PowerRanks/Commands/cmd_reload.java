@@ -1,5 +1,7 @@
 package nl.svenar.PowerRanks.Commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,8 +22,10 @@ public class cmd_reload extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args, boolean subcommandFailed) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.reload")) {
+			Messages.messageCommandReloadWarning(sender);
+
 			if (args.length != 1) {
 				Messages.messageCommandUsageReload(sender);
 			} else {
@@ -42,6 +46,13 @@ public class cmd_reload extends PowerCommand {
 					plg.disablePlugin(plgname);
 					plg.enablePlugin(plgname);
 					Messages.messageCommandReloadPluginDone(sender);
+				
+				} else if (args[0].equalsIgnoreCase("addons")) {
+
+					Messages.messageCommandReloadAddons(sender);
+					PowerRanks.getInstance().addonsManager.disable();
+					PowerRanks.getInstance().addonsManager.setup();
+					Messages.messageCommandReloadAddonsDone(sender);
 					
 				} else if (args[0].equalsIgnoreCase("all")) {
 					
@@ -51,12 +62,19 @@ public class cmd_reload extends PowerCommand {
 					plg.disablePlugin(plgname);
 					plg.enablePlugin(plgname);
 					Messages.messageCommandReloadPluginDone(sender);
+
+
 					Messages.messageCommandReloadConfig(sender);
 					CachedConfig.update();
 					CachedRanks.update();
 					CachedPlayers.update();
 					this.plugin.updateAllPlayersTABlist();
 					Messages.messageCommandReloadConfigDone(sender);
+
+					// Messages.messageCommandReloadAddons(sender);
+					// PowerRanks.getInstance().addonsManager.disable();
+					// PowerRanks.getInstance().addonsManager.setup();
+					// Messages.messageCommandReloadAddonsDone(sender);
 					
 				} else {
 					
@@ -72,4 +90,16 @@ public class cmd_reload extends PowerCommand {
 		return false;
 	}
 
+	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
+		ArrayList<String> tabcomplete = new ArrayList<String>();
+		
+		if (args.length == 1) {
+			tabcomplete.add("plugin");
+			tabcomplete.add("config");
+			tabcomplete.add("addons");
+			tabcomplete.add("all");
+		}
+
+		return tabcomplete;
+	}
 }
