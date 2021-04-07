@@ -30,6 +30,7 @@ import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Commands.Cmd;
+import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
@@ -98,6 +99,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PowerRanksExpansion placeholderapiExpansion;
 	public static boolean plugin_hook_deluxetags = false;
 	public static boolean plugin_hook_nametagedit = false;
+	public static boolean plugin_hook_tab = false;
 	// Soft Dependencies
 
 	File configFile;
@@ -146,18 +148,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		// PowerRanks.log.info("");
 		// PowerRanks.log.info("=== --------- LOADING COMMANDS --------- ===");
-		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
-		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
+		// Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new Cmd(this));
+		// Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new Cmd(this));
 		
-//		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new PowerCommandHandler(this));
-//		Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new PowerCommandHandler(this));
+		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new PowerCommandHandler(this));
+		// Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new PowerCommandHandler(this));
 		
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
-		Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
+		// Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new ChatTabExecutor(this));
 
-		if (handle_update_checking()) {
-			return;
-		}
+		try {
+			if (handle_update_checking()) {
+				return;
+			}
+		} catch (Exception e) {}
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ----------- LOADING DATA ----------- ===");
@@ -266,6 +270,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				return String.valueOf(accepterAddonManagerTerms ? "true" : "false");
 			}
 		}));
+
+		setupTasks();
 	}
 
 	public void onDisable() {
@@ -297,6 +303,43 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
+	private void setupTasks() {
+		if (plugin_hook_tab) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					PowerRanksVerbose.log("task(1s)", "Task setup TAB");
+					if (getServer().getPluginManager().isPluginEnabled("TAB")) {
+						me.neznamy.tab.shared.permission.PermissionPlugin powerranksTabPermissionPlugin = new PowerRanksTABHook(getInstance());
+						me.neznamy.tab.api.TABAPI.registerPermissionPlugin(powerranksTabPermissionPlugin);
+
+						// me.neznamy.tab.api.TABAPI.registerPlayerPlaceholder(new me.neznamy.tab.shared.placeholders.PlayerPlaceholder("%powerranks-prefix%", 500) {
+						// 	public String get(me.neznamy.tab.api.TabPlayer tabPlayer) {
+						// 		return powerranksTabPermissionPlugin.getPrefix(tabPlayer);
+						// 	}
+						// });
+
+						// me.neznamy.tab.api.TABAPI.registerPlayerPlaceholder(new me.neznamy.tab.shared.placeholders.PlayerPlaceholder("%powerranks-suffix%", 500) {
+						// 	public String get(me.neznamy.tab.api.TabPlayer tabPlayer) {
+						// 		return powerranksTabPermissionPlugin.getSuffix(tabPlayer);
+						// 	}
+						// });
+						
+						this.cancel();
+					}
+				}
+			}.runTaskTimer(this, 0, 20L);
+		}
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				PowerRanksVerbose.log("task(60s)", "Running task");
+				updateAllPlayersTABlist();
+			}
+		}.runTaskTimer(this, 0, 1200L);
+	}
+
 	private Player getPlayerFromUUID(UUID uuid) {
 		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking UUID---------- ===");
 		Player player = null;
@@ -317,6 +360,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && getConfigBool("plugin_hook.placeholderapi");
 		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null && getConfigBool("plugin_hook.deluxetags");
 		boolean has_nametagedit = this.getServer().getPluginManager().getPlugin("NametagEdit") != null && getConfigBool("plugin_hook.nametagedit");
+		boolean has_tab = this.getServer().getPluginManager().getPlugin("TAB") != null && getConfigBool("plugin_hook.tab");
 
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 		if (has_vault_economy || has_vault_permissions) {
@@ -354,7 +398,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			setup_nte();
 		}
 
-		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags && !has_nametagedit)
+		if (has_tab) {
+			PowerRanks.log.info("TAB found!");
+			// PowerRanks.log.info("Enabling TAB integration.");
+			plugin_hook_tab = true;
+			// setup_nte();
+		}
+
+		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags && !has_nametagedit && !has_tab)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
 
@@ -649,7 +700,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void updateTablistName(Player player) {
 //		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
 		String uuid = player.getUniqueId().toString();
-		player.updateCommands(); // TODO find a better place for this
+		try {
+			player.updateCommands(); // TODO find a better place for this
+		} catch (NoSuchMethodError e) {}
 
 		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 		String prefix = CachedRanks.getString("Groups." + rank + ".chat.prefix");
@@ -740,7 +793,30 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
 			}
 
-			if (!CachedConfig.getBoolean("tablist_modification.enabled"))
+			if (plugin_hook_tab) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						me.neznamy.tab.api.TabPlayer tabPlayer = me.neznamy.tab.api.TABAPI.getPlayer(player.getUniqueId());
+	
+						// PowerRanks.log.info("Tab player null: " + (tabPlayer == null));
+						// PowerRanks.log.info("Tab player loaded: " + tabPlayer.isLoaded());
+	
+						if (tabPlayer.isLoaded()) {
+							// PowerRanks.log.info("Tab player old prefix: " + tabPlayer.getTemporaryValue(me.neznamy.tab.api.EnumProperty.TABPREFIX));
+	
+							tabPlayer.setValueTemporarily(me.neznamy.tab.api.EnumProperty.TABPREFIX, prefix + " " + ChatColor.RESET);
+							tabPlayer.setValueTemporarily(me.neznamy.tab.api.EnumProperty.TABSUFFIX, ChatColor.RESET + " " + suffix);
+							// tabPlayer.setValueTemporarily(me.neznamy.tab.api.EnumProperty.TAGPREFIX, prefix + " " + ChatColor.RESET);
+	
+							// PowerRanks.log.info("Tab player new prefix: " + tabPlayer.getTemporaryValue(me.neznamy.tab.api.EnumProperty.TABPREFIX));
+							this.cancel();
+						}
+					}
+				}.runTaskTimer(this, 0, 20L);
+			}
+
+			if (!CachedConfig.getBoolean("tablist_modification.enabled") || plugin_hook_tab)
 				return;
 
 			player.setPlayerListName(playerTablistNameBackup.get(player.getUniqueId()));
