@@ -752,11 +752,11 @@ public class Messages {
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
-	public static void noPermission(Player player) {
+	public static void noPermission(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.no_permission");
 		if (msg.length() > 0)
-			player.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
 	public static void messageSetRankSuccessSender(CommandSender console, String target, String rank) {
@@ -841,6 +841,13 @@ public class Messages {
 	public static void messageCommandUsageReload(CommandSender console) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_reload");
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+
+	public static void messageCommandReloadWarning(CommandSender console) {
+		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.reload_warning");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
@@ -1222,11 +1229,11 @@ public class Messages {
 			player.sendMessage(msg);
 	}
 
-	public static void messageBuyRankNotAvailable(Player player) {
+	public static void messageBuyRankNotAvailable(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_not_available");
 		if (msg.length() > 0)
-			player.sendMessage(msg);
+		sender.sendMessage(msg);
 	}
 
 	public static void unknownCommand(CommandSender console) {
@@ -1994,6 +2001,32 @@ public class Messages {
     public static void messageCommandUsageSetbuycommand(final CommandSender sender) {
         final YamlConfiguration langYaml = PowerRanks.loadLangFile();
         final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuycommand");
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+
+	public static void messageCommandUsageListranks(final CommandSender sender) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        final String msg = getGeneralMessage(langYaml, "commands.usage_command_listaddons");
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+
+	public static void messageConsoleNotAPlayer(final CommandSender sender) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        final String msg = getGeneralMessage(langYaml, "messages.console_is_not_a_player");
+        if (msg.length() > 0) {
+            sender.sendMessage(msg);
+        }
+    }
+
+	public static void messageCommandCheckrankResponse(final CommandSender sender, final String target_player, final String rankname) {
+        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+        String msg = getGeneralMessage(langYaml, "commands.response_command_checkrank");
+        msg = Util.replaceAll(msg, "%argument_target%", target_player);
+        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
         if (msg.length() > 0) {
             sender.sendMessage(msg);
         }
