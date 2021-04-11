@@ -30,6 +30,16 @@ public class cmd_clearpromoterank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.clearpromoterank")) {
+			if (args.length == 1) {
+				final String rankname = args[0];
+				if (this.users.clearPromoteRank(rankname)) {
+					Messages.messageCommandClearpromoterankSuccess(sender, rankname);
+				} else {
+					Messages.messageCommandClearpromoterankError(sender, rankname);
+				}
+			} else {
+				Messages.messageCommandUsageClearpromoterank(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +49,13 @@ public class cmd_clearpromoterank extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

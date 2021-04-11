@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.Material;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
@@ -30,6 +31,20 @@ public class cmd_setguiicon extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setguiicon")) {
+			Player player = (Player) sender;
+			if (args.length == 1) {
+				String rankName = this.users.getRankIgnoreCase(args[0]);
+				Material material = player.getInventory().getItemInMainHand().getType();
+				if (material != Material.AIR) {
+					this.users.setRanksConfigFieldString(rankName, "gui.icon", material.name().toLowerCase());
+					Messages.messageSuccessSetIcon(sender, material.name().toLowerCase(), rankName);
+				} else {
+					Messages.messageErrorMustHoldItem(sender);
+				}
+
+			} else {
+				Messages.messageCommandUsageSeticon(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +54,13 @@ public class cmd_setguiicon extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

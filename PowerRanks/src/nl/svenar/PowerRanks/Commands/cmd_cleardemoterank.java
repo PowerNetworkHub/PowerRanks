@@ -30,6 +30,16 @@ public class cmd_cleardemoterank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.cleardemoterank")) {
+			if (args.length == 1) {
+				final String rankname = args[0];
+				if (this.users.clearDemoteRank(rankname)) {
+					Messages.messageCommandCleardemoterankSuccess(sender, rankname);
+				} else {
+					Messages.messageCommandCleardemoterankError(sender, rankname);
+				}
+			} else {
+				Messages.messageCommandUsageCleardemoterank(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +49,13 @@ public class cmd_cleardemoterank extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

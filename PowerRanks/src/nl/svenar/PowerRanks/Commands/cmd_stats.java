@@ -30,6 +30,7 @@ public class cmd_stats extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.stats")) {
+			Messages.messageStats(sender);
 		} else {
 			Messages.noPermission(sender);
 		}

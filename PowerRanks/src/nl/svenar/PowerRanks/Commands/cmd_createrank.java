@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
@@ -30,6 +31,26 @@ public class cmd_createrank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.createrank")) {
+			if (args.length == 1) {
+				final String rankname = this.users.getRankIgnoreCase(args[0]);
+				final boolean success = this.users.createRank(rankname);
+				String[] forbiddenColorCharacters = {"&", "#"};
+				String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
+				if (success) {
+					Messages.messageCommandCreateRankSuccess(sender, rankname);
+					if (Util.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
+						Messages.messageCommandCreateRankColorCharacterWarning(sender, rankname);
+					}
+
+					if (Util.stringContainsItemFromList(rankname, forbiddenCharacters)) {
+						Messages.messageCommandCreateRankCharacterWarning(sender, rankname);
+					}
+				} else {
+					Messages.messageCommandCreateRankError(sender, rankname);
+				}
+			} else {
+				Messages.messageCommandUsageCreateRank(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}

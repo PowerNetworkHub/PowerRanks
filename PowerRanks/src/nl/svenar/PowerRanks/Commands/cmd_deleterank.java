@@ -30,6 +30,17 @@ public class cmd_deleterank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.deleterank")) {
+			if (args.length == 1) {
+				final String rank2 = this.users.getRankIgnoreCase(args[0]);
+				final boolean success = this.users.deleteRank(rank2);
+				if (success) {
+					Messages.messageCommandDeleteRankSuccess(sender, rank2);
+				} else {
+					Messages.messageCommandDeleteRankError(sender, rank2);
+				}
+			} else {
+				Messages.messageCommandUsageDeleteRank(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +50,13 @@ public class cmd_deleterank extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

@@ -30,6 +30,21 @@ public class cmd_removeusertag extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.removeusertag")) {
+			if (!PowerRanks.plugin_hook_deluxetags) {
+				if (args.length == 1) {
+					final String tag = args[0];
+					final boolean result = this.users.removeUserTag(tag);
+					if (result) {
+						Messages.messageCommandRemoveusertagSuccess(sender, tag);
+					} else {
+						Messages.messageCommandRemoveusertagError(sender, tag);
+					}
+				} else {
+					Messages.messageCommandUsageRemoveusertag(sender);
+				}
+			}  else {
+				Messages.messageUsertagsDisabled(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +54,14 @@ public class cmd_removeusertag extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String tag : this.users.getUserTags()) {
+				if (tag.toLowerCase().contains(args[0].toLowerCase()))
+				tabcomplete.add(tag);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

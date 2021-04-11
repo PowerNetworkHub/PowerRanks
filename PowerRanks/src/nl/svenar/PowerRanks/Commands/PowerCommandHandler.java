@@ -34,10 +34,10 @@ public class PowerCommandHandler implements CommandExecutor {
 		// new cmd_verbose(plugin, "verbose", COMMAND_EXECUTOR.ALL);
 		// new cmd_pluginhook(plugin, "pluginhook", COMMAND_EXECUTOR.ALL);
 		// new cmd_config(plugin, "config", COMMAND_EXECUTOR.ALL);
-		// new cmd_stats(plugin, "stats", COMMAND_EXECUTOR.ALL);
-		// new cmd_factoryreset(plugin, "factoryreset", COMMAND_EXECUTOR.ALL);
-		// new cmd_addoninfo(plugin, "addoninfo", COMMAND_EXECUTOR.ALL);
-		// new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
+		new cmd_stats(plugin, "stats", COMMAND_EXECUTOR.ALL);
+		new cmd_factoryreset(plugin, "factoryreset", COMMAND_EXECUTOR.ALL);
+		new cmd_addoninfo(plugin, "addoninfo", COMMAND_EXECUTOR.ALL);
+		new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
 		// new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
@@ -63,40 +63,49 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_addsubrankworld(plugin, "addsubrankworld", COMMAND_EXECUTOR.ALL);
 		new cmd_delsubrankworld(plugin, "delsubrankworld", COMMAND_EXECUTOR.ALL);
 
-		// new cmd_createrank(plugin, "createrank", COMMAND_EXECUTOR.ALL);
-		// new cmd_deleterank(plugin, "deleterank", COMMAND_EXECUTOR.ALL);
-		// new cmd_renamerank(plugin, "renamerank", COMMAND_EXECUTOR.ALL);
-		// new cmd_setdefaultrank(plugin, "setdefaultrank", COMMAND_EXECUTOR.ALL);
+		new cmd_createrank(plugin, "createrank", COMMAND_EXECUTOR.ALL);
+		new cmd_deleterank(plugin, "deleterank", COMMAND_EXECUTOR.ALL);
+		new cmd_renamerank(plugin, "renamerank", COMMAND_EXECUTOR.ALL);
+		new cmd_setdefaultrank(plugin, "setdefaultrank", COMMAND_EXECUTOR.ALL);
 		new cmd_addperm(plugin, "addperm", COMMAND_EXECUTOR.ALL);
 		new cmd_delperm(plugin, "delperm", COMMAND_EXECUTOR.ALL);
-		// new cmd_setprefix(plugin, "setprefix", COMMAND_EXECUTOR.ALL);
-		// new cmd_setsuffix(plugin, "setsuffix", COMMAND_EXECUTOR.ALL);
-		// new cmd_setchatcolor(plugin, "setchatcolor", COMMAND_EXECUTOR.ALL);
-		// new cmd_setnamecolor(plugin, "setnamecolor", COMMAND_EXECUTOR.ALL);
+		new cmd_setprefix(plugin, "setprefix", COMMAND_EXECUTOR.ALL);
+		new cmd_setsuffix(plugin, "setsuffix", COMMAND_EXECUTOR.ALL);
+		new cmd_setchatcolor(plugin, "setchatcolor", COMMAND_EXECUTOR.ALL);
+		new cmd_setnamecolor(plugin, "setnamecolor", COMMAND_EXECUTOR.ALL);
 		new cmd_addinheritance(plugin, "addinheritance", COMMAND_EXECUTOR.ALL);
 		new cmd_delinheritance(plugin, "delinheritance", COMMAND_EXECUTOR.ALL);
-		// new cmd_promote(plugin, "promote", COMMAND_EXECUTOR.ALL);
-		// new cmd_demote(plugin, "demote", COMMAND_EXECUTOR.ALL);
-		// new cmd_setpromoterank(plugin, "setpromoterank", COMMAND_EXECUTOR.ALL);
-		// new cmd_setdemoterank(plugin, "setdemoterank", COMMAND_EXECUTOR.ALL);
-		// new cmd_clearpromoterank(plugin, "clearpromoterank", COMMAND_EXECUTOR.ALL);
-		// new cmd_cleardemoterank(plugin, "cleardemoterank", COMMAND_EXECUTOR.ALL);
-		// new cmd_buyrank(plugin, "buyrank", COMMAND_EXECUTOR.PLAYER);
-		// new cmd_gui(plugin, "gui", COMMAND_EXECUTOR.PLAYER);
-		// new cmd_rankup(plugin, "rankup", COMMAND_EXECUTOR.PLAYER);
-		// new cmd_addbuyablerank(plugin, "addbuyablerank", COMMAND_EXECUTOR.ALL);
-		// new cmd_delbuyablerank(plugin, "delbuyablerank", COMMAND_EXECUTOR.ALL);
-		// new cmd_setbuycost(plugin, "setbuycost", COMMAND_EXECUTOR.ALL);
-		// new cmd_setbuydescription(plugin, "setbuydescription", COMMAND_EXECUTOR.ALL);
-		// new cmd_setbuycommand(plugin, "setbuycommand", COMMAND_EXECUTOR.ALL);
-		// new cmd_addplayerperm(plugin, "addplayerperm", COMMAND_EXECUTOR.ALL);
-		// new cmd_delplayerperm(plugin, "delplayerperm", COMMAND_EXECUTOR.ALL);
-		// new cmd_createusertag(plugin, "createusertag", COMMAND_EXECUTOR.ALL);
-		// new cmd_editusertag(plugin, "editusertag", COMMAND_EXECUTOR.ALL);
-		// new cmd_removeusertag(plugin, "removeusertag", COMMAND_EXECUTOR.ALL);
-		// new cmd_setusertag(plugin, "setusertag", COMMAND_EXECUTOR.ALL);
-		// new cmd_clearusertag(plugin, "clearusertag", COMMAND_EXECUTOR.ALL);
-		// new cmd_setguiicon(plugin, "setguiicon", COMMAND_EXECUTOR.PLAYER);
+
+		new cmd_promote(plugin, "promote", COMMAND_EXECUTOR.ALL);
+		new cmd_demote(plugin, "demote", COMMAND_EXECUTOR.ALL);
+		new cmd_setpromoterank(plugin, "setpromoterank", COMMAND_EXECUTOR.ALL);
+		new cmd_setdemoterank(plugin, "setdemoterank", COMMAND_EXECUTOR.ALL);
+		new cmd_clearpromoterank(plugin, "clearpromoterank", COMMAND_EXECUTOR.ALL);
+		new cmd_cleardemoterank(plugin, "cleardemoterank", COMMAND_EXECUTOR.ALL);
+
+		new cmd_gui(plugin, "gui", COMMAND_EXECUTOR.PLAYER);
+		new cmd_setguiicon(plugin, "setguiicon", COMMAND_EXECUTOR.PLAYER);
+		new cmd_buyrank(plugin, "buyrank", COMMAND_EXECUTOR.PLAYER);
+		new cmd_rankup(plugin, "rankup", COMMAND_EXECUTOR.PLAYER);
+		new cmd_addbuyablerank(plugin, "addbuyablerank", COMMAND_EXECUTOR.ALL);
+		new cmd_delbuyablerank(plugin, "delbuyablerank", COMMAND_EXECUTOR.ALL);
+		new cmd_setbuycost(plugin, "setbuycost", COMMAND_EXECUTOR.ALL);
+		new cmd_setbuydescription(plugin, "setbuydescription", COMMAND_EXECUTOR.ALL);
+		new cmd_setbuycommand(plugin, "setbuycommand", COMMAND_EXECUTOR.ALL);
+
+		new cmd_addplayerperm(plugin, "addplayerperm", COMMAND_EXECUTOR.ALL);
+		new cmd_delplayerperm(plugin, "delplayerperm", COMMAND_EXECUTOR.ALL);
+		new cmd_createusertag(plugin, "createusertag", COMMAND_EXECUTOR.ALL);
+		new cmd_editusertag(plugin, "editusertag", COMMAND_EXECUTOR.ALL);
+		new cmd_removeusertag(plugin, "removeusertag", COMMAND_EXECUTOR.ALL);
+		new cmd_setusertag(plugin, "setusertag", COMMAND_EXECUTOR.ALL);
+		new cmd_clearusertag(plugin, "clearusertag", COMMAND_EXECUTOR.ALL);
+
+		int c = 0;
+		for (Entry<String, PowerCommand> entry : power_commands.entrySet()) {
+			c++;
+		}
+		PowerRanks.log.warning("Registered commands: " + c);
 	}
 
 	private static boolean canExecuteCommand(CommandSender sender, PowerCommand command_handler) {

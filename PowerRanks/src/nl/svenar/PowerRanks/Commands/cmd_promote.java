@@ -30,6 +30,17 @@ public class cmd_promote extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.promote")) {
+			if (args.length == 1) {
+				final String playername = args[0];
+				final boolean success = this.users.promote(playername);
+				if (success) {
+					Messages.messageCommandPromoteSuccess(sender, playername);
+				} else {
+					Messages.messageCommandPromoteError(sender, playername);
+				}
+			} else {
+				Messages.messageCommandUsagePromote(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +50,13 @@ public class cmd_promote extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				tabcomplete.add(player.getName());
+			}
+		}
+
 		return tabcomplete;
 	}
 }

@@ -80,7 +80,7 @@ public class Messages {
 		}
 		Instant current_time = Instant.now();
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
 		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN + format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
@@ -94,36 +94,36 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void messagePluginhookStats(CommandSender sender) {
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy (vault_economy): " + (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions (vault_permissions): " + (PowerRanks.vaultPermissionsEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI (placeholderapi): " + (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags (deluxetags): " + (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
 		sender.sendMessage(ChatColor.GREEN + "- NametagEdit (nametagedit): " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void messageCommandFactoryReset(CommandSender sender) {
 		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 		sender.sendMessage(ChatColor.DARK_RED + "WARNING!");
 		sender.sendMessage(ChatColor.RED + "This action is irreversible if you continue");
 		sender.sendMessage(ChatColor.RED + "Factory reset ID: " + ChatColor.GOLD + PowerRanks.factoryresetid);
 		sender.sendMessage(ChatColor.RED + "To continue do: " + ChatColor.GOLD + "/pr factoryreset " + PowerRanks.factoryresetid);
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void messageCommandFactoryResetDone(CommandSender sender) {
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 		sender.sendMessage(ChatColor.GREEN + "Factory reset complete!");
 		sender.sendMessage(ChatColor.GREEN + "It is recommended to restart your server.");
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void messageCommandBuyrank(CommandSender sender, Users users, String rankname) {
@@ -131,7 +131,7 @@ public class Messages {
 			String tellraw_command = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"Buy\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\" %rank% \",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"|\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\" Cost: \",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"%cost%\",\"color\":\"%cost_color%\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}}]";
 			double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance((Player) sender) : 0;
 
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
 			sender.sendMessage(ChatColor.DARK_GREEN + "Ranks available to buy (click to buy):");
 			List<String> ranks = users.getBuyableRanks(users.getGroup((Player) sender));
@@ -143,19 +143,19 @@ public class Messages {
 					Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(),
 							tellraw_command.replaceAll("%rank%", rank).replaceAll("%cost%", String.valueOf(cost)).replaceAll("%cost_color%", cost_color).replaceAll("%player%", sender.getName()));
 			}
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 		} else {
 			String tellraw_command = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank% confirm\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to buy\"}},{\"text\":\"Confirm\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank% confirm\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to buy\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank% confirm\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to buy\"}}]";
 			double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance((Player) sender) : 0;
 
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
 			sender.sendMessage(ChatColor.DARK_GREEN + "Click 'confirm' to purchase " + rankname);
 			int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
 			sender.sendMessage("Cost: " + (player_balance >= cost ? ChatColor.GREEN : ChatColor.RED) + String.valueOf(cost));
 			if (Messages.powerRanks != null)
 				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellraw_command.replaceAll("%rank%", rankname).replaceAll("%player%", sender.getName()));
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 		}
 	}
 
@@ -163,7 +163,7 @@ public class Messages {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 		sender.sendMessage(ChatColor.GREEN + "UUID: " + ChatColor.DARK_GREEN + player.getUniqueId());
 		sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName() + (!player.getDisplayName().equals(player.getName()) ? (ChatColor.DARK_GREEN  + " aka " + player.getName()) : ""));
 		sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getFirstPlayed()));
@@ -175,7 +175,7 @@ public class Messages {
 		for (String permission : powerRanks.getEffectivePlayerPermissions(player)) {
 			sender.sendMessage((permission.startsWith("-") ? ChatColor.DARK_RED : ChatColor.DARK_GREEN) + "- " + permission);
 		}
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	private static String getSampleChatFormat(Player player) {
@@ -367,7 +367,7 @@ public class Messages {
 
 		ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
 		if (lines != null) {
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = langYaml.getString("general.prefix");
 			for (String section : lines.getKeys(false)) {
@@ -379,7 +379,7 @@ public class Messages {
 				if (msg.length() > 0)
 					sender.sendMessage(msg);
 			}
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 		}
 	}
 
@@ -403,9 +403,27 @@ public class Messages {
 
 			String tellrawCommand = "tellraw %player% ";
 
+			/**
+			 * ["",
+			 * 	{"text":"===","color":"blue"}, {"text":"----------","color":"dark_aqua"}, {"text":"PowerRanks","color":"aqua"}, {"text":"----------","color":"dark_aqua"}, {"text":"===","color":"blue"},
+			 * 	{"text":"\n"},
+			 * 	{"text":"Add-on manager\nPage ","color":"aqua"},
+			 * 	{"text":"%currentpage%","color":"blue"},
+			 * 	{"text":": ","color":"aqua"},
+			 * 	{"text":"[","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %previouspage%"}},
+			 * 	{"text":"<","color":"aqua","clickEvent":{"action":"run_command","value":"/pr addonmanager page %previouspage%"}},
+			 * 	{"text":"]","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %previouspage%"}},
+			 * 	{"text":" ","color":"black"},{"text":"[","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %nextpage%"}},
+			 * 	{"text":">","color":"aqua","clickEvent":{"action":"run_command","value":"/pr addonmanager page %nextpage%"}},
+			 * 	{"text":"]","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %nextpage%"}},
+			 * 	{"text":"\n"},{"text":"===","color":"blue"},{"text":"------------------------------","color":"dark_aqua"},{"text":"===","color":"blue"}]
+			 */
+
 			if (hasAcceptedTerms) {
 				tellrawCommand += "[\"\"";
-				tellrawCommand += ",{\"text\":\"===-----\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks AddonManager\",\"color\":\"aqua\"},{\"text\":\"-----===\",\"color\":\"dark_aqua\"}";
+				tellrawCommand += ",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks\",\"color\":\"aqua\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
+				// tellrawCommand += ",{\"text\":\"\\n\"},";
+				// tellrawCommand += ",{\"text\":\"Add-on manager\",\"color\":\"aqua\"}";
 				tellrawCommand += ",{\"text\":\"\\n\"},";
 				tellrawCommand += "{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"%currentpage%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\"<\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\" \"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}},{\"text\":\">\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}}".replaceAll("%previouspage%", String.valueOf(previousPage)).replaceAll("%currentpage%", String.valueOf(currentPage + 1)).replaceAll("%nextpage%", String.valueOf(nextPage));
 				tellrawCommand += ",{\"text\":\"\\n\"},";
@@ -709,7 +727,7 @@ public class Messages {
 			}
 		}
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
@@ -742,14 +760,14 @@ public class Messages {
 			}
 		}
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void checkVerbose(CommandSender sender) {
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 		sender.sendMessage(ChatColor.DARK_GREEN + "Verbose: " + ChatColor.GREEN + (!PowerRanksVerbose.USE_VERBOSE ? "Disabled" : "Enabled" + (PowerRanksVerbose.USE_VERBOSE_LIVE ? " (Live)" : "")));
 		sender.sendMessage(ChatColor.DARK_GREEN + "Log size: " + ChatColor.GREEN + PowerRanksVerbose.logSize() + ChatColor.DARK_GREEN + " lines");
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 	}
 
 	public static void noPermission(CommandSender sender) {

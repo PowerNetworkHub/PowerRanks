@@ -30,6 +30,17 @@ public class cmd_setdefaultrank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setdefaultrank")) {
+			if (args.length == 1) {
+				final String rankname = this.users.getRankIgnoreCase(args[0]);
+				final boolean success = this.users.setDefaultRank(rankname);
+				if (success) {
+					Messages.messageCommandSetDefaultRankSuccess(sender, rankname);
+				} else {
+					Messages.messageCommandSetDefaultRankError(sender, rankname);
+				}
+			} else {
+				Messages.messageCommandUsageDemote(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +50,13 @@ public class cmd_setdefaultrank extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

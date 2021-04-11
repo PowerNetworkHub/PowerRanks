@@ -39,6 +39,13 @@ public class ChatTabExecutor implements TabCompleter {
 			commands_list.add(arg);
 		}
 
+		if (args.length == 1) {
+			for (String command : addon_commands) {
+				if (command.toLowerCase().contains(args[0].toLowerCase()))
+					commands_list.add(command);
+			}
+		}
+
 		for (String command : commands_list) {
 			if (command.toLowerCase().contains(args[args.length - 1].toLowerCase()))
 				list.add(command);

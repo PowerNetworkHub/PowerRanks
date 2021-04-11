@@ -86,688 +86,70 @@ public class Cmd implements CommandExecutor {
 
 
 					
-				} else if (args[0].equalsIgnoreCase("addinheritance")) {
-					if (sender.hasPermission("powerranks.cmd.addinheritance")) {
-						
-					} else {
-						Messages.noPermission(sender);
-					}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 					
-				} else if (args[0].equalsIgnoreCase("delinheritance")) {
-					if (sender.hasPermission("powerranks.cmd.delinheritance")) {
-						
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("setprefix")) {
-					if (sender.hasPermission("powerranks.cmd.setprefix")) {
-						if (args.length == 1) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final String prefix = "";
-							final boolean result = this.users.setPrefix(rank2, prefix);
-							if (result) {
-								Messages.messageCommandSetPrefix(sender, prefix, rank2);
-							} else {
-								Messages.messageGroupNotFound(sender, rank2);
-							}
-						} else if (args.length >= 3) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							String prefix = "";
-							for (int i = 2; i < args.length; i++) {
-								prefix += args[i] + " ";
-							}
-							prefix = prefix.substring(0, prefix.length() - 1);
-							final boolean result = this.users.setPrefix(rank2, prefix);
-							if (result) {
-								Messages.messageCommandSetPrefix(sender, prefix, rank2);
-							} else {
-								Messages.messageGroupNotFound(sender, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageSetPrefix(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("setsuffix")) {
-					if (sender.hasPermission("powerranks.cmd.setsuffix")) {
-						if (args.length == 1) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final String suffix = "";
-							final boolean result = this.users.setSuffix(rank2, suffix);
-							if (result) {
-								Messages.messageCommandSetSuffix(sender, suffix, rank2);
-							} else {
-								Messages.messageGroupNotFound(sender, rank2);
-							}
-						} else if (args.length >= 3) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final String suffix = args[1];
-							final boolean result = this.users.setSuffix(rank2, suffix);
-							if (result) {
-								Messages.messageCommandSetSuffix(sender, suffix, rank2);
-							} else {
-								Messages.messageGroupNotFound(sender, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageSetSuffix(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
-					if (sender.hasPermission("powerranks.cmd.setchatcolor")) {
-						if (args.length == 2) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final String color = args[1];
-							final boolean result = this.users.setChatColor(rank2, color);
-							if (result) {
-								Messages.messageCommandSetChatColor(sender, color, rank2);
-							} else {
-								Messages.messageGroupNotFound(sender, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageSetChatColor(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
-					if (sender.hasPermission("powerranks.cmd.setnamecolor")) {
-						if (args.length == 2) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final String color = args[1];
-							final boolean result = this.users.setNameColor(rank2, color);
-							if (result) {
-								Messages.messageCommandSetNameColor(sender, color, rank2);
-							} else {
-								Messages.messageGroupNotFound(sender, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageSetNameColor(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("createrank")) {
-					if (sender.hasPermission("powerranks.cmd.createrank")) {
-						if (args.length == 1) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final boolean success = this.users.createRank(rank2);
-							String[] forbiddenColorCharacters = {"&", "#"};
-							String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
-							if (success) {
-								Messages.messageCommandCreateRankSuccess(sender, rank2);
-								if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
-									Messages.messageCommandCreateRankColorCharacterWarning(sender, rank2);
-								}
 
-								if (Util.stringContainsItemFromList(rank2, forbiddenCharacters)) {
-									Messages.messageCommandCreateRankCharacterWarning(sender, rank2);
-								}
-							} else {
-								Messages.messageCommandCreateRankError(sender, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageCreateRank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("deleterank")) {
-					if (sender.hasPermission("powerranks.cmd.deleterank")) {
-						if (args.length == 1) {
-							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-							final boolean success = this.users.deleteRank(rank2);
-							if (success) {
-								Messages.messageCommandDeleteRankSuccess(sender, rank2);
-							} else {
-								Messages.messageCommandDeleteRankError(sender, rank2);
-							}
-						} else {
-							Messages.messageCommandUsageDeleteRank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
 
-					
-				} else if (args[0].equalsIgnoreCase("promote")) {
-					if (sender.hasPermission("powerranks.cmd.promote")) {
-						if (args.length == 1) {
-							final String playername = args[0];
-							final boolean success = this.users.promote(playername);
-							if (success) {
-								Messages.messageCommandPromoteSuccess(sender, playername);
-							} else {
-								Messages.messageCommandPromoteError(sender, playername);
-							}
-						} else {
-							Messages.messageCommandUsagePromote(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
-
-
-					
-				} else if (args[0].equalsIgnoreCase("demote")) {
-					if (sender.hasPermission("powerranks.cmd.demote")) {
-						if (args.length == 1) {
-							final String playername = args[0];
-							final boolean success = this.users.demote(playername);
-							if (success) {
-								Messages.messageCommandDemoteSuccess(sender, playername);
-							} else {
-								Messages.messageCommandDemoteError(sender, playername);
-							}
-						} else {
-							Messages.messageCommandUsageDemote(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("renamerank")) {
-					if (sender.hasPermission("powerranks.cmd.renamerank")) {
-						if (args.length == 2) {
-							final String from = this.users.getRankIgnoreCase(args[0]);
-							final String to = args[1];
-							final boolean success = this.users.renameRank(from, to);
-							if (success) {
-								Messages.messageCommandRenameRankSuccess(sender, from);
-							} else {
-								Messages.messageCommandRenameRankError(sender, from);
-							}
-						} else {
-							Messages.messageCommandUsageDemote(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("setdefaultrank")) {
-					if (sender.hasPermission("powerranks.cmd.setdefaultrank")) {
-						if (args.length == 1) {
-							final String rankname = this.users.getRankIgnoreCase(args[0]);
-							final boolean success = this.users.setDefaultRank(rankname);
-							if (success) {
-								Messages.messageCommandSetDefaultRankSuccess(sender, rankname);
-							} else {
-								Messages.messageCommandSetDefaultRankError(sender, rankname);
-							}
-						} else {
-							Messages.messageCommandUsageDemote(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("factoryreset")) {
-					if (sender.hasPermission("powerranks.cmd.factoryreset")) {
-						if (args.length == 0) {
-							Messages.messageCommandFactoryReset(sender);
-						} else if (args.length == 1) {
-							if (PowerRanks.factoryresetid == null) {
-								Messages.messageCommandFactoryReset(sender);
-							} else {
-								String resetid = args[0];
-								if (resetid.equalsIgnoreCase(PowerRanks.factoryresetid))
-									this.plugin.factoryReset(sender);
-								else
-									Messages.messageCommandFactoryReset(sender);
-							}
-						} else {
-							Messages.messageCommandUsageFactoryReset(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("buyrank")) {
-					if (sender.hasPermission("powerranks.cmd.rankup")) {
-						if (PowerRanks.vaultEconomyEnabled) {
-							if (args.length == 0) {
-								Messages.messageCommandBuyrank(sender, this.users, null);
-							} else if (args.length == 1) {
-								final String rankname = this.users.getRankIgnoreCase(args[0]);
-								Messages.messageCommandBuyrank(sender, this.users, rankname);
-							} else if (args.length == 2) {
-								final String rankname = this.users.getRankIgnoreCase(args[0]);
-								final boolean confirm = args[1].equalsIgnoreCase("confirm");
-
-								if (confirm) {
-									int cost = this.users.getRanksConfigFieldInt(rankname, "economy.cost");
-									double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance(player) : 0;
-									if (cost >= 0 && player_balance >= cost) {
-										VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
-										this.users.setGroup(player, rankname, true);
-										if (CachedConfig.getBoolean("rankup.buy_command.enabled")) {
-											if (CachedConfig.getString("rankup.buy_command.command").length() > 0) {
-												this.plugin.getServer().dispatchCommand((CommandSender) this.plugin.getServer().getConsoleSender(), CachedConfig.getString("rankup.buy_command.command").replaceAll("%playername%", sender.getName()).replaceAll("%rankname%", rankname));
-											}
-										}
-										Messages.messageBuyRankSuccess(player, rankname);
-									} else {
-										Messages.messageBuyRankError(player, rankname);
-									}
-								}
-							} else {
-								Messages.messageCommandUsageBuyrank(sender);
-							}
-						} else {
-							Messages.messageBuyRankNotAvailable(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("gui")) {
-					if (sender.hasPermission("powerranks.cmd.gui")) {
-						GUI.openGUI(player, GUI_PAGE_ID.MAIN);
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("rankup")) {
-					if (sender.hasPermission("powerranks.cmd.rankup")) {
-						if (PowerRanks.vaultEconomyEnabled)
-							GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
-						else
-							Messages.messageBuyRankNotAvailable(sender);
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("stats")) {
-					if (sender.hasPermission("powerranks.cmd.stats")) {
-						Messages.messageStats(sender);
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("addbuyablerank")) {
-					if (sender.hasPermission("powerranks.cmd.addbuyablerank")) {
-						if (args.length == 2) {
-							final String rankname = this.users.getRankIgnoreCase(args[0]);
-							final String rankname2 = this.users.getRankIgnoreCase(args[1]);
-							final boolean success = this.users.addBuyableRank(rankname, rankname2);
-							if (success) {
-								Messages.messageCommandAddbuyablerankSuccess(sender, rankname, rankname2);
-							} else {
-								Messages.messageCommandAddbuyablerankError(sender, rankname, rankname2);
-							}
-						} else {
-							Messages.messageCommandUsageAddbuyablerank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("delbuyablerank")) {
-					if (sender.hasPermission("powerranks.cmd.delbuyablerank")) {
-						if (args.length == 2) {
-							final String rankname = this.users.getRankIgnoreCase(args[0]);
-							final String rankname2 = this.users.getRankIgnoreCase(args[1]);
-							final boolean success = this.users.delBuyableRank(rankname, rankname2);
-							if (success) {
-								Messages.messageCommandDelbuyablerankSuccess(sender, rankname, rankname2);
-							} else {
-								Messages.messageCommandDelbuyablerankError(sender, rankname, rankname2);
-							}
-						} else {
-							Messages.messageCommandUsageDelbuyablerank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("setbuycost")) {
-					if (sender.hasPermission("powerranks.cmd.setbuycost")) {
-						if (args.length == 2) {
-							final String rankname = this.users.getRankIgnoreCase(args[0]);
-							final String cost = this.users.getRankIgnoreCase(args[1]);
-							final boolean success = this.users.setBuyCost(rankname, cost);
-							if (success) {
-								Messages.messageCommandSetcostSuccess(sender, rankname, cost);
-							} else {
-								Messages.messageCommandSetcostError(sender, rankname, cost);
-							}
-						} else {
-							Messages.messageCommandUsageSetcost(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("setbuydescription")) {
-                    if (sender.hasPermission("powerranks.cmd.setbuydescription")) {
-                        if (args.length >= 3) {
-                            final String rankname = this.users.getRankIgnoreCase(args[0]);
-                            String description = "";
-                            for (int i = 2; i < args.length; i++) {
-                                description = String.valueOf(description) + args[i] + " ";
-                            }
-                            description = description.substring(0, description.length() - 1);
-                            final boolean success2 = this.users.setBuyDescription(rankname, description);
-                            if (success2) {
-                                Messages.messageCommandSetbuydescriptionSuccess((CommandSender)player, rankname, description);
-                            } else {
-                                Messages.messageCommandSetbuydescriptionError((CommandSender)player, rankname, description);
-                            }
-                        } else {
-                            Messages.messageCommandUsageSetbuydescription((CommandSender)player);
-                        }
-                    }
-                    else {
-                        Messages.noPermission(sender);
-                    }
-
-
-
-
-					
-                } else if (args[0].equalsIgnoreCase("setbuycommand")) {
-                    if (sender.hasPermission("powerranks.cmd.setbuycommand")) {
-                        if (args.length >= 3) {
-                            final String rankname = this.users.getRankIgnoreCase(args[0]);
-                            String command2 = "";
-                            for (int i = 2; i < args.length; i++) {
-                                command2 = String.valueOf(command2) + args[i] + " ";
-                            }
-                            command2 = command2.substring(0, command2.length() - 1);
-                            final boolean success2 = this.users.setBuyCommand(rankname, command2);
-                            if (success2) {
-                                Messages.messageCommandSetbuycommandSuccess((CommandSender)player, rankname, command2);
-                            } else {
-                                Messages.messageCommandSetbuycommandError((CommandSender)player, rankname, command2);
-                            }
-                        } else {
-                            Messages.messageCommandUsageSetbuycommand((CommandSender)player);
-                        }
-                    } else {
-                        Messages.noPermission(sender);
-                    }
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("addplayerperm")) {
-					if (sender.hasPermission("powerranks.cmd.addplayerperm")) {
-						if (args.length == 2) {
-							final String target_player = args[0];
-							final String permission = args[1];
-							final boolean result = this.users.addPlayerPermission(target_player, permission);
-							if (result) {
-								Messages.messageCommandPlayerPermissionAdded(sender, permission, target_player);
-							} else {
-								Messages.messageErrorAddingPlayerPermission(sender, target_player, permission);
-							}
-						} else {
-							Messages.messageCommandUsageAddplayerperm(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("delplayerperm")) {
-					if (sender.hasPermission("powerranks.cmd.delplayerperm")) {
-						if (args.length == 2) {
-							final String target_player = args[0];
-							final String permission = args[1];
-							final boolean result = this.users.delPlayerPermission(target_player, permission);
-							if (result) {
-								Messages.messageCommandPlayerPermissionRemoved(sender, permission, target_player);
-							} else {
-								Messages.messageErrorRemovingPlayerPermission(sender, target_player, permission);
-							}
-						} else {
-							Messages.messageCommandUsageDelplayerperm(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("createusertag")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						if (sender.hasPermission("powerranks.cmd.createusertag")) {
-							if (args.length == 2) {
-								final String tag = args[0];
-								final String text = args[1];
-								final boolean result = this.users.createUserTag(tag, text);
-								if (result) {
-									Messages.messageCommandCreateusertagSuccess(sender, tag, text);
-								} else {
-									Messages.messageCommandCreateusertagError(sender, tag, text);
-								}
-							} else {
-								Messages.messageCommandUsageCreateusertag(sender);
-							}
-						} else {
-							Messages.noPermission(sender);
-						}
-					} else {
-						Messages.messageUsertagsDisabled(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("editusertag")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						if (sender.hasPermission("powerranks.cmd.editusertag")) {
-							if (args.length == 2) {
-								final String tag = args[0];
-								final String text = args[1];
-								final boolean result = this.users.editUserTag(tag, text);
-								if (result) {
-									Messages.messageCommandEditusertagSuccess(sender, tag, text);
-								} else {
-									Messages.messageCommandEditusertagError(sender, tag, text);
-								}
-							} else {
-								Messages.messageCommandUsageEditusertag(sender);
-							}
-						} else {
-							Messages.noPermission(sender);
-						}
-					} else {
-						Messages.messageUsertagsDisabled(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("removeusertag")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						if (sender.hasPermission("powerranks.cmd.removeusertag")) {
-							if (args.length == 1) {
-								final String tag = args[0];
-								final boolean result = this.users.removeUserTag(tag);
-								if (result) {
-									Messages.messageCommandRemoveusertagSuccess(sender, tag);
-								} else {
-									Messages.messageCommandRemoveusertagError(sender, tag);
-								}
-							} else {
-								Messages.messageCommandUsageRemoveusertag(sender);
-							}
-						} else {
-							Messages.noPermission(sender);
-						}
-					} else {
-						Messages.messageUsertagsDisabled(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("setusertag")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						if (args.length == 1) {
-							if (sender.hasPermission("powerranks.cmd.setusertag.player")) {
-								final String playername = player.getName();
-								final String tag = args[0];
-								final boolean result = this.users.setUserTag(playername, tag);
-								if (result) {
-									Messages.messageCommandSetusertagSuccess(sender, playername, tag);
-								} else {
-									Messages.messageCommandSetusertagError(sender, playername, tag);
-								}
-							} else {
-								Messages.noPermission(sender);
-							}
-						} else if (args.length == 2) {
-							if (sender.hasPermission("powerranks.cmd.setusertag.admin")) {
-								final String playername = args[0];
-								final String tag = args[1];
-								final boolean result = this.users.setUserTag(playername, tag);
-								if (result) {
-									Messages.messageCommandSetusertagSuccess(sender, playername, tag);
-								} else {
-									Messages.messageCommandSetusertagError(sender, playername, tag);
-								}
-							} else {
-								Messages.noPermission(sender);
-							}
-						} else {
-							Messages.messageCommandUsageSetusertag(sender);
-						}
-					} else {
-						Messages.messageUsertagsDisabled(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("clearusertag")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						if (args.length == 0) {
-							if (sender.hasPermission("powerranks.cmd.clearusertag.player")) {
-								final String playername = player.getName();
-								final boolean result = this.users.clearUserTag(playername);
-								if (result) {
-									Messages.messageCommandClearusertagSuccess(sender, playername);
-								} else {
-									Messages.messageCommandClearusertagError(sender, playername);
-								}
-							} else {
-								Messages.noPermission(sender);
-							}
-						} else if (args.length == 1) {
-							if (sender.hasPermission("powerranks.cmd.clearusertag.admin")) {
-								final String playername = args[0];
-								final boolean result = this.users.clearUserTag(playername);
-								if (result) {
-									Messages.messageCommandClearusertagSuccess(sender, playername);
-								} else {
-									Messages.messageCommandClearusertagError(sender, playername);
-								}
-							} else {
-								Messages.noPermission(sender);
-							}
-						} else {
-							Messages.messageCommandUsageSetusertag(sender);
-						}
-					} else {
-						Messages.messageUsertagsDisabled(sender);
-					}
 
 
 
@@ -777,120 +159,11 @@ public class Cmd implements CommandExecutor {
 
 
 					
-				} else if (args[0].equalsIgnoreCase("setpromoterank")) {
-					if (sender.hasPermission("powerranks.cmd.setpromoterank")) {
-						if (args.length == 2) {
-							final String rankname = args[0];
-							final String promote_rank = args[1];
-							if (this.users.setPromoteRank(rankname, promote_rank)) {
-								Messages.messageCommandSetpromoterankSuccess(sender, rankname, promote_rank);
-							} else {
-								Messages.messageCommandSetpromoterankError(sender, rankname, promote_rank);
-							}
-						} else {
-							Messages.messageCommandUsageSetpromoterank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
 
 
 					
-				} else if (args[0].equalsIgnoreCase("setdemoterank")) {
-					if (sender.hasPermission("powerranks.cmd.setdemoterank")) {
-						if (args.length == 2) {
-							final String rankname = args[0];
-							final String promote_rank = args[1];
-							if (this.users.setDemoteRank(rankname, promote_rank)) {
-								Messages.messageCommandSetdemoterankSuccess(sender, rankname, promote_rank);
-							} else {
-								Messages.messageCommandSetdemoterankError(sender, rankname, promote_rank);
-							}
-						} else {
-							Messages.messageCommandUsageSetdemoterank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
-
-
-					
-				} else if (args[0].equalsIgnoreCase("clearpromoterank")) {
-					if (sender.hasPermission("powerranks.cmd.clearpromoterank")) {
-						if (args.length == 1) {
-							final String rankname = args[0];
-							if (this.users.clearPromoteRank(rankname)) {
-								Messages.messageCommandClearpromoterankSuccess(sender, rankname);
-							} else {
-								Messages.messageCommandClearpromoterankError(sender, rankname);
-							}
-						} else {
-							Messages.messageCommandUsageClearpromoterank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("cleardemoterank")) {
-					if (sender.hasPermission("powerranks.cmd.cleardemoterank")) {
-						if (args.length == 1) {
-							final String rankname = args[0];
-							if (this.users.clearDemoteRank(rankname)) {
-								Messages.messageCommandCleardemoterankSuccess(sender, rankname);
-							} else {
-								Messages.messageCommandCleardemoterankError(sender, rankname);
-							}
-						} else {
-							Messages.messageCommandUsageCleardemoterank(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
-
-
-
-
-					
-				} else if (args[0].equalsIgnoreCase("addoninfo")) {
-					if (sender.hasPermission("powerranks.cmd.addoninfo")) {
-						if (args.length == 1) {
-							final String addon_name = args[0];
-							PowerRanksAddon addon = null;
-							for (Entry<File, PowerRanksAddon> a : this.plugin.addonsManager.addonClasses.entrySet()) {
-								if (a.getValue().getIdentifier().equalsIgnoreCase(addon_name))
-									addon = a.getValue();
-							}
-							if (addon != null) {
-								player.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
-								player.sendMessage(ChatColor.DARK_GREEN + "Add-on name: " + ChatColor.GREEN + addon.getIdentifier());
-								player.sendMessage(ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + addon.getAuthor());
-								player.sendMessage(ChatColor.DARK_GREEN + "Version: " + ChatColor.GREEN + addon.getVersion());
-								player.sendMessage(ChatColor.DARK_GREEN + "Registered Commands:");
-								for (String command : addon.getRegisteredCommands()) {
-									player.sendMessage(ChatColor.GREEN + "- /pr " + command);
-								}
-								player.sendMessage(ChatColor.DARK_GREEN + "Registered Permissions:");
-								for (String permission : addon.getRegisteredPermissions()) {
-									player.sendMessage(ChatColor.GREEN + "- " + permission);
-								}
-								player.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
-							} else {
-								Messages.messageCommandErrorAddonNotFound(sender, addon_name);
-							}
-						} else {
-							Messages.messageCommandUsageAddoninfo(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
@@ -898,100 +171,12 @@ public class Cmd implements CommandExecutor {
 					
 				} else if (args[0].equalsIgnoreCase("addonmanager")) {
 					if (player.hasPermission("powerranks.cmd.addonmanager")) {
-						if (args.length == 0) {
-							Messages.addonManagerListAddons(sender, 0);
-						} else {
-							String addonmanagerCommand = args[0].toLowerCase();
-							if (addonmanagerCommand.equals("acceptterms")) {
-								CachedConfig.set("addon_manager.accepted_terms", true);
-								Messages.addonManagerTermsAccepted(sender);
-							}
-
-							if (addonmanagerCommand.equals("declineterms")) {
-								CachedConfig.set("addon_manager.accepted_terms", false);
-								Messages.addonManagerTermsDeclined(sender);
-							}
-
-							if (addonmanagerCommand.equals("page")) {
-								int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
-								Messages.addonManagerListAddons(sender, page);
-							}
-
-							if (addonmanagerCommand.equals("info")) {
-								String addonname = args[1];
-								Messages.addonManagerInfoAddon(sender, addonname);
-							}
-
-							if (addonmanagerCommand.equals("download")) {
-								String addonname = args[1];
-								DownloadableAddon addon = null;
-								for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
-									if (dlAddon.getName().equalsIgnoreCase(addonname)) {
-										addon = dlAddon;
-										break;
-									}
-								}
-
-								if (addon.isDownloadable()) {
-									if (addon.isCompatible()) {
-										if (addon.download()) {
-											Messages.addonManagerDownloadComplete(sender, addon.getName());
-										} else {
-											Messages.addonManagerDownloadFailed(sender, addon.getName());
-										}
-									} else {
-										Messages.addonManagerDownloadNotAvailable(sender);
-									}
-								} else {
-									Messages.addonManagerDownloadNotAvailable(sender);
-								}
-							}
-
-							if (addonmanagerCommand.equals("uninstall")) {
-								String addonname = args[1];
-
-								DownloadableAddon addon = null;
-								for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
-									if (dlAddon.getName().equalsIgnoreCase(addonname)) {
-										addon = dlAddon;
-										break;
-									}
-								}
-
-								if (addon != null) {
-									addon.uninstall();
-									Messages.addonManagerUninstallComplete(sender, addon.getName());
-								} else {
-									Messages.messageCommandErrorAddonNotFound(sender, args[1]);
-								}
-							}
-						}
+						
 					} else {
 						Messages.noPermission(sender);
 					}
 
 
-
-
-					
-				} else if (args[0].equalsIgnoreCase("setguiicon")) {
-					if (player.hasPermission("powerranks.cmd.setguiicon")) {
-						if (args.length == 1) {
-							String rankName = this.users.getRankIgnoreCase(args[0]);
-							Material material = player.getInventory().getItemInMainHand().getType();
-							if (material != Material.AIR) {
-								this.users.setRanksConfigFieldString(rankName, "gui.icon", material.name().toLowerCase());
-								Messages.messageSuccessSetIcon(sender, material.name().toLowerCase(), rankName);
-							} else {
-								Messages.messageErrorMustHoldItem(sender);
-							}
-
-						} else {
-							Messages.messageCommandUsageSeticon(sender);
-						}
-					} else {
-						Messages.noPermission(sender);
-					}
 
 
 
@@ -1345,34 +530,34 @@ public class Cmd implements CommandExecutor {
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("addperm")) {
 // 					if (args.length == 2) {
-// 						final String rank2 = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
 // 						final String permission = args[1];
-// 						final boolean result = this.users.addPermission(rank2, permission);
+// 						final boolean result = this.users.addPermission(rankname, permission);
 // 						if (result) {
-// 							if (rank2.equals("*")) {
+// 							if (rankname.equals("*")) {
 // 								Messages.messageCommandPermissionAddedToAllRanks(console, permission);
 // 							} else {
-// 								Messages.messageCommandPermissionAdded(console, permission, rank2);
+// 								Messages.messageCommandPermissionAdded(console, permission, rankname);
 // 							}
 // 						} else {
-// 							Messages.messageErrorAddingPermission(console, rank2, permission);
+// 							Messages.messageErrorAddingPermission(console, rankname, permission);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageAddperm(console);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("delperm")) {
 // 					if (args.length == 2) {
-// 						final String rank2 = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
 // 						final String permission = args[1];
-// 						final boolean result = this.users.removePermission(rank2, permission);
+// 						final boolean result = this.users.removePermission(rankname, permission);
 // 						if (result) {
-// 							if (rank2 == "*") {
+// 							if (rankname == "*") {
 // 								Messages.messageCommandPermissionRemovedFromAllRanks(console, permission);
 // 							} else {
-// 								Messages.messageCommandPermissionRemoved(console, permission, rank2);
+// 								Messages.messageCommandPermissionRemoved(console, permission, rankname);
 // 							}
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageDelperm(console);
@@ -1513,13 +698,13 @@ public class Cmd implements CommandExecutor {
 // 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 2) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String inheritance = args[1];
-// 							final boolean result = this.users.addInheritance(rank2, inheritance);
+// 							final boolean result = this.users.addInheritance(rankname, inheritance);
 // 							if (result) {
-// 								Messages.messageCommandInheritanceAdded(console, inheritance, rank2);
+// 								Messages.messageCommandInheritanceAdded(console, inheritance, rankname);
 // 							} else {
-// 								Messages.messageGroupNotFound(console, rank2);
+// 								Messages.messageGroupNotFound(console, rankname);
 // 							}
 // 						} else {
 // 							Messages.messageCommandUsageAddInheritance(console);
@@ -1528,13 +713,13 @@ public class Cmd implements CommandExecutor {
 // 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 2) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String inheritance = args[1];
-// 							final boolean result = this.users.removeInheritance(rank2, inheritance);
+// 							final boolean result = this.users.removeInheritance(rankname, inheritance);
 // 							if (result) {
-// 								Messages.messageCommandInheritanceRemoved(console, inheritance, rank2);
+// 								Messages.messageCommandInheritanceRemoved(console, inheritance, rankname);
 // 							} else {
-// 								Messages.messageGroupNotFound(console, rank2);
+// 								Messages.messageGroupNotFound(console, rankname);
 // 							}
 // 						} else {
 // 							Messages.messageCommandUsageRemoveInheritance(console);
@@ -1542,112 +727,112 @@ public class Cmd implements CommandExecutor {
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 // 					if (args.length == 1) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 						final String prefix = "";
-// 						final boolean result = this.users.setPrefix(rank2, prefix);
+// 						final boolean result = this.users.setPrefix(rankname, prefix);
 // 						if (result) {
-// 							Messages.messageCommandSetPrefix(console, prefix, rank2);
+// 							Messages.messageCommandSetPrefix(console, prefix, rankname);
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else if (args.length >= 3) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 						String prefix = "";
 // 						for (int i = 2; i < args.length; i++) {
 // 							prefix += args[i] + " ";
 // 						}
 // 						prefix = prefix.substring(0, prefix.length() - 1);
 
-// 						final boolean result = this.users.setPrefix(rank2, prefix);
+// 						final boolean result = this.users.setPrefix(rankname, prefix);
 // 						if (result) {
-// 							Messages.messageCommandSetPrefix(console, prefix, rank2);
+// 							Messages.messageCommandSetPrefix(console, prefix, rankname);
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageSetPrefix(console);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 // 					if (args.length == 1) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 						final String suffix = "";
-// 						final boolean result = this.users.setSuffix(rank2, suffix);
+// 						final boolean result = this.users.setSuffix(rankname, suffix);
 // 						if (result) {
-// 							Messages.messageCommandSetSuffix(console, suffix, rank2);
+// 							Messages.messageCommandSetSuffix(console, suffix, rankname);
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else if (args.length >= 3) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 						String suffix = "";
 // 						for (int i = 2; i < args.length; i++) {
 // 							suffix += args[i] + " ";
 // 						}
 // 						suffix = suffix.substring(0, suffix.length() - 1);
-// 						final boolean result = this.users.setSuffix(rank2, suffix);
+// 						final boolean result = this.users.setSuffix(rankname, suffix);
 // 						if (result) {
-// 							Messages.messageCommandSetSuffix(console, suffix, rank2);
+// 							Messages.messageCommandSetSuffix(console, suffix, rankname);
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageSetSuffix(console);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
 // 					if (args.length == 2) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 						final String color = args[1];
-// 						final boolean result = this.users.setChatColor(rank2, color);
+// 						final boolean result = this.users.setChatColor(rankname, color);
 // 						if (result) {
-// 							Messages.messageCommandSetChatColor(console, color, rank2);
+// 							Messages.messageCommandSetChatColor(console, color, rankname);
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageSetChatColor(console);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
 // 					if (args.length == 2) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 						final String color = args[1];
-// 						final boolean result = this.users.setNameColor(rank2, color);
+// 						final boolean result = this.users.setNameColor(rankname, color);
 // 						if (result) {
-// 							Messages.messageCommandSetNameColor(console, color, rank2);
+// 							Messages.messageCommandSetNameColor(console, color, rankname);
 // 						} else {
-// 							Messages.messageGroupNotFound(console, rank2);
+// 							Messages.messageGroupNotFound(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageSetNameColor(console);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("createrank")) {
 // 					if (args.length == 1) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
-// 						final boolean success = this.users.createRank(rank2);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
+// 						final boolean success = this.users.createRank(rankname);
 // 						String[] forbiddenColorCharacters = {"&", "#"};
 // 						String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
 // 						if (success) {
-// 							if (Util.stringContainsItemFromList(rank2, forbiddenColorCharacters)) {
-// 								Messages.messageCommandCreateRankColorCharacterWarning(console, rank2);
+// 							if (Util.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
+// 								Messages.messageCommandCreateRankColorCharacterWarning(console, rankname);
 // 							}
 
-// 							if (Util.stringContainsItemFromList(rank2, forbiddenCharacters)) {
-// 								Messages.messageCommandCreateRankCharacterWarning(console, rank2);
+// 							if (Util.stringContainsItemFromList(rankname, forbiddenCharacters)) {
+// 								Messages.messageCommandCreateRankCharacterWarning(console, rankname);
 // 							}
-// 							Messages.messageCommandCreateRankSuccess(console, rank2);
+// 							Messages.messageCommandCreateRankSuccess(console, rankname);
 // 						} else {
-// 							Messages.messageCommandCreateRankError(console, rank2);
+// 							Messages.messageCommandCreateRankError(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageCreateRank(console);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("deleterank")) {
 // 					if (args.length == 1) {
-// 						final String rank2 = this.users.getRankIgnoreCase(args[0]);
-// 						final boolean success = this.users.deleteRank(rank2);
+// 						final String rankname = this.users.getRankIgnoreCase(args[0]);
+// 						final boolean success = this.users.deleteRank(rankname);
 // 						if (success) {
-// 							Messages.messageCommandDeleteRankSuccess(console, rank2);
+// 							Messages.messageCommandDeleteRankSuccess(console, rankname);
 // 						} else {
-// 							Messages.messageCommandDeleteRankError(console, rank2);
+// 							Messages.messageCommandDeleteRankError(console, rankname);
 // 						}
 // 					} else {
 // 						Messages.messageCommandUsageDeleteRank(console);
@@ -2211,92 +1396,92 @@ public class Cmd implements CommandExecutor {
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("addperm")) {
 // 					if (args.length == 2) {
-// 						final String rank2 = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
 // 						final String permission = args[1];
-// 						this.users.addPermission(rank2, permission);
+// 						this.users.addPermission(rankname, permission);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("delperm")) {
 // 					if (args.length == 2) {
-// 						final String rank2 = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+// 						final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
 // 						final String permission = args[1];
-// 						this.users.removePermission(rank2, permission);
+// 						this.users.removePermission(rankname, permission);
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("addinheritance")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 2) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String inheritance = args[1];
-// 							this.users.addInheritance(rank2, inheritance);
+// 							this.users.addInheritance(rankname, inheritance);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("delinheritance")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 2) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String inheritance = args[1];
-// 							this.users.removeInheritance(rank2, inheritance);
+// 							this.users.removeInheritance(rankname, inheritance);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setprefix")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 1) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String prefix = "";
-// 							this.users.setPrefix(rank2, prefix);
+// 							this.users.setPrefix(rankname, prefix);
 // 						} else if (args.length >= 3) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							String prefix = "";
 // 							for (int i = 2; i < args.length; i++) {
 // 								prefix += args[i] + " ";
 // 							}
 // 							prefix = prefix.substring(0, prefix.length() - 1);
-// 							this.users.setPrefix(rank2, prefix);
+// 							this.users.setPrefix(rankname, prefix);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setsuffix")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 1) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String suffix = "";
-// 							this.users.setSuffix(rank2, suffix);
+// 							this.users.setSuffix(rankname, suffix);
 // 						} else if (args.length >= 3) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							String suffix = "";
 // 							for (int i = 2; i < args.length; i++) {
 // 								suffix += args[i] + " ";
 // 							}
 // 							suffix = suffix.substring(0, suffix.length() - 1);
-// 							this.users.setSuffix(rank2, suffix);
+// 							this.users.setSuffix(rankname, suffix);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setchatcolor")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 2) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String color = args[1];
-// 							this.users.setChatColor(rank2, color);
+// 							this.users.setChatColor(rankname, color);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("setnamecolor")) {
 // 					if (sender.hasPermission("powerranks.cmd.set")) {
 // 						if (args.length == 2) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
 // 							final String color = args[1];
-// 							this.users.setNameColor(rank2, color);
+// 							this.users.setNameColor(rankname, color);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("createrank")) {
 // 					if (sender.hasPermission("powerranks.cmd.create")) {
 // 						if (args.length == 1) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-// 							this.users.createRank(rank2);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
+// 							this.users.createRank(rankname);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("deleterank")) {
 // 					if (sender.hasPermission("powerranks.cmd.create")) {
 // 						if (args.length == 1) {
-// 							final String rank2 = this.users.getRankIgnoreCase(args[0]);
-// 							this.users.deleteRank(rank2);
+// 							final String rankname = this.users.getRankIgnoreCase(args[0]);
+// 							this.users.deleteRank(rankname);
 // 						}
 // 					}
 // 				} else if (args[0].equalsIgnoreCase("promote")) {

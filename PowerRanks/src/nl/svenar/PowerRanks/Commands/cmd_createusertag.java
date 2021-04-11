@@ -30,6 +30,22 @@ public class cmd_createusertag extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.createusertag")) {
+			if (!PowerRanks.plugin_hook_deluxetags) {
+				if (args.length == 2) {
+					final String tag = args[0];
+					final String text = args[1];
+					final boolean result = this.users.createUserTag(tag, text);
+					if (result) {
+						Messages.messageCommandCreateusertagSuccess(sender, tag, text);
+					} else {
+						Messages.messageCommandCreateusertagError(sender, tag, text);
+					}
+				} else {
+					Messages.messageCommandUsageCreateusertag(sender);
+				}
+			} else {
+				Messages.messageUsertagsDisabled(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}

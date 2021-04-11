@@ -54,17 +54,13 @@ public class cmd_delinheritance extends PowerCommand {
 
 		if (args.length == 1) {
 			for (String rank : this.users.getGroups()) {
-				// if (rank.toLowerCase().contains(args[0].toLowerCase())) {
 				tabcomplete.add(rank);
-				// }
 			}
 		}
 
 		if (args.length == 2) {
 			for (String inheritance : this.users.getInheritances(this.users.getRankIgnoreCase(args[0]))) {
-				// if (inheritance.toLowerCase().contains(args[1].toLowerCase())) {
 				tabcomplete.add(inheritance);
-				// }
 			}
 		}
 

@@ -30,6 +30,17 @@ public class cmd_setdemoterank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setdemoterank")) {
+			if (args.length == 2) {
+				final String rankname = args[0];
+				final String promote_rank = args[1];
+				if (this.users.setDemoteRank(rankname, promote_rank)) {
+					Messages.messageCommandSetdemoterankSuccess(sender, rankname, promote_rank);
+				} else {
+					Messages.messageCommandSetdemoterankError(sender, rankname, promote_rank);
+				}
+			} else {
+				Messages.messageCommandUsageSetdemoterank(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +50,21 @@ public class cmd_setdemoterank extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
+		if (args.length == 2) {
+			for (String rank : this.users.getGroups()) {
+				if (!rank.toLowerCase().contains(args[0].toLowerCase())) {
+					tabcomplete.add(rank);
+				}
+			}
+		}
+
 		return tabcomplete;
 	}
 }

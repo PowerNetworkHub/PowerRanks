@@ -17,6 +17,8 @@ import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.gui.GUI;
+import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
 
 public class cmd_gui extends PowerCommand {
 
@@ -30,6 +32,8 @@ public class cmd_gui extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.gui")) {
+			Player player = (Player) sender;
+			GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 		} else {
 			Messages.noPermission(sender);
 		}

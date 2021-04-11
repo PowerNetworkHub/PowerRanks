@@ -54,9 +54,7 @@ public class cmd_addinheritance extends PowerCommand {
 
 		if (args.length == 1) {
 			for (String rank : this.users.getGroups()) {
-				// if (rank.toLowerCase().contains(args[0].toLowerCase())) {
 				tabcomplete.add(rank);
-				// }
 			}
 		}
 

@@ -29,7 +29,44 @@ public class cmd_setusertag extends PowerCommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.setusertag")) {
+		if (sender.hasPermission("powerranks.cmd.setusertag") || sender.hasPermission("powerranks.cmd.admin")) {
+			if (args.length == 1) {
+				if (sender.hasPermission("powerranks.cmd.setusertag")) {
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						final String playername = sender.getName();
+						final String tag = args[0];
+						final boolean result = this.users.setUserTag(playername, tag);
+						if (result) {
+							Messages.messageCommandSetusertagSuccess(sender, playername, tag);
+						} else {
+							Messages.messageCommandSetusertagError(sender, playername, tag);
+						}
+					} else {
+						Messages.messageUsertagsDisabled(sender);
+					}
+				} else {
+					Messages.noPermission(sender);
+				}
+			} else if (args.length == 2) {
+				if (sender.hasPermission("powerranks.cmd.admin")) {
+					if (!PowerRanks.plugin_hook_deluxetags) {
+						final String playername = args[0];
+						final String tag = args[1];
+						final boolean result = this.users.setUserTag(playername, tag);
+						if (result) {
+							Messages.messageCommandSetusertagSuccess(sender, playername, tag);
+						} else {
+							Messages.messageCommandSetusertagError(sender, playername, tag);
+						}
+					} else {
+						Messages.messageUsertagsDisabled(sender);
+					}
+				} else {
+					Messages.noPermission(sender);
+				}
+			} else {
+				Messages.messageCommandUsageSetusertag(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +76,20 @@ public class cmd_setusertag extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				tabcomplete.add(player.getName());
+			}
+		}
+
+		if (args.length == 2) {
+			for (String tag : this.users.getUserTags()) {
+				if (tag.toLowerCase().contains(args[0].toLowerCase()))
+				tabcomplete.add(tag);
+			}
+		}
+
 		return tabcomplete;
 	}
 }

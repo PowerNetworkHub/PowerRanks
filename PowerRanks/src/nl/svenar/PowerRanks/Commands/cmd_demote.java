@@ -30,6 +30,17 @@ public class cmd_demote extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.demote")) {
+			if (args.length == 1) {
+				final String playername = args[0];
+				final boolean success = this.users.demote(playername);
+				if (success) {
+					Messages.messageCommandDemoteSuccess(sender, playername);
+				} else {
+					Messages.messageCommandDemoteError(sender, playername);
+				}
+			} else {
+				Messages.messageCommandUsageDemote(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +50,13 @@ public class cmd_demote extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				tabcomplete.add(player.getName());
+			}
+		}
+
 		return tabcomplete;
 	}
 }

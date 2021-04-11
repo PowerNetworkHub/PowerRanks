@@ -30,6 +30,18 @@ public class cmd_setnamecolor extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setnamecolor")) {
+			if (args.length == 2) {
+				final String rankname = this.users.getRankIgnoreCase(args[0]);
+				final String color = args[1];
+				final boolean result = this.users.setNameColor(rankname, color);
+				if (result) {
+					Messages.messageCommandSetNameColor(sender, color, rankname);
+				} else {
+					Messages.messageGroupNotFound(sender, rankname);
+				}
+			} else {
+				Messages.messageCommandUsageSetNameColor(sender);
+			}
 		} else {
 			Messages.noPermission(sender);
 		}
@@ -39,6 +51,13 @@ public class cmd_setnamecolor extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
+
+		if (args.length == 1) {
+			for (String rank : this.users.getGroups()) {
+				tabcomplete.add(rank);
+			}
+		}
+
 		return tabcomplete;
 	}
 }
