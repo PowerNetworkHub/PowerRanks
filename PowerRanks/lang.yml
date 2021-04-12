@@ -155,7 +155,7 @@ commands:
    usage_command_seticon: "%plugin_prefix% &c%base_cmd% seticon <rank>"
    usage_command_setbuydescription: "%plugin_prefix% &c%base_cmd% setbuydescription <rank> <buy description>"
    usage_command_setbuycommand: "%plugin_prefix% &c%base_cmd% setbuycommand <rank> <command to execute>"
-   usage_command_verbose: "%plugin_prefix% &c%base_cmd% verbose <start/stop/save/clear>"
+   usage_command_verbose: "%plugin_prefix% &c%base_cmd% verbose <start [filter]/startlive [filter]/stop/save/clear>"
    usage_command_playerinfo: "%plugin_prefix% &c%base_cmd% playerinfo <player_name>"
    usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rank_name] [confirm]"
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
@@ -348,10 +348,10 @@ commands:
          command: "config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
          description: "Edit the configuration file"
       verbose:
-         command: "verbose <start/stop/save/clear>"
-         description: "Enable verbose logging, may result in lower performance! Only use for bug reporting"
+         command: "verbose <start [filter]/startlive [filter]/stop/save/clear>"
+         description: "Enable verbose logging, may result in lower performance! Only use for bug reporting. Use the filter to filter on a specific permission"
       playerinfo:
-         command: "playerinfo <player_name>"
+         command: "playerinfo <player_name> [page]"
          description: "Show information about a player"
       stats:
          command: "stats"
