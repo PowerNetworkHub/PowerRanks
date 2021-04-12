@@ -39,6 +39,7 @@ public class cmd_addonmanager extends PowerCommand {
 				if (addonmanagerCommand.equals("acceptterms")) {
 					CachedConfig.set("addon_manager.accepted_terms", true);
 					Messages.addonManagerTermsAccepted(sender);
+					Bukkit.getServer().dispatchCommand(sender, commandLabel + " addonmanager");
 				}
 
 				if (addonmanagerCommand.equals("declineterms")) {

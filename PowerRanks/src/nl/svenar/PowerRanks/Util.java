@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -216,18 +217,22 @@ public class Util {
 	public static URLConnection getURL(String urlString) throws Exception {
         int MAX_REDIRECTS = 10;
 
-		URLConnection urlConnection = new URL(urlString).openConnection();
-        String redirect = urlConnection.getHeaderField("Location");
-        for (int i = 0; i < MAX_REDIRECTS ; i++) {
-            if (redirect != null) {
-                urlConnection = new URL(redirect).openConnection();
-                redirect = urlConnection.getHeaderField("Location");
-            } else {
-                break;
-            }
-        }
+		try {
+			URLConnection urlConnection = new URL(urlString).openConnection();
+			String redirect = urlConnection.getHeaderField("Location");
+			for (int i = 0; i < MAX_REDIRECTS ; i++) {
+				if (redirect != null) {
+					urlConnection = new URL(redirect).openConnection();
+					redirect = urlConnection.getHeaderField("Location");
+				} else {
+					break;
+				}
+			}
+			return urlConnection;
+		} catch(MalformedURLException e) {
+			return null;
+		}
 
-        return urlConnection;
 	}
 	
 	public static String readUrl(String urlString) throws Exception {

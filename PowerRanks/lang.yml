@@ -94,7 +94,7 @@ messages:
    config_worldtag_removed: "%plugin_prefix% &aThe world tag has been removed from the config!"
    config_state_changed: "%plugin_prefix% &aState of '%argument_config_target%' in the config has be changed to %argument_new_state%&a!"
    suggest_restart: "%plugin_prefix% &aChanges will take effect next restart."
-   addonmanager_terms_accepted: "%plugin_prefix% &aAdd-on manager terms accepted, to use the add-on manager run the add-on manager command again"
+   addonmanager_terms_accepted: "%plugin_prefix% &aAdd-on manager terms accepted."
    addonmanager_terms_declined: "%plugin_prefix% &cAdd-on manager terms declined, to use the add-on manager please accept the terms"
    addonmanager_download_not_available: "%plugin_prefix% &cThis add-on can't be downloaded right now"
    addonmanager_download_complete: "%plugin_prefix% &aSuccessfully downloaded add-on: %addonname%. Do '/pr addoninfo %addonname%' for more info"
