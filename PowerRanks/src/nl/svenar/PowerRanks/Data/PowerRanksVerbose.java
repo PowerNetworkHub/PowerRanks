@@ -17,6 +17,7 @@ public class PowerRanksVerbose {
 	public static boolean USE_VERBOSE_LIVE = false;
 	private static ArrayList<String> VERBOSE_LOG = new ArrayList<String>();
 	private static PowerRanks plugin;
+	private static String filter = "";
 
 	public PowerRanksVerbose(PowerRanks plugin) {
 		PowerRanksVerbose.plugin = plugin;
@@ -32,10 +33,20 @@ public class PowerRanksVerbose {
 	public static void stop() {
 		USE_VERBOSE = false;
 		USE_VERBOSE_LIVE = false;
+		setFilter("");
 	}
 
 	public static void clear() {
 		VERBOSE_LOG.clear();
+		setFilter("");
+	}
+
+	public static void setFilter(String filter) {
+		PowerRanksVerbose.filter = filter;
+	}
+
+	public static String getFilter() {
+		return PowerRanksVerbose.filter;
 	}
 
 	public static void log(String functionName, String msg) {

@@ -33,11 +33,14 @@ public class cmd_verbose extends PowerCommand {
 		if (sender.hasPermission("powerranks.cmd.verbose")) {
 			if (args.length == 0) {
 				Messages.checkVerbose(sender);
-			} else if (args.length == 1) {
+			} else if (args.length == 1 || args.length == 2) {
 				String verboseType = args[0].toLowerCase();
 				if (verboseType.equals("start")) {
 					if (!PowerRanksVerbose.USE_VERBOSE) {
 						PowerRanksVerbose.start(false);
+						if (args.length == 2) {
+							PowerRanksVerbose.setFilter(args[1]);
+						}
 						Messages.messageCommandVerboseStarted(sender);
 					} else {
 						Messages.messageCommandVerboseAlreadyRunning(sender);
@@ -45,6 +48,9 @@ public class cmd_verbose extends PowerCommand {
 				} else if (verboseType.equals("startlive")) {
 					if (!PowerRanksVerbose.USE_VERBOSE) {
 						PowerRanksVerbose.start(true);
+						if (args.length == 2) {
+							PowerRanksVerbose.setFilter(args[1]);
+						}
 						Messages.messageCommandVerboseStarted(sender);
 					} else {
 						Messages.messageCommandVerboseAlreadyRunning(sender);
@@ -85,10 +91,20 @@ public class cmd_verbose extends PowerCommand {
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
-		tabcomplete.add("start");
-		tabcomplete.add("startlive");
-		tabcomplete.add("stop");
-		tabcomplete.add("save");
+		if (args.length == 1) {
+			tabcomplete.add("start");
+			tabcomplete.add("startlive");
+			tabcomplete.add("stop");
+			tabcomplete.add("save");
+		}
+
+		if (args.length == 2) {
+			tabcomplete.add("---Add a permission filter ---");
+			tabcomplete.add("example:");
+			tabcomplete.add("powerranks");
+			tabcomplete.add("powerranks.cmd");
+			tabcomplete.add("------------------------------");
+		}
 
 		return tabcomplete;
 	}
