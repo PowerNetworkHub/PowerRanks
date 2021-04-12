@@ -136,8 +136,14 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean isPermissionSet(String permission) {
-		// boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
-		boolean value = hasPermission(permission);
+		boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
+		try {
+			value = hasPermission(permission);
+			
+		} catch (StackOverflowError e) {
+
+		}
+
 		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
 			PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
 		}
