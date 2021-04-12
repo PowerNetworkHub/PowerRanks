@@ -92,7 +92,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 
 			output_messages.add(page_selector_tellraw);
 
-			output_messages.add(ChatColor.AQUA + player.getName() + "'s sermissions:");
+			output_messages.add(ChatColor.AQUA + player.getName() + "'s permissions:");
 
 			// sender.sendMessage("[A] " + last_page + " " + lines_per_page);
 		} else {

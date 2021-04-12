@@ -31,14 +31,14 @@ public class PowerCommandHandler implements CommandExecutor {
 
 		new cmd_help(plugin, "help", COMMAND_EXECUTOR.ALL);
 		new cmd_reload(plugin, "reload", COMMAND_EXECUTOR.ALL);
-		// new cmd_verbose(plugin, "verbose", COMMAND_EXECUTOR.ALL);
-		// new cmd_pluginhook(plugin, "pluginhook", COMMAND_EXECUTOR.ALL);
-		// new cmd_config(plugin, "config", COMMAND_EXECUTOR.ALL);
+		new cmd_verbose(plugin, "verbose", COMMAND_EXECUTOR.ALL);
+		new cmd_pluginhook(plugin, "pluginhook", COMMAND_EXECUTOR.ALL);
+		new cmd_config(plugin, "config", COMMAND_EXECUTOR.ALL);
 		new cmd_stats(plugin, "stats", COMMAND_EXECUTOR.ALL);
 		new cmd_factoryreset(plugin, "factoryreset", COMMAND_EXECUTOR.ALL);
 		new cmd_addoninfo(plugin, "addoninfo", COMMAND_EXECUTOR.ALL);
 		new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
-		// new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
+		new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
 		new cmd_setownrank(plugin, "setownrank", COMMAND_EXECUTOR.PLAYER);
@@ -101,11 +101,6 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_setusertag(plugin, "setusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_clearusertag(plugin, "clearusertag", COMMAND_EXECUTOR.ALL);
 
-		int c = 0;
-		for (Entry<String, PowerCommand> entry : power_commands.entrySet()) {
-			c++;
-		}
-		PowerRanks.log.warning("Registered commands: " + c);
 	}
 
 	private static boolean canExecuteCommand(CommandSender sender, PowerCommand command_handler) {
