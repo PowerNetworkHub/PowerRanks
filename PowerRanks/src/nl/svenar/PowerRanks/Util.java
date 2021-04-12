@@ -88,6 +88,9 @@ public class Util {
 			if (endIdx == -1)
 				break;
 			result.append(text.substring(textIdx, startIdx));
+
+			// PowerRanks.log.warning(textIdx + " - " + startIdx + " - " + text.substring(textIdx, startIdx));
+
 			textIdx = endIdx + 1;
 			String value = values.get(text.substring(startIdx + 1, endIdx));
 			if (value != null && !value.isEmpty()) {

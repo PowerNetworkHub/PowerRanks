@@ -34,7 +34,7 @@ public class cmd_config extends PowerCommand {
 		if (sender.hasPermission("powerranks.cmd.config")) {
 			if (args.length == 1) {
 				if (args[0].equalsIgnoreCase("removeworldtag")) {
-					String world_tag_regex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}([#][a-fA-F0-9]{6}){0,1}[ ]{0,1}[\\[]world[\\]][ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}([#][a-fA-F0-9]{6}){0,1}[ ]{0,1}";
+					String world_tag_regex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}[\\[]world[\\]][ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}";
 					Pattern world_tag_pattern = Pattern.compile(world_tag_regex);
 					Matcher world_tag_matcher_chat = world_tag_pattern.matcher(CachedConfig.getString("chat.format").toLowerCase());
 					Matcher world_tag_matcher_tab = world_tag_pattern.matcher(CachedConfig.getString("tablist_modification.format").toLowerCase());
