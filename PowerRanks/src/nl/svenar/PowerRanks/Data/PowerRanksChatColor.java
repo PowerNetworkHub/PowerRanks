@@ -62,7 +62,7 @@ public class PowerRanksChatColor {
 		}
 
 		String pattern = "(?<=&[iIjJ]).*?((?=&[0-9a-fA-FrR])|$)";
-		Pattern hex_color_pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+		Pattern hex_color_pattern = Pattern.compile("(&){0,1}#[a-fA-F0-9]{6}");
 
 		Pattern r = Pattern.compile(pattern);
 		Matcher m = r.matcher(text);
@@ -91,10 +91,11 @@ public class PowerRanksChatColor {
 		while (hex_color_matcher.find()) {
 			is_hex_used = true;
 			String hex_color = text.substring(hex_color_matcher.start(), hex_color_matcher.end());
+
 			try {
-				text = text.replace(hex_color, net.md_5.bungee.api.ChatColor.of(hex_color) + "");
+				text = text.replace(hex_color, net.md_5.bungee.api.ChatColor.of(hex_color.startsWith("&") ? hex_color.replaceFirst("&", "") : hex_color) + "");
 			} catch(Exception e) {
-				text = text.replace(hex_color, hex_compatibility_converter(hex_color) + "");
+				text = text.replace(hex_color, hex_compatibility_converter(hex_color.startsWith("&") ? hex_color.replaceFirst("&", "") : hex_color) + "");
 			}
 			hex_color_matcher = hex_color_pattern.matcher(text);
 		}
