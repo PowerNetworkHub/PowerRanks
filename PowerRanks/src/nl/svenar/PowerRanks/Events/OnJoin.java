@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Cache.CachedPlayers;
 import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
@@ -50,6 +51,12 @@ public class OnJoin implements Listener {
 				e.setJoinMessage("");
 			}
 			
+		}
+
+		if (CachedConfig.getBoolean("general.disable-op")) {
+			if (player.isOp()) {
+				player.setOp(false);
+			}
 		}
 	}
 

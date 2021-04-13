@@ -1,4 +1,7 @@
 # --------------------
+# General
+# disable-op prevent the /op & /deop command being used and deop every player
+# --------------------
 # Chat format
 # Available options:
 # [prefix] rank prefix
@@ -38,6 +41,7 @@
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # DeluxeTags: used for user tags
 # NametagEdit: used for changing the players name displayed above the head
+# tab: used for advanced tablist formatting
 # --------------------
 # Announcements
 # Enable or disable server-wide announcements.
@@ -55,6 +59,8 @@
 # 'automatic_update_config_files' Update the configuration files to the newest version.
 # --------------------
 
+general:
+  disable-op: true
 chat:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'

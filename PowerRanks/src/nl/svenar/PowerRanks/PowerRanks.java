@@ -40,6 +40,7 @@ import nl.svenar.PowerRanks.Events.OnInteract;
 import nl.svenar.PowerRanks.Events.OnInventory;
 import nl.svenar.PowerRanks.Events.OnJoin;
 import nl.svenar.PowerRanks.Events.OnMove;
+import nl.svenar.PowerRanks.Events.OnPreCommand;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
 import nl.svenar.PowerRanks.Events.OnWorldChange;
 import nl.svenar.PowerRanks.addons.AddonsManager;
@@ -144,6 +145,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnMove(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnWorldChange(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBlockChange(this), (Plugin) this);
+		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnPreCommand(this), (Plugin) this);
 
 		// PowerRanks.log.info("");
 		// PowerRanks.log.info("=== --------- LOADING COMMANDS --------- ===");

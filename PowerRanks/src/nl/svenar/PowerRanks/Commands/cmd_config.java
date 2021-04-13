@@ -1,22 +1,15 @@
 package nl.svenar.PowerRanks.Commands;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 
@@ -63,9 +56,15 @@ public class cmd_config extends PowerCommand {
 					if (args[1].equalsIgnoreCase("chat_formatting")) {
 						CachedConfig.set("chat.enabled", enable);
 						Messages.configStateChanged(sender, "Chat formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+
 					} else if (args[1].equalsIgnoreCase("tablist_formatting")) {
 						CachedConfig.set("tablist_modification.enabled", enable);
 						Messages.configStateChanged(sender, "Tablist formatting", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+
+					} else if (args[1].equalsIgnoreCase("op")) {
+						CachedConfig.set("general.disable-op", !enable);
+						Messages.configStateChanged(sender, "Op command", (enable ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
+
 					} else {
 						Messages.messageCommandUsageConfig(sender);
 					}
@@ -95,6 +94,7 @@ public class cmd_config extends PowerCommand {
 			if (args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
 				tabcomplete.add("chat_formatting");
 				tabcomplete.add("tablist_formatting");
+				tabcomplete.add("op");
 			}
 		}
 
