@@ -131,7 +131,23 @@ public class PowerCommandHandler implements CommandExecutor {
 					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Only players can use this command");
 				}
 			} else {
-				sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Unknown Command");
+				boolean addonCommandFound = false;
+				PowerRanksPlayer prPlayer = null;
+				if (sender instanceof Player) {
+					prPlayer = new PowerRanksPlayer(this.plugin, (Player) sender);
+				} else {
+					prPlayer = new PowerRanksPlayer(this.plugin, "CONSOLE");
+				}
+
+				if (prPlayer != null) {
+					for (Entry<File, PowerRanksAddon> prAddon : this.plugin.addonsManager.addonClasses.entrySet()) {
+						if (prAddon.getValue().onPowerRanksCommand(prPlayer, sender instanceof Player, args[0], args)) {
+							addonCommandFound = true;
+						}
+					}
+				}
+				if (!addonCommandFound)
+					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Unknown Command");
 			}
 
 		}
