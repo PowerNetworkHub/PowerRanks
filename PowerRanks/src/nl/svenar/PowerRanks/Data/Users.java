@@ -416,10 +416,8 @@ public class Users implements Listener {
 	}
 
 	public boolean addInheritance(String rank, String inheritance) {
-		rank = getRankIgnoreCase(rank);
-		inheritance = getRankIgnoreCase(inheritance);
 		try {
-			if (CachedRanks.get("Groups." + rank) != null && CachedRanks.get("Groups." + inheritance) != null) {
+			if (CachedRanks.get("Groups." + rank) != null) {
 				List<String> list = (List<String>) CachedRanks.getStringList("Groups." + rank + ".inheritance");
 				if (!list.contains(inheritance)) {
 					list.add(inheritance);
@@ -490,8 +488,6 @@ public class Users implements Listener {
 	}
 
 	public boolean removeInheritance(String rank, String inheritance) {
-		rank = getRankIgnoreCase(rank);
-		inheritance = getRankIgnoreCase(inheritance);
 		try {
 			if (CachedRanks.get("Groups." + rank) != null) {
 				List<String> list = (List<String>) CachedRanks.getStringList("Groups." + rank + ".inheritance");
@@ -775,10 +771,8 @@ public class Users implements Listener {
 	}
 
 	public List<String> getPermissions(String rank) {
-		List<String> permissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
-		if (permissions == null) {
-			permissions = new ArrayList<String>();
-		}
+		List<String> permissions = new ArrayList<String>();
+		permissions = CachedRanks.getStringList("Groups." + rank + ".permissions");
 		return permissions;
 	}
 

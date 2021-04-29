@@ -97,14 +97,10 @@ public class DownloadableAddon {
 		try {
 			URLConnection urlConnection = Util.getURL(getURL());
 
-			if (urlConnection != null) {
-				String filePathName = urlConnection.getURL().getFile();
-				String fileName = filePathName.substring(filePathName.lastIndexOf(File.separatorChar) + 1);
-				final File target = new File(PowerRanks.configFileLoc + File.separator + "Addons", fileName);
-				return target;
-			} else {
-				return null;
-			}
+			String filePathName = urlConnection.getURL().getFile();
+			String fileName = filePathName.substring(filePathName.lastIndexOf(File.separatorChar) + 1);
+			final File target = new File(PowerRanks.configFileLoc + File.separator + "Addons", fileName);
+			return target;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -113,8 +109,7 @@ public class DownloadableAddon {
 	}
 	
 	public boolean isInstalled() {
-		File file = getFile();
-		return file != null ? file.exists() : false;
+		return getFile().exists();
 	}
 
 	public void uninstall() {

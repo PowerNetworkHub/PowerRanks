@@ -21,7 +21,6 @@ public class PowerRanksVerbose {
 
 	public PowerRanksVerbose(PowerRanks plugin) {
 		PowerRanksVerbose.plugin = plugin;
-		// start(true); // DEBUG
 	}
 	
 	public static void start(boolean live) {

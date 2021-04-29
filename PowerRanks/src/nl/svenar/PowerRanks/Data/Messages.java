@@ -58,7 +58,8 @@ public class Messages {
 	}
 
 	public static void messageNoArgs(final CommandSender console) {
-		console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+		console.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+				+ ChatColor.DARK_AQUA + "--------");
 		console.sendMessage(ChatColor.GREEN + "/pr help" + ChatColor.DARK_GREEN + " - For a list of commands.");
 		console.sendMessage(new StringBuilder().append(ChatColor.GREEN).toString());
 		console.sendMessage(ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + PowerRanks.pdf.getAuthors().get(0));
@@ -80,104 +81,207 @@ public class Messages {
 		}
 		Instant current_time = Instant.now();
 
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
-		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
-		sender.sendMessage(ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
-		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN + format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
-		sender.sendMessage(ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+				+ ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + Bukkit.getVersion() + " | "
+				+ Bukkit.getServer().getBukkitVersion());
+		sender.sendMessage(
+				ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
+		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN
+				+ format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
+		sender.sendMessage(
+				ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
 		sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
-		sender.sendMessage(ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
+		sender.sendMessage(
+				ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
-		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: " + (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: " + (PowerRanks.vaultPermissionsEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: " + (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: " + (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: "
+				+ (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions: "
+				+ (PowerRanks.vaultPermissionsEnabled ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI: "
+				+ (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags: "
+				+ (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: "
+				+ (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void messagePluginhookStats(CommandSender sender) {
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+				+ ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
-		sender.sendMessage(ChatColor.GREEN + "- Vault Economy (vault_economy): " + (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions (vault_permissions): " + (PowerRanks.vaultPermissionsEnabled ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI (placeholderapi): " + (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags (deluxetags): " + (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.GREEN + "- NametagEdit (nametagedit): " + (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.GREEN + "- Vault Economy (vault_economy): "
+				+ (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Vault Permissions (vault_permissions): "
+				+ (PowerRanks.vaultPermissionsEnabled ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- PlaceholderAPI (placeholderapi): "
+				+ (PowerRanks.getPlaceholderapiExpansion() != null ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- DeluxeTags (deluxetags): "
+				+ (PowerRanks.plugin_hook_deluxetags ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- NametagEdit (nametagedit): "
+				+ (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void messageCommandFactoryReset(CommandSender sender) {
-		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
+		PowerRanks.factoryresetid = (100 + Math.round(Math.random() * 900)) + "-"
+				+ (100 + Math.round(Math.random() * 900)) + "-" + (100 + Math.round(Math.random() * 900));
 
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+				+ ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.DARK_RED + "WARNING!");
 		sender.sendMessage(ChatColor.RED + "This action is irreversible if you continue");
 		sender.sendMessage(ChatColor.RED + "Factory reset ID: " + ChatColor.GOLD + PowerRanks.factoryresetid);
-		sender.sendMessage(ChatColor.RED + "To continue do: " + ChatColor.GOLD + "/pr factoryreset " + PowerRanks.factoryresetid);
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(
+				ChatColor.RED + "To continue do: " + ChatColor.GOLD + "/pr factoryreset " + PowerRanks.factoryresetid);
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void messageCommandFactoryResetDone(CommandSender sender) {
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+				+ ChatColor.DARK_AQUA + "--------");
 		sender.sendMessage(ChatColor.GREEN + "Factory reset complete!");
 		sender.sendMessage(ChatColor.GREEN + "It is recommended to restart your server.");
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void messageCommandBuyrank(CommandSender sender, Users users, String rankname) {
 		if (rankname == null) {
 			String tellraw_command = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"Buy\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\" %rank% \",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"|\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\" Cost: \",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"%cost%\",\"color\":\"%cost_color%\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}}]";
-			double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance((Player) sender) : 0;
+			double player_balance = VaultHook.getVaultEconomy() != null
+					? VaultHook.getVaultEconomy().getBalance((Player) sender)
+					: 0;
 
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
 			sender.sendMessage(ChatColor.DARK_GREEN + "Ranks available to buy (click to buy):");
 			List<String> ranks = users.getBuyableRanks(users.getGroup((Player) sender));
 			for (String rank : ranks) {
 				int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
 				String cost_color = player_balance >= cost ? "green" : "red";
-//			sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GREEN + "Buy" + ChatColor.BLACK + "] " + ChatColor.RESET + rank + " | Cost: " + String.valueOf(cost)); // TODO: Make [Buy] clickable
+				// sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GREEN + "Buy" +
+				// ChatColor.BLACK + "] " + ChatColor.RESET + rank + " | Cost: " +
+				// String.valueOf(cost)); // TODO: Make [Buy] clickable
 				if (Messages.powerRanks != null)
-					Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(),
-							tellraw_command.replaceAll("%rank%", rank).replaceAll("%cost%", String.valueOf(cost)).replaceAll("%cost_color%", cost_color).replaceAll("%player%", sender.getName()));
+					Messages.powerRanks.getServer().dispatchCommand(
+							(CommandSender) Messages.powerRanks.getServer().getConsoleSender(),
+							tellraw_command.replaceAll("%rank%", rank).replaceAll("%cost%", String.valueOf(cost))
+									.replaceAll("%cost_color%", cost_color).replaceAll("%player%", sender.getName()));
 			}
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		} else {
 			String tellraw_command = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank% confirm\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to buy\"}},{\"text\":\"Confirm\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank% confirm\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to buy\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank% confirm\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Click to buy\"}}]";
-			double player_balance = VaultHook.getVaultEconomy() != null ? VaultHook.getVaultEconomy().getBalance((Player) sender) : 0;
+			double player_balance = VaultHook.getVaultEconomy() != null
+					? VaultHook.getVaultEconomy().getBalance((Player) sender)
+					: 0;
 
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
 			sender.sendMessage(ChatColor.DARK_GREEN + "Click 'confirm' to purchase " + rankname);
 			int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
-			sender.sendMessage("Cost: " + (player_balance >= cost ? ChatColor.GREEN : ChatColor.RED) + String.valueOf(cost));
+			sender.sendMessage(
+					"Cost: " + (player_balance >= cost ? ChatColor.GREEN : ChatColor.RED) + String.valueOf(cost));
 			if (Messages.powerRanks != null)
-				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellraw_command.replaceAll("%rank%", rankname).replaceAll("%player%", sender.getName()));
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+				Messages.powerRanks.getServer().dispatchCommand(
+						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(),
+						tellraw_command.replaceAll("%rank%", rankname).replaceAll("%player%", sender.getName()));
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
 	}
+
+	// public static void messagePlayerInfo(final CommandSender sender, final Player
+	// player) {
+	// SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+	// format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+	// sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE +
+	// PowerRanks.pdf.getName()
+	// + ChatColor.DARK_AQUA + "--------");
+	// sender.sendMessage(ChatColor.GREEN + "UUID: " + ChatColor.DARK_GREEN +
+	// player.getUniqueId());
+	// sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN +
+	// player.getDisplayName()
+	// + (!player.getDisplayName().equals(player.getName())
+	// ? (ChatColor.DARK_GREEN + " aka " + player.getName())
+	// : ""));
+	// sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " +
+	// ChatColor.DARK_GREEN
+	// + format.format(player.getFirstPlayed()));
+	// sender.sendMessage(
+	// ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN +
+	// format.format(player.getLastPlayed()));
+	// sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET +
+	// getSampleChatFormat(player));
+	// sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN
+	// + CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
+	// sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN
+	// + (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() +
+	// ".subranks") != null
+	// ? (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() +
+	// ".subranks")
+	// .getKeys(false).size() > 0 ? String.join(
+	// ", ",
+	// CachedPlayers.getConfigurationSection(
+	// "players." + player.getUniqueId() + ".subranks").getKeys(false))
+	// : "None")
+	// : "None"));
+	// sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
+	// for (String permission : powerRanks.getEffectivePlayerPermissions(player)) {
+	// sender.sendMessage(
+	// (permission.startsWith("-") ? ChatColor.DARK_RED : ChatColor.DARK_GREEN) + "-
+	// " + permission);
+	// }
+	// sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+	// }
 
 	public static void messagePlayerInfo(final CommandSender sender, final Player player, int page) {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
+				+ Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE
+				+ "===");
 		sender.sendMessage(ChatColor.GREEN + "UUID: " + ChatColor.DARK_GREEN + player.getUniqueId());
-		sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName() + (!player.getDisplayName().equals(player.getName()) ? (ChatColor.DARK_GREEN  + " aka " + player.getName()) : ""));
-		sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getFirstPlayed()));
-		sender.sendMessage(ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
+		sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName()
+				+ (!player.getDisplayName().equals(player.getName())
+						? (ChatColor.DARK_GREEN + " aka " + player.getName())
+						: ""));
+		sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN
+				+ format.format(player.getFirstPlayed()));
+		sender.sendMessage(
+				ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
 		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
-		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN + CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
-		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN + (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null ? (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks").getKeys(false).size() > 0 ? String.join(", ", CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks").getKeys(false)) : "None") : "None"));
+		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN
+				+ CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
+		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN
+				+ (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null
+						? (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks")
+								.getKeys(false).size() > 0 ? String.join(
+										", ",
+										CachedPlayers.getConfigurationSection(
+												"players." + player.getUniqueId() + ".subranks").getKeys(false))
+										: "None")
+						: "None"));
 		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
-
 
 		ArrayList<String> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = playerPermissions.size() / lines_per_page;
-
 
 		if (!(sender instanceof Player)) {
 			page -= 1;
@@ -187,38 +291,50 @@ public class Messages {
 		page = page > last_page ? last_page : page;
 
 		if (sender instanceof Player) {
-			String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%" + "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
-			+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}" + ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
-			+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
-			+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
-			+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
-			+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
-			+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "%commandlabel%" + " playerinfo %playername% " + "%next_page%" + "\"}}]";
-		
-		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
-		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
-		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%", String.valueOf(last_page + 1));
-		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", player.getName());
-		page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
+			String page_selector_tellraw = "tellraw " + sender.getName()
+					+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
+					+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
+					+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+					+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
+					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
+					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
+					+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
+					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
+					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%" + "\"}}]";
 
-		Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
+					String.valueOf(last_page + 1));
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", player.getName());
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
+
+			Messages.powerRanks.getServer().dispatchCommand(
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/" + ChatColor.BLUE + (last_page + 1));
-			sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " playerinfo " + player.getName() + " " + ChatColor.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+			sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
+					+ ChatColor.BLUE + (last_page + 1));
+			sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " playerinfo "
+					+ player.getName() + " " + ChatColor.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
 		}
 
 		int line_index = 0;
 		for (String permission : playerPermissions) {
 			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". " + (permission.startsWith("-") ? ChatColor.RED : ChatColor.GREEN) + permission);
+				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
+						+ (permission.startsWith("-") ? ChatColor.RED : ChatColor.GREEN) + permission);
 			}
 			line_index += 1;
 		}
 
-
-
-
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
+				+ ChatColor.BLUE + "===");
 	}
 
 	private static String getSampleChatFormat(Player player) {
@@ -226,17 +342,26 @@ public class Messages {
 
 		String format = CachedConfig.getString("chat.format");
 		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-		String prefix = (CachedRanks.getString("Groups." + rank + ".chat.prefix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.prefix") : "";
-		String suffix = (CachedRanks.getString("Groups." + rank + ".chat.suffix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.suffix") : "";
-		String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.chatColor") : "";
-		String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.nameColor") : "";
+		String prefix = (CachedRanks.getString("Groups." + rank + ".chat.prefix") != null)
+				? CachedRanks.getString("Groups." + rank + ".chat.prefix")
+				: "";
+		String suffix = (CachedRanks.getString("Groups." + rank + ".chat.suffix") != null)
+				? CachedRanks.getString("Groups." + rank + ".chat.suffix")
+				: "";
+		String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null)
+				? CachedRanks.getString("Groups." + rank + ".chat.chatColor")
+				: "";
+		String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null)
+				? CachedRanks.getString("Groups." + rank + ".chat.nameColor")
+				: "";
 		String subprefix = "";
 		String subsuffix = "";
 		String usertag = "";
 
 		try {
 			if (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null) {
-				ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
+				ConfigurationSection subranks = CachedPlayers
+						.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
 				for (String r : subranks.getKeys(false)) {
 					boolean in_world = false;
 					if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks." + r + ".worlds")) {
@@ -244,11 +369,13 @@ public class Messages {
 
 						ArrayList<String> default_worlds = new ArrayList<String>();
 						default_worlds.add("All");
-						CachedPlayers.set("players." + player.getUniqueId() + ".subranks." + r + ".worlds", default_worlds, true);
+						CachedPlayers.set("players." + player.getUniqueId() + ".subranks." + r + ".worlds",
+								default_worlds, true);
 					}
 
 					String player_current_world = player.getWorld().getName();
-					List<String> worlds = CachedPlayers.getStringList("players." + player.getUniqueId() + ".subranks." + r + ".worlds");
+					List<String> worlds = CachedPlayers
+							.getStringList("players." + player.getUniqueId() + ".subranks." + r + ".worlds");
 					for (String world : worlds) {
 						if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
 							in_world = true;
@@ -256,16 +383,22 @@ public class Messages {
 					}
 
 					if (in_world) {
-						if (CachedPlayers.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_prefix")) {
-							subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null && CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
-									? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix") + " "
-									: "");
+						if (CachedPlayers
+								.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_prefix")) {
+							subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null
+									&& CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
+											? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix")
+													+ " "
+											: "");
 						}
 
-						if (CachedPlayers.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_suffix")) {
-							subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null && CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
-									? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix") + " "
-									: "");
+						if (CachedPlayers
+								.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_suffix")) {
+							subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null
+									&& CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
+											? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix")
+													+ " "
+											: "");
 
 						}
 					}
@@ -286,7 +419,8 @@ public class Messages {
 			subsuffix = "";
 		}
 
-		if (CachedPlayers.contains("players." + player.getUniqueId() + ".usertag") && CachedPlayers.getString("players." + player.getUniqueId() + ".usertag").length() > 0) {
+		if (CachedPlayers.contains("players." + player.getUniqueId() + ".usertag")
+				&& CachedPlayers.getString("players." + player.getUniqueId() + ".usertag").length() > 0) {
 			String tmp_usertag = CachedPlayers.getString("players." + player.getUniqueId() + ".usertag");
 
 			if (CachedRanks.getConfigurationSection("Usertags") != null) {
@@ -299,28 +433,24 @@ public class Messages {
 				}
 			}
 		}
-		
+
 		if (!player.hasPermission("powerranks.chat.chatcolor")) {
 			playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");
 		}
-		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
-		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
-		
+		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "")
+				+ PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
+		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
+				+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
-		format = Util.powerFormatter(format,
-		ImmutableMap.<String, String>builder()
-			.put("prefix", prefix)
-			.put("suffix", suffix)
-			.put("subprefix", subprefix)
-			.put("subsuffix", subsuffix)
-			.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
-			.put("player", player_formatted_name)
-			.put("msg", player_formatted_chat_msg)
-			.put("world", player.getWorld().getName()).build(),
-		'[', ']');
-		
+		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix)
+				.put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
+				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
+				.put("world", player.getWorld().getName()).build(), '[', ']');
+
 		if (PowerRanks.placeholderapiExpansion != null) {
-			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
+			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
+					"" + PowerRanksChatColor.unformatted_default_char);
 		}
 
 		for (Entry<File, PowerRanksAddon> prAddon : PowerRanks.getInstance().addonsManager.addonClasses.entrySet()) {
@@ -355,13 +485,22 @@ public class Messages {
 
 	public static void helpMenu(final Player sender, int page) {
 		String tellrawbase = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\"},{\"text\":\"/%cmd% %arg%\",\"color\":\"%color_command_allowed%\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/%cmd% %arg%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"/%cmd% %arg%\"}},{\"text\":\"]\",\"color\":\"black\"},{\"text\":\" %help%\",\"color\":\"dark_green\"}]";
-		String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%" + "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
-				+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}" + ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%previous_page%"
-				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%previous_page%"
-				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%previous_page%"
-				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%next_page%"
-				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%next_page%"
-				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr" + " help " + "%next_page%" + "\"}}]";
+		String page_selector_tellraw = "tellraw " + sender.getName()
+				+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
+				+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
+				+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+				+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/" + "pr"
+				+ " help " + "%previous_page%"
+				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+				+ "pr" + " help " + "%previous_page%"
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+				+ "pr" + " help " + "%previous_page%"
+				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+				+ "pr" + " help " + "%next_page%"
+				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+				+ "pr" + " help " + "%next_page%"
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+				+ "pr" + " help " + "%next_page%" + "\"}}]";
 
 		ArrayList<String> help_messages = new ArrayList<String>();
 
@@ -384,25 +523,32 @@ public class Messages {
 
 		if (lines != null) {
 			help_messages.add(page_selector_tellraw);
-			help_messages.add("tellraw %player% [\"\",{\"text\":\"Arguments: \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"blue\"},{\"text\":\"optional\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between [] are not required.\"}},{\"text\":\"]\",\"color\":\"blue\"},{\"text\":\" <\",\"color\":\"blue\"},{\"text\":\"required\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between <> are required.\"}},{\"text\":\">\",\"color\":\"blue\"}]".replaceAll("%player%", sender.getName()));
-			
+			help_messages.add(
+					"tellraw %player% [\"\",{\"text\":\"Arguments: \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"blue\"},{\"text\":\"optional\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between [] are not required.\"}},{\"text\":\"]\",\"color\":\"blue\"},{\"text\":\" <\",\"color\":\"blue\"},{\"text\":\"required\",\"color\":\"aqua\",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Arguments between <> are required.\"}},{\"text\":\">\",\"color\":\"blue\"}]"
+							.replaceAll("%player%", sender.getName()));
+
 			int line_index = 0;
 			for (String section : lines.getKeys(false)) {
 				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
 					String help_command = langYaml.getString("commands.help." + section + ".command");
 					String help_description = langYaml.getString("commands.help." + section + ".description");
-					help_messages.add(tellrawbase.replaceAll("%arg%", help_command).replaceAll("%help%", help_description).replaceAll("%player%", sender.getName()).replaceAll("%cmd%", "pr").replaceAll("%color_command_allowed%",
-							sender.hasPermission("powerranks.cmd." + section) ? "green" : "red"));
+					help_messages.add(tellrawbase.replaceAll("%arg%", help_command)
+							.replaceAll("%help%", help_description).replaceAll("%player%", sender.getName())
+							.replaceAll("%cmd%", "pr").replaceAll("%color_command_allowed%",
+									sender.hasPermission("powerranks.cmd." + section) ? "green" : "red"));
 				}
 				line_index += 1;
 			}
 		}
 
-		help_messages.add("tellraw %player% [\"\",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"------------------------------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}]".replaceAll("%player%", sender.getName()));
+		help_messages.add(
+				"tellraw %player% [\"\",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"------------------------------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}]"
+						.replaceAll("%player%", sender.getName()));
 
 		if (Messages.powerRanks != null)
 			for (String msg : help_messages)
-				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), msg);
+				Messages.powerRanks.getServer()
+						.dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), msg);
 	}
 
 	public static void helpMenu(final ConsoleCommandSender sender) {
@@ -410,11 +556,13 @@ public class Messages {
 
 		ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
 		if (lines != null) {
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = langYaml.getString("general.prefix");
 			for (String section : lines.getKeys(false)) {
-				String line = "&a/pr " + langYaml.getString("commands.help." + section + ".command") + "&2 - " + langYaml.getString("commands.help." + section + ".description");
+				String line = "&a/pr " + langYaml.getString("commands.help." + section + ".command") + "&2 - "
+						+ langYaml.getString("commands.help." + section + ".description");
 				line = Util.replaceAll(line, "%base_cmd%", "/pr");
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
@@ -422,7 +570,7 @@ public class Messages {
 				if (msg.length() > 0)
 					sender.sendMessage(msg);
 			}
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 		}
 	}
 
@@ -432,7 +580,9 @@ public class Messages {
 		if (sender instanceof Player) {
 
 			int lines_per_page = 5;
-			int last_page = PowerRanks.getInstance().addonsManager.getAddonDownloader() == null ? 0 : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons().size() / lines_per_page;
+			int last_page = PowerRanks.getInstance().addonsManager.getAddonDownloader() == null ? 0
+					: PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons().size()
+							/ lines_per_page;
 
 			page = page < 0 ? 0 : page;
 			page = page > last_page ? last_page : page;
@@ -446,87 +596,77 @@ public class Messages {
 
 			String tellrawCommand = "tellraw %player% ";
 
-			/**
-			 * ["",
-			 * 	{"text":"===","color":"blue"}, {"text":"----------","color":"dark_aqua"}, {"text":"PowerRanks","color":"aqua"}, {"text":"----------","color":"dark_aqua"}, {"text":"===","color":"blue"},
-			 * 	{"text":"\n"},
-			 * 	{"text":"Add-on manager\nPage ","color":"aqua"},
-			 * 	{"text":"%currentpage%","color":"blue"},
-			 * 	{"text":": ","color":"aqua"},
-			 * 	{"text":"[","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %previouspage%"}},
-			 * 	{"text":"<","color":"aqua","clickEvent":{"action":"run_command","value":"/pr addonmanager page %previouspage%"}},
-			 * 	{"text":"]","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %previouspage%"}},
-			 * 	{"text":" ","color":"black"},{"text":"[","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %nextpage%"}},
-			 * 	{"text":">","color":"aqua","clickEvent":{"action":"run_command","value":"/pr addonmanager page %nextpage%"}},
-			 * 	{"text":"]","color":"black","clickEvent":{"action":"run_command","value":"/pr addonmanager page %nextpage%"}},
-			 * 	{"text":"\n"},{"text":"===","color":"blue"},{"text":"------------------------------","color":"dark_aqua"},{"text":"===","color":"blue"}]
-			 */
-
 			if (hasAcceptedTerms) {
 				tellrawCommand += "[\"\"";
-				tellrawCommand += ",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks\",\"color\":\"aqua\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
-				tellrawCommand += ",{\"text\":\"\\n\"}";
-				tellrawCommand += ",{\"text\":\"Add-on manager\",\"color\":\"aqua\"}";
+				tellrawCommand += ",{\"text\":\"===-----\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks AddonManager\",\"color\":\"aqua\"},{\"text\":\"-----===\",\"color\":\"dark_aqua\"}";
 				tellrawCommand += ",{\"text\":\"\\n\"},";
-				tellrawCommand += "{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"%currentpage%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\"<\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\" \"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}},{\"text\":\">\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}}".replaceAll("%previouspage%", String.valueOf(previousPage)).replaceAll("%currentpage%", String.valueOf(currentPage + 1)).replaceAll("%nextpage%", String.valueOf(nextPage));
+				tellrawCommand += "{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"%currentpage%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\"<\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %previouspage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Previous page\"}},{\"text\":\" \"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}},{\"text\":\">\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager page %nextpage%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Next page\"}}"
+						.replaceAll("%previouspage%", String.valueOf(previousPage))
+						.replaceAll("%currentpage%", String.valueOf(currentPage + 1))
+						.replaceAll("%nextpage%", String.valueOf(nextPage));
 				tellrawCommand += ",{\"text\":\"\\n\"},";
 
 				int addonIndex = 0;
-				if (PowerRanks.getInstance().addonsManager.getAddonDownloader() == null) {
-					PowerRanks.getInstance().addonsManager.setupAddonDownloader();
-				}
-				for (DownloadableAddon addon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
+				for (DownloadableAddon addon : PowerRanks.getInstance().addonsManager.getAddonDownloader()
+						.getDownloadableAddons()) {
 					if (addonIndex >= pageStartIndex && addonIndex < pageEndIndex) {
-						String availabilitycolor = (addon.isDownloadable() ? (addon.isCompatible() ? "green" : "red") : "yellow");
-						tellrawCommand +=  "{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager info %addonname%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click for more info\"}},{\"text\":\"info\",\"color\":\"%availabilitycolor%\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager info %addonname%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click for more info\"}},{\"text\":\"] \",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager info %addonname%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click for more info\"}}".replaceAll("%addonname%", addon.getName()).replaceAll("%availabilitycolor%", availabilitycolor);
-						tellrawCommand += ",{\"text\":\"%addonname%\",\"color\":\"white\"}".replaceAll("%addonname%", addon.getName());
+						String availabilitycolor = (addon.isDownloadable() ? (addon.isCompatible() ? "green" : "red")
+								: "yellow");
+						tellrawCommand += "{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager info %addonname%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click for more info\"}},{\"text\":\"info\",\"color\":\"%availabilitycolor%\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager info %addonname%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click for more info\"}},{\"text\":\"] \",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager info %addonname%\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click for more info\"}}"
+								.replaceAll("%addonname%", addon.getName())
+								.replaceAll("%availabilitycolor%", availabilitycolor);
+						tellrawCommand += ",{\"text\":\"%addonname%\",\"color\":\"white\"}".replaceAll("%addonname%",
+								addon.getName());
 						tellrawCommand += ",{\"text\":\"\\n\"},";
 					}
 					addonIndex++;
 				}
-				// tellrawCommand += "{\"text\":\"===--------------------------------===\",\"color\":\"dark_aqua\"}";
-				tellrawCommand += "{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"-------------------------------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
+				tellrawCommand += "{\"text\":\"===--------------------------------===\",\"color\":\"dark_aqua\"}";
 				tellrawCommand += "]";
 			} else {
-				tellrawCommand += "[\"\"";
-				tellrawCommand += ",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks\",\"color\":\"aqua\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
-				tellrawCommand += ",{\"text\":\"\\n\"}";
-				tellrawCommand += ",{\"text\":\"Add-on manager\",\"color\":\"aqua\"}";
-				tellrawCommand += ",{\"text\":\"\\n                     \"}";
-				tellrawCommand += ",{\"text\":\"!!! WAIT !!!\",\"color\":\"red\"}";
-				tellrawCommand += ",{\"text\":\"\\n\"}";
-				tellrawCommand += ",{\"text\":\"In order to use the add-on manager, you must accept the terms.\",\"color\":\"white\"}";
-				tellrawCommand += ",{\"text\":\"\\nAdd-ons for PowerRanks are external pieces of code intended to\\nadd or change existing behavior in PowerRanks.\\nAdd-ons downloaded using the addon manager are either official or tested and are safe to use.\\nBut, do note, add-ons can be dangerous and/or malicious.\\nThe author of PowerRanks is in no way liable for damage caused by add-ons.\\nAfter accepting these terms, the add-on manager will make contact with\\nthe PowerRanks website to check available add-ons for download.\\nIf you do not want PowerRanks to access a external site, decline these terms.\\n                \"}";
+				tellrawCommand += "[\"\",{\"text\":\"===-----\",\"color\":\"dark_aqua\"},";
+				tellrawCommand += "{\"text\":\"PowerRanks AddonManager\",\"color\":\"aqua\"},";
+				tellrawCommand += "{\"text\":\"-----===\",\"color\":\"dark_aqua\"},";
+				tellrawCommand += "{\"text\":\"\\n                     \"},";
+				tellrawCommand += "{\"text\":\"!!! WAIT !!!\",\"color\":\"red\"},";
+				tellrawCommand += "{\"text\":\"\\n\"},";
+				tellrawCommand += "{\"text\":\"In order to use the add-on manager, you must accept the terms.\",\"color\":\"white\"},";
+				tellrawCommand += "{\"text\":\"\\nAdd-ons for PowerRanks are external pieces of code intended to\\nadd or change existing behavior in PowerRanks.\\nAdd-ons downloaded using the addon manager are either official or tested and are safe to use.\\nBut, do note, add-ons can be dangerous and/or malicious.\\nThe author of PowerRanks is in no way liable for damage caused by add-ons.\\nAfter accepting these terms, the add-on manager will make contact with\\nthe PowerRanks website to check available add-ons for download.\\nIf you do not want PowerRanks to access a external site, decline these terms.\\n                \"},";
 
-				tellrawCommand += ",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager acceptterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-				tellrawCommand += ",{\"text\":\"accept\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager acceptterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-				tellrawCommand += ",{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager acceptterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-				tellrawCommand += ",{\"text\":\"  \",\"color\":\"black\"}";
-				tellrawCommand += ",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager declineterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-				tellrawCommand += ",{\"text\":\"decline\",\"color\":\"red\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager declineterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-				tellrawCommand += ",{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager declineterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-				tellrawCommand += ",{\"text\":\"\\n\"}";
-				tellrawCommand += ",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"-------------------------------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
-				tellrawCommand += "]";
+				tellrawCommand += "{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager acceptterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},";
+				tellrawCommand += "{\"text\":\"accept\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager acceptterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},";
+				tellrawCommand += "{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager acceptterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},";
+				tellrawCommand += "{\"text\":\"  \",\"color\":\"black\"},";
+				tellrawCommand += "{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager declineterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},";
+				tellrawCommand += "{\"text\":\"decline\",\"color\":\"red\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager declineterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},";
+				tellrawCommand += "{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr addonmanager declineterms\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},";
+				tellrawCommand += "{\"text\":\"\\n\"},";
+				tellrawCommand += "{\"text\":\"===---------------------------------===\",\"color\":\"dark_aqua\"}]";
 			}
 
 			tellrawCommand = tellrawCommand.replaceAll("%player%", sender.getName());
 
 			if (Messages.powerRanks != null)
-				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellrawCommand);
+				Messages.powerRanks.getServer().dispatchCommand(
+						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellrawCommand);
 		} else {
 			if (hasAcceptedTerms) {
 				ArrayList<String> lines = new ArrayList<String>();
 
-				lines.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
-				lines.add(ChatColor.AQUA + "Add-on manager");
+				lines.add(ChatColor.DARK_AQUA + "===-----" + ChatColor.AQUA + "PowerRanks AddonManager"
+						+ ChatColor.DARK_AQUA + "-----===");
 				lines.add("Run command between () for info.");
-				for (DownloadableAddon addon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
-					ChatColor availabilitycolor = (addon.isDownloadable() ? (addon.isCompatible() ? ChatColor.GREEN : ChatColor.RED) : ChatColor.YELLOW);
-					lines.add(ChatColor.BLACK + "[" + availabilitycolor + "■" + ChatColor.BLACK + "] " + ChatColor.RESET + addon.getName() + " (" + availabilitycolor + "pr addonmanager info " + addon.getName() + ChatColor.RESET + ")");
-					//pr addonmanager info ggg
+				for (DownloadableAddon addon : PowerRanks.getInstance().addonsManager.getAddonDownloader()
+						.getDownloadableAddons()) {
+					ChatColor availabilitycolor = (addon.isDownloadable()
+							? (addon.isCompatible() ? ChatColor.GREEN : ChatColor.RED)
+							: ChatColor.YELLOW);
+					lines.add(ChatColor.BLACK + "[" + availabilitycolor + "■" + ChatColor.BLACK + "] " + ChatColor.RESET
+							+ addon.getName() + " (" + availabilitycolor + "pr addonmanager info " + addon.getName()
+							+ ChatColor.RESET + ")");
+					// pr addonmanager info ggg
 				}
-				lines.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "-------------------------------" + ChatColor.BLUE + "===");
+				lines.add(ChatColor.DARK_AQUA + "===---------------------------------===");
 
 				for (String line : lines) {
 					sender.sendMessage(line);
@@ -534,23 +674,26 @@ public class Messages {
 			} else {
 				ArrayList<String> lines = new ArrayList<String>();
 
-				lines.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
-				lines.add(ChatColor.AQUA + "Add-on manager");
+				lines.add(ChatColor.DARK_AQUA + "===-----" + ChatColor.AQUA + "PowerRanks AddonManager"
+						+ ChatColor.DARK_AQUA + "-----===");
 				lines.add(ChatColor.RED + "             !!! WAIT !!!");
 				lines.add("In order to use the add-on manager, you must accept the terms.");
 				lines.add("");
 				lines.add("Add-ons for PowerRanks are external pieces of code intended to");
 				lines.add("add or change existing behavior in PowerRanks.");
-				lines.add("Add-ons downloaded using the addon manager are either official or tested and are safe to use.");
+				lines.add(
+						"Add-ons downloaded using the addon manager are either official or tested and are safe to use.");
 				lines.add("But, do note, add-ons can be dangerous and/or malicious.");
 				lines.add("The author of PowerRanks is in no way liable for damage caused by add-ons.");
 				lines.add("After accepting these terms, the add-on manager will make contact with");
 				lines.add("the PowerRanks website to check available add-ons for download.");
 				lines.add("If you do not want PowerRanks to access a external site, decline these terms.");
 				lines.add("");
-				lines.add(ChatColor.GREEN + "To accept the terms, run the command: " + ChatColor.RESET + "pr addonmanager acceptterms");
-				lines.add(ChatColor.RED + "To decline the terms, run the command: " + ChatColor.RESET + "pr addonmanager declineterms");
-				lines.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "-------------------------------" + ChatColor.BLUE + "===");
+				lines.add(ChatColor.GREEN + "To accept the terms, run the command: " + ChatColor.RESET
+						+ "pr addonmanager acceptterms");
+				lines.add(ChatColor.RED + "To decline the terms, run the command: " + ChatColor.RESET
+						+ "pr addonmanager declineterms");
+				lines.add(ChatColor.DARK_AQUA + "===---------------------------------===");
 
 				for (String line : lines) {
 					sender.sendMessage(line);
@@ -567,7 +710,8 @@ public class Messages {
 		}
 
 		DownloadableAddon addon = null;
-		for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons()) {
+		for (DownloadableAddon dlAddon : PowerRanks.getInstance().addonsManager.getAddonDownloader()
+				.getDownloadableAddons()) {
 			if (dlAddon.getName().equalsIgnoreCase(addonname)) {
 				addon = dlAddon;
 				break;
@@ -605,17 +749,23 @@ public class Messages {
 
 			formattedDescription = formattedDescription.replaceAll("\\[[a-zA-Z]{1,16}\\]", "");
 
-			String downloadClickAction = addon.isInstalled() ? "{\"action\":\"run_command\",\"value\":\"/pr addonmanager uninstall %addonname%\"}" : (!addon.getURL().toLowerCase().endsWith(".jar") ? "{\"action\":\"open_url\",\"value\":\"" + addon.getURL() + "\"}" : "{\"action\":\"run_command\",\"value\":\"/pr addonmanager download %addonname%\"}");
+			String downloadClickAction = addon.isInstalled()
+					? "{\"action\":\"run_command\",\"value\":\"/pr addonmanager uninstall %addonname%\"}"
+					: (!addon.getURL().toLowerCase().endsWith(".jar")
+							? "{\"action\":\"open_url\",\"value\":\"" + addon.getURL() + "\"}"
+							: "{\"action\":\"run_command\",\"value\":\"/pr addonmanager download %addonname%\"}");
 			String downloadButton = ",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":%downloadclickaction%,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},{\"text\":\"%addondownloadbuttontext%\",\"color\":\"%addondownloadbuttoncolor%\",\"clickEvent\":%downloadclickaction%,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":%downloadclickaction%,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Click\"}}";
-			String downloadButtonText = addon.isInstalled() ? "Uninstall" : (addon.isDownloadable() ? (addon.isCompatible() ? "download" : "not available") : "more info");
-			String downloadButtonColor = addon.isInstalled() ? "red" : (addon.isDownloadable() ? (addon.isCompatible() ? "green" : "red") : "yellow");
+			String downloadButtonText = addon.isInstalled() ? "Uninstall"
+					: (addon.isDownloadable() ? (addon.isCompatible() ? "download" : "not available") : "more info");
+			String downloadButtonColor = addon.isInstalled() ? "red"
+					: (addon.isDownloadable() ? (addon.isCompatible() ? "green" : "red") : "yellow");
 
-			downloadButton = downloadButton.replaceAll("%downloadclickaction%", downloadClickAction).replaceAll("%addondownloadbuttontext%", downloadButtonText).replaceAll("%addondownloadbuttoncolor%", downloadButtonColor);
+			downloadButton = downloadButton.replaceAll("%downloadclickaction%", downloadClickAction)
+					.replaceAll("%addondownloadbuttontext%", downloadButtonText)
+					.replaceAll("%addondownloadbuttoncolor%", downloadButtonColor);
 
 			tellrawCommand += "[\"\"";
-			tellrawCommand += ",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks\",\"color\":\"aqua\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
-			tellrawCommand += ",{\"text\":\"\\n\"}";
-			tellrawCommand += ",{\"text\":\"Add-on manager\",\"color\":\"aqua\"}";
+			tellrawCommand += ",{\"text\":\"===-----\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks AddonManager\",\"color\":\"aqua\"},{\"text\":\"-----===\",\"color\":\"dark_aqua\"}";
 			tellrawCommand += ",{\"text\":\"\\n\"}";
 			tellrawCommand += ",{\"text\":\"Installed\",\"color\":\"green\"},{\"text\":\": %addonisinstalled%\"}";
 			tellrawCommand += ",{\"text\":\"\\n\"}";
@@ -630,34 +780,33 @@ public class Messages {
 			tellrawCommand += "%addonddescription%";
 			tellrawCommand += "%addondownloadbutton%";
 			tellrawCommand += ",{\"text\":\"\\n\"}";
-			tellrawCommand += ",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"-------------------------------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}";
+			tellrawCommand += ",{\"text\":\"===---------------------------------===\",\"color\":\"dark_aqua\"}";
 			tellrawCommand += "]";
 
 			tellrawCommand = tellrawCommand.replaceAll("%addondownloadbutton%", downloadButton);
 
-			tellrawCommand = tellrawCommand
-			.replaceAll("%player%", sender.getName())
-			.replaceAll("%addonisinstalled%", addon.isInstalled() ? "yes" : "no")
-			.replaceAll("%addonname%", addon.getName())
-			.replaceAll("%addonauthor%", addon.getAuthor())
-			.replaceAll("%addonversion%", addon.getVersion())
-			.replaceAll("%addonprversion%", addon.getMinPowerRanksVersion())
-			.replaceAll("%addonddescription%", formattedDescription)
-			;
+			tellrawCommand = tellrawCommand.replaceAll("%player%", sender.getName())
+					.replaceAll("%addonisinstalled%", addon.isInstalled() ? "yes" : "no")
+					.replaceAll("%addonname%", addon.getName()).replaceAll("%addonauthor%", addon.getAuthor())
+					.replaceAll("%addonversion%", addon.getVersion())
+					.replaceAll("%addonprversion%", addon.getMinPowerRanksVersion())
+					.replaceAll("%addonddescription%", formattedDescription);
 
 			if (Messages.powerRanks != null)
-				Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellrawCommand);
+				Messages.powerRanks.getServer().dispatchCommand(
+						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellrawCommand);
 
 		} else {
 			ArrayList<String> lines = new ArrayList<String>();
 
-			lines.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
-			lines.add(ChatColor.AQUA + "Add-on manager");
+			lines.add(ChatColor.DARK_AQUA + "===-----" + ChatColor.AQUA + "PowerRanks AddonManager"
+					+ ChatColor.DARK_AQUA + "-----===");
 			lines.add(ChatColor.GREEN + "Installed" + ChatColor.RESET + ": " + (addon.isInstalled() ? "yes" : "no"));
 			lines.add(ChatColor.GREEN + "Add-on" + ChatColor.RESET + ": " + addon.getName());
 			lines.add(ChatColor.GREEN + "Author" + ChatColor.RESET + ": " + addon.getAuthor());
 			lines.add(ChatColor.GREEN + "Version" + ChatColor.RESET + ": " + addon.getVersion());
-			lines.add(ChatColor.GREEN + "Min. PowerRanks version" + ChatColor.RESET + ": " + addon.getMinPowerRanksVersion());
+			lines.add(ChatColor.GREEN + "Min. PowerRanks version" + ChatColor.RESET + ": "
+					+ addon.getMinPowerRanksVersion());
 			if (!addon.isInstalled()) {
 				lines.add(ChatColor.GREEN + "Description" + ChatColor.RESET + ": ");
 				for (String line : addon.getDescription()) {
@@ -687,18 +836,21 @@ public class Messages {
 			if (!addon.isInstalled()) {
 				if (addon.isCompatible()) {
 					if (addon.isDownloadable()) {
-						downloadText = ChatColor.GREEN + "Run the following comand to download this add-on" + ChatColor.RESET + ": pr addonmanager download " + addon.getName();
+						downloadText = ChatColor.GREEN + "Run the following comand to download this add-on"
+								+ ChatColor.RESET + ": pr addonmanager download " + addon.getName();
 					} else {
-						downloadText = ChatColor.YELLOW + "Click the following URL for more information" + ChatColor.RESET + ": " + addon.getURL();
+						downloadText = ChatColor.YELLOW + "Click the following URL for more information"
+								+ ChatColor.RESET + ": " + addon.getURL();
 					}
 				} else {
 					downloadText = ChatColor.RED + "This add-on is not compatible with your version of PowerRanks";
 				}
 			} else {
-				downloadText = ChatColor.RED + "Run the following comand to uninstall this add-on" + ChatColor.RESET + ": pr addonmanager uninstall " + addon.getName();
+				downloadText = ChatColor.RED + "Run the following comand to uninstall this add-on" + ChatColor.RESET
+						+ ": pr addonmanager uninstall " + addon.getName();
 			}
 			lines.add(downloadText);
-			lines.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "-------------------------------" + ChatColor.BLUE + "===");
+			lines.add(ChatColor.DARK_AQUA + "===---------------------------------===");
 
 			for (String line : lines) {
 				sender.sendMessage(line);
@@ -761,17 +913,26 @@ public class Messages {
 		if (page > lines.size() / lines_per_page)
 			page = lines.size() / lines_per_page;
 
-		String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
-				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page - 1)
-				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page - 1)
-				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page - 1)
-				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page + 1)
-				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page + 1)
-				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions " + rank_name + " " + (page + 1) + "\"}}]";
+		String page_selector_tellraw = "tellraw " + sender.getName()
+				+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
+				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
+				+ rank_name + " " + (page - 1)
+				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
+				+ rank_name + " " + (page - 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
+				+ rank_name + " " + (page - 1)
+				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
+				+ rank_name + " " + (page + 1)
+				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
+				+ rank_name + " " + (page + 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
+				+ rank_name + " " + (page + 1) + "\"}}]";
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + "Permissions of " + ChatColor.BLUE + rank_name + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + "Permissions of " + ChatColor.BLUE
+				+ rank_name + ChatColor.DARK_AQUA + "--------");
 		if (Messages.powerRanks != null)
-			Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+			Messages.powerRanks.getServer().dispatchCommand(
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
 
 		for (int i = 0; i < lines_per_page; i++) {
 			if (lines_per_page * page + i < lines.size()) {
@@ -781,7 +942,7 @@ public class Messages {
 			}
 		}
 
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
@@ -794,17 +955,26 @@ public class Messages {
 		if (page > lines.size() / lines_per_page)
 			page = lines.size() / lines_per_page;
 
-		String page_selector_tellraw = "tellraw " + sender.getName() + " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
-				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page - 1)
-				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page - 1)
-				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page - 1)
-				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page + 1)
-				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page + 1)
-				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions " + target_player + " " + (page + 1) + "\"}}]";
+		String page_selector_tellraw = "tellraw " + sender.getName()
+				+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
+				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
+				+ target_player + " " + (page - 1)
+				+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
+				+ target_player + " " + (page - 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
+				+ target_player + " " + (page - 1)
+				+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
+				+ target_player + " " + (page + 1)
+				+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
+				+ target_player + " " + (page + 1)
+				+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
+				+ target_player + " " + (page + 1) + "\"}}]";
 
-		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + "Permissions of " + ChatColor.BLUE + target_player + ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + "Permissions of " + ChatColor.BLUE
+				+ target_player + ChatColor.DARK_AQUA + "--------");
 		if (Messages.powerRanks != null)
-			Messages.powerRanks.getServer().dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+			Messages.powerRanks.getServer().dispatchCommand(
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
 
 		for (int i = 0; i < lines_per_page; i++) {
 			if (lines_per_page * page + i < lines.size()) {
@@ -814,14 +984,18 @@ public class Messages {
 			}
 		}
 
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void checkVerbose(CommandSender sender) {
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
-		sender.sendMessage(ChatColor.DARK_GREEN + "Verbose: " + ChatColor.GREEN + (!PowerRanksVerbose.USE_VERBOSE ? "Disabled" : "Enabled" + (PowerRanksVerbose.USE_VERBOSE_LIVE ? " (Live)" : "")));
-		sender.sendMessage(ChatColor.DARK_GREEN + "Log size: " + ChatColor.GREEN + PowerRanksVerbose.logSize() + ChatColor.DARK_GREEN + " lines");
-		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+				+ ChatColor.DARK_AQUA + "--------");
+		sender.sendMessage(
+				ChatColor.DARK_GREEN + "Verbose: " + ChatColor.GREEN + (!PowerRanksVerbose.USE_VERBOSE ? "Disabled"
+						: "Enabled" + (PowerRanksVerbose.USE_VERBOSE_LIVE ? " (Live)" : "")));
+		sender.sendMessage(ChatColor.DARK_GREEN + "Log size: " + ChatColor.GREEN + PowerRanksVerbose.logSize()
+				+ ChatColor.DARK_GREEN + " lines");
+		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 
 	public static void noPermission(CommandSender sender) {
@@ -910,32 +1084,32 @@ public class Messages {
 		}
 	}
 
-	public static void messageCommandUsageReload(CommandSender console) {
+	public static void messageCommandUsageReload(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_reload");
 		if (msg.length() > 0)
-			console.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandReloadWarning(CommandSender console) {
+	public static void messageCommandReloadWarning(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_warning");
 		if (msg.length() > 0)
-			console.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandReloadConfig(CommandSender console) {
+	public static void messageCommandReloadConfig(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_config");
 		if (msg.length() > 0)
-			console.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandReloadConfigDone(CommandSender console) {
+	public static void messageCommandReloadConfigDone(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.reload_config_done");
 		if (msg.length() > 0)
-			console.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadPlugin(CommandSender console) {
@@ -1285,34 +1459,34 @@ public class Messages {
 			console.sendMessage(msg);
 	}
 
-	public static void messageBuyRankSuccess(Player player, String rank) {
+	public static void messageBuyRankSuccess(CommandSender sender, String rank) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_success");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
-			player.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
-	public static void messageBuyRankError(Player player, String rank) {
+	public static void messageBuyRankError(CommandSender sender, String rank) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_not_enough_money");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
-			player.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
 	public static void messageBuyRankNotAvailable(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.buy_not_available");
 		if (msg.length() > 0)
-		sender.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
-	public static void unknownCommand(CommandSender console) {
+	public static void unknownCommand(CommandSender sender) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.unknown_command");
 		if (msg.length() > 0)
-			console.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandAddbuyablerankSuccess(CommandSender sender, String rankname, String rankname2) {
@@ -1390,7 +1564,8 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandPlayerPermissionAdded(CommandSender sender, String permission, String target_player) {
+	public static void messageCommandPlayerPermissionAdded(CommandSender sender, String permission,
+			String target_player) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.player_permission_added");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
@@ -1399,7 +1574,8 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-	public static void messageErrorAddingPlayerPermission(CommandSender sender, String target_player, String permission) {
+	public static void messageErrorAddingPlayerPermission(CommandSender sender, String target_player,
+			String permission) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_adding_player_permission");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
@@ -1415,7 +1591,8 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandPlayerPermissionRemoved(CommandSender sender, String permission, String target_player) {
+	public static void messageCommandPlayerPermissionRemoved(CommandSender sender, String permission,
+			String target_player) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.player_permission_removed");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
@@ -1424,7 +1601,8 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-	public static void messageErrorRemovingPlayerPermission(CommandSender sender, String target_player, String permission) {
+	public static void messageErrorRemovingPlayerPermission(CommandSender sender, String target_player,
+			String permission) {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "messages.error_removing_player_permission");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
@@ -2019,88 +2197,101 @@ public class Messages {
 		YamlConfiguration langYaml = PowerRanks.loadLangFile();
 		String msg = getGeneralMessage(langYaml, "commands.usage_command_playerinfo");
 		if (msg.length() > 0)
-			sender.sendMessage(msg);		
+			sender.sendMessage(msg);
 	}
 
-	public static void messageCommandSetbuydescriptionSuccess(final CommandSender sender, final String rankname, final String description) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        String msg = getGeneralMessage(langYaml, "messages.success_set_buydescription");
-        msg = Util.replaceAll(msg, "%argument_description%", description);
-        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
-    
-    public static void messageCommandSetbuydescriptionError(final CommandSender sender, final String rankname, final String description) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        String msg = getGeneralMessage(langYaml, "messages.error_set_buydescription");
-        msg = Util.replaceAll(msg, "%argument_description%", description);
-        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
-    
-    public static void messageCommandUsageSetbuydescription(final CommandSender sender) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuydescription");
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
-    
-    public static void messageCommandSetbuycommandSuccess(final CommandSender sender, final String rankname, final String command) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        String msg = getGeneralMessage(langYaml, "messages.success_set_buycommand");
-        msg = Util.replaceAll(msg, "%argument_command%", command);
-        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
-    
-    public static void messageCommandSetbuycommandError(final CommandSender sender, final String rankname, final String command) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        String msg = getGeneralMessage(langYaml, "messages.error_set_buycommand");
-        msg = Util.replaceAll(msg, "%argument_command%", command);
-        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
-    
-    public static void messageCommandUsageSetbuycommand(final CommandSender sender) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuycommand");
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
+	public static void messageCommandSetbuydescriptionSuccess(final CommandSender sender, final String rankname,
+			final String description) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_buydescription");
+		msg = Util.replaceAll(msg, "%argument_description%", description);
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
+	public static void messageCommandSetbuydescriptionError(final CommandSender sender, final String rankname,
+			final String description) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_buydescription");
+		msg = Util.replaceAll(msg, "%argument_description%", description);
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
+	public static void messageCommandUsageSetbuydescription(final CommandSender sender) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuydescription");
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
+	public static void messageCommandSetbuycommandSuccess(final CommandSender sender, final String rankname,
+			final String command) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.success_set_buycommand");
+		msg = Util.replaceAll(msg, "%argument_command%", command);
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
+	public static void messageCommandSetbuycommandError(final CommandSender sender, final String rankname,
+			final String command) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "messages.error_set_buycommand");
+		msg = Util.replaceAll(msg, "%argument_command%", command);
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
+	public static void messageCommandUsageSetbuycommand(final CommandSender sender) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuycommand");
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
 
 	public static void messageCommandUsageListranks(final CommandSender sender) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        final String msg = getGeneralMessage(langYaml, "commands.usage_command_listaddons");
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		final String msg = getGeneralMessage(langYaml, "commands.usage_command_listaddons");
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
 
 	public static void messageConsoleNotAPlayer(final CommandSender sender) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        final String msg = getGeneralMessage(langYaml, "messages.console_is_not_a_player");
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		final String msg = getGeneralMessage(langYaml, "messages.console_is_not_a_player");
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
 
-	public static void messageCommandCheckrankResponse(final CommandSender sender, final String target_player, final String rankname) {
-        final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-        String msg = getGeneralMessage(langYaml, "commands.response_command_checkrank");
-        msg = Util.replaceAll(msg, "%argument_target%", target_player);
-        msg = Util.replaceAll(msg, "%argument_rank%", rankname);
-        if (msg.length() > 0) {
-            sender.sendMessage(msg);
-        }
-    }
+	public static void messageCommandCheckrankResponse(final CommandSender sender, final String target_player,
+			final String rankname) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		String msg = getGeneralMessage(langYaml, "commands.response_command_checkrank");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
+	public static void numbersOnly(CommandSender sender) {
+		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		final String msg = getGeneralMessage(langYaml, "commands.only_numbers");
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
 }

@@ -105,6 +105,7 @@ messages:
    success_set_buycommand: "%plugin_prefix% &aChanged buy command to '%argument_command%' on rank: %argument_rank%"
    error_set_buycommand: "%plugin_prefix% &cFailed to set buy command to '%argument_command%' on rank: %argument_rank%"
 commands:
+   only_numbers: "%plugin_prefix% &cOnly numbers are allowed!"
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"
    usage_command_setrank: "%plugin_prefix% &c%base_cmd% setrank <username> <rank>"
    usage_command_setownrank: "%plugin_prefix% &c%base_cmd% setownrank <rank>"
@@ -159,7 +160,7 @@ commands:
    usage_command_playerinfo: "%plugin_prefix% &c%base_cmd% playerinfo <player_name>"
    usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rank_name] [confirm]"
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
-   usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
+   usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
    response_command_checkrank: "%plugin_prefix% &a%argument_target%'s rank is %argument_rank%"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_warning: "%plugin_prefix% &4Reloading is not recommended and can cause unforseen problems. Restart instead!"
@@ -345,7 +346,7 @@ commands:
          command: "addonmanager"
          description: "Manage the PowerRanks add-ons"
       config:
-         command: "config <removeworldtag / (enable/disable chat_formatting/tablist_formatting)>"
+         command: "config <removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
          description: "Edit the configuration file"
       verbose:
          command: "verbose <start [filter]/startlive [filter]/stop/save/clear>"

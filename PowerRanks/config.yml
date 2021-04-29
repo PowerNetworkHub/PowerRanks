@@ -1,30 +1,32 @@
 # --------------------
 # General
-# disable-op prevent the /op & /deop command being used and deop every player
+# disable-op                prevent the /op & /deop command being used and deop every player
+# playtime-update-interval  player playtime update interval in seconds
 # --------------------
 # Chat format
 # Available options:
-# [prefix] rank prefix
-# [suffix] rank 
-# [subprefix] player's subrank prefix
-# [subsuffix] player's subrank suffix
-# [player] player name
-# [msg] message player typed
-# [format] get the current chat format
-# [usertag] player's self-assigned tag
+# [world]                   player's current world
+# [prefix]                  rank prefix
+# [suffix]                  rank suffix
+# [subprefix]               player's subrank prefix
+# [subsuffix]               player's subrank suffix
+# [player]                  player name
+# [msg]                     message player typed
+# [format]                  get the current chat format
+# [usertag]                 player's self-assigned tag
 # Example, use the current chat format and adding the rank's prefix:
 # format: '[prefix] [format]'
 # --------------------
 # Tablist Modification
 # Change the player's name in the tablist
 # Available options:
-# [world] player's current world
-# [usertag] player's usertag
-# [prefix] rank name
-# [suffix] suffix
-# [subprefix] player's subrank prefix
-# [subsuffix] player's subrank suffix
-# [name] player name
+# [world]                   player's current world
+# [usertag]                 player's usertag
+# [prefix]                  rank prefix
+# [suffix]                  rank suffix
+# [subprefix]               player's subrank prefix
+# [subsuffix]               player's subrank suffix
+# [player]                  player name
 # --------------------
 # Signs
 # Set the player's rank using signs.
@@ -41,7 +43,6 @@
 # PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
 # DeluxeTags: used for user tags
 # NametagEdit: used for changing the players name displayed above the head
-# tab: used for advanced tablist formatting
 # --------------------
 # Announcements
 # Enable or disable server-wide announcements.
@@ -60,7 +61,8 @@
 # --------------------
 
 general:
-  disable-op: true
+  disable-op: false
+  playtime-update-interval: 5
 chat:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
@@ -79,7 +81,6 @@ plugin_hook:
   placeholderapi: true
   deluxetags: false
   nametagedit: true
-  tab: true
 announcements:
   rankup:
     enabled: false

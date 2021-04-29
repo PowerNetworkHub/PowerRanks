@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -88,9 +87,6 @@ public class Util {
 			if (endIdx == -1)
 				break;
 			result.append(text.substring(textIdx, startIdx));
-
-			// PowerRanks.log.warning(textIdx + " - " + startIdx + " - " + text.substring(textIdx, startIdx));
-
 			textIdx = endIdx + 1;
 			String value = values.get(text.substring(startIdx + 1, endIdx));
 			if (value != null && !value.isEmpty()) {
@@ -220,22 +216,18 @@ public class Util {
 	public static URLConnection getURL(String urlString) throws Exception {
         int MAX_REDIRECTS = 10;
 
-		try {
-			URLConnection urlConnection = new URL(urlString).openConnection();
-			String redirect = urlConnection.getHeaderField("Location");
-			for (int i = 0; i < MAX_REDIRECTS ; i++) {
-				if (redirect != null) {
-					urlConnection = new URL(redirect).openConnection();
-					redirect = urlConnection.getHeaderField("Location");
-				} else {
-					break;
-				}
-			}
-			return urlConnection;
-		} catch(MalformedURLException e) {
-			return null;
-		}
+		URLConnection urlConnection = new URL(urlString).openConnection();
+        String redirect = urlConnection.getHeaderField("Location");
+        for (int i = 0; i < MAX_REDIRECTS ; i++) {
+            if (redirect != null) {
+                urlConnection = new URL(redirect).openConnection();
+                redirect = urlConnection.getHeaderField("Location");
+            } else {
+                break;
+            }
+        }
 
+        return urlConnection;
 	}
 	
 	public static String readUrl(String urlString) throws Exception {

@@ -137,13 +137,6 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public boolean isPermissionSet(String permission) {
 		boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
-		try {
-			value = hasPermission(permission);
-			
-		} catch (StackOverflowError e) {
-
-		}
-
 		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
 			PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
 		}
@@ -156,26 +149,22 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin plugin) {
-		PowerRanksVerbose.log("addAttachment(Plugin)", "called");
 		return super.addAttachment(plugin);
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
-		PowerRanksVerbose.log("addAttachment(Plugin, Ticks)", "called");
 		return super.addAttachment(plugin, ticks);
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
-		PowerRanksVerbose.log("addAttachment(Plugin, Name, Value)", "called");
 		return super.addAttachment(plugin, name, value);
 
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
-		PowerRanksVerbose.log("addAttachment(Plugin, Name, Value, Ticks)", "called");
 		return super.addAttachment(plugin, name, value, ticks);
 	}
 	
@@ -185,18 +174,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 	
 	@Override
 	public void removeAttachment(PermissionAttachment attachment) {
-		PowerRanks.log.warning("");
-		PowerRanks.log.warning("--------------------");
-		PowerRanks.log.warning("instanceof PermissionAttachment " + (attachment instanceof PermissionAttachment ? "yes" : "no"));
-		// PowerRanks.log.warning("instanceof PowerPermissibleBase " + (attachment instanceof PowerPermissibleBase ? "yes" : "no"));
-		// PowerRanks.log.warning("instanceof PermissibleBase " + (attachment instanceof PermissibleBase ? "yes" : "no"));
-		PowerRanks.log.warning("--------------------");
-		PowerRanks.log.warning("");
-		try {
-			super.removeAttachment(attachment);
-		} catch (IllegalArgumentException iae) {
-			// Dirty fix :3
-		}
+		super.removeAttachment(attachment);
 	}
 	
 	/*

@@ -1,32 +1,21 @@
 package nl.svenar.PowerRanks.Events;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
-import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 
 public class ChatTabExecutor implements TabCompleter {
 
-	private PowerRanks plugin;
 	private static ArrayList<String> addon_commands = new ArrayList<String>();
 
 	public ChatTabExecutor(PowerRanks plugin) {
-		this.plugin = plugin;
 	}
 
 	@Override

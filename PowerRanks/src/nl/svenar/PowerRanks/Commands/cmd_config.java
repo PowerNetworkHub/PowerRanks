@@ -11,15 +11,12 @@ import org.bukkit.ChatColor;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Messages;
-import nl.svenar.PowerRanks.Data.Users;
 
 public class cmd_config extends PowerCommand {
 
-	private Users users;
 
 	public cmd_config(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
-		this.users = new Users(plugin);
 	}
 
 	@Override
@@ -71,6 +68,19 @@ public class cmd_config extends PowerCommand {
 				} else {
 					Messages.messageCommandUsageConfig(sender);
 				}
+			} else if (args.length == 3) {
+				if (args[0].equalsIgnoreCase("set")) {
+					if (args[1].equalsIgnoreCase("playtime_update_interval")) {
+						try {
+							int time = Integer.parseInt(args[2]);
+							CachedConfig.set("general.playtime-update-interval", time);
+							Messages.configStateChanged(sender, "Player playtime interval", "" + ChatColor.DARK_GREEN + time);
+						} catch (Exception e) {
+							Messages.numbersOnly(sender);
+						}
+
+					}
+				}
 			} else {
 				Messages.messageCommandUsageConfig(sender);
 			}
@@ -87,6 +97,7 @@ public class cmd_config extends PowerCommand {
 		if (args.length == 1) {
 			tabcomplete.add("removeworldtag");
 			tabcomplete.add("enable");
+			tabcomplete.add("set");
 			tabcomplete.add("disable");
 		}
 
@@ -95,6 +106,21 @@ public class cmd_config extends PowerCommand {
 				tabcomplete.add("chat_formatting");
 				tabcomplete.add("tablist_formatting");
 				tabcomplete.add("op");
+			}
+		}
+
+		if (args.length == 2) {
+			if (args[0].equalsIgnoreCase("set")) {
+				tabcomplete.add("playtime_update_interval");
+			}
+		}
+
+		if (args.length == 3) {
+			if (args[1].equalsIgnoreCase("playtime_update_interval")) {
+				tabcomplete.add("1");
+				tabcomplete.add("5");
+				tabcomplete.add("10");
+				tabcomplete.add("60");
 			}
 		}
 

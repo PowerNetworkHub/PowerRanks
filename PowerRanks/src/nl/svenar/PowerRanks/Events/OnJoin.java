@@ -42,7 +42,7 @@ public class OnJoin implements Listener {
 		this.m.updateTablistName(player);
 
 		long time = new Date().getTime();
-		this.m.playerLoginTime.put(player.getUniqueId(), time);
+		this.m.playerPlayTimeCache.put(player.getUniqueId(), time);
 
 		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
@@ -73,11 +73,11 @@ public class OnJoin implements Listener {
 		long leave_time = new Date().getTime();
 		long join_time = leave_time;
 		try {
-			join_time = this.m.playerLoginTime.get(player.getUniqueId());
+			join_time = this.m.playerPlayTimeCache.get(player.getUniqueId());
 		} catch (Exception e1) {
 		}
 
-		this.m.updatePlaytime(player, join_time, leave_time);
+		this.m.updatePlaytime(player, join_time, leave_time, true);
 
 		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
