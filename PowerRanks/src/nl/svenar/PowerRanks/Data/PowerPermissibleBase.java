@@ -31,7 +31,9 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean hasPermission(Permission permission) {
-		PowerRanksVerbose.log("hasPermission(Permission)", "hasPerm: " + permission.getName());
+		if (permission.getName().toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
+			PowerRanksVerbose.log("hasPermission(Permission)", "hasPerm: " + permission.getName());
+		}
 		return hasPermission(permission.getName());
 	}
 
@@ -47,19 +49,21 @@ public class PowerPermissibleBase extends PermissibleBase {
 			}
 		}
 
-		PowerRanksVerbose.log("hasPermission", "");
-		PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
-		PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
-		PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
-		PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", permissions) + "'");
-		PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + permissions.contains("-" + permission));
-		PowerRanksVerbose.log("hasPermission", "Has *: " + permissions.contains("*"));
-		PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
-//		PowerRanksVerbose.log("hasPermission", "Return #3: " + super.hasPermission(permission));
-		PowerRanksVerbose.log("hasPermission", "Is permission in list: " + permissions.contains(permission));
-		PowerRanksVerbose.log("hasPermission", "Is in wildcard tree: " + contains_wildcard);
-		PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
-		PowerRanksVerbose.log("hasPermission", "");
+		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
+			PowerRanksVerbose.log("hasPermission", "");
+			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
+			PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
+			PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
+			PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", permissions) + "'");
+			PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + permissions.contains("-" + permission));
+			PowerRanksVerbose.log("hasPermission", "Has *: " + permissions.contains("*"));
+			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
+	//		PowerRanksVerbose.log("hasPermission", "Return #3: " + super.hasPermission(permission));
+			PowerRanksVerbose.log("hasPermission", "Is permission in list: " + permissions.contains(permission));
+			PowerRanksVerbose.log("hasPermission", "Is in wildcard tree: " + contains_wildcard);
+			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
+			PowerRanksVerbose.log("hasPermission", "");
+		}
 
 		if (permissions.contains("-" + permission)) {
 			return false;
@@ -124,14 +128,18 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public boolean isPermissionSet(Permission perm) {
 		boolean value = isPermissionSet(perm.getName());
-		PowerRanksVerbose.log("isPermissionSet(" + perm + ")", "called, returned: " + value);
+		if (perm.getName().toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
+			PowerRanksVerbose.log("isPermissionSet(" + perm + ")", "called, returned: " + value);
+		}
 		return value;
 	}
 
 	@Override
 	public boolean isPermissionSet(String permission) {
 		boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
-		PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
+		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
+			PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
+		}
 		return value;
 	}
 

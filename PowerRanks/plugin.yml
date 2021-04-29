@@ -8,8 +8,7 @@ load: startup
 website: 'https://powerranks.nl'
 commands:
   powerranks:
-    description: Main Command
-  pr:
+    aliases: [pr]
     description: Main Command
 permissions:
   powerranks.cmd.help:

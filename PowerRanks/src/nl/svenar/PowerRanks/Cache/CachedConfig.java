@@ -14,35 +14,35 @@ import nl.svenar.PowerRanks.PowerRanks;
 public class CachedConfig {
 
 	private static HashMap<String, Object> config_data = new HashMap<String, Object>();
-	
+
 	private static HashMap<String, ConfigurationSection> config_configuration_sections = new HashMap<String, ConfigurationSection>();
 	private static HashMap<String, String> config_strings = new HashMap<String, String>();
 	private static HashMap<String, List<String>> config_string_lists = new HashMap<String, List<String>>();
 	private static HashMap<String, Integer> config_ints = new HashMap<String, Integer>();
 	private static HashMap<String, Boolean> config_booleans = new HashMap<String, Boolean>();
-	
+
 	private static PowerRanks pr;
-	
+
 	public CachedConfig(PowerRanks pr) {
 		CachedConfig.pr = pr;
 		update();
 	}
-	
+
 	public static void update() {
 		final File configFile = new File(pr.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
-		
+
 		config_data.clear();
 		config_configuration_sections.clear();
 		config_strings.clear();
 		config_string_lists.clear();
 		config_booleans.clear();
-		
+
 		try {
 			configYaml.load(configFile);
 			for (String field : configYaml.getConfigurationSection("").getKeys(true)) {
 				config_data.put(field, configYaml.get(field));
-				
+
 				if (configYaml.isConfigurationSection(field)) {
 					config_configuration_sections.put(field, configYaml.getConfigurationSection(field));
 				} else if (configYaml.isString(field)) {
@@ -61,23 +61,27 @@ public class CachedConfig {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static Object get(String field) {
 		return config_data.get(field);
 	}
-	
+
 	public static ConfigurationSection getConfigurationSection(String field) {
 		return config_configuration_sections.get(field);
 	}
-	
+
 	public static String getString(String field) {
 		return config_strings.get(field);
 	}
-	
+
 	public static List<String> getStringList(String field) {
 		return config_string_lists.get(field);
 	}
-	
+
+	public static int getInt(String field) {
+		return config_ints.get(field);
+	}
+
 	public static boolean getBoolean(String field) {
 		return config_booleans.get(field);
 	}
