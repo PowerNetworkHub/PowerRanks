@@ -11,25 +11,25 @@ import nl.svenar.powerranks.commands.PowerCommand;
 import nl.svenar.powerranks.data.PRRank;
 import nl.svenar.powerranks.handlers.BaseDataHandler;
 
-public class CommandRankSetWeight extends PowerCommand {
+public class CommandRankSetDefault extends PowerCommand {
 
-    public CommandRankSetWeight(PowerRanks plugin, COMMAND_EXECUTOR ce, boolean showInHelp) {
+    public CommandRankSetDefault(PowerRanks plugin, COMMAND_EXECUTOR ce, boolean showInHelp) {
         super(plugin, ce, showInHelp);
     }
 
     @Override
     public String getArgumentSuggestions() {
-        return "<rankname> [weight: number]";
+        return "<rankname> [default: boolean]";
     }
 
     @Override
     public String getDescription() {
-        return "Change a ranks weight";
+        return "Change a ranks default value";
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-        if (!sender.hasPermission("powerranks.command.rank.setweight")) {
+        if (!sender.hasPermission("powerranks.command.rank.setdefault")) {
             sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.RED + plugin.getLangConfig().getNode("plugin.commands.no-permission"));
             return false;
         }
@@ -37,11 +37,11 @@ public class CommandRankSetWeight extends PowerCommand {
         if (args.length == 2) {
             String rankName = args[0];
             try {
-                int newWeight = Integer.parseInt(args[1]);
-                switch (PowerRanks.getAPI().setRankWeight(rankName, newWeight)) {
-                    case RANK_SET_WEIGHT_SUCCESSFULLY:
+                boolean newDefault = Boolean.parseBoolean(args[1]);
+                switch (PowerRanks.getAPI().setRankDefault(rankName, newDefault)) {
+                    case RANK_SET_DEFAULT_SUCCESSFULLY:
                         sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.GREEN + plugin.getLangConfig()
-                                .getNode("plugin.commands.rank.set-weight.weight-changed-successfully"));
+                                .getNode("plugin.commands.rank.set-default.default-changed-successfully"));
                         break;
                     case RANK_FAILED_NAME_NOT_FOUND:
                         sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.RED
@@ -90,9 +90,8 @@ public class CommandRankSetWeight extends PowerCommand {
         }
 
         if (args.length == 2) {
-            list.add("0");
-            list.add("10");
-            list.add("20");
+            list.add("true");
+            list.add("false");
         }
 
         return list;

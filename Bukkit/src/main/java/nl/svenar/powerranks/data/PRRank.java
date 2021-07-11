@@ -8,6 +8,7 @@ import nl.svenar.powerranks.handlers.BaseDataHandler;
 public class PRRank {
 
     private String name = "";
+    private boolean is_default = false;
     private String prefix = "";
     private String suffix = "";
     private int weight = 0;
@@ -24,6 +25,14 @@ public class PRRank {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDefault(boolean is_default) {
+        this.is_default = is_default;
+    }
+
+    public boolean getDefault() {
+        return is_default;
     }
 
     public String getPrefix() {

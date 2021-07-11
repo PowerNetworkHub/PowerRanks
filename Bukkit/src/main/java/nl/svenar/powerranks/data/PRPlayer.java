@@ -33,11 +33,20 @@ public class PRPlayer {
         this.setPlayer(player);
         this.setName(player.getName());
         this.setUuid(player.getUniqueId());
-        this.addRank(BaseDataHandler.getRank("default"));
+        
+        for (PRRank rank : BaseDataHandler.getRanks()) {
+            if (rank.getDefault()) {
+                this.addRank(rank);
+            }
+        }
     }
 
     public PRPlayer() {
-        this.addRank(BaseDataHandler.getRank("default"));
+        for (PRRank rank : BaseDataHandler.getRanks()) {
+            if (rank.getDefault()) {
+                this.addRank(rank);
+            }
+        }
     }
 
     public String getName() {

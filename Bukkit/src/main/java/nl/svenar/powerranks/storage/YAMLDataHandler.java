@@ -50,10 +50,10 @@ public class YAMLDataHandler extends BaseDataHandler {
             e.printStackTrace();
         }
 
-        if (!this.ranksConfiguration.contains("ranks.default")) {
-            PRRank defaultRank = new PRRank("default");
-            saveRank(defaultRank, true);
-        }
+        // if (!this.ranksConfiguration.contains("ranks.default")) {
+        //     PRRank defaultRank = new PRRank("default");
+        //     saveRank(defaultRank, true);
+        // }
     }
 
     private void createAndWriteFile(File file, String line) {
@@ -76,6 +76,15 @@ public class YAMLDataHandler extends BaseDataHandler {
         if (this.ranksConfiguration.contains("ranks")) {
             for (String key : this.ranksConfiguration.getConfigurationSection("ranks").getKeys(false)) {
                 PRRank rank = new PRRank(key);
+
+                if (this.ranksConfiguration.contains("ranks." + key + ".default")) {
+                    if (this.ranksConfiguration.isBoolean("ranks." + key + ".default")) {
+                        rank.setDefault(this.ranksConfiguration.getBoolean("ranks." + key + ".default"));
+                    } else {
+                        ErrorManager.logWarning(
+                                "Rank '" + rank.getName() + "' has an invalid default value and will not be used.");
+                    }
+                }
 
                 if (this.ranksConfiguration.contains("ranks." + key + ".weight")) {
                     if (this.ranksConfiguration.isInt("ranks." + key + ".weight")) {
@@ -282,6 +291,9 @@ public class YAMLDataHandler extends BaseDataHandler {
             inheritances.add(inheritance);
         }
 
+        if (rank.getDefault()) {
+            rankSection.set("default", rank.getDefault());
+        }
         if (rank.getWeight() > 0) {
             rankSection.set("weight", rank.getWeight());
         }

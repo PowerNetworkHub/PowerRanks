@@ -14,6 +14,7 @@ import nl.svenar.powerranks.data.PRPermission;
 import nl.svenar.powerranks.data.PRPlayer;
 import nl.svenar.powerranks.data.PRRank;
 import nl.svenar.powerranks.handlers.BaseDataHandler;
+import nl.svenar.powerranks.utils.ErrorManager;
 
 public class PowerRanksVaultPermission extends Permission {
 
@@ -46,10 +47,16 @@ public class PowerRanksVaultPermission extends Permission {
     @Override
     public boolean playerHas(String world, OfflinePlayer player, String permission) {
         PRPlayer prPlayer = getPlayer(player);
-        PRPermissible playerPermissible = prPlayer.getPermissible();
-        if (playerPermissible != null) {
-            return playerPermissible.hasPermission(permission);
+
+        if (prPlayer != null) {
+            PRPermissible playerPermissible = prPlayer.getPermissible();
+            if (playerPermissible != null) {
+                return playerPermissible.hasPermission(permission);
+            }
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
+
         return false;
     }
 
@@ -60,6 +67,8 @@ public class PowerRanksVaultPermission extends Permission {
         if (prPlayer != null) {
             PRPermission prPermission = new PRPermission(permission);
             prPlayer.addPermission(prPermission);
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
 
         return prPlayer != null;
@@ -77,6 +86,8 @@ public class PowerRanksVaultPermission extends Permission {
                     break;
                 }
             }
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
 
         if (permissionToRemove != null) {
@@ -145,7 +156,10 @@ public class PowerRanksVaultPermission extends Permission {
                     return true;
                 }
             }
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
+
         return false;
     }
 
@@ -169,6 +183,8 @@ public class PowerRanksVaultPermission extends Permission {
                 playerRanks.add(rankToAdd);
                 prPlayer.setRanks(playerRanks);
             }
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
 
         return rankToAdd != null;
@@ -194,6 +210,8 @@ public class PowerRanksVaultPermission extends Permission {
                 playerRanks.remove(rankToRemove);
                 prPlayer.setRanks(playerRanks);
             }
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
 
         return rankToRemove != null;
@@ -214,7 +232,10 @@ public class PowerRanksVaultPermission extends Permission {
                 ranks[index] = rank.getName();
                 index++;
             }
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
+
         return ranks == null ? new String[0] : ranks;
     }
 
@@ -229,7 +250,10 @@ public class PowerRanksVaultPermission extends Permission {
             }
             Collections.sort(playerRanks, (left, right) -> left.getWeight() - right.getWeight());
             return playerRanks.get(playerRanks.size() - 1).getName();
+        } else {
+            ErrorManager.logWarning("Player '" + player.getName() + "'(" + player.getUniqueId().toString() + ") does not exist in PowerRanks.");
         }
+
         return "default";
     }
 
@@ -297,7 +321,7 @@ public class PowerRanksVaultPermission extends Permission {
     private PRPlayer getPlayer(OfflinePlayer player) {
         PRPlayer prPlayer = null;
         for (PRPlayer cachedPlayer : BaseDataHandler.getPlayers()) {
-            if (cachedPlayer.getName().equals(player.getName())) {
+            if (cachedPlayer.getUuid().toString().equals(player.getUniqueId().toString()) || cachedPlayer.getName().equals(player.getName())) {
                 prPlayer = cachedPlayer;
                 break;
             }

@@ -24,16 +24,17 @@ public class PowerRanksAPI {
     public enum POWERRANKS_API_STATE {
         RANK_CREATE_SUCCESSFULLY, RANK_CREATE_FAILED_INVALID_CHARACTERS, RANK_CREATE_FAILED_NAME_ALREADY_EXISTS,
         RANK_DELETE_SUCCESSFULLY, RANK_FAILED_NAME_NOT_FOUND, RANK_FAILED_CANNOT_DELETE_DEFAULT_RANK,
-        RANK_SET_WEIGHT_SUCCESSFULLY, RANK_SET_PREFIX_SUCCESSFULLY, RANK_SET_SUFFIX_SUCCESSFULLY,
-        RANK_PERMISSION_ADD_SUCCESSFULLY, RANK_PERMISSION_ADD_FAILED_PERMISSION_ALREADY_EXISTS,
-        RANK_PERMISSION_ALLOWED_CHANGED_SUCCESSFULLY, RANK_FAILED_PERMISSION_NOT_FOUND,
-        RANK_PERMISSION_REMOVED_SUCCESSFULLY, RANK_PERMISSION_FAILED_WORLD_NOT_FOUND,
+        RANK_SET_DEFAULT_SUCCESSFULLY, RANK_SET_WEIGHT_SUCCESSFULLY, RANK_SET_PREFIX_SUCCESSFULLY,
+        RANK_SET_SUFFIX_SUCCESSFULLY, RANK_PERMISSION_ADD_SUCCESSFULLY,
+        RANK_PERMISSION_ADD_FAILED_PERMISSION_ALREADY_EXISTS, RANK_PERMISSION_ALLOWED_CHANGED_SUCCESSFULLY,
+        RANK_FAILED_PERMISSION_NOT_FOUND, RANK_PERMISSION_REMOVED_SUCCESSFULLY, RANK_PERMISSION_FAILED_WORLD_NOT_FOUND,
         RANK_PERMISSION_FAILED_WORLD_ALREADY_EXISTS, RANK_PERMISSION_FAILED_WORLD_DOES_NOT_EXIST,
         RANK_PERMISSION_WORLD_ADDED_SUCCESSFULLY, RANK_PERMISSION_WORLD_REMOVED_SUCCESSFULLY,
         RANK_PERMISSION_WORLD_CHANGE_ALLOWED_SUCCESSFULLY, PLAYER_FAILED_NAME_NOT_FOUND, PLAYER_FAILED_ALREADY_HAS_RANK,
         PLAYER_SUCCESSFULLY_SET_RANK, PLAYER_SUCCESSFULLY_ADDED_RANK, PLAYER_SUCCESSFULLY_REMOVED_RANK,
         PLAYER_FAILED_DOES_NOT_HAVE_RANK, PLAYER_SUCCESSFULLY_REMOVED_ALL_RANKS, PLAYER_FAILED_ALREADY_HAS_PERMISSION,
-        PLAYER_SUCCESSFULLY_ADDED_PERMISSION, PLAYER_FAILED_DOES_NOT_HAVE_PERMISSION, PLAYER_SUCCESSFULLY_REMOVED_PERMISSION, PLAYER_PERMISSION_ALLOWED_CHANGED_SUCCESSFULLY;
+        PLAYER_SUCCESSFULLY_ADDED_PERMISSION, PLAYER_FAILED_DOES_NOT_HAVE_PERMISSION,
+        PLAYER_SUCCESSFULLY_REMOVED_PERMISSION, PLAYER_PERMISSION_ALLOWED_CHANGED_SUCCESSFULLY;
     }
 
     /**
@@ -68,8 +69,15 @@ public class PowerRanksAPI {
      * @param rankName
      * @return PRRank if rank exists, otherwise null
      */
-    public PRRank getDefaultRank() {
-        return this.getRank("default");
+    public Collection<PRRank> getDefaultRanks() {
+        List<PRRank> ranks = new ArrayList<PRRank>();
+        for (PRRank rank : BaseDataHandler.getRanks()) {
+            if (rank.getDefault()) {
+                ranks.add(rank);
+            }
+        }
+        Collections.sort(ranks, (left, right) -> left.getWeight() - right.getWeight());
+        return ranks;
     }
 
     /**
@@ -174,18 +182,14 @@ public class PowerRanksAPI {
      * @return PowerRanks API state
      */
     public POWERRANKS_API_STATE deleteRank(String rankName) {
-        if (!rankName.equals("default")) {
-            if (BaseDataHandler.getRank(rankName) != null) {
+        if (BaseDataHandler.getRank(rankName) != null) {
 
-                PRRank rank = BaseDataHandler.getRank(rankName);
-                BaseDataHandler.removeRank(rank);
+            PRRank rank = BaseDataHandler.getRank(rankName);
+            BaseDataHandler.removeRank(rank);
 
-                return POWERRANKS_API_STATE.RANK_DELETE_SUCCESSFULLY;
-            } else {
-                return POWERRANKS_API_STATE.RANK_FAILED_NAME_NOT_FOUND;
-            }
+            return POWERRANKS_API_STATE.RANK_DELETE_SUCCESSFULLY;
         } else {
-            return POWERRANKS_API_STATE.RANK_FAILED_CANNOT_DELETE_DEFAULT_RANK;
+            return POWERRANKS_API_STATE.RANK_FAILED_NAME_NOT_FOUND;
         }
     }
 
@@ -587,10 +591,11 @@ public class PowerRanksAPI {
             return POWERRANKS_API_STATE.RANK_FAILED_NAME_NOT_FOUND;
         }
 
-        if (!player.getRanks().contains(rank) || rankName.equals("default")) {
+        if (!player.getRanks().contains(rank)) {
             player.setRanks(new ArrayList<PRRank>());
-            PRRank defaultRank = BaseDataHandler.getRank("default");
-            player.addRank(defaultRank);
+            for (PRRank defaultRank : getDefaultRanks()) {
+                player.addRank(defaultRank);
+            }
             player.addRank(rank);
             return POWERRANKS_API_STATE.PLAYER_SUCCESSFULLY_SET_RANK;
         } else {
@@ -664,8 +669,10 @@ public class PowerRanksAPI {
         }
 
         player.setRanks(new ArrayList<PRRank>());
-        PRRank defaultRank = BaseDataHandler.getRank("default");
-        player.addRank(defaultRank);
+
+        for (PRRank defaultRank : getDefaultRanks()) {
+            player.addRank(defaultRank);
+        }
 
         return POWERRANKS_API_STATE.PLAYER_SUCCESSFULLY_REMOVED_ALL_RANKS;
     }
@@ -773,5 +780,25 @@ public class PowerRanksAPI {
         permissionToChange.setAllowed(allowed);
 
         return POWERRANKS_API_STATE.PLAYER_PERMISSION_ALLOWED_CHANGED_SUCCESSFULLY;
+    }
+
+    public POWERRANKS_API_STATE setRankDefault(String rankName, boolean is_default) {
+        if (BaseDataHandler.getRank(rankName) != null) {
+            PRRank rank = BaseDataHandler.getRank(rankName);
+            rank.setDefault(is_default);
+
+            return POWERRANKS_API_STATE.RANK_SET_DEFAULT_SUCCESSFULLY;
+        } else {
+            return POWERRANKS_API_STATE.RANK_FAILED_NAME_NOT_FOUND;
+        }
+    }
+
+    public boolean getRankDefault(String rankName) {
+        if (BaseDataHandler.getRank(rankName) != null) {
+            PRRank rank = BaseDataHandler.getRank(rankName);
+
+            return rank.getDefault();
+        }
+        return false;
     }
 }

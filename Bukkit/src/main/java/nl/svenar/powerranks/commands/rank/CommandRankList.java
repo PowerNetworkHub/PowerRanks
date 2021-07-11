@@ -56,6 +56,7 @@ public class CommandRankList extends PowerCommand {
             for (PRRank rank : PowerRanks.getAPI().getRanks()) {
                 String pageItem = "";
                 pageItem += ChatColor.GREEN + rank.getName() + "\n";
+                pageItem += ChatColor.DARK_GREEN + "- default: " + (rank.getDefault() ? ChatColor.GREEN : ChatColor.RED) + rank.getDefault() + "\n";
                 pageItem += ChatColor.DARK_GREEN + "- weight: " + ChatColor.GREEN + rank.getWeight() + "\n";
                 pageItem += ChatColor.DARK_GREEN + "- prefix: " + ChatColor.GREEN + PowerChatColor.colorize(rank.getPrefix(), true) + "\n";
                 pageItem += ChatColor.DARK_GREEN + "- suffix: " + ChatColor.GREEN + PowerChatColor.colorize(rank.getSuffix(), true) + "\n";

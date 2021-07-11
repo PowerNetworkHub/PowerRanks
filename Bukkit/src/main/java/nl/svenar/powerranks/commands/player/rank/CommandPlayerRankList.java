@@ -42,6 +42,7 @@ public class CommandPlayerRankList extends PowerCommand {
                 sender.sendMessage(plugin.getCommandHeader(prPlayer.getName() + "'s ranks"));
                 for (PRRank rank : prPlayer.getRanks()) {
                     sender.sendMessage(rank.getName());
+                    sender.sendMessage("- default: " + rank.getDefault());
                     sender.sendMessage("- weight: " + rank.getWeight());
                     sender.sendMessage("- prefix: " + rank.getPrefix());
                     sender.sendMessage("- suffix: " + rank.getSuffix());
@@ -65,6 +66,14 @@ public class CommandPlayerRankList extends PowerCommand {
 
     @Override
     public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
-        return new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<String>();
+
+        if (args.length == 1) {
+            for (PRPlayer player : BaseDataHandler.getPlayers()) {
+                list.add(player.getName());
+            }
+        }
+
+        return list;
     }
 }

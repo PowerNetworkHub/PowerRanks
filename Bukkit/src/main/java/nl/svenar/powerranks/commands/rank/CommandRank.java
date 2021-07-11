@@ -24,6 +24,7 @@ public class CommandRank extends PowerCommand {
         addSubPowerCommand("remove", new CommandRankDelete(plugin, ce, false));
         addSubPowerCommand("del", new CommandRankDelete(plugin, ce, false));
 
+        addSubPowerCommand("setdefault", new CommandRankSetDefault(plugin, ce, true));
         addSubPowerCommand("setweight", new CommandRankSetWeight(plugin, ce, true));
         addSubPowerCommand("setprefix", new CommandRankSetPrefix(plugin, ce, true));
         addSubPowerCommand("setsuffix", new CommandRankSetSuffix(plugin, ce, true));
