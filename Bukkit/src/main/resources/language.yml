@@ -1,0 +1,190 @@
+lang:
+  en:
+    plugin:
+      reload-detected: "Reload detected, why do you hate yourself? :C"
+      commands:
+        no-permission: "You do not have permission to execute this command"
+        insufficient-arguments: "Insufficient arguments"
+        too-many-arguments: "Too many arguments"
+        invalid-boolean-argument: "Invalid boolean given as argument"
+        invalid-number-argument: "Invalid number given as argument"
+        invalid-worldname-argument: "A world with that name was not found"
+        rank:
+          general:
+            rank-does-not-exists: "A rank with that name does not exist"
+            permission-does-not-exist: "A permission with that name does not exist"
+          create:
+            created-successfully: "A new rank was created successfully"
+            invalid-characters: "The rank name contains invalid characters"
+            already-exists: "A rank with that name already exists"
+          delete:
+            deleted-successfully: "The rank has been deleted successfully"
+            cannot-delete-this-rank: "Can't delete this rank"
+          set-weight:
+            weight-changed-successfully: "The ranks weight has been changed successfully"
+          set-prefix:
+            prefix-changed-successfully: "The prefix has changed successfully"
+          set-suffix:
+            suffix-changed-successfully: "The suffix has changed successfully"
+          permissions:
+            add:
+              permission-already-exists: "That permission already exists on that rank"
+              permission-added-successfully: "Permission is added successfully"
+              world:
+                added-successfully: "The world has successfully been added to that permission"
+                already-exists: "That world already exists on that permission"
+                does-not-exist: "That world does not exist on that permission"
+                removed-successfully: "The world has successfully been removed from that permission"
+            remove:
+              permission-removed-successfully: "Permission removed successfully"
+            setallowed:
+              allowed-changed-successfully: "Allowance of the permission node was successfully changed"
+        player:
+          general:
+            player-not-found: "A player with that name is not found"
+            player-already-has-that-rank: "The player already has that rank"
+            player-does-not-have-that-rank: "The player does not have that rank"
+            player-rank-set-successfully: "The player ranks has been removed and set to this single one"
+            player-rank-added-successfully: "Added the rank to this player"
+            player-rank-removed-successfully: "Removed the rank from this player"
+          permissions:
+            player-permission-already-exists: "That permission already exists on that player"
+            player-permission-added-successfully: "Permission is added successfully"
+            player-permission-removed-successfully: "Permission removed successfully"
+            player-permission-allowance-changed-successfully: "Allowance of the permission node was successfully changed"
+      storage:
+        loading: "Loading storage [type]..."
+        loaded: "Storage type [type] loaded!"
+      update:
+        checking: "Checking for updates..."
+        available: "Update available! [version]"
+        not-available: "No update available"
+    error:
+      noconfigfound: "Failed to copy config, no config found in the jar file."
+      unknown-storage-method: "ERROR: unknown storage method defined in the config!"
+  nl:
+    plugin:
+      reload-detected: "De plug-in is opnieuw geladen, waarom haat je jezelf? :C"
+      commands:
+        no-permission: "Je hebt geen toestemming om dit commando uit te voeren"
+        insufficient-arguments: "Niet genoeg argumenten"
+        too-many-arguments: "Te veel argumenten"
+        invalid-boolean-argument: "Ongeldige booleaanse waarde opgegeven als argument"
+        invalid-number-argument: "Ongeldige nummer opgegeven als argument"
+        invalid-worldname-argument: "Een wereld met die naam is niet gevonden"
+        rank:
+          general:
+            rank-does-not-exists: "Een rang met die naam bestaat niet"
+            permission-does-not-exist: "Een permissie met die naam bestaat niet"
+          create:
+            created-successfully: "Een nieuwe rang is succesvol aangemaakt"
+            invalid-characters: "De rangnaam bevat ongeldige tekens"
+            already-exists: "Een rang met die naam bestaat al"
+          delete:
+            deleted-successfully: "De rang is succesvol verwijderd"
+            cannot-delete-this-rank: "Kan deze rang niet verwijderen"
+          set-weight:
+            weight-changed-successfully: "Het gewicht van de rang is succesvol gewijzigd"
+          set-prefix:
+            prefix-changed-successfully: "Het voorvoegsel is succesvol gewijzigd"
+          set-suffix:
+            suffix-changed-successfully: "Het achtervoegsel is succesvol gewijzigd"
+          permissions:
+            add:
+              permission-already-exists: "Deze permissie bestaat al in deze rang"
+              permission-added-successfully: "Permissie is succesvol toegevoegd"
+              world:
+                added-successfully: "De wereld is succesvol toegevoegd aan deze permissie"
+                already-exists: "Deze wereld bestaat al in deze permissie"
+                does-not-exist: "Deze wereld bestaat niet in deze permissie"
+                removed-successfully: "De wereld is succesvol verwijderd van deze permissie"
+            remove:
+              permission-removed-successfully: "Permissie succesvol verwijderd"
+            setallowed:
+              allowed-changed-successfully: "Toestemming van de permissie is succesvol gewijzigd"
+        player:
+          general:
+            player-not-found: "Een speler met die naam bestaat niet"
+            player-already-has-that-rank: "De speler heeft die rang al"
+            player-does-not-have-that-rank: "De speler heeft die rang niet"
+            player-rank-set-successfully: "De rangen van de speler zijn verwijderd en gezet op deze enkele rang"
+            player-rank-added-successfully: "De rang is toegevoegd aan deze speler"
+            player-rank-removed-successfully: "De rang is verwijderd van deze speler"
+          permissions:
+            player-permission-already-exists: "De speler heeft die permissie al"
+            player-permission-added-successfully: "Permissie is succesvol toegevoegd"
+            player-permission-removed-successfully: "Permissie succesvol verwijderd"
+            player-permission-allowance-changed-successfully: "Toestemming van de permissie is succesvol gewijzigd"
+      storage:
+        loading: "Data laden van [type]..."
+        loaded: "Opslag methode [type] geladen!"
+      update:
+        checking: "Controleren voor updates..."
+        available: "Update beschikbaar! [version]"
+        not-available: "Geen update beschikbaar"
+    error:
+      noconfigfound: "Kan configuratie niet kopiëren, geen configuratie gevonden in jar-bestand."
+      unknown-storage-method: "ERROR: Onbekende opslag methode gedefineerd in de config!"
+  de:
+    plugin:
+      reload-detected: "Reload erkannt, warum hasst du dich? :C"
+      commands:
+        no-permission: "Sie haben keine berechtigung, diesen befehl auszuführen"
+        insufficient-arguments: "Unzureichende argumente"
+        too-many-arguments: "Zu viele argumente"
+        invalid-boolean-argument: "Ungültiger boolescher wert als argument angegeben"
+        invalid-number-argument: "Ungültige zahl wert als argument angegeben"
+        invalid-worldname-argument: "Eine welt mit diesem namen wurde nicht gefunden"
+        rank:
+          general:
+            rank-does-not-exists: "Ein rang mit diesem namen existiert nicht"
+            permission-does-not-exist: "Eine erlaubnis mit diesem namen existiert nicht"
+          create:
+            created-successfully: "Ein neuer rang wurde erfolgreich erstellt"
+            invalid-characters: "Der rang name enthält ungültige zeichen"
+            already-exists: "Ein rang mit diesem namen existiert bereits"
+          delete:
+            deleted-successfully: "Der rang wurde erfolgreich gelöscht"
+            cannot-delete-this-rank: "Dieser rang kann nicht gelöscht werden"
+          set-weight:
+            weight-changed-successfully: "Das rang gewicht wurde erfolgreich geändert"
+          set-prefix:
+            prefix-changed-successfully: "Das präfix wurde erfolgreich geändert"
+          set-suffix:
+            suffix-changed-successfully: "Das suffix wurde erfolgreich geändert"
+          permissions:
+            add:
+              permission-already-exists: "Diese erlaubnis existiert bereits in diesem rang"
+              permission-added-successfully: "Die erlaubnis wurde erfolgreich hinzugefügt"
+              world:
+                added-successfully: "Die welt wurde erfolgreich zu dieser erlaubnis hinzugefügt"
+                already-exists: "Diese welt existiert bereits mit dieser erlaubnis"
+                does-not-exist: "Diese Welt existiert nicht mit dieser erlaubnis"
+                removed-successfully: "Die welt wurde erfolgreich von dieser erlaubnis entfernt"
+            remove:
+              permission-removed-successfully: "Erlaubnis erfolgreich entfernt"
+            setallowed:
+              allowed-changed-successfully: "Zulässigkeit des erlaubnis knotens wurde erfolgreich geändert"
+        player:
+          general:
+            player-not-found: "Ein spieler mit diesem namen wurde nicht gefunden"
+            player-already-has-that-rank: "Der spieler hat diesen rang bereits"
+            player-does-not-have-that-rank: "Der spieler hat diesen rang nicht"
+            player-rank-set-successfully: "Der spieler rangs wurde entfernt und auf diesen einzelnen rang gesetzt"
+            player-rank-added-successfully: "Diesem spieler wurde der rang hinzugefügt"
+            player-rank-removed-successfully: "Der rang wurde von diesem spieler entfernt"
+          permissions:
+            player-permission-already-exists: "Diese erlaubnis existiert bereits in diesem spieler"
+            player-permission-added-successfully: "Die erlaubnis wurde erfolgreich hinzugefügt"
+            player-permission-removed-successfully: "Erlaubnis erfolgreich entfernt"
+            player-permission-allowance-changed-successfully: "Zulässigkeit des erlaubnis knotens wurde erfolgreich geändert"
+      storage:
+        loading: "Daten lade von [type]..."
+        loaded: "Speichertyp [type] geladen!"
+      update:
+        checking: "Nach updates suchen..."
+        available: "Update verfügbar! [version]"
+        not-available: "Kein update verfügbar"
+    error:
+      noconfigfound: "Konfiguration konnte nicht kopiert werden, es wurde keine konfiguration in der jar-datei gefunden."
+      unknown-storage-method: "ERROR: unbekannte speichermethode in der konfiguration definiert!"

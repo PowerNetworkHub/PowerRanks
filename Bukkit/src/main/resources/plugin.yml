@@ -1,0 +1,13 @@
+name: ${project.name}
+version: ${project.version}
+main: nl.svenar.powerranks.PowerRanks
+api-version: 1.13
+authors: [svenar_nl]
+# loadbefore: [Vault]
+softdepend: [Vault, PlaceholderAPI]
+load: startup
+website: 'https://powerranks.nl'
+commands:
+  powerranks:
+    description: Main Command
+    aliases: [pr]

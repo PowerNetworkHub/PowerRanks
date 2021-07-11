@@ -1,0 +1,24 @@
+# The language PowerRanks uses for communication
+# default: en
+language: en
+
+# Change the storage method for playerd and ranks here
+storage:
+  # In what way should the data be stored?
+  # Possible options: YAML (default), MYSQL, SQLITE
+  method: YAML
+
+  # MySQL confuguration for PowerRanks
+  mysql:
+    host: '127.0.0.1'
+    port: 3306
+    username: 'powerranks'
+    password: 'password'
+    database: 'powerranks'
+
+# Check for updates when PowerRanks starts
+check-for-updates: true
+
+pluginhooks:
+  placeholderapi: true
+  vault: true

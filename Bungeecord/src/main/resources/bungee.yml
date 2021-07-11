@@ -1,0 +1,4 @@
+name: ${project.name}
+version: ${project.version}
+main: nl.svenar.powerranks.PowerRanks
+author: svenar_nl
