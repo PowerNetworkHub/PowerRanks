@@ -20,12 +20,20 @@ lang:
           delete:
             deleted-successfully: "The rank has been deleted successfully"
             cannot-delete-this-rank: "Can't delete this rank"
+          set-default:
+            default-changed-successfully: "The default tag has been changed successfully"
           set-weight:
             weight-changed-successfully: "The ranks weight has been changed successfully"
           set-prefix:
             prefix-changed-successfully: "The prefix has changed successfully"
           set-suffix:
             suffix-changed-successfully: "The suffix has changed successfully"
+          inheritance:
+            inheritance-added-successfully: "Inheritance has been added successfully"
+            inheritance-removed-successfully: "Inheritance has been removed successfully"
+            target-rank-not-found: "Failed to update inheritances, target rank not found!"
+            inheritance-rank-not-found: "Failed to update inheritances, inheritance rank not found!"
+            inheritance-already-exists: "Failed to update inheritances, inheritance rank already exists on target rank!"
           permissions:
             add:
               permission-already-exists: "That permission already exists on that rank"
@@ -83,12 +91,20 @@ lang:
           delete:
             deleted-successfully: "De rang is succesvol verwijderd"
             cannot-delete-this-rank: "Kan deze rang niet verwijderen"
+          set-default:
+            default-changed-successfully: "De standaard tag is succesvol gewijzigd"
           set-weight:
             weight-changed-successfully: "Het gewicht van de rang is succesvol gewijzigd"
           set-prefix:
             prefix-changed-successfully: "Het voorvoegsel is succesvol gewijzigd"
           set-suffix:
             suffix-changed-successfully: "Het achtervoegsel is succesvol gewijzigd"
+          inheritance:
+            inheritance-added-successfully: "Overerving rang is succesvol toegevoegd"
+            inheritance-removed-successfully: "Overerving rang is succesvol verwijderd"
+            target-rank-not-found: "Kan overerving rang niet veranderen, doel rang niet gevonden!"
+            inheritance-rank-not-found: "Kan overerving rang niet veranderen, overervingsrang niet gevonden!"
+            inheritance-already-exists: "Kan overerving rang niet veranderen, overervingsrang bestaat al op doel rang!"
           permissions:
             add:
               permission-already-exists: "Deze permissie bestaat al in deze rang"
@@ -146,12 +162,20 @@ lang:
           delete:
             deleted-successfully: "Der rang wurde erfolgreich gelöscht"
             cannot-delete-this-rank: "Dieser rang kann nicht gelöscht werden"
+          set-default:
+            default-changed-successfully: "Das standard tag wurde erfolgreich geändert"
           set-weight:
             weight-changed-successfully: "Das rang gewicht wurde erfolgreich geändert"
           set-prefix:
             prefix-changed-successfully: "Das präfix wurde erfolgreich geändert"
           set-suffix:
             suffix-changed-successfully: "Das suffix wurde erfolgreich geändert"
+          inheritance:
+            inheritance-added-successfully: "Vererbung wurde erfolgreich hinzugefügt"
+            inheritance-removed-successfully: "Vererbung wurde erfolgreich entfernt"
+            target-rank-not-found: "Erbschaften konnten nicht geändert werden, zielrang nicht gefunden!"
+            inheritance-rank-not-found: "Erbschaften konnten nicht geändert werden, vererbungsrang nicht gefunden!"
+            inheritance-already-exists: "Erbschaften konnten nicht geändert werden, vererbung rang existiert bereits auf ziel rang!"
           permissions:
             add:
               permission-already-exists: "Diese erlaubnis existiert bereits in diesem rang"

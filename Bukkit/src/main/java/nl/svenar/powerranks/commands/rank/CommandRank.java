@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.commands.PowerCommand;
+import nl.svenar.powerranks.commands.rank.inheritance.CommandRankInheritance;
 import nl.svenar.powerranks.commands.rank.permissions.CommandRankPermissions;
 
 public class CommandRank extends PowerCommand {
@@ -31,6 +32,8 @@ public class CommandRank extends PowerCommand {
 
         addSubPowerCommand("permissions", new CommandRankPermissions(plugin, ce, true));
         addSubPowerCommand("p", new CommandRankPermissions(plugin, ce, false));
+
+        addSubPowerCommand("inheritance", new CommandRankInheritance(plugin, ce, true));
 
         addSubPowerCommand("list", new CommandRankList(plugin, ce, true));
     }

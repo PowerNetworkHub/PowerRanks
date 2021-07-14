@@ -30,7 +30,12 @@ public class PowerRanksAPI {
         RANK_FAILED_PERMISSION_NOT_FOUND, RANK_PERMISSION_REMOVED_SUCCESSFULLY, RANK_PERMISSION_FAILED_WORLD_NOT_FOUND,
         RANK_PERMISSION_FAILED_WORLD_ALREADY_EXISTS, RANK_PERMISSION_FAILED_WORLD_DOES_NOT_EXIST,
         RANK_PERMISSION_WORLD_ADDED_SUCCESSFULLY, RANK_PERMISSION_WORLD_REMOVED_SUCCESSFULLY,
-        RANK_PERMISSION_WORLD_CHANGE_ALLOWED_SUCCESSFULLY, PLAYER_FAILED_NAME_NOT_FOUND, PLAYER_FAILED_ALREADY_HAS_RANK,
+        RANK_PERMISSION_WORLD_CHANGE_ALLOWED_SUCCESSFULLY,
+        
+        RANK_ADD_INHERITANCE_SUCCESSFULLY, RANK_ADD_INHERITANCE_FAILED_TARGET_RANK_NOT_FOUND, RANK_ADD_INHERITANCE_FAILED_INHERITANCE_RANK_NOT_FOUND, RANK_ADD_INHERITANCE_FAILED_RANK_ALREADY_EXISTS,
+        RANK_REMOVE_INHERITANCE_SUCCESSFULLY, RANK_REMOVE_INHERITANCE_FAILED_TARGET_RANK_NOT_FOUND, RANK_REMOVE_INHERITANCE_FAIL_RANK_NOT_FOUND,
+        
+        PLAYER_FAILED_NAME_NOT_FOUND, PLAYER_FAILED_ALREADY_HAS_RANK,
         PLAYER_SUCCESSFULLY_SET_RANK, PLAYER_SUCCESSFULLY_ADDED_RANK, PLAYER_SUCCESSFULLY_REMOVED_RANK,
         PLAYER_FAILED_DOES_NOT_HAVE_RANK, PLAYER_SUCCESSFULLY_REMOVED_ALL_RANKS, PLAYER_FAILED_ALREADY_HAS_PERMISSION,
         PLAYER_SUCCESSFULLY_ADDED_PERMISSION, PLAYER_FAILED_DOES_NOT_HAVE_PERMISSION,
@@ -280,6 +285,71 @@ public class PowerRanksAPI {
     public String getRankSuffix(String rankName) {
         PRRank rank = BaseDataHandler.getRank(rankName);
         return rank != null ? rank.getSuffix() : "";
+    }
+
+    
+    public POWERRANKS_API_STATE setRankDefault(String rankName, boolean is_default) {
+        if (BaseDataHandler.getRank(rankName) != null) {
+            PRRank rank = BaseDataHandler.getRank(rankName);
+            rank.setDefault(is_default);
+
+            return POWERRANKS_API_STATE.RANK_SET_DEFAULT_SUCCESSFULLY;
+        } else {
+            return POWERRANKS_API_STATE.RANK_FAILED_NAME_NOT_FOUND;
+        }
+    }
+
+    public boolean getRankDefault(String rankName) {
+        if (BaseDataHandler.getRank(rankName) != null) {
+            PRRank rank = BaseDataHandler.getRank(rankName);
+
+            return rank.getDefault();
+        }
+        return false;
+    }
+
+    public POWERRANKS_API_STATE addRankInheritance(String rankName, String inheritanceName) {
+        PRRank targetRank = BaseDataHandler.getRank(rankName);
+        PRRank inheritanceRank = BaseDataHandler.getRank(inheritanceName);
+
+        if (targetRank == null) {
+            return POWERRANKS_API_STATE.RANK_ADD_INHERITANCE_FAILED_TARGET_RANK_NOT_FOUND;
+        }
+
+        if (inheritanceRank == null) {
+            return POWERRANKS_API_STATE.RANK_ADD_INHERITANCE_FAILED_INHERITANCE_RANK_NOT_FOUND;
+        }
+
+        if (targetRank.getInheritedRanks().contains(inheritanceRank.getName())) {
+            return POWERRANKS_API_STATE.RANK_ADD_INHERITANCE_FAILED_RANK_ALREADY_EXISTS;
+        }
+
+        targetRank.addInheritedRank(inheritanceRank.getName());
+        
+        return POWERRANKS_API_STATE.RANK_ADD_INHERITANCE_SUCCESSFULLY;
+    }
+
+    public POWERRANKS_API_STATE removeRankInheritance(String rankName, String inheritanceName) {
+        PRRank targetRank = BaseDataHandler.getRank(rankName);
+        PRRank inheritanceRank = BaseDataHandler.getRank(inheritanceName);
+
+        if (targetRank == null) {
+            return POWERRANKS_API_STATE.RANK_REMOVE_INHERITANCE_FAIL_RANK_NOT_FOUND;
+        }
+
+        if (inheritanceRank == null) {
+            return POWERRANKS_API_STATE.RANK_REMOVE_INHERITANCE_FAILED_TARGET_RANK_NOT_FOUND;
+        }
+
+        if (!targetRank.getInheritedRanks().contains(inheritanceRank.getName())) {
+            return POWERRANKS_API_STATE.RANK_REMOVE_INHERITANCE_FAILED_TARGET_RANK_NOT_FOUND;
+        }
+
+        Collection<String> inheritedRanks = targetRank.getInheritedRanks();
+        inheritedRanks.remove(inheritanceRank.getName());
+        targetRank.setInheritedRanks(inheritedRanks);
+
+        return POWERRANKS_API_STATE.RANK_REMOVE_INHERITANCE_SUCCESSFULLY;
     }
 
     /**
@@ -780,25 +850,5 @@ public class PowerRanksAPI {
         permissionToChange.setAllowed(allowed);
 
         return POWERRANKS_API_STATE.PLAYER_PERMISSION_ALLOWED_CHANGED_SUCCESSFULLY;
-    }
-
-    public POWERRANKS_API_STATE setRankDefault(String rankName, boolean is_default) {
-        if (BaseDataHandler.getRank(rankName) != null) {
-            PRRank rank = BaseDataHandler.getRank(rankName);
-            rank.setDefault(is_default);
-
-            return POWERRANKS_API_STATE.RANK_SET_DEFAULT_SUCCESSFULLY;
-        } else {
-            return POWERRANKS_API_STATE.RANK_FAILED_NAME_NOT_FOUND;
-        }
-    }
-
-    public boolean getRankDefault(String rankName) {
-        if (BaseDataHandler.getRank(rankName) != null) {
-            PRRank rank = BaseDataHandler.getRank(rankName);
-
-            return rank.getDefault();
-        }
-        return false;
     }
 }
