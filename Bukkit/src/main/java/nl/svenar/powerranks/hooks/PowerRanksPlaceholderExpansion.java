@@ -137,16 +137,44 @@ public class PowerRanksPlaceholderExpansion extends PlaceholderExpansion {
             return "[" + String.join(", ", String.join(", ", rankList)) + "]";
         }
 
-        // Get the prefix of the rank with the highest weight
-        if (identifier.equals("prefix")) {
-            PRRank primaryRank = getPrimaryRank(prPlayer);
-            return primaryRank.getPrefix();
+        // Get all prefixes of a rank (%powerranks_prefix%) joined by a space ([member] [moderator])
+		// Get a specific amount of prefixes (%powerranks_prefix_X% where X is a positive number) this will join the top X prefixes with a space
+        if (identifier.equals("prefix") || identifier.contains("prefix_")) {
+            List<PRRank> sortedRanks = getSortedRanks(prPlayer);
+			String prefix = "";
+			int index = 0;
+			int target = identifier.contains("prefix_") ? Integer.parseInt(identifier.split("_")[1]) : sortedRanks.size();
+			for (PRRank rank : sortedRanks) {
+				if (index >= target) {
+					break;
+				}
+
+				prefix += rank.getPrefix() + (index < sortedRanks.size() ? " " : "");
+
+				index++;
+			}
+            return prefix;
         }
 
-        // Get the prefix of the rank with the highest weight
-        if (identifier.equals("suffix")) {
-            PRRank primaryRank = getPrimaryRank(prPlayer);
-            return primaryRank.getSuffix();
+        // Get all suffixes of a rank (%powerranks_suffix%) joined by a space ([member] [moderator])
+		// Get a specific amount of suffixes (%powerranks_suffix_X% where X is a positive number) this will join the top X suffixes with a space
+        if (identifier.equals("suffix") || identifier.contains("suffix_")) {
+			List<PRRank> sortedRanks = getSortedRanks(prPlayer);
+			String suffix = "";
+			int index = 0;
+			int target = identifier.contains("suffix_") ? Integer.parseInt(identifier.split("_")[1]) : sortedRanks.size();
+			for (PRRank rank : sortedRanks) {
+				if (index >= target) {
+					break;
+				}
+
+				suffix += rank.getSuffix() + (index < sortedRanks.size() ? " " : "");
+
+				index++;
+			}
+            return suffix;
+            // PRRank primaryRank = getPrimaryRank(prPlayer);
+            // return primaryRank.getSuffix();
         }
 
         // Get the worldname the player is in
@@ -157,15 +185,19 @@ public class PowerRanksPlaceholderExpansion extends PlaceholderExpansion {
 		return null;
 	}
 
-    private PRRank getPrimaryRank(PRPlayer prPlayer) {
-        List<PRRank> ranks = new ArrayList<PRRank>();
+	private List<PRRank> getSortedRanks(PRPlayer prPlayer) {
+		List<PRRank> ranks = new ArrayList<PRRank>();
             
-            for (PRRank playerRank : prPlayer.getRanks()) {
-                ranks.add(playerRank);
-            }
+        for (PRRank playerRank : prPlayer.getRanks()) {
+            ranks.add(playerRank);
+        }
 
-            Collections.sort(ranks, (left, right) -> right.getWeight() - left.getWeight());
+        Collections.sort(ranks, (left, right) -> right.getWeight() - left.getWeight());
 
-            return ranks.get(0);
+        return ranks;
+	}
+
+    private PRRank getPrimaryRank(PRPlayer prPlayer) {
+        return getSortedRanks(prPlayer).get(0);
     }
 }
