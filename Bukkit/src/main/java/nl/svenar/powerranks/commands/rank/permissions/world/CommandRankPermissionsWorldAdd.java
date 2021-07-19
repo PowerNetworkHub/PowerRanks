@@ -65,12 +65,12 @@ public class CommandRankPermissionsWorldAdd extends PowerCommand {
                             + plugin.getLangConfig().getNode("plugin.commands.rank.general.permission-does-not-exist"));
                     break;
                 case RANK_PERMISSION_FAILED_WORLD_NOT_FOUND:
-                    sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.GREEN
+                    sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.RED
                             + plugin.getLangConfig().getNode("plugin.commands.invalid-worldname-argument"));
                     break;
 
                 case RANK_PERMISSION_FAILED_WORLD_ALREADY_EXISTS:
-                    sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.GREEN + plugin.getLangConfig()
+                    sender.sendMessage(plugin.pluginChatPrefix() + ChatColor.RED + plugin.getLangConfig()
                             .getNode("plugin.commands.rank.permissions.add.world.already-exists"));
                     break;
 

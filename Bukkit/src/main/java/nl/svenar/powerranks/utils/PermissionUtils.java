@@ -14,6 +14,10 @@ public class PermissionUtils {
     private static String multiNumberRangePermissionRegex = "[\\[]\\d{1,6}-\\d{1,6}[\\]]";
 
     public static boolean hasPermission(PRPlayer prPlayer, String permission) {
+        if (!prPlayer.isOnline()) {
+            return false;
+        }
+        
         boolean isAllowed = prPlayer.isPermissionAllowed(permission, prPlayer.getPlayer().getWorld());
 
         if (!isAllowed) {

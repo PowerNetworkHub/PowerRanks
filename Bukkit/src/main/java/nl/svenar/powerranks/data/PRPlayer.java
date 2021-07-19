@@ -94,7 +94,7 @@ public class PRPlayer {
     public Collection<String> getRankNames() {
         List<String> ranks = new ArrayList<String>();
         
-        for (PRRank playerRank : getRanks()) {
+        for (PRRank playerRank : this.getRanks()) {
             ranks.add(playerRank.getName());
         }
 
@@ -109,7 +109,7 @@ public class PRPlayer {
         if (rank == null) {
             return;
         }
-        for (PRRank existingRank : getRanks()) {
+        for (PRRank existingRank : this.getRanks()) {
             if (existingRank.getName().equalsIgnoreCase(rank.getName())) {
                 return;
             }

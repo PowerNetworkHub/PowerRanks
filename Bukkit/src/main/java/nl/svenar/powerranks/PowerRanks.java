@@ -116,6 +116,11 @@ public class PowerRanks extends JavaPlugin {
         String preload_message = "Loaded " + BaseDataHandler.getRanks().size() + " ranks and "
                 + BaseDataHandler.getPlayers().size() + " players";
 
+        String storageType = "Unknown";
+        storageType = this.coreConfig.isUsingYAML() ? "YAML" : storageType;
+        storageType = this.coreConfig.isUsingSQLite() ? "SQLite" : storageType;
+        storageType = this.coreConfig.isUsingMySQL() ? "MySQL" : storageType;
+
         getLogger().info("");
         getLogger().info(ChatColor.AQUA + logoLinesIterator.next() + ChatColor.GREEN + "  " + getDescription().getName()
                 + " v" + getDescription().getVersion());
@@ -124,7 +129,8 @@ public class PowerRanks extends JavaPlugin {
                 + VersionUtils.getJavaVersion() + ")");
         getLogger().info(ChatColor.AQUA + logoLinesIterator.next() + ChatColor.GREEN + "  Startup time: "
                 + Duration.between(startup_time, Instant.now()).toMillis() + "ms");
-        getLogger().info(ChatColor.AQUA + logoLinesIterator.next() + ChatColor.GREEN + "  " + preload_message);
+        getLogger().info(ChatColor.AQUA + logoLinesIterator.next() + ChatColor.GREEN + "  " + preload_message + " ("
+                + storageType + ")");
         getLogger().info(ChatColor.AQUA + logoLinesIterator.next() + ChatColor.RED + "  "
                 + (System.getProperty("POWERRANKSRUNNING", "").equals("TRUE")
                         ? getLangConfig().getNode("plugin.reload-detected")
