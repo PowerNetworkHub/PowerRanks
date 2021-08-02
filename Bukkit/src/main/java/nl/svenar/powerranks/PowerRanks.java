@@ -35,6 +35,7 @@ import nl.svenar.powerranks.handlers.BaseDataHandler;
 import nl.svenar.powerranks.handlers.PowerCommandHandler;
 import nl.svenar.powerranks.hooks.PowerRanksPlaceholderExpansion;
 import nl.svenar.powerranks.hooks.VaultHook;
+import nl.svenar.powerranks.messaging.PluginMessageHandler;
 import nl.svenar.powerranks.metrics.Metrics;
 import nl.svenar.powerranks.storage.MYSQLDataHandler;
 import nl.svenar.powerranks.storage.SQLITEDataHandler;
@@ -61,6 +62,8 @@ public class PowerRanks extends JavaPlugin {
 
     public static PowerRanksPlaceholderExpansion placeholderapiExpansion;
 
+    private static PluginMessageHandler pluginMessageHandler;
+
     @Override
     public void onEnable() {
         PowerRanks.instance = this;
@@ -81,6 +84,11 @@ public class PowerRanks extends JavaPlugin {
 
         Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new PowerCommandHandler(this));
         Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter((TabCompleter) new PowerCommandHandler(this));
+
+        if (this.coreConfig.isBungeecordEnabled()) {
+            PowerRanks.pluginMessageHandler = new PluginMessageHandler(this);
+            PowerRanks.pluginMessageHandler.setup();
+        }
 
         // Load all base commands //
         PowerCommandHandler.addPowerCommand("help", new CommandHelp(this, COMMAND_EXECUTOR.ALL, true));
@@ -158,6 +166,10 @@ public class PowerRanks extends JavaPlugin {
         }
 
         Bukkit.getServer().getScheduler().cancelTasks(this);
+
+        if (this.coreConfig.isBungeecordEnabled()) {
+            PowerRanks.pluginMessageHandler.close();
+        }
 
         boolean dataSaveResult = savePRData();
 
@@ -440,6 +452,14 @@ public class PowerRanks extends JavaPlugin {
             divider += "-";
         }
         return ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + divider + ChatColor.BLUE + "===";
+    }
+
+    public static PluginMessageHandler getPluginMessageHandler() {
+        return pluginMessageHandler;
+    }
+
+    public BaseDataHandler getDataHandler() {
+        return this.currentStorageHandler;
     }
 
     /**

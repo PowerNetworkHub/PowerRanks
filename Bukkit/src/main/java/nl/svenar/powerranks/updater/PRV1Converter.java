@@ -43,10 +43,12 @@ public class PRV1Converter {
 
         if (ranksFile.exists()) {
             this.convertRanks(ranksFile, log);
+            this.plugin.getDataHandler().saveRanks(BaseDataHandler.getRanks());
         }
 
         if (playersFile.exists()) {
             this.convertPlayers(playersFile, log);
+            this.plugin.getDataHandler().savePlayers(BaseDataHandler.getPlayers());
         }
 
         log.info("Backing up PowerRanks v1 data...");
@@ -65,11 +67,11 @@ public class PRV1Converter {
         List<PRRank> ranksToRemove = new ArrayList<PRRank>();
         for (Iterator<PRRank> iterator = BaseDataHandler.getRanks().iterator(); iterator.hasNext();) {
             PRRank rank = iterator.next();
-            if (!rank.getName().equalsIgnoreCase("default")) {
-                ranksToRemove.add(rank);
-            } else {
-                rank.setPermissions(new ArrayList<PRPermission>());
-            }
+            // if (!rank.getName().equalsIgnoreCase("default")) {
+            ranksToRemove.add(rank);
+            // } else {
+            // rank.setPermissions(new ArrayList<PRPermission>());
+            // }
         }
 
         for (PRRank rank : ranksToRemove) {
@@ -78,6 +80,7 @@ public class PRV1Converter {
 
         log.info("Converting ranks...");
         String defaultRankname = ranksYAML.getString("Default");
+
         for (String rankname : ranksYAML.getConfigurationSection("Groups").getKeys(false)) {
             if (rankname.equalsIgnoreCase("null")) {
                 continue;
@@ -86,18 +89,19 @@ public class PRV1Converter {
             try {
                 if (ranksYAML.getStringList("Groups." + rankname + ".permissions") == null
                         || ranksYAML.getString("Groups." + rankname + ".chat.prefix") == null
-                        || ranksYAML.getString("Groups." + rankname + ".chat.prefix") == null) {
+                        || ranksYAML.getString("Groups." + rankname + ".chat.suffix") == null) {
                     throw new NullPointerException();
                 }
 
                 PRRank newRank = null;
-                if (!rankname.equals(defaultRankname)) {
-                    newRank = new PRRank(rankname);
-                    newRank.setWeight(1);
-                    BaseDataHandler.addRank(newRank);
-                } else {
-                    newRank = BaseDataHandler.getRank("default");
-                }
+                // if (!rankname.equals(defaultRankname)) {
+                newRank = new PRRank(rankname);
+                newRank.setWeight(1);
+                newRank.setDefault(rankname.equals(defaultRankname));
+                BaseDataHandler.addRank(newRank);
+                // } else {
+                // newRank = BaseDataHandler.getRank("default");
+                // }
 
                 for (String permission : ranksYAML.getStringList("Groups." + rankname + ".permissions")) {
                     boolean allowed = permission.startsWith("-") ? false : true;

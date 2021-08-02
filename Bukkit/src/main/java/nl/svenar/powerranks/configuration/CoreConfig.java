@@ -37,6 +37,14 @@ public class CoreConfig extends BaseConfig {
         return getConfig().getString("language").toLowerCase();
     }
 
+    public boolean isBungeecordEnabled() {
+        return getConfig().getBoolean("bungeecord.enabled");
+    }
+
+    public boolean getBungeecordServerName() {
+        return getConfig().getBoolean("bungeecord.server-name");
+    }
+
     public boolean doUpdateCheck() {
         return getConfig().getBoolean("check-for-updates");
     }
