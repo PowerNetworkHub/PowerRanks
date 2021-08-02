@@ -16,6 +16,10 @@ storage:
     password: 'password'
     database: 'powerranks'
 
+bungeecord:
+  enabled: false
+  server-name: 'global'
+
 # Check for updates when PowerRanks starts
 check-for-updates: true
 
