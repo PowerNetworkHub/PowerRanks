@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.9.9R3</version>
+	<version>1.9.9R4</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 	
@@ -33,6 +33,14 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<outputDirectory>/home/sven/Documents/minecraft/java/bukkit_pr_v1/plugins/</outputDirectory>
 				</configuration>
 			</plugin>
 		</plugins>
