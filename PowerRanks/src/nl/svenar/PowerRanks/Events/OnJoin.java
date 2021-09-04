@@ -105,9 +105,9 @@ public class OnJoin implements Listener {
 		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
 			user_data.put("players." + player.getUniqueId() + ".playtime", 0);
 
-		for (Entry<String, Object> kv : user_data.entrySet()) {
-			PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
-		}
+		// for (Entry<String, Object> kv : user_data.entrySet()) {
+		// 	PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
+		// }
 		if (user_data.size() > 0) {
 			CachedPlayers.set(user_data, false);
 		}
