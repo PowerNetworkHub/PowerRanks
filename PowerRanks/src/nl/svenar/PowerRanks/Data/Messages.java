@@ -95,6 +95,16 @@ public class Messages {
 		sender.sendMessage(
 				ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
 		sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
+
+		boolean hex_color_supported = false;
+		try {
+			"#FF0000a".replace("#FF0000", net.md_5.bungee.api.ChatColor.of("#FF0000") + "");
+			hex_color_supported = true;
+		} catch(Exception e) {
+			hex_color_supported = false;
+		}
+		sender.sendMessage(ChatColor.GREEN + "RGB colors: " + (hex_color_supported ? ChatColor.DARK_GREEN + "" : ChatColor.DARK_RED + "un") + "supported");
+
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: "
 				+ (PowerRanks.vaultEconomyEnabled ? ChatColor.DARK_GREEN + "enabled"
@@ -651,6 +661,10 @@ public class Messages {
 						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellrawCommand);
 		} else {
 			if (hasAcceptedTerms) {
+				if (PowerRanks.getInstance().addonsManager.getAddonDownloader() == null) {
+					PowerRanks.getInstance().addonsManager.setupAddonDownloader();
+				}
+
 				ArrayList<String> lines = new ArrayList<String>();
 
 				lines.add(ChatColor.DARK_AQUA + "===-----" + ChatColor.AQUA + "PowerRanks AddonManager"
