@@ -46,8 +46,6 @@ public class PowerRanksChatColor {
 	public static String colorizeRaw(String text, boolean special, boolean addLeadingReset) {
 		String output = "";
 
-		boolean is_hex_used = false;
-
 		if (addLeadingReset) {
             if (text.length() == 0 || text.charAt(0) != PowerRanksChatColor.unformatted_default_char) {
                 text = String.valueOf(PowerRanksChatColor.unformatted_default_char) + "r" + text;
@@ -88,7 +86,6 @@ public class PowerRanksChatColor {
 
 		Matcher hex_color_matcher = hex_color_pattern.matcher(text);
 		while (hex_color_matcher.find()) {
-			is_hex_used = true;
 			String hex_color = text.substring(hex_color_matcher.start(), hex_color_matcher.end());
 
 			try {
