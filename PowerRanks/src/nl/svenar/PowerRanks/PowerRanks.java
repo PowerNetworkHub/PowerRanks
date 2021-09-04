@@ -172,10 +172,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		// Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new
 		// ChatTabExecutor(this));
 
-		if (handle_update_checking()) {
-			return;
-		}
-
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ----------- LOADING DATA ----------- ===");
 		new PowerRanksChatColor();
@@ -267,6 +263,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		// PowerRanks.pdf.getVersion());
 		PowerRanks.log
 				.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
+
+		if (handle_update_checking()) {
+			return;
+		}
 
 		int pluginId = 7565;
 		Metrics metrics = new Metrics(this, pluginId);
@@ -755,7 +755,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		String uuid = player.getUniqueId().toString();
 		try {
 			player.updateCommands(); // TODO find a better place for this
-		} catch (NoSuchMethodError e) {}
+		} catch (NoSuchMethodError e) {
+		}
 
 		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
 		String prefix = CachedRanks.getString("Groups." + rank + ".chat.prefix");
@@ -943,16 +944,23 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void updatePlaytime(Player player, long join_time, long leave_time, boolean write_to_file) {
 		int current_playtime = 0;
+
 		try {
-			current_playtime = CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime");
-		} catch (Exception e) {
 			try {
-				current_playtime = CachedPlayers.getDouble("players." + player.getUniqueId() + ".playtime").intValue();
-			} catch (Exception e1) {
-				current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime").intValue();
+				current_playtime = CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime");
+			} catch (Exception e) {
+				try {
+					current_playtime = CachedPlayers.getDouble("players." + player.getUniqueId() + ".playtime")
+							.intValue();
+				} catch (Exception e1) {
+					current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime")
+							.intValue();
+				}
 			}
+			CachedPlayers.set("players." + player.getUniqueId() + ".playtime",
+					current_playtime + (leave_time - join_time) / 1000, !write_to_file);
+		} catch (NullPointerException npe) {
 		}
-		CachedPlayers.set("players." + player.getUniqueId() + ".playtime", current_playtime + (leave_time - join_time) / 1000, !write_to_file);
 	}
 
 	public void updatePlayersWithRank(Users users, String rank) {
