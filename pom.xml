@@ -5,7 +5,7 @@
 
 	<groupId>nl.svenar.powerranks</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>3.0.118-SNAPSHOT</version>
+	<version>3.0.117-SNAPSHOT</version>
 
 	<name>PowerRanks</name>
 	<url>https://powerranks.nl</url>
@@ -55,12 +55,17 @@
 						<artifactSet>
 							<includes>
 								<include>org.mongodb:*</include>
+								<include>com.squareup.okhttp3:*</include>
 							</includes>
 						</artifactSet>
 						<relocations>
 							<relocation>
 								<pattern>com.mongodb</pattern>
 								<shadedPattern>${shade.basepattern}.mongodb</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>okhttp3</pattern>
+								<shadedPattern>${shade.basepattern}.okhttp3</shadedPattern>
 							</relocation>
 						</relocations>
 						<filters>
@@ -145,6 +150,12 @@
 			<version>3.34.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<version>4.1.0</version>
+			<scope>test</scope>
+	  </dependency>
 
 		<dependency>
 			<groupId>org.mongodb</groupId>
@@ -152,6 +163,12 @@
 			<version>3.12.10</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.9.2</version>
+			<type>jar</type>
+		  </dependency>
 
 		<dependency>
 			<groupId>me.clip</groupId>
