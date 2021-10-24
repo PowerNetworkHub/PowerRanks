@@ -8,17 +8,13 @@ PowerRanks Bukkit plugin source.
 
 Welcome to the source-code of PowerRanks!
 
+## Warning: this is a beta branch used for testing, do not use this version in your server!
+
 PowerRanks is...
 * **Easy to use** - Permissions can be set up using commands or in the configuration files.
 * **Customizable** - There are numerous consumerization options available that can be changed to suit your server. And with add-ons you can customize even more!
 * **Free** - Available for download and usage at no cost.
 * **Open-Source** - Together we can make PowerRanks better.
-
-## Different branches
-
-master > PowerRanks V1.x
-
-V2 > The new PowerRanks version
 
 ## Support me
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z314C2H)
