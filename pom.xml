@@ -1,49 +1,109 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
 	<version>1.9.9R5</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
-	
+
 	<properties>
-        	<java.version>1.8</java.version>
-        	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    	</properties>
-    
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<src.dir>src/main/java</src.dir>
+		<rsc.dir>src/main/resources</rsc.dir>
+		<shade.basepattern>nl.svenar.shaded</shade.basepattern>
+		<testserver.location>../../minecraft/java/bukkit_pr_v1/plugins</testserver.location>
+	</properties>
+
 	<build>
-		<defaultGoal>clean compile package</defaultGoal>
+		<defaultGoal>clean compile package shade:shade</defaultGoal>
 		<finalName>${project.name}</finalName>
-		<sourceDirectory>PowerRanks/src</sourceDirectory>
+		<sourceDirectory>${src.dir}</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>PowerRanks</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
+				<directory>${rsc.dir}</directory>
 				<filtering>true</filtering>
-			 </resource>
+			</resource>
 		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.1</version>
-				<configuration>
-					<outputDirectory>/home/sven/Documents/minecraft/java/bukkit_pr_v1/plugins/</outputDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.1.0</version>
+					<configuration>
+						<minimizeJar>true</minimizeJar>
+						<createSourcesJar>false</createSourcesJar>
+						<shadeSourcesContent>false</shadeSourcesContent>
+						<createDependencyReducedPom>false</createDependencyReducedPom>
+						<shadedArtifactAttached>false</shadedArtifactAttached>
+						<artifactSet>
+							<includes>
+								<include>org.mongodb:*</include>
+								<include>com.squareup.okhttp3:*</include>
+								<include>org.yaml:*</include>
+							</includes>
+						</artifactSet>
+						<relocations>
+							<relocation>
+								<pattern>com.mongodb</pattern>
+								<shadedPattern>${shade.basepattern}.mongodb</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>okhttp3</pattern>
+								<shadedPattern>${shade.basepattern}.okhttp3</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>org.yaml</pattern>
+								<shadedPattern>${shade.basepattern}.yaml</shadedPattern>
+							</relocation>
+						</relocations>
+						<filters>
+							<filter>
+								<artifact>*:*</artifact>
+								<excludes>
+									<exclude>META-INF/license/**</exclude>
+									<exclude>META-INF/*</exclude>
+									<exclude>META-INF/maven/**</exclude>
+									<exclude>LICENSE</exclude>
+									<exclude>NOTICE</exclude>
+									<exclude>/*.txt</exclude>
+									<exclude>build.properties</exclude>
+								</excludes>
+							</filter>
+						</filters>
+						<dependencyReducedPomLocation>target/reduced-pom.xml</dependencyReducedPomLocation>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>shade</goal>
+							</goals>
+
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.3.1</version>
+					<configuration>
+						<outputDirectory>${testserver.location}</outputDirectory>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<distributionManagement>
@@ -79,6 +139,56 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.12.10</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.9.2</version>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.23</version>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-cbor</artifactId>
+			<version>2.9.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.msgpack</groupId>
+			<artifactId>jackson-dataformat-msgpack</artifactId>
+			<version>0.8.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>me.clip.deluxetags</groupId>
 			<artifactId>deluxetags</artifactId>
 			<version>1.7.1</version>
@@ -99,7 +209,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.16.3-R0.1-SNAPSHOT</version>
+			<version>1.17.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

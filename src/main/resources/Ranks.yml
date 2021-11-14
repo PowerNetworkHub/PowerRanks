@@ -1,0 +1,71 @@
+Default: Member
+Usertags: ''
+Groups:
+   Member:
+      permissions: []
+      inheritance: []
+      chat:
+         prefix: '[&aMember&r]'
+         suffix: ''
+         chatColor: '&f'
+         nameColor: '&f'
+      level:
+         promote: ''
+         demote: ''
+      economy:
+         buyable: []
+         cost: 0
+         description: ''
+      gui:
+         icon: stick
+   Moderator:
+      permissions: []
+      inheritance: []
+      chat:
+         prefix: '[&5Moderator&r]'
+         suffix: ''
+         chatColor: '&f'
+         nameColor: '&f'
+      level:
+         promote: Admin
+         demote: ''
+      economy:
+         buyable: []
+         cost: 0
+         description: ''
+      gui:
+         icon: stone
+   Admin:
+      permissions: []
+      inheritance: []
+      chat:
+         prefix: '[&4Admin&r]'
+         suffix: ''
+         chatColor: '&f'
+         nameColor: '&f'
+      level:
+         promote: Owner
+         demote: Moderator
+      economy:
+         buyable: []
+         cost: 0
+         description: ''
+      gui:
+         icon: redstone
+   Owner:
+      permissions: []
+      inheritance: []
+      chat:
+         prefix: '[&bOwner&r]'
+         suffix: ''
+         chatColor: '&f'
+         nameColor: '&f'
+      level:
+         promote: ''
+         demote: Admin
+      economy:
+         buyable: []
+         cost: 0
+         description: ''
+      gui:
+         icon: diamond
