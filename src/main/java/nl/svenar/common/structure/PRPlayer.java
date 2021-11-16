@@ -40,6 +40,7 @@ public class PRPlayer {
     private String rank;
     private ArrayList<PRSubrank> subranks;
     private ArrayList<PRPermission> permissions;
+    private ArrayList<String> usertags;
     private long playtime;
 
     public PRPlayer() {
@@ -47,6 +48,7 @@ public class PRPlayer {
         this.rank = "";
         this.subranks = new ArrayList<PRSubrank>();
         this.permissions = new ArrayList<PRPermission>();
+        this.usertags = new ArrayList<String>();
         this.playtime = 0L;
     }
 
@@ -247,5 +249,68 @@ public class PRPlayer {
      */
     public void setPlaytime(long playtime) {
         this.playtime = playtime;
+    }
+
+    /**
+     * Get a list with all stored usertags
+     * 
+     * @return Java ArrayList with all stored usertag
+     */
+    public ArrayList<String> getUsertags() {
+        return this.usertags;
+    }
+
+    /**
+     * Overwrite all stored usertags with the provided Java ArrayList
+     * 
+     * @param usertags
+     */
+    public void setUsertags(ArrayList<String> usertags) {
+        this.usertags = usertags;
+    }
+
+    /**
+     * Add a usertag to the player
+     * 
+     * @param usertag
+     */
+    public void addUsertag(String usertag) {
+        if (Objects.isNull(this.usertags)) {
+            this.usertags = new ArrayList<String>();
+        }
+
+        this.usertags.add(usertag);
+    }
+
+    /**
+     * Remove a usertag from this player
+     * 
+     * @param usertag
+     */
+    public void removeUsertag(String usertag) {
+        if (!this.usertags.contains(usertag)) {
+            return;
+        }
+
+        this.usertags.remove(usertag);
+    }
+
+    /**
+     * Check if this player instance has a specific usertag
+     * 
+     * @param usertag
+     * @return true if this player has that usertag, false otherwise
+     */
+    public boolean hasUsertag(String usertag) {
+        if (Objects.isNull(this.usertags)) {
+            this.usertags = new ArrayList<String>();
+        }
+
+        for (String tag : this.usertags) {
+            if (tag.equals(usertag)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

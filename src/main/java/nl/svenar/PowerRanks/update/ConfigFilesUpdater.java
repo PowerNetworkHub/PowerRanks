@@ -2,225 +2,92 @@ package nl.svenar.PowerRanks.update;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
+import java.nio.file.Files;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CacheManager;
+import nl.svenar.common.storage.PowerConfigManager;
+import nl.svenar.common.storage.provided.YAMLConfigManager;
+
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Data.Users;
 
 public class ConfigFilesUpdater {
 
-	public static void updateConfigFiles(PowerRanks plugin) {
-		boolean updateConfigYAML = checkVersion(PowerRanks.fileLoc, "config.yml", plugin);
-		boolean updateLangYAML = checkVersion(PowerRanks.fileLoc, "lang.yml", plugin);
-		boolean updateRanksYAML = checkVersion(PowerRanks.fileLoc, "Ranks.yml", plugin);
-		boolean updatePlayersYAML = checkVersion(PowerRanks.fileLoc, "Players.yml", plugin);
+	private static File backupDir, backupRanks, backupConfig, backupLang, backupPlayers, oldRanksFile, newRanksFile,
+			oldPlayersFile, newPlayersFile, usertagsFile, configFile, langFile;
 
-		if (updateConfigYAML) {
-			copyTmpFile(plugin, "config.yml");
-			final File file = new File(plugin.getDataFolder(), "config.yml");
-			final File tmpFile = new File(plugin.getDataFolder() + File.separator + "tmp", "config.yml");
-			final YamlConfiguration yamlConf = new YamlConfiguration();
-			final YamlConfiguration tmpYamlConf = new YamlConfiguration();
+	public static void updateConfigFiles() {
+		backupDir = new File(PowerRanks.fileLoc + File.separator + "backup" + File.separator + "old");
+		backupRanks = new File(
+				PowerRanks.fileLoc + File.separator + "backup" + File.separator + "old" + File.separator + "Ranks.yml");
+		backupPlayers = new File(PowerRanks.fileLoc + File.separator + "backup" + File.separator + "old"
+				+ File.separator + "Players.yml");
+		backupConfig = new File(PowerRanks.fileLoc + File.separator + "backup" + File.separator + "old" + File.separator
+				+ "config.yml");
+		backupLang = new File(
+				PowerRanks.fileLoc + File.separator + "backup" + File.separator + "old" + File.separator + "lang.yml");
+
+		oldRanksFile = new File(PowerRanks.fileLoc + File.separator + "Ranks" + File.separator + "Ranks.yml");
+		newRanksFile = new File(PowerRanks.fileLoc + File.separator + "ranks.yml");
+		oldPlayersFile = new File(PowerRanks.fileLoc + File.separator + "Ranks" + File.separator + "Players.yml");
+		newPlayersFile = new File(PowerRanks.fileLoc + File.separator + "players.yml");
+		usertagsFile = new File(PowerRanks.fileLoc + File.separator + "usertags.yml");
+
+		configFile = new File(PowerRanks.fileLoc + File.separator + "config.yml");
+		langFile = new File(PowerRanks.fileLoc + File.separator + "lang.yml");
+
+		if (Files.exists(oldRanksFile.toPath())) {
+			PowerConfigManager oldConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml");
+			PowerConfigManager oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml");
+
+			// Create backup directory
 			try {
-				tmpYamlConf.load(tmpFile);
-				yamlConf.load(file);
-				yamlConf.set("version", null);
-				if (yamlConf.isSet("plugin_hook.vault")) {
-					yamlConf.set("plugin_hook.vault_economy", yamlConf.getBoolean("plugin_hook.vault"));
-					yamlConf.set("plugin_hook.vault", null);
-				}
-				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(false)) {
-					for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
-						String field = key + "." + key2;
-						if (!yamlConf.contains(field)) {
-							yamlConf.set(field, tmpYamlConf.get(field));
-						}
-					}
-				}
-				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				yamlConf.save(file);
-				// CachedConfig.update();
-				// CachedConfig.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z
-				// ]", ""));
-			} catch (IOException | InvalidConfigurationException e) {
+				Files.createDirectories(backupDir.toPath());
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			deleteTmpFile(plugin, "config.yml");
-		}
 
-		if (updateLangYAML) {
-			copyTmpFile(plugin, "lang.yml");
-			final File file = new File(plugin.getDataFolder(), "lang.yml");
-			final File tmpFile = new File(plugin.getDataFolder() + File.separator + "tmp", "lang.yml");
-			final YamlConfiguration yamlConf = new YamlConfiguration();
-			final YamlConfiguration tmpYamlConf = new YamlConfiguration();
+			// Move old files to the backup directory
 			try {
-				tmpYamlConf.load(tmpFile);
-				yamlConf.load(file);
-				yamlConf.set("version", null);
-				yamlConf.set("commands.help", null);
-				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(false)) {
-					for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
-						String field = key + "." + key2;
-						if (!yamlConf.contains(field)) {
-							yamlConf.set(field, tmpYamlConf.get(field));
-						}
-					}
+				if (Files.exists(oldRanksFile.toPath())) {
+					Files.move(oldRanksFile.toPath(), backupRanks.toPath());
 				}
-				// yamlConf.set("commands.help", null);
-				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				yamlConf.save(file);
-			} catch (IOException | InvalidConfigurationException e) {
+				if (Files.exists(oldPlayersFile.toPath())) {
+					Files.move(oldPlayersFile.toPath(), backupPlayers.toPath());
+				}
+				if (Files.exists(configFile.toPath())) {
+					Files.move(configFile.toPath(), backupConfig.toPath());
+				}
+				if (Files.exists(langFile.toPath())) {
+					Files.move(langFile.toPath(), backupLang.toPath());
+				}
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			deleteTmpFile(plugin, "lang.yml");
-		}
 
-		if (updateRanksYAML) {
-			copyTmpFile(plugin, "Ranks.yml");
-			final File file = new File(plugin.getDataFolder() + File.separator + "Ranks", "Ranks.yml");
-			final File tmpFile = new File(plugin.getDataFolder() + File.separator + "tmp", "Ranks.yml");
-			final YamlConfiguration yamlConf = new YamlConfiguration();
-			final YamlConfiguration tmpYamlConf = new YamlConfiguration();
+			// Delete Ranks directory
 			try {
-				tmpYamlConf.load(tmpFile);
-				yamlConf.load(file);
-				yamlConf.set("version", null);
-				String tmp_group_name = tmpYamlConf.getConfigurationSection("Groups").getKeys(false).toArray()[0]
-						.toString();
-
-				for (String key : yamlConf.getConfigurationSection("Groups").getKeys(false)) {
-					for (String tmp_key : tmpYamlConf.getConfigurationSection("Groups." + tmp_group_name)
-							.getKeys(true)) {
-						String tmp_field = "Groups." + tmp_group_name + "." + tmp_key;
-						String field = "Groups." + key + "." + tmp_key;
-						if (!yamlConf.contains(field)) {
-							if (tmpYamlConf.isBoolean(tmp_field) || tmpYamlConf.isString(tmp_field)
-									|| tmpYamlConf.isInt(tmp_field) || tmpYamlConf.isDouble(tmp_field)) {
-								yamlConf.set(field, tmpYamlConf.get(tmp_field));
-							}
-							if (tmpYamlConf.isList(tmp_field)) {
-								List<String> list = new ArrayList<String>();
-								// for (String line : tmpYamlConf.getStringList(tmp_field)) {
-								// list.add(line);
-								// }
-								// yamlConf.set(field, (Object) list);
-
-								try {
-									System.arraycopy(tmpYamlConf.getStringList(tmp_field), 0, list, 0,
-											tmpYamlConf.getStringList(tmp_field).size());
-								} catch (Exception e) {
-								}
-								yamlConf.set(field, list);
-							}
-						}
-						if ((tmpYamlConf.isBoolean(tmp_field) != yamlConf.isBoolean(field))
-								|| (tmpYamlConf.isList(tmp_field) != yamlConf.isList(field))
-								|| (tmpYamlConf.isString(tmp_field) != yamlConf.isString(field))
-								|| (tmpYamlConf.isInt(tmp_field) != yamlConf.isInt(field))
-								|| (tmpYamlConf.isDouble(tmp_field) != yamlConf.isDouble(field))) {
-							yamlConf.set(field, tmpYamlConf.get(tmp_field));
-						}
-					}
-				}
-
-				if (!yamlConf.isSet("Usertags"))
-					yamlConf.set("Usertags", tmpYamlConf.get("Usertags"));
-
-				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				yamlConf.save(file);
-				CacheManager.save();
-				// CachedRanks.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z
-				// ]", ""));
-			} catch (IOException | InvalidConfigurationException e) {
+				Files.delete(new File(PowerRanks.fileLoc + File.separator + "Ranks").toPath());
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			deleteTmpFile(plugin, "Ranks.yml");
-		}
 
-		if (updatePlayersYAML) {
-			final File file = new File(plugin.getDataFolder() + File.separator + "Ranks", "Players.yml");
-			final YamlConfiguration yamlConf = new YamlConfiguration();
-			try {
-				yamlConf.load(file);
-				yamlConf.set("version", null);
-				Users users = new Users(plugin);
-				if (yamlConf.contains("players")) {
-					try {
-						for (String key : yamlConf.getConfigurationSection("players").getKeys(false)) {
-							if (yamlConf.isString("players." + key)) {
-								yamlConf.set("players." + key, null);
-								yamlConf.set("players." + key + ".rank", users.getDefaultRanks());
-								yamlConf.set("players." + key + ".name", "Unknown");
-								yamlConf.set("players." + key + ".playtime", 0);
-							}
-						}
-					} catch (Exception e) {
-					}
-				}
-				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				yamlConf.save(file);
-				CacheManager.save();
-				// CachedPlayers.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z
-				// ]", ""), false);
-			} catch (IOException | InvalidConfigurationException e) {
-				e.printStackTrace();
+			PowerConfigManager newConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml");
+			PowerConfigManager newLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml");
+			PowerConfigManager usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml"); // TODO
+
+			Map<String, Object> configData = newConfigManager.getRawData();
+			for (Entry<String, Object> entry : oldConfigManager.getRawData().entrySet()) {
+				configData.put(entry.getKey(), entry.getValue());
 			}
-		}
+			newConfigManager.setRawData(configData);
 
-		if (new File(plugin.getDataFolder() + File.separator + "tmp").exists()) {
-			new File(plugin.getDataFolder() + File.separator + "tmp").delete();
-		}
-	}
-
-	private static void copyTmpFile(PowerRanks plugin, String yamlFileName) {
-		File tmp_file = new File(plugin.getDataFolder() + File.separator + "tmp", yamlFileName);
-		if (!tmp_file.exists())
-			tmp_file.getParentFile().mkdirs();
-		plugin.copy(plugin.getResource(yamlFileName), tmp_file);
-	}
-
-	private static void deleteTmpFile(PowerRanks plugin, String yamlFileName) {
-		File tmp_file = new File(plugin.getDataFolder() + File.separator + "tmp", yamlFileName);
-		if (tmp_file.exists())
-			tmp_file.delete();
-	}
-
-	private static boolean checkVersion(String file_path, String fileName, PowerRanks plugin) {
-		final File file = new File(file_path + fileName);
-		final YamlConfiguration yamlConf = new YamlConfiguration();
-		try {
-			yamlConf.load(file);
-
-			if (yamlConf.getString("version") == null) {
-				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
-				yamlConf.save(file);
-				PowerRanks.log.info("Setting up file: " + fileName);
-				return !plugin.configContainsKey("updates.automatic_update_config_files")
-						|| plugin.getConfigBool("updates.automatic_update_config_files");
-			} else {
-				if (!yamlConf.getString("version")
-						.equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
-					if (!plugin.configContainsKey("updates.automatic_update_config_files")
-							|| plugin.getConfigBool("updates.automatic_update_config_files")) {
-						plugin.printVersionError(fileName, true);
-						return true;
-					} else {
-						plugin.printVersionError(fileName, false);
-						return false;
-					}
-				}
+			Map<String, Object> languageData = newLanguageManager.getRawData();
+			for (Entry<String, Object> entry : oldLanguageManager.getRawData().entrySet()) {
+				languageData.put(entry.getKey(), entry.getValue());
 			}
-
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
+			newLanguageManager.setRawData(languageData);
 		}
-		return false;
 	}
 }

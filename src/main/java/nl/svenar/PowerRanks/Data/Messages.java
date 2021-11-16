@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TimeZone;
 
@@ -27,6 +28,7 @@ import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRSubrank;
 
 import com.google.common.collect.ImmutableMap;
@@ -399,23 +401,22 @@ public class Messages {
 			subsuffix = "";
 		}
 
-		// TODO: Usertags
-		// if (CachedPlayers.contains("players." + player.getUniqueId() + ".usertag")
-		// && CachedPlayers.getString("players." + player.getUniqueId() +
-		// ".usertag").length() > 0) {
-		// String tmp_usertag = CachedPlayers.getString("players." +
-		// player.getUniqueId() + ".usertag");
+		PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		Map<?, ?> availableUsertags = PowerRanks.getUsertagManager().getMap("usertags", new HashMap<String, String>());
+		ArrayList<String> playerUsertags = targetPlayer.getUsertags();
 
-		// if (CachedRanks.getConfigurationSection("Usertags") != null) {
-		// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-		// for (String key : tags.getKeys(false)) {
-		// if (key.equalsIgnoreCase(tmp_usertag)) {
-		// usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
-		// break;
-		// }
-		// }
-		// }
-		// }
+		for (String playerUsertag : playerUsertags) {
+			String value = "";
+			for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+				if (entry.getKey().toString().equalsIgnoreCase(playerUsertag)) {
+					value = entry.getValue().toString();
+				}
+			}
+
+			if (value.length() > 0) {
+				usertag += (usertag.length() > 0 ? " " : "") + value;
+			}
+		}
 
 		if (!player.hasPermission("powerranks.chat.chatcolor")) {
 			playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");

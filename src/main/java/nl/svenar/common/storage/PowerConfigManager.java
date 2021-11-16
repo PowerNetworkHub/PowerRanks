@@ -358,7 +358,7 @@ public abstract class PowerConfigManager {
      */
     public void setMap(String key, Map<?, ?> value) {
         if (value.size() == 1) {
-            this.setKV(key + "." + value.keySet().toArray()[0], (Map<?, ?>) value.values().toArray()[0]);
+            this.setKV(key + "." + value.keySet().toArray()[0], value.values().toArray()[0]);
         } else {
             this.setKV(key, value);
         }

@@ -1,8 +1,10 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -1451,218 +1453,171 @@ public class Users implements Listener {
 		return values;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean createUserTag(String tag, String format) {
 
-		// TODO: implement usertags
-		// try {
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
 
-		// if (CachedRanks.contains("Usertags")) {
-		// boolean tagExists = false;
-		// if (CachedRanks.getConfigurationSection("Usertags") != null) {
-		// try {
-		// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-		// for (String key : tags.getKeys(false)) {
-		// if (key.equalsIgnoreCase(tag)) {
-		// tagExists = true;
-		// break;
-		// }
-		// }
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// } else {
-		// CachedRanks.set("Usertags", null);
-		// CachedRanks.set("Usertags." + tag, format);
-		// }
+		boolean exists = false;
+		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
+				exists = true;
+			}
+		}
 
-		// if (!tagExists) {
-		// CachedRanks.set("Usertags." + tag, format);
-		// return true;
-		// }
-		// }
+		if (exists) {
+			return false;
+		}
 
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		return false;
+		availableUsertags.put(tag, format);
+
+		PowerRanks.getUsertagManager().setMap("usertags", availableUsertags);
+
+		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean editUserTag(String tag, String format) {
-		// TODO: implement usertags
-		// try {
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
 
-		// if (CachedRanks.contains("Usertags")) {
-		// try {
-		// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-		// boolean tagExists = false;
-		// for (String key : tags.getKeys(false)) {
-		// if (key.equalsIgnoreCase(tag)) {
-		// tagExists = true;
-		// break;
-		// }
-		// }
+		String key = "";
+		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
+				key = entry.getKey().toString();
+			}
+		}
 
-		// if (tagExists) {
-		// CachedRanks.set("Usertags." + tag, format);
-		// return true;
-		// }
-		// } catch (Exception e) {
-		// }
-		// }
+		if (key.length() == 0) {
+			return false;
+		}
 
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		return false;
+		availableUsertags.put(key, format);
+
+		PowerRanks.getUsertagManager().setMap("usertags", availableUsertags);
+
+		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean removeUserTag(String tag) {
-		// TODO: implement usertags
-		// try {
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
 
-		// if (CachedRanks.contains("Usertags")) {
-		// try {
-		// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-		// boolean tagExists = false;
-		// for (String key : tags.getKeys(false)) {
-		// if (key.equalsIgnoreCase(tag)) {
-		// tagExists = true;
-		// break;
-		// }
-		// }
+		String key = "";
+		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
+				key = entry.getKey().toString();
+			}
+		}
 
-		// if (tagExists) {
-		// CachedRanks.set("Usertags." + tag, null);
-		// return true;
-		// }
-		// } catch (Exception e) {
-		// }
-		// }
+		if (key.length() == 0) {
+			return false;
+		}
 
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		return false;
+		availableUsertags.remove(key);
+
+		PowerRanks.getUsertagManager().setMap("usertags", availableUsertags);
+
+		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean setUserTag(Player player, String tag) {
-		// TODO: implement usertags
-		// String uuid = player.getUniqueId().toString();
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
 
-		// if (tag.length() > 0) {
-		// try {
-		// if (CachedRanks.contains("Usertags")) {
-		// try {
-		// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-		// boolean tagExists = false;
-		// for (String key : tags.getKeys(false)) {
-		// if (key.equalsIgnoreCase(tag)) {
-		// tagExists = true;
-		// tag = key;
-		// break;
-		// }
-		// }
+		PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		if (Objects.isNull(targetPlayer)) {
+			return false;
+		}
 
-		// if (tagExists) {
-		// CachedPlayers.set("players." + uuid + ".usertag", tag, false);
-		// this.m.updateTablistName(player);
-		// return true;
-		// }
-		// } catch (Exception e) {
-		// }
-		// }
+		String key = "";
+		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
+				key = entry.getKey().toString();
+			}
+		}
 
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-		// } else {
-		// CachedPlayers.set("players." + uuid + ".usertag", "", false);
-		// this.m.updateTablistName(player);
-		// return true;
-		// }
-		return false;
+		if (key.length() == 0) {
+			return false;
+		}
+
+		targetPlayer.addUsertag(key);
+
+		return true;
 	}
 
 	public boolean setUserTag(String playername, String tag) {
-		// Player player = Bukkit.getServer().getPlayer(playername);
-		// if (player == null)
-		// return false;
-		// return setUserTag(player, tag);
-
-		// TODO: implement usertags
-		return false;
-
+		Player player = Bukkit.getServer().getPlayer(playername);
+		return setUserTag(player, tag);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Set<String> getUserTags() {
 		Set<String> tags = new HashSet<String>();
 
-		// TODO: implement usertags
-		// try {
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
 
-		// if (CachedRanks.getConfigurationSection("Usertags") != null) {
-		// try {
-		// ConfigurationSection tmp_tags =
-		// CachedRanks.getConfigurationSection("Usertags");
-		// tags = tmp_tags.getKeys(false);
-		// } catch (Exception e) {
-		// }
-		// }
+		for (Entry<String, String> entry : availableUsertags.entrySet()) {
+			tags.add(entry.getKey());
+		}
 
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
 		return tags;
 	}
 
-	public String getUserTagValue(String usertag) {
-		String value = "";
+	@SuppressWarnings("unchecked")
+	public String getUserTagValue(String tag) {
 
-		// TODO: implement usertags
-		// try {
-		// if (CachedRanks.getConfigurationSection("Usertags") != null) {
-		// if (CachedRanks.contains("Usertags." + usertag)) {
-		// value = CachedRanks.getString("Usertags." + usertag);
-		// }
-		// }
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
 
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
+		String key = "";
+		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
+				key = entry.getKey().toString();
+			}
+		}
 
-		return value;
+		if (key.length() == 0) {
+			return "";
+		}
+
+		return key;
 	}
 
 	public String getUserTagValue(Player player) {
-		// TODO: implement usertags
+		PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		if (Objects.isNull(targetPlayer)) {
+			return "";
+		}
+
+		if (targetPlayer.getUsertags().size() == 0) {
+			return "";
+		}
+
+		String usertag = targetPlayer.getUsertags().get(0);
+		if (usertag.length() > 0) {
+			return getUserTagValue(usertag);
+		}
+
 		return "";
-		// String usertag = CachedPlayers.getString("players." + player.getUniqueId() +
-		// ".usertag");
-		// if (usertag.length() > 0) {
-		// return getUserTagValue(usertag);
-		// } else {
-		// return "";
-		// }
 	}
 
 	public boolean clearUserTag(String playername) {
-		Player player = Bukkit.getServer().getPlayer(playername);
-		if (player == null)
-			return false;
-
-		// String uuid = player.getUniqueId().toString();
-
-		try {
-
-			// TODO: implement usertags
-			// CachedPlayers.set("players." + uuid + ".usertag", "", false);
-			this.m.updateTablistName(player);
-			return true;
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
+		if (Objects.isNull(targetPlayer)) {
+			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
 		}
-		return false;
+		if (Objects.isNull(targetPlayer)) {
+			return false;
+		}
+
+		targetPlayer.setUsertags(new ArrayList<String>());
+
+		return true;
 	}
 
 	public boolean setPromoteRank(String rank, String promote_rank) {

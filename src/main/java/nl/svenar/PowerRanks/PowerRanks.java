@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -62,6 +63,7 @@ import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.metrics.Metrics;
+import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 // import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
@@ -99,6 +101,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	private static PowerConfigManager configManager;
 	private static PowerConfigManager languageManager;
+	private static PowerConfigManager usertagManager;
 
 	// Soft Dependencies
 	public static boolean vaultEconomyEnabled = false;
@@ -146,6 +149,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.plugin = this;
 
+		ConfigFilesUpdater.updateConfigFiles();
+
 		// PowerRanks.log.info("=== ---------- LOADING EVENTS ---------- ===");
 		// Bukkit.getServer().getPluginManager().registerEvents((Listener) this,
 		// (Plugin) this);
@@ -187,6 +192,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Loading config");
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
 		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
 
 		// new CachedConfig(this);
 		PowerRanks.log.info("Loading player&rank data");
@@ -271,7 +277,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		// this.playerUninjectPermissible(player);
 		// }
 
-		this.addonsManager.disable();
+		getConfigManager().save();
+		getLanguageManager().save();
+		getUsertagManager().save();
+
+		if (Objects.nonNull(this.addonsManager)) {
+			this.addonsManager.disable();
+		}
 
 		for (Entry<UUID, PermissionAttachment> pa : playerPermissionAttachment.entrySet()) {
 			pa.getValue().remove();
@@ -285,8 +297,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}
 		playerTablistNameBackup.clear();
-
-		CacheManager.save();
 
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
 			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
@@ -726,21 +736,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				subsuffix = "";
 			}
 
-			// TODO: Usertags
-			// if (CachedPlayers.contains("players." + uuid + ".usertag")
-			// && CachedPlayers.getString("players." + uuid + ".usertag").length() > 0) {
-			// String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
+			PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+			Map<?, ?> availableUsertags = getUsertagManager().getMap("usertags", new HashMap<String, String>());
+			ArrayList<String> playerUsertags = targetPlayer.getUsertags();
 
-			// if (CachedRanks.getConfigurationSection("Usertags") != null) {
-			// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-			// for (String key : tags.getKeys(false)) {
-			// if (key.equalsIgnoreCase(tmp_usertag)) {
-			// usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
-			// break;
-			// }
-			// }
-			// }
-			// }
+			for (String playerUsertag : playerUsertags) {
+				String value = "";
+				for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+					if (entry.getKey().toString().equalsIgnoreCase(playerUsertag)) {
+						value = entry.getValue().toString();
+					}
+				}
+
+				if (value.length() > 0) {
+					usertag += (usertag.length() > 0 ? " " : "") + value;
+				}
+			}
 
 			updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor, true);
 
@@ -956,6 +967,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static PowerConfigManager getLanguageManager() {
 		return languageManager;
+	}
+
+	public static PowerConfigManager getUsertagManager() {
+		return usertagManager;
 	}
 
 	public static PowerRanks getInstance() {
