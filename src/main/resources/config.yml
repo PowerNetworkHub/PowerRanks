@@ -65,6 +65,19 @@ general:
   playtime-update-interval: 60
 storage:
   type: YAML
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: powerranks
+    username: username
+    password: password
+    verbose: false
+  mongodb:
+    host: 127.0.0.1
+    port: 3306
+    database: powerranks
+    verbose: false
+default-rank: "Member"
 chat:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'

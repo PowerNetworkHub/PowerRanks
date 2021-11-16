@@ -1,12 +1,17 @@
 package nl.svenar.PowerRanks.api;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRRank;
 
 public class PowerRanksAPI {
 	
@@ -33,7 +38,11 @@ public class PowerRanksAPI {
 	}
 	
 	public List<String> getPermissions(String rank) {
-		return s.getPermissions(s.getRankIgnoreCase(rank));
+		List<String> permissions = new ArrayList<String>();
+		for (PRPermission permission : CacheManager.getRank(s.getRankIgnoreCase(rank)).getPermissions()) {
+			permissions.add(permission.getName());
+		}
+		return permissions;
 	}
 	
 	public boolean addPermission(String rank, String permission) {
@@ -57,47 +66,71 @@ public class PowerRanksAPI {
 	}
 	
 	public Set<String> getRanks() {
-		return s.getGroups();
+		Set<String> ranks = new HashSet<String>();
+		for (PRRank rank : CacheManager.getRanks()) {
+			ranks.add(rank.getName());
+		}
+		return ranks;
 	}
 	
 	public String getPrefix(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.prefix");
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			return CacheManager.getRank(rank).getPrefix();
+		}
+		return null;
 	}
 	
 	public boolean setPrefix(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.prefix", new_value);
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			CacheManager.getRank(rank).setPrefix(new_value);
+			return true;
+		}
+		return false;
 	}
 	
 	public String getSuffix(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.suffix");
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			return CacheManager.getRank(rank).getSuffix();
+		}
+		return null;
 	}
 	
 	public boolean setSuffix(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.suffix", new_value);
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			CacheManager.getRank(rank).setSuffix(new_value);
+			return true;
+		}
+		return false;
 	}
 	
 	public String getNameColor(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.nameColor");
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			return CacheManager.getRank(rank).getNamecolor();
+		}
+		return null;
 	}
 	
 	public boolean setNameColor(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.nameColor", new_value);
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			CacheManager.getRank(rank).setNamecolor(new_value);
+			return true;
+		}
+		return false;
 	}
 	
 	public String getChatColor(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.chatColor");
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			return CacheManager.getRank(rank).getChatcolor();
+		}
+		return null;
 	}
 	
 	public boolean setChatColor(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "chat.chatColor", new_value);
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			CacheManager.getRank(rank).setChatcolor(new_value);
+			return true;
+		}
+		return false;
 	}
 	
 	@Deprecated
@@ -111,23 +144,41 @@ public class PowerRanksAPI {
 	}
 	
 	public String getPromoteRank(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote");
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			return CacheManager.getRank(rank).getPromoteRank();
+		}
+		return null;
+		// String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote");
+		// return value;
 	}
 	
 	public boolean setPromoteRank(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote", new_value);
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			CacheManager.getRank(rank).setPromoteRank(new_value);
+			return true;
+		}
+		return false;
+		// boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote", new_value);
+		// return value;
 	}
 	
 	public String getDemoteRank(String rank) {
-		String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote");
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			return CacheManager.getRank(rank).getDemoteRank();
+		}
+		return null;
+		// String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote");
+		// return value;
 	}
 	
 	public boolean setDemoteRank(String rank, String new_value) {
-		boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote", new_value);
-		return value;
+		if (CacheManager.getRank(rank) != null) {
+			CacheManager.getRank(rank).setDemoteRank(new_value);
+			return true;
+		}
+		return false;
+		// boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote", new_value);
+		// return value;
 	}
 	
 	public boolean createRank(String rank) {

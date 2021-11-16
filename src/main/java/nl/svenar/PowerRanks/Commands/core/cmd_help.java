@@ -1,17 +1,17 @@
 package nl.svenar.PowerRanks.Commands.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
+import nl.svenar.common.storage.PowerConfigManager;
 
 public class cmd_help extends PowerCommand {
 
@@ -20,6 +20,7 @@ public class cmd_help extends PowerCommand {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.help")) {
 
@@ -34,11 +35,11 @@ public class cmd_help extends PowerCommand {
 
 			ArrayList<String> help_messages = new ArrayList<String>();
 
-			YamlConfiguration langYaml = PowerRanks.loadLangFile();
-			ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
+			PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+			HashMap<String, String> lines = (HashMap<String, String>) languageManager.getMap("commands.help", new HashMap<String, String>());
 
 			int lines_per_page = sender instanceof Player ? 5 : 10;
-			int last_page = lines.getKeys(false).size() / lines_per_page;
+			int last_page = lines.size() / lines_per_page;
 
 			int page = 0;
 			if (args.length > 0) {
@@ -70,10 +71,10 @@ public class cmd_help extends PowerCommand {
 				}
 					
 				int line_index = 0;
-				for (String section : lines.getKeys(false)) {
+				for (String section : lines.keySet()) {
 					if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-						String help_command = langYaml.getString("commands.help." + section + ".command");
-						String help_description = langYaml.getString("commands.help." + section + ".description");
+						String help_command = languageManager.getString("commands.help." + section + ".command", "");
+						String help_description = languageManager.getString("commands.help." + section + ".description", "");
 						if (sender instanceof Player) {
 							help_messages.add(tellrawbase.replaceAll("%arg%", help_command).replaceAll("%help%", help_description).replaceAll("%player%", sender.getName()).replaceAll("%cmd%", commandLabel).replaceAll("%color_command_allowed%", sender.hasPermission("powerranks.cmd." + section) ? "green" : "red"));
 						} else {

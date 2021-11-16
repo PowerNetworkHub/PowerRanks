@@ -12,7 +12,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
 
-public class CachedPlayers {
+public class CachedPlayers_old {
 
 	private static boolean is_ready = false;
 
@@ -26,7 +26,7 @@ public class CachedPlayers {
 	private static HashMap<String, Long> players_longs = new HashMap<String, Long>();
 	private static HashMap<String, Double> players_doubles = new HashMap<String, Double>();
 
-	public CachedPlayers(PowerRanks pr) {
+	public CachedPlayers_old(PowerRanks pr) {
 		update();
 	}
 

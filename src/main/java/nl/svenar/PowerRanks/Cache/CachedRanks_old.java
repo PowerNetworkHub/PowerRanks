@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
 
-public class CachedRanks {
+public class CachedRanks_old {
 
 	private static HashMap<String, Object> ranks_data = new HashMap<String, Object>();
 	
@@ -21,7 +21,7 @@ public class CachedRanks {
 	private static HashMap<String, Boolean> ranks_booleans = new HashMap<String, Boolean>();
 	private static HashMap<String, Integer> ranks_ints = new HashMap<String, Integer>();
 	
-	public CachedRanks(PowerRanks pr) {
+	public CachedRanks_old(PowerRanks pr) {
 		update();
 	}
 	

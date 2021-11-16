@@ -10,7 +10,8 @@ import org.bukkit.inventory.Inventory;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.VaultHook;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
+import nl.svenar.PowerRanks.Cache.CacheManager;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
@@ -77,14 +78,14 @@ public class GUI {
 				Users users = new Users(powerRanks);
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
 				if (users.rankExists(rankname)) {
-					int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
+					float cost = CacheManager.getRank(rankname).getBuyCost();
 					double player_balance = VaultHook.getVaultEconomy().getBalance(player);
 					if (cost >= 0 && player_balance >= cost) {
 						VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 						users.setGroup(player, rankname, true);
-						if (CachedConfig.getBoolean("rankup.buy_command.enabled")) {
-							if (CachedConfig.getString("rankup.buy_command.command").length() > 0) {
-								powerRanks.getServer().dispatchCommand((CommandSender) powerRanks.getServer().getConsoleSender(), CachedConfig.getString("rankup.buy_command.command").replaceAll("%playername%", player.getName()).replaceAll("%rankname%", rankname));
+						if (PowerRanks.getConfigManager().getBool("rankup.buy_command.enabled", false)) {
+							if (PowerRanks.getConfigManager().getString("rankup.buy_command.command", "").length() > 0) {
+								powerRanks.getServer().dispatchCommand((CommandSender) powerRanks.getServer().getConsoleSender(), PowerRanks.getConfigManager().getString("rankup.buy_command.command", "").replaceAll("%playername%", player.getName()).replaceAll("%rankname%", rankname));
 							}
 						}
 						Messages.messageBuyRankSuccess(player, rankname);

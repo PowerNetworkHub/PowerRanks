@@ -11,6 +11,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRPermission;
 
 public class cmd_delplayerperm extends PowerCommand {
 
@@ -54,13 +55,13 @@ public class cmd_delplayerperm extends PowerCommand {
 
 		if (args.length == 2) {
 			// for (Permission pai : Bukkit.getServer().getPermissions()) {
-			for (String perm : this.users.getPlayerPermissions(args[0])) {
+			for (PRPermission perm : this.users.getPlayerPermissions(args[0])) {
 				// String perm = pai.getPermission();
 				String userInput = args[1];
 				String autocompletePermission = "";
 
 				if (userInput.contains(".")) {
-					String[] permSplit = perm.split("\\.");
+					String[] permSplit = perm.getName().split("\\.");
 					for (int i = 0; i < permSplit.length; i++) {
 						String targetPerm = String.join(".", permSplit);
 						while (targetPerm.endsWith(".")) {
@@ -75,7 +76,7 @@ public class cmd_delplayerperm extends PowerCommand {
 						}
 					}
 				} else {
-					autocompletePermission = perm.split("\\.")[0];
+					autocompletePermission = perm.getName().split("\\.")[0];
 				}
 
 				while (autocompletePermission.endsWith(".")) {

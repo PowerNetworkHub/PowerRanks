@@ -56,7 +56,7 @@ public class DownloadableAddon {
 	}
 
 	public boolean download() {
-		final File targetDirectory = new File(PowerRanks.configFileLoc + File.separator + "Addons" + File.separator);
+		final File targetDirectory = new File(PowerRanks.fileLoc + File.separator + "Addons" + File.separator);
 		try {
 			URLConnection urlConnection = Util.getURL(getURL());
 
@@ -99,7 +99,7 @@ public class DownloadableAddon {
 
 			String filePathName = urlConnection.getURL().getFile();
 			String fileName = filePathName.substring(filePathName.lastIndexOf(File.separatorChar) + 1);
-			final File target = new File(PowerRanks.configFileLoc + File.separator + "Addons", fileName);
+			final File target = new File(PowerRanks.fileLoc + File.separator + "Addons", fileName);
 			return target;
 		} catch (Exception e) {
 			e.printStackTrace();

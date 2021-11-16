@@ -9,16 +9,15 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Users;
 
 public class ConfigFilesUpdater {
 
 	public static void updateConfigFiles(PowerRanks plugin) {
-		boolean updateConfigYAML = checkVersion(PowerRanks.configFileLoc, "config.yml", plugin);
-		boolean updateLangYAML = checkVersion(PowerRanks.configFileLoc, "lang.yml", plugin);
+		boolean updateConfigYAML = checkVersion(PowerRanks.fileLoc, "config.yml", plugin);
+		boolean updateLangYAML = checkVersion(PowerRanks.fileLoc, "lang.yml", plugin);
 		boolean updateRanksYAML = checkVersion(PowerRanks.fileLoc, "Ranks.yml", plugin);
 		boolean updatePlayersYAML = checkVersion(PowerRanks.fileLoc, "Players.yml", plugin);
 
@@ -46,8 +45,9 @@ public class ConfigFilesUpdater {
 				}
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
-				CachedConfig.update();
-				//CachedConfig.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				// CachedConfig.update();
+				// CachedConfig.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z
+				// ]", ""));
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
@@ -73,7 +73,7 @@ public class ConfigFilesUpdater {
 						}
 					}
 				}
-//				yamlConf.set("commands.help", null);
+				// yamlConf.set("commands.help", null);
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
 			} catch (IOException | InvalidConfigurationException e) {
@@ -92,32 +92,39 @@ public class ConfigFilesUpdater {
 				tmpYamlConf.load(tmpFile);
 				yamlConf.load(file);
 				yamlConf.set("version", null);
-				String tmp_group_name = tmpYamlConf.getConfigurationSection("Groups").getKeys(false).toArray()[0].toString();
+				String tmp_group_name = tmpYamlConf.getConfigurationSection("Groups").getKeys(false).toArray()[0]
+						.toString();
 
 				for (String key : yamlConf.getConfigurationSection("Groups").getKeys(false)) {
-					for (String tmp_key : tmpYamlConf.getConfigurationSection("Groups." + tmp_group_name).getKeys(true)) {
+					for (String tmp_key : tmpYamlConf.getConfigurationSection("Groups." + tmp_group_name)
+							.getKeys(true)) {
 						String tmp_field = "Groups." + tmp_group_name + "." + tmp_key;
 						String field = "Groups." + key + "." + tmp_key;
 						if (!yamlConf.contains(field)) {
-							if (tmpYamlConf.isBoolean(tmp_field) || tmpYamlConf.isString(tmp_field) || tmpYamlConf.isInt(tmp_field) || tmpYamlConf.isDouble(tmp_field)) {
+							if (tmpYamlConf.isBoolean(tmp_field) || tmpYamlConf.isString(tmp_field)
+									|| tmpYamlConf.isInt(tmp_field) || tmpYamlConf.isDouble(tmp_field)) {
 								yamlConf.set(field, tmpYamlConf.get(tmp_field));
 							}
 							if (tmpYamlConf.isList(tmp_field)) {
 								List<String> list = new ArrayList<String>();
-//								for (String line : tmpYamlConf.getStringList(tmp_field)) {
-//									list.add(line);
-//								}
-//								yamlConf.set(field, (Object) list);
+								// for (String line : tmpYamlConf.getStringList(tmp_field)) {
+								// list.add(line);
+								// }
+								// yamlConf.set(field, (Object) list);
 
 								try {
-									System.arraycopy(tmpYamlConf.getStringList(tmp_field), 0, list, 0, tmpYamlConf.getStringList(tmp_field).size());
+									System.arraycopy(tmpYamlConf.getStringList(tmp_field), 0, list, 0,
+											tmpYamlConf.getStringList(tmp_field).size());
 								} catch (Exception e) {
 								}
 								yamlConf.set(field, list);
 							}
 						}
-						if ((tmpYamlConf.isBoolean(tmp_field) != yamlConf.isBoolean(field)) || (tmpYamlConf.isList(tmp_field) != yamlConf.isList(field)) || (tmpYamlConf.isString(tmp_field) != yamlConf.isString(field))
-								|| (tmpYamlConf.isInt(tmp_field) != yamlConf.isInt(field)) || (tmpYamlConf.isDouble(tmp_field) != yamlConf.isDouble(field))) {
+						if ((tmpYamlConf.isBoolean(tmp_field) != yamlConf.isBoolean(field))
+								|| (tmpYamlConf.isList(tmp_field) != yamlConf.isList(field))
+								|| (tmpYamlConf.isString(tmp_field) != yamlConf.isString(field))
+								|| (tmpYamlConf.isInt(tmp_field) != yamlConf.isInt(field))
+								|| (tmpYamlConf.isDouble(tmp_field) != yamlConf.isDouble(field))) {
 							yamlConf.set(field, tmpYamlConf.get(tmp_field));
 						}
 					}
@@ -128,8 +135,9 @@ public class ConfigFilesUpdater {
 
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
-				CachedRanks.update();
-				//CachedRanks.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
+				CacheManager.save();
+				// CachedRanks.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z
+				// ]", ""));
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
@@ -158,8 +166,9 @@ public class ConfigFilesUpdater {
 				}
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
-				CachedPlayers.update();
-				//CachedPlayers.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""), false);
+				CacheManager.save();
+				// CachedPlayers.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z
+				// ]", ""), false);
 			} catch (IOException | InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
@@ -193,10 +202,13 @@ public class ConfigFilesUpdater {
 				yamlConf.set("version", PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
 				PowerRanks.log.info("Setting up file: " + fileName);
-				return !plugin.configContainsKey("updates.automatic_update_config_files") || plugin.getConfigBool("updates.automatic_update_config_files");
+				return !plugin.configContainsKey("updates.automatic_update_config_files")
+						|| plugin.getConfigBool("updates.automatic_update_config_files");
 			} else {
-				if (!yamlConf.getString("version").equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
-					if (!plugin.configContainsKey("updates.automatic_update_config_files") || plugin.getConfigBool("updates.automatic_update_config_files")) {
+				if (!yamlConf.getString("version")
+						.equalsIgnoreCase(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", ""))) {
+					if (!plugin.configContainsKey("updates.automatic_update_config_files")
+							|| plugin.getConfigBool("updates.automatic_update_config_files")) {
 						plugin.printVersionError(fileName, true);
 						return true;
 					} else {

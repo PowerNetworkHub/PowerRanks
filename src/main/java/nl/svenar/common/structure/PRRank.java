@@ -25,10 +25,7 @@
 package nl.svenar.common.structure;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Map.Entry;
 
 /**
  * Structure to store rank data.
@@ -38,10 +35,34 @@ import java.util.Map.Entry;
 public class PRRank {
 
     private String name;
-    private int weight;
-    private long expires;
     private ArrayList<PRPermission> permissions;
-    private Map<String, String> properties;
+    private ArrayList<String> inheritances;
+    private String chatPrefix;
+    private String chatSuffix;
+    private String chatNamecolor;
+    private String chatChatcolor;
+    private String levelPromote;
+    private String levelDemote;
+    private ArrayList<String> economyBuyable;
+    private float economyCost;
+    private String economyDescription;
+    private String economyBuyCommand;
+
+    public PRRank() {
+        name = "";
+        permissions = new ArrayList<PRPermission>();
+        inheritances = new ArrayList<String>();
+        chatPrefix = "";
+        chatSuffix = "";
+        chatNamecolor = "";
+        chatChatcolor = "";
+        levelPromote = "";
+        levelDemote = "";
+        economyBuyable = new ArrayList<String>();
+        economyCost = 0L;
+        economyDescription = "";
+        economyBuyCommand = "";
+    }
 
     /**
      * Get the name of this rank
@@ -59,42 +80,6 @@ public class PRRank {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Set the priority of this rank
-     * 
-     * @return Integer weight for this rank
-     */
-    public int getWeight() {
-        return this.weight;
-    }
-
-    /**
-     * Set the priority of this rank
-     * 
-     * @param weight
-     */
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    /**
-     * Get the time when the rank expires in the Unix epoch format
-     * 
-     * @return Unix epoch
-     */
-    public long getExpires() {
-        return this.expires;
-    }
-
-    /**
-     * Set when the rank expires in the Unix epoch format
-     * 
-     * @param expires
-     */
-    public void setExpires(long expires) {
-        this.expires = expires;
     }
 
     /**
@@ -129,6 +114,19 @@ public class PRRank {
     }
 
     /**
+     * Remove a PRPermission instance from this rank
+     * 
+     * @param permission
+     */
+    public void removePermission(PRPermission permission) {
+        if (!this.permissions.contains(permission)) {
+            return;
+        }
+
+        this.permissions.remove(permission);
+    }
+
+    /**
      * Get a permission by a String permission node (Eg. permission.node.123)
      * 
      * @param name
@@ -149,54 +147,256 @@ public class PRRank {
     }
 
     /**
-     * Get a key, value map with all stored properties
+     * Get a list of all stored inheritances in this rank
      * 
-     * @return Java Map with all properties and its values
+     * @return Java ArrayList with all inheritance names
      */
-    public Map<String, String> getProperties() {
-        return this.properties;
+    public ArrayList<String> getInheritances() {
+        return this.inheritances;
     }
 
     /**
-     * Overwrite all stored properties with the provided Java map
+     * Overwrite all stored inheritances with the provided Java ArrayList
      * 
-     * @param properties
+     * @param inheritances
      */
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
+    public void setInheritances(ArrayList<String> inheritanceNames) {
+        this.inheritances = inheritanceNames;
     }
 
     /**
-     * Add a new property to the stored properties and set its value
+     * Add a inheritance to this rank
      * 
-     * @param property
-     * @param value
+     * @param inheritanceName
      */
-    public void addProperty(String property, String value) {
-        if (Objects.isNull(this.properties)) {
-            this.properties = new HashMap<String, String>();
+    public void addInheritance(String inheritanceName) {
+        if (Objects.isNull(this.inheritances)) {
+            this.inheritances = new ArrayList<String>();
         }
 
-        this.properties.put(property, value);
+        this.inheritances.add(inheritanceName);
     }
 
     /**
-     * Get a value of a stored property, returns null if a property with the
-     * provided name is not found
+     * Remove an inheritance from this rank
      * 
-     * @param property
-     * @return String value of the property
+     * @param inheritanceName
      */
-    public String getProperty(String property) {
-        if (Objects.isNull(this.properties)) {
-            this.properties = new HashMap<String, String>();
+    public void removeInheritance(String inheritanceName) {
+        if (Objects.isNull(this.inheritances)) {
+            this.inheritances = new ArrayList<String>();
         }
 
-        for (Entry<String, String> entry : this.properties.entrySet()) {
-            if (entry.getKey().equals(name)) {
-                return entry.getValue();
-            }
+        if (this.inheritances.contains(inheritanceName)) {
+            this.inheritances.remove(inheritanceName);
         }
-        return null;
+    }
+
+    /**
+     * Change the chat prefix for this rank
+     * 
+     * @param prefix
+     */
+    public void setPrefix(String prefix) {
+        this.chatPrefix = prefix;
+    }
+
+    /**
+     * Get the chat prefix for this rank
+     * 
+     * @return prefix
+     */
+    public String getPrefix() {
+        return this.chatPrefix;
+    }
+
+    /**
+     * Change the chat suffix for this rank
+     * 
+     * @param suffix
+     */
+    public void setSuffix(String suffix) {
+        this.chatSuffix = suffix;
+    }
+
+    /**
+     * Get the chat prefix for this rank
+     * 
+     * @return suffix
+     */
+    public String getSuffix() {
+        return this.chatSuffix;
+    }
+
+    /**
+     * Change the name color for this rank
+     * 
+     * @param namecolor
+     */
+    public void setNamecolor(String namecolor) {
+        this.chatNamecolor = namecolor;
+    }
+
+    /**
+     * Get the name color for this rank
+     * 
+     * @return name color
+     */
+    public String getNamecolor() {
+        return this.chatNamecolor;
+    }
+
+    /**
+     * Change the chat color for this rank
+     * 
+     * @param chatcolor
+     */
+    public void setChatcolor(String chatcolor) {
+        this.chatChatcolor = chatcolor;
+    }
+
+    /**
+     * Get the chat color for this rank
+     * 
+     * @return chat color
+     */
+    public String getChatcolor() {
+        return this.chatChatcolor;
+    }
+
+    /**
+     * Change the promote rank name for this rank
+     * 
+     * @param promoteRankName
+     */
+    public void setPromoteRank(String promoteRankName) {
+        this.levelPromote = promoteRankName;
+    }
+
+    /**
+     * Get the promote rank name for this rank
+     * 
+     * @return promote rank name
+     */
+    public String getPromoteRank() {
+        return this.levelPromote;
+    }
+
+    /**
+     * Change the demote rank name for this rank
+     * 
+     * @param demoteRankName
+     */
+    public void setDemoteRank(String demoteRankName) {
+        this.levelDemote = demoteRankName;
+    }
+
+    /**
+     * Get the demote rank name for this rank
+     * 
+     * @return demote rank name
+     */
+    public String getDemoteRank() {
+        return this.levelDemote;
+    }
+
+    /**
+     * Get a list of all stored buyable ranks in this rank
+     * 
+     * @return Java ArrayList with all buyable rank names
+     */
+    public ArrayList<String> getBuyableRanks() {
+        return this.economyBuyable;
+    }
+
+    /**
+     * Overwrite all stored buyable ranks with the provided Java ArrayList
+     * 
+     * @param economyBuyable
+     */
+    public void setBuyableRanks(ArrayList<String> buyableRankNames) {
+        this.economyBuyable = buyableRankNames;
+    }
+
+    /**
+     * Add a buyable rank to this rank
+     * 
+     * @param buyableRankName
+     */
+    public void addBuyableRank(String buyableRankName) {
+        if (Objects.isNull(this.economyBuyable)) {
+            this.economyBuyable = new ArrayList<String>();
+        }
+
+        this.economyBuyable.add(buyableRankName);
+    }
+
+    /**
+     * Remove an buyable rank from this rank
+     * 
+     * @param buyableRankName
+     */
+    public void removeBuyableRank(String buyableRankName) {
+        if (Objects.isNull(this.economyBuyable)) {
+            this.economyBuyable = new ArrayList<String>();
+        }
+
+        if (this.economyBuyable.contains(buyableRankName)) {
+            this.economyBuyable.remove(buyableRankName);
+        }
+    }
+
+    /**
+     * Get the buy cost of this rank
+     * 
+     * @return String buy cost of the rank
+     */
+    public float getBuyCost() {
+        return this.economyCost;
+    }
+
+    /**
+     * Set the buy cost of this rank
+     * 
+     * @param economyCost
+     */
+    public void setBuyCost(float economyCost) {
+        this.economyCost = economyCost;
+    }
+
+    /**
+     * Get the buy description of this rank
+     * 
+     * @return String buy description of the rank
+     */
+    public String getBuyDescription() {
+        return this.economyDescription;
+    }
+
+    /**
+     * Set the buy description of this rank
+     * 
+     * @param description
+     */
+    public void setBuyDescription(String description) {
+        this.economyDescription = description;
+    }
+
+    /**
+     * Get the buy command of this rank
+     * 
+     * @return String buy command of the rank
+     */
+    public String getBuyCommand() {
+        return this.economyBuyCommand;
+    }
+
+    /**
+     * Set the buy command of this rank
+     * 
+     * @param buyCommand
+     */
+    public void setBuyCommand(String buyCommand) {
+        this.economyBuyCommand = buyCommand;
     }
 }

@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.Events;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.bukkit.event.EventHandler;
@@ -8,9 +9,10 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRRank;
 
 public class OnSignChanged implements Listener {
 
@@ -24,7 +26,7 @@ public class OnSignChanged implements Listener {
 	public void onSignChange(SignChangeEvent event) {
 		if (Util.isPowerRanksSign(this.m, event.getLine(0))) {
 			if (event.getPlayer().hasPermission("powerranks.signs.create")) {
-				event.setLine(0, PowerRanks.chatColor(Util.replaceAll(CachedConfig.getString("signs.title_format"), "%plugin_name%", PowerRanks.pdf.getName()), true));
+				event.setLine(0, PowerRanks.chatColor(Util.replaceAll(PowerRanks.getConfigManager().getString("signs.title_format", "&0[&b%plugin_name%&0]"), "%plugin_name%", PowerRanks.pdf.getName()), true));
 
 				final Users s = new Users(this.m);
 				String sign_command = event.getLine(1);
@@ -34,10 +36,10 @@ public class OnSignChanged implements Listener {
 				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote") || sign_command.equalsIgnoreCase("checkrank") || sign_command.equalsIgnoreCase("gui")) {
 					Messages.messageSignCreated(event.getPlayer());
 				} else if (sign_command.equalsIgnoreCase("setrank")) {
-					Set<String> ranks = s.getGroups();
+					ArrayList<PRRank> ranks = s.getGroups();
 					boolean rank_exists = false;
-					for (String rank : ranks) {
-						if (rank.equalsIgnoreCase(sign_argument)) {
+					for (PRRank rank : ranks) {
+						if (rank.getName().equalsIgnoreCase(sign_argument)) {
 							rank_exists = true;
 							break;
 						}
@@ -68,13 +70,13 @@ public class OnSignChanged implements Listener {
 						Messages.messageSignCreated(event.getPlayer());
 					}
 				} else if (sign_command.equalsIgnoreCase("rankup")) {
-					Set<String> ranks = s.getGroups();
+					ArrayList<PRRank> ranks = s.getGroups();
 					if (sign_argument.length() == 0) {
 						Messages.messageSignCreated(event.getPlayer());
 					} else {
 						boolean rank_exists = false;
-						for (String rank : ranks) {
-							if (rank.equalsIgnoreCase(sign_argument)) {
+						for (PRRank rank : ranks) {
+							if (rank.getName().equalsIgnoreCase(sign_argument)) {
 								rank_exists = true;
 								break;
 							}

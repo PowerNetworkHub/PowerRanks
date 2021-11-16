@@ -1,17 +1,18 @@
 package nl.svenar.PowerRanks;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.common.structure.PRRank;
+import nl.svenar.common.structure.PRSubrank;
 
 import com.google.common.collect.Iterables;
 
@@ -47,7 +48,11 @@ public class PowerRanksVaultPermission extends Permission {
 
 	@Override
 	public String[] getGroups() {
-		return Iterables.toArray(users.getGroups(), String.class);
+		List<String> ranks = new ArrayList<String>();
+		for (PRRank rank : users.getGroups()) {
+			ranks.add(rank.getName());
+		}
+		return Iterables.toArray(ranks, String.class);
 	}
 
 	@Override
@@ -82,7 +87,8 @@ public class PowerRanksVaultPermission extends Permission {
 	@Override
 	public boolean groupHas(String world, String name, String permission) {
 		PowerRanksVerbose.log("PowerRanksVaultPermission.groupHas(...)", "Called");
-		return CachedRanks.getStringList("Groups." + name + ".permissions").contains(permission);
+		return CacheManager.getRank(name).getPermission(permission) != null;
+		// return CachedRanks.getStringList("Groups." + name + ".permissions").contains(permission);
 	}
 
 	@Override
@@ -199,11 +205,12 @@ public class PowerRanksVaultPermission extends Permission {
 	public String[] getPlayerGroups(String world, OfflinePlayer player) {
 		PowerRanksVerbose.log("PowerRanksVaultPermission.getPlayerGroups(...)", "Called, player: " + player.getName());
 		ArrayList<String> groups = new ArrayList<String>();
-		groups.add(CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
-		ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
+		groups.add(CacheManager.getPlayer(player.getUniqueId().toString()).getRank());
+		// groups.add(CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
+		ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks();
 		if (subranks != null) {
-			for (String subrank : subranks.getKeys(false)) {
-				groups.add(subrank);
+			for (PRSubrank subrank : subranks) {
+				groups.add(subrank.getName());
 			}
 		}
 //		return (String[]) groups.toArray();
@@ -219,7 +226,7 @@ public class PowerRanksVaultPermission extends Permission {
 	@Override
 	public String getPrimaryGroup(String world, OfflinePlayer player) {
 		PowerRanksVerbose.log("PowerRanksVaultPermission.getPrimaryGroup(...)", "Called, player: " + player.getName());
-		return CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
+		return CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
 	}
 
 	// -- Deprecated methods

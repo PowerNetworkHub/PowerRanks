@@ -25,6 +25,7 @@
 package nl.svenar.common.storage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +82,9 @@ public abstract class PowerConfigManager {
      * @throws IOException
      */
     public void copyFile(final InputStream inputSteam, final File outputFile) throws IOException {
+        if (inputSteam == null) {
+            throw new FileNotFoundException("Input stream for '" + outputFile.getAbsolutePath() + "'' is null");
+        }
         final OutputStream out = new FileOutputStream(outputFile);
         final byte[] buf = new byte[1024];
         int len;
@@ -212,6 +216,15 @@ public abstract class PowerConfigManager {
 
             index++;
         }
+    }
+
+    /**
+     * Check if the data has this key
+     * @param key
+     * @return if data contains the key
+     */
+    public boolean hasKey(String key) {
+        return this.data.containsKey(key);
     }
 
     /**

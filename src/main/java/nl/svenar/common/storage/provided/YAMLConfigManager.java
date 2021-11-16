@@ -105,7 +105,8 @@ public class YAMLConfigManager extends PowerConfigManager {
             }
 
             if (!this.configFile.exists()) {
-                this.copyFile(this.getClass().getResourceAsStream(defaults), this.configFile);
+                InputStream inputStream = this.getClass().getResourceAsStream(defaults.startsWith("/") ? defaults : "/" + defaults);
+                this.copyFile(inputStream, this.configFile);
             }
 
             reload();

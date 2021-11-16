@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
+import nl.svenar.common.structure.PRPermission;
 
 public class PowerPermissibleBase extends PermissibleBase {
 
@@ -39,12 +40,20 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean hasPermission(String permission) {
-		ArrayList<String> permissions = plugin.getEffectivePlayerPermissions(player);
+		ArrayList<PRPermission> permissions = plugin.getEffectivePlayerPermissions(player);
 
 		boolean contains_wildcard = false;
 		for (String p : generateWildcardList(permission)) {
-			if (permissions.contains(p)) {
+			if (getAllowedPermissions(permissions).contains(p)) {
 				contains_wildcard = true;
+				break;
+			}
+		}
+
+		boolean disallowed = false;
+		for (PRPermission prPermission : permissions) {
+			if (prPermission.getName().equals(permission)) {
+				disallowed = prPermission.getValue();
 				break;
 			}
 		}
@@ -54,30 +63,30 @@ public class PowerPermissibleBase extends PermissibleBase {
 			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
 			PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
 			PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
-			PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", permissions) + "'");
-			PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + permissions.contains("-" + permission));
-			PowerRanksVerbose.log("hasPermission", "Has *: " + permissions.contains("*"));
+			PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", getAllPermissions(permissions)) + "'");
+			PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + disallowed);
+			PowerRanksVerbose.log("hasPermission", "Has *: " + getAllPermissions(permissions).contains("*"));
 			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
 	//		PowerRanksVerbose.log("hasPermission", "Return #3: " + super.hasPermission(permission));
-			PowerRanksVerbose.log("hasPermission", "Is permission in list: " + permissions.contains(permission));
+			PowerRanksVerbose.log("hasPermission", "Is permission in list: " + getAllPermissions(permissions).contains(permission));
 			PowerRanksVerbose.log("hasPermission", "Is in wildcard tree: " + contains_wildcard);
 			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
 			PowerRanksVerbose.log("hasPermission", "");
 		}
 
-		if (permissions.contains("-" + permission)) {
+		if (disallowed) {
 			return false;
 		}
 
-		if (permissions.contains("*") || player.isOp()) {
+		if (getAllPermissions(permissions).contains("*") || player.isOp()) {
 			return true;
 		}
 
 		try {
 			
-			return super.hasPermission(permission) || permissions.contains(permission) || contains_wildcard;
+			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission) || contains_wildcard;
 		} catch (Exception e) {
-			return permissions.contains(permission) || contains_wildcard;
+			return getAllowedPermissions(permissions).contains(permission) || contains_wildcard;
 		}
 //		
 	}
@@ -136,7 +145,15 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean isPermissionSet(String permission) {
-		boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
+		PRPermission prPermission = null;
+		for (PRPermission perm : plugin.getEffectivePlayerPermissions(player)) {
+			if (perm.getName().equals(permission)) {
+				prPermission = perm;
+				break;
+			}
+		}
+		// boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
+		boolean value = prPermission.getValue();
 		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
 			PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
 		}
@@ -202,6 +219,24 @@ public class PowerPermissibleBase extends PermissibleBase {
 			permission_split = Util.array_pop(permission_split);
 		}
 
+		return output;
+	}
+
+	private ArrayList<String> getAllowedPermissions(ArrayList<PRPermission> permissions) {
+		ArrayList<String> output = new ArrayList<String>();
+		for (PRPermission permission : permissions) {
+			if (permission.getValue()) {
+				output.add(permission.getName());
+			}
+		}
+		return output;
+	}
+
+	private ArrayList<String> getAllPermissions(ArrayList<PRPermission> permissions) {
+		ArrayList<String> output = new ArrayList<String>();
+		for (PRPermission permission : permissions) {
+			output.add(permission.getName());
+		}
 		return output;
 	}
 }

@@ -7,7 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.addons.DownloadableAddon;
@@ -28,13 +28,13 @@ public class cmd_addonmanager extends PowerCommand {
 			} else {
 				String addonmanagerCommand = args[0].toLowerCase();
 				if (addonmanagerCommand.equals("acceptterms")) {
-					CachedConfig.set("addon_manager.accepted_terms", true);
+					PowerRanks.getConfigManager().setBool("addon_manager.accepted_terms", true);
 					Messages.addonManagerTermsAccepted(sender);
 					Bukkit.getServer().dispatchCommand(sender, commandLabel + " addonmanager");
 				}
 
 				if (addonmanagerCommand.equals("declineterms")) {
-					CachedConfig.set("addon_manager.accepted_terms", false);
+					PowerRanks.getConfigManager().setBool("addon_manager.accepted_terms", false);
 					Messages.addonManagerTermsDeclined(sender);
 				}
 

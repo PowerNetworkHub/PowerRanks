@@ -1,8 +1,6 @@
 package nl.svenar.PowerRanks;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -16,8 +14,6 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class Util {
@@ -114,14 +110,14 @@ public class Util {
 	}
 
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
-		final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
-		final YamlConfiguration configYaml = new YamlConfiguration();
-		try {
-			configYaml.load(configFile);
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
-		return sign_header.toLowerCase().contains("powerranks") && configYaml.getBoolean("signs.enabled");
+		// final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
+		// final YamlConfiguration configYaml = new YamlConfiguration();
+		// try {
+		// 	configYaml.load(configFile);
+		// } catch (IOException | InvalidConfigurationException e) {
+		// 	e.printStackTrace();
+		// }
+		return sign_header.toLowerCase().contains("powerranks") && PowerRanks.getConfigManager().getBool("signs.enabled", false);
 	}
 
 	public static boolean stringContainsItemFromList(String inputStr, String[] items) {

@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 
 public class AddonsManager {
 
@@ -22,7 +22,7 @@ public class AddonsManager {
 	public AddonsManager(PowerRanks powerranks) {
 		this.powerranks = powerranks;
 
-		if (CachedConfig.getBoolean("addon_manager.accepted_terms")) {
+		if (PowerRanks.getConfigManager().getBool("addon_manager.accepted_terms", false)) {
 			setupAddonDownloader();
 		}
 	}
@@ -32,7 +32,7 @@ public class AddonsManager {
 	}
 
 	public void setup() {
-		final File folder = new File(PowerRanks.configFileLoc + File.separator + "Addons");
+		final File folder = new File(PowerRanks.fileLoc + File.separator + "Addons");
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}

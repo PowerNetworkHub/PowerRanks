@@ -17,7 +17,7 @@ public class PowerRanksConfig {
 	private File configFile;
 	
 	public PowerRanksConfig(String configName) {
-		String filedir = PowerRanks.configFileLoc + File.separator + "Addons";
+		String filedir = PowerRanks.fileLoc + File.separator + "Addons";
 		filename = filedir + File.separator + configName + ".yml";
 		final File configDir = new File(filedir);
 		configFile = new File(filename);

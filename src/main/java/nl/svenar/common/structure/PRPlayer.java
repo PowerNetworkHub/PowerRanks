@@ -25,11 +25,8 @@
 package nl.svenar.common.structure;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 /**
  * Structure to store player data.
@@ -40,8 +37,18 @@ public class PRPlayer {
 
     private UUID uuid;
     private String name;
-    private ArrayList<String> ranknames;
-    private Map<String, String> properties;
+    private String rank;
+    private ArrayList<PRSubrank> subranks;
+    private ArrayList<PRPermission> permissions;
+    private long playtime;
+
+    public PRPlayer() {
+        this.name = "";
+        this.rank = "";
+        this.subranks = new ArrayList<PRSubrank>();
+        this.permissions = new ArrayList<PRPermission>();
+        this.playtime = 0L;
+    }
 
     /**
      * Get the unique id of this player
@@ -80,49 +87,80 @@ public class PRPlayer {
     }
 
     /**
-     * Get a list with all stored rank names
+     * Get the rank of this player
+     * 
+     * @return String rank of the player
+     */
+    public String getRank() {
+        return this.rank;
+    }
+
+    /**
+     * Set the rank of this player
+     * 
+     * @param rankname
+     */
+    public void setRank(String rankname) {
+        this.rank = rankname;
+    }
+
+    /**
+     * Get a list with all stored subrank names
      * 
      * @return Java ArrayList with all stored rank names
      */
-    public ArrayList<String> getRankNames() {
-        return this.ranknames;
+    public ArrayList<PRSubrank> getSubRanks() {
+        return this.subranks;
     }
 
     /**
-     * Overwrite all stored rank names with the provided Java ArrayList
+     * Overwrite all stored subrank names with the provided Java ArrayList
      * 
-     * @param ranknames
+     * @param subranks
      */
-    public void setRankNames(ArrayList<String> ranknames) {
-        this.ranknames = ranknames;
+    public void setSubRanks(ArrayList<PRSubrank> subranks) {
+        this.subranks = subranks;
     }
 
     /**
-     * Add the name of a rank to the player
+     * Add the name of a subrank to the player
      * 
      * @param rankname
      */
-    public void addRankName(String rankname) {
-        if (Objects.isNull(this.ranknames)) {
-            this.ranknames = new ArrayList<String>();
+    public void addSubrank(PRSubrank subrank) {
+        if (Objects.isNull(this.subranks)) {
+            this.subranks = new ArrayList<PRSubrank>();
         }
 
-        this.ranknames.add(rankname);
+        this.subranks.add(subrank);
     }
 
     /**
-     * Check if this player instance has a specific rank
+     * Remove a PRSubrank instance from this player
      * 
-     * @param rankname
+     * @param subrank
+     */
+    public void removeSubrank(PRSubrank subrank) {
+        if (!this.subranks.contains(subrank)) {
+            return;
+        }
+
+        this.subranks.remove(subrank);
+    }
+
+    /**
+     * Check if this player instance has a specific subrank
+     * 
+     * @param subrank
      * @return true if this player has that rank, false otherwise
      */
-    public boolean hasRankName(String rankname) {
-        if (Objects.isNull(this.ranknames)) {
-            this.ranknames = new ArrayList<String>();
+    public boolean hasSubrank(String subrank) {
+        if (Objects.isNull(this.subranks)) {
+            this.subranks = new ArrayList<PRSubrank>();
         }
 
-        for (String rank : this.ranknames) {
-            if (rank.equals(rankname)) {
+        for (PRSubrank rank : this.subranks) {
+            if (rank.getName().equals(subrank)) {
                 return true;
             }
         }
@@ -130,54 +168,84 @@ public class PRPlayer {
     }
 
     /**
-     * Get a key, value map with all stored properties
+     * Get a list of all stored permissions in this player
      * 
-     * @return Java Map with all properties and its values
+     * @return Java ArrayList with all PRPermission instances
      */
-    public Map<String, String> getProperties() {
-        return this.properties;
+    public ArrayList<PRPermission> getPermissions() {
+        return this.permissions;
     }
 
     /**
-     * Overwrite all stored properties with the provided Java map
+     * Overwrite all stored permissions with the provided Java ArrayList
      * 
-     * @param properties
+     * @param permissions
      */
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
+    public void setPermissions(ArrayList<PRPermission> permissions) {
+        this.permissions = permissions;
     }
 
     /**
-     * Add a new property to the stored properties and set its value
+     * Add a PRPermission instance to this player
      * 
-     * @param property
-     * @param value
+     * @param permission
      */
-    public void addProperty(String property, String value) {
-        if (Objects.isNull(this.properties)) {
-            this.properties = new HashMap<String, String>();
+    public void addPermission(PRPermission permission) {
+        if (Objects.isNull(this.permissions)) {
+            this.permissions = new ArrayList<PRPermission>();
         }
 
-        this.properties.put(property, value);
+        this.permissions.add(permission);
     }
 
     /**
-     * Get a value of a stored property, returns null if a property with the
-     * provided name is not found
+     * Remove a PRPermission instance from this player
      * 
-     * @param property
-     * @return String value of the property
+     * @param permission
      */
-    public String getProperty(String property) {
-        if (Objects.isNull(this.properties)) {
-            this.properties = new HashMap<String, String>();
+    public void removePermission(PRPermission permission) {
+        if (!this.permissions.contains(permission)) {
+            return;
         }
 
-        for (Entry<String, String> entry : this.properties.entrySet()) {
-            if (entry.getKey().equals(name)) {
-                return entry.getValue();
+        this.permissions.remove(permission);
+    }
+
+    /**
+     * Get a permission by a String permission node (Eg. permission.node.123)
+     * 
+     * @param name
+     * @return PRPermission instance for the provided node, null if no PRPermission
+     *         instance was found
+     */
+    public PRPermission getPermission(String name) {
+        if (Objects.isNull(this.permissions)) {
+            this.permissions = new ArrayList<PRPermission>();
+        }
+
+        for (PRPermission permission : this.permissions) {
+            if (permission.getName().equals(name)) {
+                return permission;
             }
         }
         return null;
+    }
+
+    /**
+     * Get the playtime of this player
+     * 
+     * @return Long playtime of the player
+     */
+    public long getPlaytime() {
+        return this.playtime;
+    }
+
+    /**
+     * Set the playtime of this player
+     * 
+     * @param playtime
+     */
+    public void setPlaytime(long playtime) {
+        this.playtime = playtime;
     }
 }

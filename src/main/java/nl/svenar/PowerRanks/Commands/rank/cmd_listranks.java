@@ -1,7 +1,6 @@
 package nl.svenar.PowerRanks.Commands.rank;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,6 +10,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRRank;
 
 public class cmd_listranks extends PowerCommand {
 
@@ -24,14 +24,14 @@ public class cmd_listranks extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.listranks")) {
-			Set<String> ranks = users.getGroups();
+			ArrayList<PRRank> ranks = users.getGroups();
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 			// sender.sendMessage(ChatColor.DARK_GREEN + "Number of ranks: " + ChatColor.GREEN + ranks.size());
 			sender.sendMessage(ChatColor.AQUA + "Ranks (" + ranks.size() + "):");
 			int index = 0;
-			for (String rank : ranks) {
+			for (PRRank rank : ranks) {
 				index++;
-				sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GREEN + rank + ChatColor.RESET + " " + PowerRanks.chatColor(users.getPrefix(rank), true));
+				sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GREEN + rank + ChatColor.RESET + " " + PowerRanks.chatColor(rank.getPrefix(), true));
 			}
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
 		} else {

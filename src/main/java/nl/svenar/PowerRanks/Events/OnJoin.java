@@ -1,9 +1,7 @@
 package nl.svenar.PowerRanks.Events;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
@@ -13,11 +11,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
+import nl.svenar.common.structure.PRPlayer;
 
 public class OnJoin implements Listener {
 	PowerRanks m;
@@ -29,9 +27,6 @@ public class OnJoin implements Listener {
 	@EventHandler(ignoreCancelled = false)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
-
-		if (!CachedPlayers.is_ready())
-			CachedPlayers.update();
 
 		validatePlayerData(player);
 
@@ -53,7 +48,7 @@ public class OnJoin implements Listener {
 			
 		}
 
-		if (CachedConfig.getBoolean("general.disable-op")) {
+		if (PowerRanks.getConfigManager().getBool("general.disable-op", true)) {
 			if (player.isOp()) {
 				player.setOp(false);
 			}
@@ -86,30 +81,12 @@ public class OnJoin implements Listener {
 	}
 
 	private void validatePlayerData(Player player) {
-		HashMap<String, Object> user_data = new HashMap<String, Object>();
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".name") || !CachedPlayers.getString("players." + player.getUniqueId() + ".name").equals(player.getName()))
-			user_data.put("players." + player.getUniqueId() + ".name", player.getName());
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".rank"))
-			user_data.put("players." + player.getUniqueId() + ".rank", CachedRanks.get("Default"));
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".permissions"))
-			user_data.put("players." + player.getUniqueId() + ".permissions", new ArrayList<>());
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks"))
-			user_data.put("players." + player.getUniqueId() + ".subranks", "");
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".usertag"))
-			user_data.put("players." + player.getUniqueId() + ".usertag", "");
-
-		if (!CachedPlayers.contains("players." + player.getUniqueId() + ".playtime"))
-			user_data.put("players." + player.getUniqueId() + ".playtime", 0);
-
-		// for (Entry<String, Object> kv : user_data.entrySet()) {
-		// 	PowerRanks.log.info(kv.getKey() + ": " + kv.getValue());
-		// }
-		if (user_data.size() > 0) {
-			CachedPlayers.set(user_data, false);
+		if (CacheManager.getPlayer(player.getUniqueId().toString()) == null) {
+			PRPlayer prPlayer = new PRPlayer();
+			prPlayer.setUUID(player.getUniqueId());
+			prPlayer.setName(player.getName());
+			prPlayer.setRank(CacheManager.getDefaultRank());
+			CacheManager.addPlayer(prPlayer);
 		}
 	}
 }

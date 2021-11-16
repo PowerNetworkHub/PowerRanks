@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TimeZone;
@@ -13,20 +14,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.VaultHook;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.addons.DownloadableAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
+import nl.svenar.common.storage.PowerConfigManager;
+import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRSubrank;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -40,13 +41,13 @@ public class Messages {
 		Messages.powerRanks = powerRanks;
 	}
 
-	public static String getGeneralMessage(YamlConfiguration langYaml, String lang_config_line) {
+	public static String getGeneralMessage(PowerConfigManager languageManager, String lang_config_line) {
 		String msg = "";
 
-		String line = langYaml.getString(lang_config_line);
+		String line = languageManager.getString(lang_config_line, "");
 		if (line != null) {
 			if (line.length() > 0) {
-				String prefix = langYaml.getString("general.prefix");
+				String prefix = languageManager.getString("general.prefix", "");
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 				line = Util.replaceAll(line, "%base_cmd%", "/pr");
@@ -87,6 +88,8 @@ public class Messages {
 				+ Bukkit.getServer().getBukkitVersion());
 		sender.sendMessage(
 				ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
+		sender.sendMessage(ChatColor.GREEN + "Storage method: " + ChatColor.DARK_GREEN
+				+ PowerRanks.getConfigManager().getString("storage.type", "yaml").toUpperCase());
 		sender.sendMessage(ChatColor.GREEN + "Uptime: " + ChatColor.DARK_GREEN
 				+ format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
 		sender.sendMessage(
@@ -100,10 +103,11 @@ public class Messages {
 		try {
 			"#FF0000a".replace("#FF0000", net.md_5.bungee.api.ChatColor.of("#FF0000") + "");
 			hex_color_supported = true;
-		} catch(Exception e) {
+		} catch (Exception e) {
 			hex_color_supported = false;
 		}
-		sender.sendMessage(ChatColor.GREEN + "RGB colors: " + (hex_color_supported ? ChatColor.DARK_GREEN + "" : ChatColor.DARK_RED + "un") + "supported");
+		sender.sendMessage(ChatColor.GREEN + "RGB colors: "
+				+ (hex_color_supported ? ChatColor.DARK_GREEN + "" : ChatColor.DARK_RED + "un") + "supported");
 
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: "
@@ -181,7 +185,7 @@ public class Messages {
 			sender.sendMessage(ChatColor.DARK_GREEN + "Ranks available to buy (click to buy):");
 			List<String> ranks = users.getBuyableRanks(users.getGroup((Player) sender));
 			for (String rank : ranks) {
-				int cost = users.getRanksConfigFieldInt(rank, "economy.cost");
+				float cost = CacheManager.getRank(rank).getBuyCost();
 				String cost_color = player_balance >= cost ? "green" : "red";
 				// sender.sendMessage(ChatColor.BLACK + "[" + ChatColor.GREEN + "Buy" +
 				// ChatColor.BLACK + "] " + ChatColor.RESET + rank + " | Cost: " +
@@ -203,7 +207,7 @@ public class Messages {
 					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
 			sender.sendMessage(ChatColor.DARK_GREEN + "Click 'confirm' to purchase " + rankname);
-			int cost = users.getRanksConfigFieldInt(rankname, "economy.cost");
+			float cost = CacheManager.getRank(rankname).getBuyCost();
 			sender.sendMessage(
 					"Cost: " + (player_balance >= cost ? ChatColor.GREEN : ChatColor.RED) + String.valueOf(cost));
 			if (Messages.powerRanks != null)
@@ -277,19 +281,14 @@ public class Messages {
 				ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
 		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
 		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN
-				+ CachedPlayers.getString("players." + player.getUniqueId() + ".rank"));
+				+ CacheManager.getPlayer(player.getUniqueId().toString()).getRank());
 		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN
-				+ (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null
-						? (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks")
-								.getKeys(false).size() > 0 ? String.join(
-										", ",
-										CachedPlayers.getConfigurationSection(
-												"players." + player.getUniqueId() + ".subranks").getKeys(false))
-										: "None")
+				+ (CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks().size() > 0
+						? CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks()
 						: "None"));
 		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
-		ArrayList<String> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
+		ArrayList<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = playerPermissions.size() / lines_per_page;
 
@@ -335,10 +334,10 @@ public class Messages {
 		}
 
 		int line_index = 0;
-		for (String permission : playerPermissions) {
+		for (PRPermission permission : playerPermissions) {
 			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
 				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
-						+ (permission.startsWith("-") ? ChatColor.RED : ChatColor.GREEN) + permission);
+						+ (!permission.getValue() ? ChatColor.RED : ChatColor.GREEN) + permission.getName());
 			}
 			line_index += 1;
 		}
@@ -350,70 +349,41 @@ public class Messages {
 	private static String getSampleChatFormat(Player player) {
 		String playersChatMessage = "message";
 
-		String format = CachedConfig.getString("chat.format");
-		String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-		String prefix = (CachedRanks.getString("Groups." + rank + ".chat.prefix") != null)
-				? CachedRanks.getString("Groups." + rank + ".chat.prefix")
-				: "";
-		String suffix = (CachedRanks.getString("Groups." + rank + ".chat.suffix") != null)
-				? CachedRanks.getString("Groups." + rank + ".chat.suffix")
-				: "";
-		String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null)
-				? CachedRanks.getString("Groups." + rank + ".chat.chatColor")
-				: "";
-		String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null)
-				? CachedRanks.getString("Groups." + rank + ".chat.nameColor")
-				: "";
+		String format = PowerRanks.getConfigManager().getString("chat.format", "");
+		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
+		String prefix = CacheManager.getRank(rank).getPrefix();
+		String suffix = CacheManager.getRank(rank).getSuffix();
+		String chatColor = CacheManager.getRank(rank).getChatcolor();
+		String nameColor = CacheManager.getRank(rank).getNamecolor();
 		String subprefix = "";
 		String subsuffix = "";
 		String usertag = "";
 
 		try {
-			if (CachedPlayers.getConfigurationSection("players." + player.getUniqueId() + ".subranks") != null) {
-				ConfigurationSection subranks = CachedPlayers
-						.getConfigurationSection("players." + player.getUniqueId() + ".subranks");
-				for (String r : subranks.getKeys(false)) {
-					boolean in_world = false;
-					if (!CachedPlayers.contains("players." + player.getUniqueId() + ".subranks." + r + ".worlds")) {
+			ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks();
+			for (PRSubrank subrank : subranks) {
+				boolean in_world = false;
+
+				String player_current_world = player.getWorld().getName();
+				List<String> worlds = subrank.getWorlds();
+				for (String world : worlds) {
+					if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
 						in_world = true;
+					}
+				}
 
-						ArrayList<String> default_worlds = new ArrayList<String>();
-						default_worlds.add("All");
-						CachedPlayers.set("players." + player.getUniqueId() + ".subranks." + r + ".worlds",
-								default_worlds, true);
+				if (in_world) {
+					if (subrank.getUsingPrefix()) {
+						subprefix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix();
 					}
 
-					String player_current_world = player.getWorld().getName();
-					List<String> worlds = CachedPlayers
-							.getStringList("players." + player.getUniqueId() + ".subranks." + r + ".worlds");
-					for (String world : worlds) {
-						if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-							in_world = true;
-						}
-					}
+					if (subrank.getUsingSuffix()) {
+						subsuffix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix();
 
-					if (in_world) {
-						if (CachedPlayers
-								.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_prefix")) {
-							subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null
-									&& CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
-											? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix")
-													+ " "
-											: "");
-						}
-
-						if (CachedPlayers
-								.getBoolean("players." + player.getUniqueId() + ".subranks." + r + ".use_suffix")) {
-							subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null
-									&& CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
-											? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix")
-													+ " "
-											: "");
-
-						}
 					}
 				}
 			}
+
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -429,20 +399,23 @@ public class Messages {
 			subsuffix = "";
 		}
 
-		if (CachedPlayers.contains("players." + player.getUniqueId() + ".usertag")
-				&& CachedPlayers.getString("players." + player.getUniqueId() + ".usertag").length() > 0) {
-			String tmp_usertag = CachedPlayers.getString("players." + player.getUniqueId() + ".usertag");
+		// TODO: Usertags
+		// if (CachedPlayers.contains("players." + player.getUniqueId() + ".usertag")
+		// && CachedPlayers.getString("players." + player.getUniqueId() +
+		// ".usertag").length() > 0) {
+		// String tmp_usertag = CachedPlayers.getString("players." +
+		// player.getUniqueId() + ".usertag");
 
-			if (CachedRanks.getConfigurationSection("Usertags") != null) {
-				ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-				for (String key : tags.getKeys(false)) {
-					if (key.equalsIgnoreCase(tmp_usertag)) {
-						usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
-						break;
-					}
-				}
-			}
-		}
+		// if (CachedRanks.getConfigurationSection("Usertags") != null) {
+		// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+		// for (String key : tags.getKeys(false)) {
+		// if (key.equalsIgnoreCase(tmp_usertag)) {
+		// usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
+		// break;
+		// }
+		// }
+		// }
+		// }
 
 		if (!player.hasPermission("powerranks.chat.chatcolor")) {
 			playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");
@@ -493,6 +466,7 @@ public class Messages {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void helpMenu(final Player sender, int page) {
 		String tellrawbase = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\"},{\"text\":\"/%cmd% %arg%\",\"color\":\"%color_command_allowed%\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/%cmd% %arg%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"/%cmd% %arg%\"}},{\"text\":\"]\",\"color\":\"black\"},{\"text\":\" %help%\",\"color\":\"dark_green\"}]";
 		String page_selector_tellraw = "tellraw " + sender.getName()
@@ -518,11 +492,12 @@ public class Messages {
 				"tellraw %player% [\"\",{\"text\":\"===\",\"color\":\"blue\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"%plugin%\",\"color\":\"aqua\"},{\"text\":\"----------\",\"color\":\"dark_aqua\"},{\"text\":\"===\",\"color\":\"blue\"}]"
 						.replaceAll("%plugin%", PowerRanks.pdf.getName()).replaceAll("%player%", sender.getName()));
 
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		HashMap<String, String> lines = (HashMap<String, String>) languageManager.getMap("commands.help",
+				new HashMap<String, String>());
 
 		int lines_per_page = 5;
-		int last_page = lines.getKeys(false).size() / lines_per_page;
+		int last_page = lines.size() / lines_per_page;
 
 		page = page < 0 ? 0 : page;
 		page = page > last_page ? last_page : page;
@@ -538,10 +513,11 @@ public class Messages {
 							.replaceAll("%player%", sender.getName()));
 
 			int line_index = 0;
-			for (String section : lines.getKeys(false)) {
+			for (String section : lines.keySet()) {
 				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-					String help_command = langYaml.getString("commands.help." + section + ".command");
-					String help_description = langYaml.getString("commands.help." + section + ".description");
+					String help_command = languageManager.getString("commands.help." + section + ".command", "");
+					String help_description = languageManager.getString("commands.help." + section + ".description",
+							"");
 					help_messages.add(tellrawbase.replaceAll("%arg%", help_command)
 							.replaceAll("%help%", help_description).replaceAll("%player%", sender.getName())
 							.replaceAll("%cmd%", "pr").replaceAll("%color_command_allowed%",
@@ -561,18 +537,21 @@ public class Messages {
 						.dispatchCommand((CommandSender) Messages.powerRanks.getServer().getConsoleSender(), msg);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void helpMenu(final ConsoleCommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		ConfigurationSection lines = langYaml.getConfigurationSection("commands.help");
+		HashMap<String, String> lines = (HashMap<String, String>) languageManager.getMap("commands.help",
+				new HashMap<String, String>());
+
 		if (lines != null) {
 			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
 					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
-			String prefix = langYaml.getString("general.prefix");
-			for (String section : lines.getKeys(false)) {
-				String line = "&a/pr " + langYaml.getString("commands.help." + section + ".command") + "&2 - "
-						+ langYaml.getString("commands.help." + section + ".description");
+			String prefix = languageManager.getString("general.prefix", "");
+			for (String section : lines.keySet()) {
+				String line = "&a/pr " + languageManager.getString("commands.help." + section + ".command", "")
+						+ "&2 - " + languageManager.getString("commands.help." + section + ".description", "");
 				line = Util.replaceAll(line, "%base_cmd%", "/pr");
 				line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 				line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
@@ -585,7 +564,7 @@ public class Messages {
 	}
 
 	public static void addonManagerListAddons(CommandSender sender, int page) {
-		boolean hasAcceptedTerms = CachedConfig.getBoolean("addon_manager.accepted_terms");
+		boolean hasAcceptedTerms = PowerRanks.getConfigManager().getBool("addon_manager.accepted_terms", false);
 
 		if (sender instanceof Player) {
 
@@ -717,7 +696,7 @@ public class Messages {
 	}
 
 	public static void addonManagerInfoAddon(CommandSender sender, String addonname) {
-		boolean hasAcceptedTerms = CachedConfig.getBoolean("addon_manager.accepted_terms");
+		boolean hasAcceptedTerms = PowerRanks.getConfigManager().getBool("addon_manager.accepted_terms", false);
 		if (!hasAcceptedTerms) {
 			addonManagerListAddons(sender, 0);
 			return;
@@ -873,52 +852,52 @@ public class Messages {
 	}
 
 	public static void addonManagerTermsAccepted(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.addonmanager_terms_accepted");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.addonmanager_terms_accepted");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void addonManagerTermsDeclined(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.addonmanager_terms_declined");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.addonmanager_terms_declined");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void addonManagerDownloadNotAvailable(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.addonmanager_download_not_available");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.addonmanager_download_not_available");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void addonManagerDownloadComplete(CommandSender sender, String addonname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.addonmanager_download_complete");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.addonmanager_download_complete");
 		msg = msg.replaceAll("%addonname%", addonname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void addonManagerDownloadFailed(CommandSender sender, String addonname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.addonmanager_download_failed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.addonmanager_download_failed");
 		msg = msg.replaceAll("%addonname%", addonname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void addonManagerUninstallComplete(CommandSender sender, String addonname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.addonmanager_uninstall_complete");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.addonmanager_uninstall_complete");
 		msg = msg.replaceAll("%addonname%", addonname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void listRankPermissions(CommandSender sender, Users users, String rank_name, int page) {
-		List<String> lines = (List<String>) users.getPermissions(rank_name);
+		List<PRPermission> lines = users.getPermissions(rank_name);
 		int lines_per_page = 10;
 
 		if (page < 0)
@@ -950,9 +929,10 @@ public class Messages {
 
 		for (int i = 0; i < lines_per_page; i++) {
 			if (lines_per_page * page + i < lines.size()) {
-				String permission = lines.get(lines_per_page * page + i);
-				if (permission.length() > 0)
-					sender.sendMessage((permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+				PRPermission permission = lines.get(lines_per_page * page + i);
+				if (permission.getName().length() > 0)
+					sender.sendMessage(
+							(permission.getValue() ? ChatColor.GREEN : ChatColor.RED) + permission.getName());
 			}
 		}
 
@@ -960,7 +940,7 @@ public class Messages {
 	}
 
 	public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
-		List<String> lines = (List<String>) users.getPlayerPermissions(target_player);
+		List<PRPermission> lines = users.getPlayerPermissions(target_player);
 		int lines_per_page = 10;
 
 		if (page < 0)
@@ -992,9 +972,10 @@ public class Messages {
 
 		for (int i = 0; i < lines_per_page; i++) {
 			if (lines_per_page * page + i < lines.size()) {
-				String permission = lines.get(lines_per_page * page + i);
-				if (permission.length() > 0)
-					sender.sendMessage((permission.charAt(0) == '-' ? ChatColor.RED : ChatColor.GREEN) + permission);
+				PRPermission permission = lines.get(lines_per_page * page + i);
+				if (permission.getName().length() > 0)
+					sender.sendMessage(
+							(permission.getValue() ? ChatColor.GREEN : ChatColor.RED) + permission.getName());
 			}
 		}
 
@@ -1013,18 +994,18 @@ public class Messages {
 	}
 
 	public static void noPermission(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.no_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.no_permission");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageSetRankSuccessSender(CommandSender console, String target, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		String line = langYaml.getString("messages.rank_set_sender");
+		String line = languageManager.getString("messages.rank_set_sender", "");
 		if (line != null) {
-			String prefix = langYaml.getString("general.prefix");
+			String prefix = languageManager.getString("general.prefix", "");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 			line = Util.replaceAll(line, "%argument_target%", target);
@@ -1036,11 +1017,11 @@ public class Messages {
 	}
 
 	public static void messageSetRankSuccessTarget(Player target, String sender, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		String line = langYaml.getString("messages.rank_set_target");
+		String line = languageManager.getString("messages.rank_set_target", "");
 		if (line != null) {
-			String prefix = langYaml.getString("general.prefix");
+			String prefix = languageManager.getString("general.prefix", "");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 			line = Util.replaceAll(line, "%argument_sender%", sender);
@@ -1053,11 +1034,11 @@ public class Messages {
 	}
 
 	public static void messagePlayerNotFound(CommandSender console, String target) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		String line = langYaml.getString("messages.player_not_found");
+		String line = languageManager.getString("messages.player_not_found", "");
 		if (line != null) {
-			String prefix = langYaml.getString("general.prefix");
+			String prefix = languageManager.getString("general.prefix", "");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 			line = Util.replaceAll(line, "%argument_target%", target);
@@ -1068,11 +1049,11 @@ public class Messages {
 	}
 
 	public static void messageGroupNotFound(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		String line = langYaml.getString("messages.group_not_found");
+		String line = languageManager.getString("messages.group_not_found", "");
 		if (line != null) {
-			String prefix = langYaml.getString("general.prefix");
+			String prefix = languageManager.getString("general.prefix", "");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 			line = Util.replaceAll(line, "%argument_rank%", rank);
@@ -1083,11 +1064,11 @@ public class Messages {
 	}
 
 	public static void messagePlayerCheckRank(CommandSender console, String target, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		String line = langYaml.getString("messages.player_check_rank");
+		String line = languageManager.getString("messages.player_check_rank", "");
 		if (line != null) {
-			String prefix = langYaml.getString("general.prefix");
+			String prefix = languageManager.getString("general.prefix", "");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
 			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
 			line = Util.replaceAll(line, "%argument_target%", target);
@@ -1099,99 +1080,99 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageReload(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_reload");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_reload");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadWarning(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_warning");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_warning");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadConfig(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_config");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_config");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadConfigDone(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_config_done");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_config_done");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadPlugin(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_plugin");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_plugin");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadPluginDone(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_plugin_done");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_plugin_done");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadAddons(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_addons");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_addons");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandReloadAddonsDone(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.reload_addons_done");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.reload_addons_done");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSet(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_setrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_setrank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetown(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_setownrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_setownrank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageCheck(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_check");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_check");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageAddperm(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_add_permission");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDelperm(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_remove_permission");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandPermissionAdded(CommandSender console, String permission, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.permission_added");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.permission_added");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1199,8 +1180,8 @@ public class Messages {
 	}
 
 	public static void messageCommandPermissionRemoved(CommandSender console, String permission, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.permission_removed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.permission_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1208,78 +1189,78 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageAddInheritance(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_inheritance");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_add_inheritance");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageRemoveInheritance(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_inheritance");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_remove_inheritance");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetPrefix(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_prefix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_prefix");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetSuffix(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_suffix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_suffix");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetChatColor(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_chat_color");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_chat_color");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetNameColor(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_name_color");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_name_color");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageCreateRank(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_create_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_create_rank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDeleteRank(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_delete_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_delete_rank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsagePromote(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_promote");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_promote");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDemote(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_demote");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_demote");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandInheritanceAdded(CommandSender console, String inheritance, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.inheritance_added");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.inheritance_added");
 		msg = Util.replaceAll(msg, "%argument_inheritance%", inheritance);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
@@ -1287,8 +1268,8 @@ public class Messages {
 	}
 
 	public static void messageCommandInheritanceRemoved(CommandSender console, String inheritance, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.inheritance_removed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.inheritance_removed");
 		msg = Util.replaceAll(msg, "%argument_inheritance%", inheritance);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
@@ -1296,8 +1277,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetPrefix(CommandSender console, String prefix, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_set_prefix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_set_prefix");
 		msg = Util.replaceAll(msg, "%argument_prefix%", prefix);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
@@ -1305,8 +1286,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetSuffix(CommandSender console, String suffix, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_set_suffix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_set_suffix");
 		msg = Util.replaceAll(msg, "%argument_suffix%", suffix);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
@@ -1314,8 +1295,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetChatColor(CommandSender console, String color, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_set_chat_color");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_set_chat_color");
 		msg = Util.replaceAll(msg, "%argument_color%", color);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
@@ -1323,8 +1304,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetNameColor(CommandSender console, String color, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_set_name_color");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_set_name_color");
 		msg = Util.replaceAll(msg, "%argument_color%", color);
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
@@ -1332,125 +1313,125 @@ public class Messages {
 	}
 
 	public static void messageCommandCreateRankSuccess(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_created");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_created");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandCreateRankError(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_create_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_create_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandDeleteRankSuccess(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_deleted");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_deleted");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandDeleteRankError(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_delete_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_delete_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandPromoteSuccess(CommandSender console, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.player_promoted");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.player_promoted");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandPromoteError(CommandSender console, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_player_promote");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_player_promote");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandDemoteSuccess(CommandSender console, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.player_demoted");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.player_demoted");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandDemoteError(CommandSender console, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_player_demote");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_player_demote");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandRenameRankSuccess(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_renamed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_renamed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandRenameRankError(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_renaming_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_renaming_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandSetDefaultRankSuccess(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.default_rank_changed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.default_rank_changed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandSetDefaultRankError(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_changing_default_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_changing_default_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageSignUnknownCommand(Player player) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_sign_unknown_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_sign_unknown_rank");
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
 
 	public static void messageSignCreated(Player player) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.sign_created");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.sign_created");
 		if (msg.length() > 0)
 			player.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageListPermissions(CommandSender console) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_listpermissions");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_listpermissions");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageErrorAddingPermission(CommandSender console, String rank, String permission) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_adding_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_adding_permission");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1458,54 +1439,54 @@ public class Messages {
 	}
 
 	public static void messageCommandPermissionAddedToAllRanks(CommandSender console, String permission) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.permission_added_to_all_ranks");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.permission_added_to_all_ranks");
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandPermissionRemovedFromAllRanks(CommandSender console, String permission) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.permission_removed_from_all_ranks");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.permission_removed_from_all_ranks");
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageBuyRankSuccess(CommandSender sender, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.buy_success");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.buy_success");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageBuyRankError(CommandSender sender, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.buy_not_enough_money");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.buy_not_enough_money");
 		msg = Util.replaceAll(msg, "%argument_rank%", rank);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageBuyRankNotAvailable(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.buy_not_available");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.buy_not_available");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void unknownCommand(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.unknown_command");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.unknown_command");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandAddbuyablerankSuccess(CommandSender sender, String rankname, String rankname2) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_added");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.buyable_rank_added");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
 		if (msg.length() > 0)
@@ -1513,8 +1494,8 @@ public class Messages {
 	}
 
 	public static void messageCommandAddbuyablerankError(CommandSender sender, String rankname, String rankname2) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_adding_buyable_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_adding_buyable_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
 		if (msg.length() > 0)
@@ -1522,15 +1503,15 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageAddbuyablerank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_buyable_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_add_buyable_rank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandDelbuyablerankSuccess(CommandSender sender, String rankname, String rankname2) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.buyable_rank_removed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.buyable_rank_removed");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
 		if (msg.length() > 0)
@@ -1538,8 +1519,8 @@ public class Messages {
 	}
 
 	public static void messageCommandDelbuyablerankError(CommandSender sender, String rankname, String rankname2) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_removing_buyable_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_removing_buyable_rank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", rankname2);
 		if (msg.length() > 0)
@@ -1547,15 +1528,15 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageDelbuyablerank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_del_buyable_rank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_del_buyable_rank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandSetcostSuccess(CommandSender sender, String rankname, String cost) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.buy_cost_set");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.buy_cost_set");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_cost%", cost);
 		if (msg.length() > 0)
@@ -1563,8 +1544,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetcostError(CommandSender sender, String rankname, String cost) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_setting_buy_cost");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_setting_buy_cost");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_cost%", cost);
 		if (msg.length() > 0)
@@ -1572,16 +1553,16 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageSetcost(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_cost");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_cost");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandPlayerPermissionAdded(CommandSender sender, String permission,
 			String target_player) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.player_permission_added");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.player_permission_added");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1590,8 +1571,8 @@ public class Messages {
 
 	public static void messageErrorAddingPlayerPermission(CommandSender sender, String target_player,
 			String permission) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_adding_player_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_adding_player_permission");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1599,16 +1580,16 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageAddplayerperm(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_player_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_add_player_permission");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandPlayerPermissionRemoved(CommandSender sender, String permission,
 			String target_player) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.player_permission_removed");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.player_permission_removed");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1617,8 +1598,8 @@ public class Messages {
 
 	public static void messageErrorRemovingPlayerPermission(CommandSender sender, String target_player,
 			String permission) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_removing_player_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_removing_player_permission");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
 		msg = Util.replaceAll(msg, "%argument_permission%", permission);
 		if (msg.length() > 0)
@@ -1626,15 +1607,15 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageDelplayerperm(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_player_permission");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_remove_player_permission");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageSuccessAddsubrank(CommandSender sender, String subrank, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_adding_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_adding_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
@@ -1642,8 +1623,8 @@ public class Messages {
 	}
 
 	public static void messageErrorAddsubrank(CommandSender sender, String subrank, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_adding_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_adding_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
@@ -1651,8 +1632,8 @@ public class Messages {
 	}
 
 	public static void messageSuccessDelsubrank(CommandSender sender, String subrank, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_removing_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_removing_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
@@ -1660,8 +1641,8 @@ public class Messages {
 	}
 
 	public static void messageErrorDelsubrank(CommandSender sender, String subrank, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_removing_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_removing_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
@@ -1669,29 +1650,29 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageAddsubrank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_add_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_add_subrank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDelsubrank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_remove_subrank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageListSubranks(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_listsubranks");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_listsubranks");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageSuccessChangesubrank(CommandSender sender, String subrank, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_change_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_change_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
@@ -1700,8 +1681,8 @@ public class Messages {
 	}
 
 	public static void messageErrorChangesubrank(CommandSender sender, String subrank, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_change_subrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_change_subrank");
 		msg = Util.replaceAll(msg, "%argument_subrank%", subrank);
 		msg = Util.replaceAll(msg, "%argument_player%", playername);
 		if (msg.length() > 0)
@@ -1709,92 +1690,92 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageEnablesubrankprefix(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankprefix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_enablesubrankprefix");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDisablesubrankprefix(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankprefix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_disablesubrankprefix");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageEnablesubranksuffix(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubranksuffix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_enablesubranksuffix");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDisablesubranksuffix(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubranksuffix");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_disablesubranksuffix");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageEnablesubrankpermissions(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_enablesubrankpermissions");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_enablesubrankpermissions");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDisablesubrankpermissions(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_disablesubrankpermissions");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_disablesubrankpermissions");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageCreateusertag(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_create_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_create_usertag");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageEditusertag(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_edit_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_edit_usertag");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageRemoveusertag(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_remove_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_remove_usertag");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetusertag(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_usertag");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageClearusertag(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_clear_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_clear_usertag");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageListusertags(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_list_usertags");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_list_usertags");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandCreateusertagSuccess(CommandSender sender, String tag, String text) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_create_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_create_usertag");
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
 		if (msg.length() > 0)
@@ -1802,8 +1783,8 @@ public class Messages {
 	}
 
 	public static void messageCommandCreateusertagError(CommandSender sender, String tag, String text) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_create_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_create_usertag");
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
 		if (msg.length() > 0)
@@ -1811,8 +1792,8 @@ public class Messages {
 	}
 
 	public static void messageCommandEditusertagSuccess(CommandSender sender, String tag, String text) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_edit_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_edit_usertag");
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
 		if (msg.length() > 0)
@@ -1820,8 +1801,8 @@ public class Messages {
 	}
 
 	public static void messageCommandEditusertagError(CommandSender sender, String tag, String text) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_edit_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_edit_usertag");
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		msg = Util.replaceAll(msg, "%argument_usertag_text%", text);
 		if (msg.length() > 0)
@@ -1829,24 +1810,24 @@ public class Messages {
 	}
 
 	public static void messageCommandRemoveusertagSuccess(CommandSender sender, String tag) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_remove_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_remove_usertag");
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandRemoveusertagError(CommandSender sender, String tag) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_remove_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_remove_usertag");
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandSetusertagSuccess(CommandSender sender, String playername, String tag) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_set_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_set_usertag");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		if (msg.length() > 0)
@@ -1854,8 +1835,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetusertagError(CommandSender sender, String playername, String tag) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_set_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_set_usertag");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		msg = Util.replaceAll(msg, "%argument_usertag_tag%", tag);
 		if (msg.length() > 0)
@@ -1863,52 +1844,52 @@ public class Messages {
 	}
 
 	public static void messageCommandClearusertagSuccess(CommandSender sender, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_clear_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_clear_usertag");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandClearusertagError(CommandSender sender, String playername) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_clear_usertag");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_clear_usertag");
 		msg = Util.replaceAll(msg, "%argument_target%", playername);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetpromoterank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_promoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_promoterank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSetdemoterank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_set_demoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_set_demoterank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageClearpromoterank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_clear_promoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_clear_promoterank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageCleardemoterank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_clear_demoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_clear_demoterank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandSetpromoterankSuccess(CommandSender sender, String rankname, String promote_rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_set_promoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_set_promoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
 		if (msg.length() > 0)
@@ -1916,8 +1897,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetpromoterankError(CommandSender sender, String rankname, String promote_rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_set_promoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_set_promoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
 		if (msg.length() > 0)
@@ -1925,8 +1906,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetdemoterankSuccess(CommandSender sender, String rankname, String promote_rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_set_demoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_set_demoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
 		if (msg.length() > 0)
@@ -1934,8 +1915,8 @@ public class Messages {
 	}
 
 	public static void messageCommandSetdemoterankError(CommandSender sender, String rankname, String promote_rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_set_demoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_set_demoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		msg = Util.replaceAll(msg, "%argument_target_rank%", promote_rank);
 		if (msg.length() > 0)
@@ -1943,87 +1924,87 @@ public class Messages {
 	}
 
 	public static void messageCommandClearpromoterankSuccess(CommandSender sender, String rankname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_clear_promoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_clear_promoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandClearpromoterankError(CommandSender sender, String rankname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_clear_promoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_clear_promoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandCleardemoterankSuccess(CommandSender sender, String rankname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_clear_demoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_clear_demoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandCleardemoterankError(CommandSender sender, String rankname) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_clear_demoterank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_clear_demoterank");
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageUsertagsDisabled(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		String external_plugin_name = "None";
 		if (PowerRanks.plugin_hook_deluxetags)
 			external_plugin_name = "DeluxeTags";
-		String msg = getGeneralMessage(langYaml, "messages.error_usertags_disable_use_external_plugin");
+		String msg = getGeneralMessage(languageManager, "messages.error_usertags_disable_use_external_plugin");
 		msg = Util.replaceAll(msg, "%argument_external_plugin%", external_plugin_name); // external_plugin
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageAddoninfo(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_addoninfo");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_addoninfo");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandErrorAddonNotFound(CommandSender sender, String addon_name) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_addon_not_found");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_addon_not_found");
 		msg = Util.replaceAll(msg, "%argument_addon%", addon_name);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageFactoryReset(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_factoryreset");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_factoryreset");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageSeticon(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_seticon");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_seticon");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageErrorMustHoldItem(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_must_hold_item");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_must_hold_item");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageSuccessSetIcon(CommandSender sender, String materialName, String rankName) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_set_icon");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_set_icon");
 		msg = Util.replaceAll(msg, "%argument_material%", materialName);
 		msg = Util.replaceAll(msg, "%argument_rank%", rankName);
 		if (msg.length() > 0)
@@ -2031,108 +2012,108 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageVerbose(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_verbose");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_verbose");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseAlreadyRunning(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_verbose_already_started");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_verbose_already_started");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseNotRunning(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_verbose_not_started");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_verbose_not_started");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseMustStopBeforeSaving(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_verbose_must_stop_before_save");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_verbose_must_stop_before_save");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseStopped(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_verbose_stopped");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_verbose_stopped");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseStarted(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_verbose_started");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_verbose_started");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseSaved(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_verbose_saved");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_verbose_saved");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandErrorSavingVerbose(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_saving_verbose");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_saving_verbose");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 
 	}
 
 	public static void messageCommandUsageListPlayerPermissions(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_listplayerpermissions");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_listplayerpermissions");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageAddsubrankworld(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_addsubrankworld");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_addsubrankworld");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageDelsubrankworld(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_delsubrankworld");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_delsubrankworld");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageBuyrank(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_buyrank");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_buyrank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsagePluginhook(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_pluginhook");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_pluginhook");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageConfig(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_config");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_config");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void pluginhookStateChanged(CommandSender sender, String plugin_name, String new_state) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg1 = getGeneralMessage(langYaml, "messages.pluginhook_state_changed");
-		String msg2 = getGeneralMessage(langYaml, "messages.suggest_restart");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg1 = getGeneralMessage(languageManager, "messages.pluginhook_state_changed");
+		String msg2 = getGeneralMessage(languageManager, "messages.suggest_restart");
 		msg1 = Util.replaceAll(msg1, "%argument_plugin_name%", plugin_name);
 		msg1 = Util.replaceAll(msg1, "%argument_new_state%", new_state);
 		if (msg1.length() > 0)
@@ -2142,23 +2123,23 @@ public class Messages {
 	}
 
 	public static void pluginhookUnknownPlugin(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_plugin");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.pluginhook_unknown_plugin");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void pluginhookUnknownState(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.pluginhook_unknown_state");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.pluginhook_unknown_state");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void configWorldTagRemoved(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg1 = getGeneralMessage(langYaml, "messages.config_worldtag_removed");
-		String msg2 = getGeneralMessage(langYaml, "messages.suggest_restart");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg1 = getGeneralMessage(languageManager, "messages.config_worldtag_removed");
+		String msg2 = getGeneralMessage(languageManager, "messages.suggest_restart");
 		if (msg1.length() > 0)
 			sender.sendMessage(msg1);
 		if (msg2.length() > 0)
@@ -2166,9 +2147,9 @@ public class Messages {
 	}
 
 	public static void configStateChanged(CommandSender sender, String target, String new_state) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg1 = getGeneralMessage(langYaml, "messages.config_state_changed");
-		String msg2 = getGeneralMessage(langYaml, "messages.suggest_restart");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg1 = getGeneralMessage(languageManager, "messages.config_state_changed");
+		String msg2 = getGeneralMessage(languageManager, "messages.suggest_restart");
 		msg1 = Util.replaceAll(msg1, "%argument_config_target%", target);
 		msg1 = Util.replaceAll(msg1, "%argument_new_state%", new_state);
 		if (msg1.length() > 0)
@@ -2178,46 +2159,46 @@ public class Messages {
 	}
 
 	public static void messageUsertagNotFound(CommandSender sender, String usertag) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-		String msg = getGeneralMessage(langYaml, "messages.usertag_not_found");
+		String msg = getGeneralMessage(languageManager, "messages.usertag_not_found");
 		msg = Util.replaceAll(msg, "%argument_usertag%", usertag);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandCreateRankCharacterWarning(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_created_warning_characters");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_created_warning_characters");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandCreateRankColorCharacterWarning(CommandSender console, String rank) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.rank_created_warning_characters_color");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_created_warning_characters_color");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
 	}
 
 	public static void messageCommandVerboseCleared(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_verbose_cleared");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_verbose_cleared");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsagePlayerinfo(CommandSender sender) {
-		YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.usage_command_playerinfo");
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_playerinfo");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandSetbuydescriptionSuccess(final CommandSender sender, final String rankname,
 			final String description) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_set_buydescription");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_set_buydescription");
 		msg = Util.replaceAll(msg, "%argument_description%", description);
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0) {
@@ -2227,8 +2208,8 @@ public class Messages {
 
 	public static void messageCommandSetbuydescriptionError(final CommandSender sender, final String rankname,
 			final String description) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_set_buydescription");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_set_buydescription");
 		msg = Util.replaceAll(msg, "%argument_description%", description);
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0) {
@@ -2237,8 +2218,8 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageSetbuydescription(final CommandSender sender) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuydescription");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "commands.usage_command_setbuydescription");
 		if (msg.length() > 0) {
 			sender.sendMessage(msg);
 		}
@@ -2246,8 +2227,8 @@ public class Messages {
 
 	public static void messageCommandSetbuycommandSuccess(final CommandSender sender, final String rankname,
 			final String command) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.success_set_buycommand");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.success_set_buycommand");
 		msg = Util.replaceAll(msg, "%argument_command%", command);
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0) {
@@ -2257,8 +2238,8 @@ public class Messages {
 
 	public static void messageCommandSetbuycommandError(final CommandSender sender, final String rankname,
 			final String command) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "messages.error_set_buycommand");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.error_set_buycommand");
 		msg = Util.replaceAll(msg, "%argument_command%", command);
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0) {
@@ -2267,24 +2248,24 @@ public class Messages {
 	}
 
 	public static void messageCommandUsageSetbuycommand(final CommandSender sender) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		final String msg = getGeneralMessage(langYaml, "commands.usage_command_setbuycommand");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "commands.usage_command_setbuycommand");
 		if (msg.length() > 0) {
 			sender.sendMessage(msg);
 		}
 	}
 
 	public static void messageCommandUsageListranks(final CommandSender sender) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		final String msg = getGeneralMessage(langYaml, "commands.usage_command_listaddons");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "commands.usage_command_listaddons");
 		if (msg.length() > 0) {
 			sender.sendMessage(msg);
 		}
 	}
 
 	public static void messageConsoleNotAPlayer(final CommandSender sender) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		final String msg = getGeneralMessage(langYaml, "messages.console_is_not_a_player");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.console_is_not_a_player");
 		if (msg.length() > 0) {
 			sender.sendMessage(msg);
 		}
@@ -2292,8 +2273,8 @@ public class Messages {
 
 	public static void messageCommandCheckrankResponse(final CommandSender sender, final String target_player,
 			final String rankname) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		String msg = getGeneralMessage(langYaml, "commands.response_command_checkrank");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.response_command_checkrank");
 		msg = Util.replaceAll(msg, "%argument_target%", target_player);
 		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
 		if (msg.length() > 0) {
@@ -2302,8 +2283,8 @@ public class Messages {
 	}
 
 	public static void numbersOnly(CommandSender sender) {
-		final YamlConfiguration langYaml = PowerRanks.loadLangFile();
-		final String msg = getGeneralMessage(langYaml, "commands.only_numbers");
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "commands.only_numbers");
 		if (msg.length() > 0) {
 			sender.sendMessage(msg);
 		}

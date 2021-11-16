@@ -14,6 +14,7 @@ import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRPermission;
 
 public class cmd_listplayerpermissions extends PowerCommand {
 
@@ -57,7 +58,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 
 		output_messages.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 
-		List<String> playerPermissions = users.getPlayerPermissions(player.getName());
+		List<PRPermission> playerPermissions = users.getPlayerPermissions(player.getName());
 
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = playerPermissions.size() / lines_per_page;
@@ -96,9 +97,9 @@ public class cmd_listplayerpermissions extends PowerCommand {
 		}
 
 		int line_index = 0;
-		for (String permission : playerPermissions) {
+		for (PRPermission permission : playerPermissions) {
 			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-				output_messages.add(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". " + (permission.startsWith("-") ? ChatColor.RED : ChatColor.GREEN) + permission);
+				output_messages.add(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". " + (permission.getValue() ? ChatColor.GREEN : ChatColor.RED) + permission.getName());
 			}
 			line_index += 1;
 		}

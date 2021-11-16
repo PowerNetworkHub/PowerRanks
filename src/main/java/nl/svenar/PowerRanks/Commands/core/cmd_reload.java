@@ -10,9 +10,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 
@@ -33,9 +32,8 @@ public class cmd_reload extends PowerCommand {
 				if (args[0].equalsIgnoreCase("config")) {
 					
 					Messages.messageCommandReloadConfig(sender);
-					CachedConfig.update();
-					CachedRanks.update();
-					CachedPlayers.update();
+					PowerRanks.getConfigManager().reload();
+					CacheManager.load(PowerRanks.fileLoc);
 					this.plugin.updateAllPlayersTABlist();
 					Messages.messageCommandReloadConfigDone(sender);
 					
@@ -66,9 +64,8 @@ public class cmd_reload extends PowerCommand {
 
 
 					Messages.messageCommandReloadConfig(sender);
-					CachedConfig.update();
-					CachedRanks.update();
-					CachedPlayers.update();
+					PowerRanks.getConfigManager().reload();
+					CacheManager.load(PowerRanks.fileLoc);
 					this.plugin.updateAllPlayersTABlist();
 					Messages.messageCommandReloadConfigDone(sender);
 

@@ -51,6 +51,8 @@
 								<include>org.mongodb:*</include>
 								<include>com.squareup.okhttp3:*</include>
 								<include>org.yaml:*</include>
+								<include>com.fasterxml.jackson.core:*</include>
+								<include>com.fasterxml.jackson.dataformat:*</include>
 							</includes>
 						</artifactSet>
 						<relocations>
@@ -65,6 +67,10 @@
 							<relocation>
 								<pattern>org.yaml</pattern>
 								<shadedPattern>${shade.basepattern}.yaml</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>com.fasterxml</pattern>
+								<shadedPattern>${shade.basepattern}.fasterxml</shadedPattern>
 							</relocation>
 						</relocations>
 						<filters>
@@ -186,6 +192,7 @@
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-yaml</artifactId>
 			<version>2.9.0</version>
+			<type>jar</type>
 		</dependency>
 
 		<dependency>

@@ -29,7 +29,7 @@ public class cmd_delsubrankworld extends PowerCommand {
 				final String playername = args[0];
 				final String subrank = this.users.getRankIgnoreCase(args[1]);
 				final String worldname = args[2];
-				final boolean result = this.users.removeFromSubrankList(playername, subrank, "worlds", worldname);
+				final boolean result = this.users.removeSubrankWorld(playername, subrank, worldname);
 				if (result) {
 					Messages.messageSuccessChangesubrank(sender, subrank, playername);
 				} else {

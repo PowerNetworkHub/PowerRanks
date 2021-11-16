@@ -11,6 +11,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRRank;
 
 public class cmd_addsubrank extends PowerCommand {
 
@@ -53,10 +54,10 @@ public class cmd_addsubrank extends PowerCommand {
 		}
 
 		if (args.length == 2) {
-			for (String rank : this.users.getGroups()) {
-				if (rank.toLowerCase().contains(args[1].toLowerCase())) {
-					if (!this.users.getSubranks(args[0]).contains(rank) && !this.users.getGroup(args[0]).equalsIgnoreCase(rank)) {
-						tabcomplete.add(rank);
+			for (PRRank rank : this.users.getGroups()) {
+				if (rank.getName().toLowerCase().contains(args[1].toLowerCase())) {
+					if (!this.users.getSubranks(args[0]).contains(rank.getName()) && !this.users.getGroup(args[0]).equalsIgnoreCase(rank.getName())) {
+						tabcomplete.add(rank.getName());
 					}
 				}
 			}

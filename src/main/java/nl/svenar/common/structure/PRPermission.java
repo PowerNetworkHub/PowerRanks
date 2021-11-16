@@ -24,11 +24,6 @@
 
 package nl.svenar.common.structure;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Map.Entry;
-
 /**
  * Structure to store permission data.
  * 
@@ -38,8 +33,11 @@ public class PRPermission {
 
     private String name;
     private boolean value;
-    private long expires;
-    private Map<String, String> properties;
+
+    public PRPermission() {
+        name = "";
+        value = false;
+    }
 
     /**
      * Get the permission node
@@ -56,11 +54,15 @@ public class PRPermission {
      * @param name
      */
     public void setName(String name) {
+        this.setValue(!name.startsWith("-"));
+        if (name.startsWith("-")) {
+            name = name.replaceFirst("-", "");
+        }
         this.name = name;
     }
 
     /**
-     * Get ifa permission is allowed or not
+     * Get if a permission is allowed or not
      * 
      * @return true if allowed, false otherwise
      */
@@ -75,75 +77,5 @@ public class PRPermission {
      */
     public void setValue(boolean value) {
         this.value = value;
-    }
-
-    /**
-     * Get the time when the permission expires in the Unix epoch format
-     * 
-     * @return Unix epoch
-     */
-    public long getExpires() {
-        return this.expires;
-    }
-
-    /**
-     * Set when the permission expires in the Unix epoch format
-     * 
-     * @param expires
-     */
-    public void setExpires(long expires) {
-        this.expires = expires;
-    }
-
-    /**
-     * Get a key, value map with all stored properties
-     * 
-     * @return Java Map with all properties and its values
-     */
-    public Map<String, String> getProperties() {
-        return this.properties;
-    }
-
-    /**
-     * Overwrite all stored properties with the provided Java map
-     * 
-     * @param properties
-     */
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-
-    /**
-     * Add a new property to the stored properties and set its value
-     * 
-     * @param property
-     * @param value
-     */
-    public void addProperty(String property, String value) {
-        if (Objects.isNull(this.properties)) {
-            this.properties = new HashMap<String, String>();
-        }
-
-        this.properties.put(property, value);
-    }
-
-    /**
-     * Get a value of a stored property, returns null if a property with the
-     * provided name is not found
-     * 
-     * @param property
-     * @return String value of the property
-     */
-    public String getProperty(String property) {
-        if (Objects.isNull(this.properties)) {
-            this.properties = new HashMap<String, String>();
-        }
-
-        for (Entry<String, String> entry : this.properties.entrySet()) {
-            if (entry.getKey().equals(name)) {
-                return entry.getValue();
-            }
-        }
-        return null;
     }
 }

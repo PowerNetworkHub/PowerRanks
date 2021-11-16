@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
 
-public class CachedConfig {
+public class CachedConfig_old {
 
 	private static HashMap<String, Object> config_data = new HashMap<String, Object>();
 
@@ -23,8 +23,8 @@ public class CachedConfig {
 
 	private static PowerRanks pr;
 
-	public CachedConfig(PowerRanks pr) {
-		CachedConfig.pr = pr;
+	public CachedConfig_old(PowerRanks pr) {
+		CachedConfig_old.pr = pr;
 		update();
 	}
 

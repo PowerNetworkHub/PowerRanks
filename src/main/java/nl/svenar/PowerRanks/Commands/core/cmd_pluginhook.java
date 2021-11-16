@@ -7,7 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 
@@ -26,8 +26,8 @@ public class cmd_pluginhook extends PowerCommand {
 			} else if (args.length == 2) {
 				String state = args[0];
 				String pluginname = args[1];
-				if ((state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) && CachedConfig.contains("plugin_hook." + pluginname.toLowerCase())) {
-					CachedConfig.set("plugin_hook." + pluginname.toLowerCase(), state.equalsIgnoreCase("enable"));
+				if ((state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) && PowerRanks.getConfigManager().hasKey("plugin_hook." + pluginname.toLowerCase())) {
+					PowerRanks.getConfigManager().setBool("plugin_hook." + pluginname.toLowerCase(), state.equalsIgnoreCase("enable"));
 					Messages.pluginhookStateChanged(sender, pluginname.toLowerCase(), (state.equalsIgnoreCase("enable") ? ChatColor.DARK_GREEN + "Enabled" : ChatColor.DARK_RED + "Disabled"));
 				} else {
 					if (state.equalsIgnoreCase("enable") || state.equalsIgnoreCase("disable")) {
@@ -55,8 +55,8 @@ public class cmd_pluginhook extends PowerCommand {
 		}
 
 		if (args.length == 2) {
-			for (String plugin : CachedConfig.getConfigurationSection("plugin_hook").getKeys(false)) {
-				tabcomplete.add(plugin);
+			for (Object plugin : PowerRanks.getConfigManager().getList("plugin_hook", new ArrayList<String>())) {
+				tabcomplete.add((String) plugin);
 			}
 		}
 

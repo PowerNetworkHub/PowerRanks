@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,12 +13,14 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
-import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
-import nl.svenar.PowerRanks.Cache.CachedRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
+// import nl.svenar.PowerRanks.Cache.CachedConfig;
+// import nl.svenar.PowerRanks.Cache.CachedPlayers;
+// import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
+import nl.svenar.common.structure.PRSubrank;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -37,54 +38,40 @@ public class OnChat implements Listener {
 	@EventHandler
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
 		final Player player = e.getPlayer();
-		final String uuid = player.getUniqueId().toString();
 
 		try {
-			if (CachedConfig.getBoolean("chat.enabled")) {
-				final String rank = CachedPlayers.getString("players." + player.getUniqueId() + ".rank");
-				String format = CachedConfig.getString("chat.format");
-				String prefix = (CachedRanks.getString("Groups." + rank + ".chat.prefix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.prefix") : "";
-				String suffix = (CachedRanks.getString("Groups." + rank + ".chat.suffix") != null) ? CachedRanks.getString("Groups." + rank + ".chat.suffix") : "";
-				String chatColor = (CachedRanks.getString("Groups." + rank + ".chat.chatColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.chatColor") : "";
-				String nameColor = (CachedRanks.getString("Groups." + rank + ".chat.nameColor") != null) ? CachedRanks.getString("Groups." + rank + ".chat.nameColor") : "";
+			if (PowerRanks.getConfigManager().getBool("chat.enabled", true)) {
+				final String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
+				String format = PowerRanks.getConfigManager().getString("chat.format", "");
+				String prefix = CacheManager.getRank(rank).getPrefix();
+				String suffix = CacheManager.getRank(rank).getSuffix();
+				String chatColor = CacheManager.getRank(rank).getChatcolor();
+				String nameColor = CacheManager.getRank(rank).getNamecolor();
 				String subprefix = "";
 				String subsuffix = "";
 				String usertag = "";
 
 				try {
-					if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") != null) {
-						ConfigurationSection subranks = CachedPlayers.getConfigurationSection("players." + uuid + ".subranks");
-						for (String r : subranks.getKeys(false)) {
-							boolean in_world = false;
-							if (!CachedPlayers.contains("players." + uuid + ".subranks." + r + ".worlds")) {
+					ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks();
+					for (PRSubrank subrank : subranks) {
+						boolean in_world = false;
+
+						String player_current_world = player.getWorld().getName();
+						List<String> worlds = subrank.getWorlds();
+						for (String world : worlds) {
+							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
 								in_world = true;
+							}
+						}
 
-								ArrayList<String> default_worlds = new ArrayList<String>();
-								default_worlds.add("All");
-								CachedPlayers.set("players." + uuid + ".subranks." + r + ".worlds", default_worlds, true);
+						if (in_world) {
+							if (subrank.getUsingPrefix()) {
+								subprefix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix();
 							}
 
-							String player_current_world = player.getWorld().getName();
-							List<String> worlds = CachedPlayers.getStringList("players." + uuid + ".subranks." + r + ".worlds");
-							for (String world : worlds) {
-								if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-									in_world = true;
-								}
-							}
+							if (subrank.getUsingSuffix()) {
+								subsuffix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix();
 
-							if (in_world) {
-								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_prefix")) {
-									subprefix += (CachedRanks.getString("Groups." + r + ".chat.prefix") != null && CachedRanks.getString("Groups." + r + ".chat.prefix").length() > 0
-											? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.prefix") + " "
-											: "");
-								}
-
-								if (CachedPlayers.getBoolean("players." + uuid + ".subranks." + r + ".use_suffix")) {
-									subsuffix += (CachedRanks.getString("Groups." + r + ".chat.suffix") != null && CachedRanks.getString("Groups." + r + ".chat.suffix").length() > 0
-											? ChatColor.RESET + CachedRanks.getString("Groups." + r + ".chat.suffix") + " "
-											: "");
-
-								}
 							}
 						}
 					}
@@ -103,48 +90,49 @@ public class OnChat implements Listener {
 					subsuffix = "";
 				}
 
-				if (CachedPlayers.contains("players." + uuid + ".usertag") && CachedPlayers.getString("players." + uuid + ".usertag").length() > 0) {
-					String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
+				// TODO: Usertags
+				// if (CachedPlayers.contains("players." + uuid + ".usertag") &&
+				// CachedPlayers.getString("players." + uuid + ".usertag").length() > 0) {
+				// String tmp_usertag = CachedPlayers.getString("players." + uuid + ".usertag");
 
-					if (CachedRanks.getConfigurationSection("Usertags") != null) {
-						ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
-						for (String key : tags.getKeys(false)) {
-							if (key.equalsIgnoreCase(tmp_usertag)) {
-								usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
-								break;
-							}
-						}
-					}
-				}
-				
-				// nameColor = nameColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
-				// chatColor = chatColor.replaceAll("&i", "").replaceAll("&I", "").replaceAll("&j", "").replaceAll("&J", "");
+				// if (CachedRanks.getConfigurationSection("Usertags") != null) {
+				// ConfigurationSection tags = CachedRanks.getConfigurationSection("Usertags");
+				// for (String key : tags.getKeys(false)) {
+				// if (key.equalsIgnoreCase(tmp_usertag)) {
+				// usertag = CachedRanks.getString("Usertags." + key) + ChatColor.RESET;
+				// break;
+				// }
+				// }
+				// }
+				// }
+
+				// nameColor = nameColor.replaceAll("&i", "").replaceAll("&I",
+				// "").replaceAll("&j", "").replaceAll("&J", "");
+				// chatColor = chatColor.replaceAll("&i", "").replaceAll("&I",
+				// "").replaceAll("&j", "").replaceAll("&J", "");
 				// nameColor = "&r" + nameColor;
 				// chatColor = "&r" + chatColor;
 
 				String playersChatMessage = e.getMessage();
 				if (!e.getPlayer().hasPermission("powerranks.chat.chatcolor")) {
-					playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");
+					playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})",
+							"");
 				}
-				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
-				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
-				
+				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "")
+						+ PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
+				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
+						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
-				format = Util.powerFormatter(format,
-				ImmutableMap.<String, String>builder()
-					.put("prefix", prefix)
-					.put("suffix", suffix)
-					.put("subprefix", subprefix)
-					.put("subsuffix", subsuffix)
-					.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
-					.put("player", player_formatted_name)
-					.put("msg", player_formatted_chat_msg)
-					.put("format", e.getFormat())
-					.put("world", player.getWorld().getName()).build(),
-				'[', ']');
-				
+				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix)
+						.put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+						.put("usertag",
+								!PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
+						.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
+						.put("format", e.getFormat()).put("world", player.getWorld().getName()).build(), '[', ']');
+
 				if (PowerRanks.placeholderapiExpansion != null) {
-					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR, "" + PowerRanksChatColor.unformatted_default_char);
+					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
+							"" + PowerRanksChatColor.unformatted_default_char);
 				}
 
 				for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
@@ -154,8 +142,7 @@ public class OnChat implements Listener {
 
 				format = PowerRanks.chatColor(format, true);
 				format = format.replaceAll("%", "%%");
-				//this.m.updateTablistName(player, prefix, suffix, subprefix, subsuffix, !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player), nameColor, true); // TODO: Remove (DeluxeTags workaround)
-				
+
 				e.setFormat(format);
 			}
 		} catch (Exception e2) {

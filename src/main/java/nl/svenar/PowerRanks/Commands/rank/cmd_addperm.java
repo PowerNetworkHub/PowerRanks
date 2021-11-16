@@ -11,6 +11,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRRank;
 
 public class cmd_addperm extends PowerCommand {
 
@@ -51,8 +52,8 @@ public class cmd_addperm extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (String rank : this.users.getGroups()) {
-				tabcomplete.add(rank);
+			for (PRRank rank : this.users.getGroups()) {
+				tabcomplete.add(rank.getName());
 			}
 		}
 

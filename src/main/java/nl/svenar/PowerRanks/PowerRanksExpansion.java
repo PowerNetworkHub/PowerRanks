@@ -7,7 +7,7 @@ import java.util.TimeZone;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import nl.svenar.PowerRanks.Cache.CachedPlayers;
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
@@ -145,7 +145,8 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			TimeZone tz = TimeZone.getTimeZone("UTC");
 		    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 		    df.setTimeZone(tz);
-		    String time = df.format(new Date((CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime") == null ? CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime") : CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime")) * 1000));
+		    String time = df.format(new Date(CacheManager.getPlayer(player.getUniqueId().toString()).getPlaytime() * 1000));
+		    // String time = df.format(new Date((CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime") == null ? CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime") : CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime")) * 1000));
 			return time;
 		}
 
