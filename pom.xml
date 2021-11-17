@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.9.9R5</version>
+	<version>1.10.0</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -63,7 +63,7 @@
 						</filters>
 						<artifactSet>
 							<includes>
-								<include>org.mongodb:mongo-java-driver</include>
+								<!-- <include>org.mongodb:mongo-java-driver</include> -->
 								<include>com.squareup.okhttp3:okhttp</include>
 								<include>org.yaml:snakeyaml</include>
 								<include>com.fasterxml.jackson.core:jackson-core</include>
@@ -73,10 +73,10 @@
 							</includes>
 						</artifactSet>
 						<relocations>
-							<relocation>
+							<!-- <relocation>
 								<pattern>com.mongodb</pattern>
 								<shadedPattern>${shade.basepattern}.mongodb</shadedPattern>
-							</relocation>
+							</relocation> -->
 							<relocation>
 								<pattern>okhttp3</pattern>
 								<shadedPattern>${shade.basepattern}.okhttp3</shadedPattern>
@@ -147,12 +147,12 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
 			<version>3.12.10</version>
 			<type>jar</type>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>

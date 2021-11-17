@@ -8,7 +8,6 @@ import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.PowerSQLConfiguration;
 import nl.svenar.common.storage.PowerStorageManager;
 import nl.svenar.common.storage.provided.JSONStorageManager;
-import nl.svenar.common.storage.provided.MongoDBStorageManager;
 import nl.svenar.common.storage.provided.MySQLStorageManager;
 import nl.svenar.common.storage.provided.PSMStorageManager;
 import nl.svenar.common.storage.provided.SQLiteStorageManager;
@@ -114,14 +113,14 @@ public class CacheManager {
                         pcm.getString("storage.mysql.username", "username"),
                         pcm.getString("storage.mysql.password", "password"), "ranks", "players");
                 storageManager = new MySQLStorageManager(configuration, pcm.getBool("storage.mysql.verbose", false));
-            } else if (storageType.equals("MONGO") || storageType.equals("MONGODB")) {
-                PowerConfigManager pcm = PowerRanks.getConfigManager();
-                PowerSQLConfiguration configuration = new PowerSQLConfiguration(
-                        pcm.getString("storage.mongodb.host", "127.0.0.1"), pcm.getInt("storage.mongodb.port", 3306),
-                        pcm.getString("storage.mongodb.database", "powerranks"),
-                        "",
-                        "", "", "");
-                storageManager = new MongoDBStorageManager(configuration, pcm.getBool("storage.mongodb.verbose", false));
+            // } else if (storageType.equals("MONGO") || storageType.equals("MONGODB")) {
+            //     PowerConfigManager pcm = PowerRanks.getConfigManager();
+            //     PowerSQLConfiguration configuration = new PowerSQLConfiguration(
+            //             pcm.getString("storage.mongodb.host", "127.0.0.1"), pcm.getInt("storage.mongodb.port", 3306),
+            //             pcm.getString("storage.mongodb.database", "powerranks"),
+            //             "",
+            //             "", "", "");
+            //     storageManager = new MongoDBStorageManager(configuration, pcm.getBool("storage.mongodb.verbose", false));
             } else { // Default to yaml
                 storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
             }

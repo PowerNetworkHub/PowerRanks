@@ -244,28 +244,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			return;
 		}
 
-		int pluginId = 7565;
-		Metrics metrics = new Metrics(this, pluginId);
-
-		metrics.addCustomChart(new Metrics.SimplePie("number_of_installed_addons", new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-				int addonCount = 0;
-				for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
-					if (prAddon.getValue() == true)
-						addonCount++;
-				}
-				return String.valueOf(addonCount);
-			}
-		}));
-
-		metrics.addCustomChart(new Metrics.SimplePie("accepted_addon_manager_terms", new Callable<String>() {
-			@Override
-			public String call() throws Exception {
-				boolean accepterAddonManagerTerms = configManager.getBool("addon_manager.accepted_terms", false);
-				return String.valueOf(accepterAddonManagerTerms ? "true" : "false");
-			}
-		}));
+		setupMetrics();
 
 		setupTasks();
 	}
@@ -514,6 +493,56 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return false;
 	}
 
+	/**
+	 * Send some anonymous data about this PowerRanks installation
+	 */
+	private void setupMetrics() {
+
+		int pluginId = 7565;
+		Metrics metrics = new Metrics(this, pluginId);
+
+		metrics.addCustomChart(new Metrics.SimplePie("number_of_installed_addons", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				int addonCount = 0;
+				for (Entry<File, Boolean> prAddon : AddonsManager.loadedAddons.entrySet()) {
+					if (prAddon.getValue() == true)
+						addonCount++;
+				}
+				return String.valueOf(addonCount);
+			}
+		}));
+
+		metrics.addCustomChart(new Metrics.SimplePie("accepted_addon_manager_terms", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				boolean accepterAddonManagerTerms = configManager.getBool("addon_manager.accepted_terms", false);
+				return String.valueOf(accepterAddonManagerTerms ? "true" : "false");
+			}
+		}));
+
+		metrics.addCustomChart(new Metrics.SimplePie("number_of_registered_players", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				return String.valueOf(CacheManager.getPlayers().size());
+			}
+		}));
+
+		metrics.addCustomChart(new Metrics.SimplePie("number_of_registered_ranks", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				return String.valueOf(CacheManager.getRanks().size());
+			}
+		}));
+
+		metrics.addCustomChart(new Metrics.SimplePie("storage_method", new Callable<String>() {
+			@Override
+			public String call() throws Exception {
+				return getConfigManager().getString("storage.type", "yaml").toUpperCase();
+			}
+		}));
+	}
+
 	public boolean getConfigBool(String path) {
 		boolean val = false;
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
@@ -569,7 +598,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
 		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
-		
+
 		PowerConfigManager ranksManager = new YAMLConfigManager(PowerRanks.fileLoc, "ranks.yml");
 		PowerConfigManager playersManager = new YAMLConfigManager(PowerRanks.fileLoc, "players.yml");
 		ranksManager.save();
@@ -965,7 +994,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					permissions.add(permission);
 				}
 			}
-			
+
 		}
 
 		return permissions;
