@@ -569,6 +569,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
 		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		
+		PowerConfigManager ranksManager = new YAMLConfigManager(PowerRanks.fileLoc, "ranks.yml");
+		PowerConfigManager playersManager = new YAMLConfigManager(PowerRanks.fileLoc, "players.yml");
+		ranksManager.save();
+		playersManager.save();
 
 		CacheManager.load(PowerRanks.fileLoc);
 		this.loadDefaultRanks();
