@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -23,6 +24,7 @@ import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.structure.PRSubrank;
 
 import com.google.common.collect.ImmutableMap;
@@ -58,6 +60,7 @@ public class OnChat implements Listener {
 					ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString())
 							.getSubRanks();
 					for (PRSubrank subrank : subranks) {
+						PRRank targetRank = CacheManager.getRank(subrank.getName());
 						boolean in_world = false;
 
 						String player_current_world = player.getWorld().getName();
@@ -68,14 +71,16 @@ public class OnChat implements Listener {
 							}
 						}
 
-						if (in_world) {
-							if (subrank.getUsingPrefix()) {
-								subprefix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix();
-							}
+						if (Objects.nonNull(targetRank)) {
+							if (in_world) {
+								if (subrank.getUsingPrefix()) {
+									subprefix += ChatColor.RESET + targetRank.getPrefix();
+								}
 
-							if (subrank.getUsingSuffix()) {
-								subsuffix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix();
+								if (subrank.getUsingSuffix()) {
+									subsuffix += ChatColor.RESET + targetRank.getSuffix();
 
+								}
 							}
 						}
 					}

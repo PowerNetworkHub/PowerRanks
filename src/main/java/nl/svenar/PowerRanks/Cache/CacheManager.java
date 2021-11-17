@@ -90,11 +90,11 @@ public class CacheManager {
     }
 
     public static String getDefaultRank() {
-        return PowerRanks.getConfigManager().getString("default-rank", "Member");
+        return PowerRanks.getConfigManager().getString("general.defaultrank", "Member");
     }
 
     public static void setDefaultRank(String rankname) {
-        PowerRanks.getConfigManager().setString("default-rank", rankname);
+        PowerRanks.getConfigManager().setString("general.defaultrank", rankname);
     }
 
     public static void load(String dataDirectory) {

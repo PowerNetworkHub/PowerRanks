@@ -1,14 +1,27 @@
 package nl.svenar.PowerRanks.update;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Map.Entry;
+
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.common.storage.PowerConfigManager;
+import nl.svenar.common.storage.PowerStorageManager;
 import nl.svenar.common.storage.provided.YAMLConfigManager;
+import nl.svenar.common.storage.provided.YAMLStorageManager;
+import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRRank;
+import nl.svenar.common.structure.PRSubrank;
 
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 
@@ -38,6 +51,8 @@ public class ConfigFilesUpdater {
 		langFile = new File(PowerRanks.fileLoc + File.separator + "lang.yml");
 
 		if (Files.exists(oldRanksFile.toPath())) {
+			PowerRanks.getInstance().getLogger().warning("Converting data from a previous installation!");
+
 			PowerConfigManager oldConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml");
 			PowerConfigManager oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml");
 
@@ -73,21 +88,139 @@ public class ConfigFilesUpdater {
 				e.printStackTrace();
 			}
 
-			PowerConfigManager newConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml");
-			PowerConfigManager newLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml");
-			PowerConfigManager usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml"); // TODO
+			PowerRanks.getInstance().getLogger().warning("Finished backing up data from a previous version.");
 
+			// Loading all files
+			PowerStorageManager storageManager = new YAMLStorageManager(PowerRanks.fileLoc, newRanksFile.getName(), newPlayersFile.getName());
+			storageManager.loadAll();
+
+			ArrayList<PRRank> storedRanks = new ArrayList<PRRank>(); // (ArrayList<PRRank>) storageManager.getRanks();
+        	ArrayList<PRPlayer> storedPlayers = new ArrayList<PRPlayer>(); // (ArrayList<PRPlayer>) storageManager.getPlayers();
+
+			PowerConfigManager newConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, configFile.getName(), "config.yml");
+			PowerConfigManager newLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, langFile.getName(), "lang.yml");
+			PowerConfigManager usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, usertagsFile.getName());
+
+			YamlConfiguration ranksYaml = new YamlConfiguration();
+			try {
+				ranksYaml.load(backupRanks);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+
+			YamlConfiguration playersYaml = new YamlConfiguration();
+			try {
+				playersYaml.load(backupPlayers);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+
+			// Converting all files
 			Map<String, Object> configData = newConfigManager.getRawData();
 			for (Entry<String, Object> entry : oldConfigManager.getRawData().entrySet()) {
-				configData.put(entry.getKey(), entry.getValue());
+				if (!entry.getKey().contains("version")) {
+					configData.put(entry.getKey(), entry.getValue());
+				}
 			}
 			newConfigManager.setRawData(configData);
+			@SuppressWarnings("unchecked")
+			Map<String, Object> generalConfigData = (Map<String, Object>) newConfigManager.getMap("general", new HashMap<String, Object>());
+			generalConfigData.put("defaultrank", ranksYaml.getString("Default"));
+			newConfigManager.setMap("general", generalConfigData);
+			newConfigManager.save();
 
 			Map<String, Object> languageData = newLanguageManager.getRawData();
 			for (Entry<String, Object> entry : oldLanguageManager.getRawData().entrySet()) {
-				languageData.put(entry.getKey(), entry.getValue());
+				if (!entry.getKey().contains("version")) {
+					languageData.put(entry.getKey(), entry.getValue());
+				}
 			}
 			newLanguageManager.setRawData(languageData);
+			newLanguageManager.save();
+
+			if (!ranksYaml.isString("Usertags")) {
+				for (String usertagKey : ranksYaml.getConfigurationSection("Usertags").getKeys(false)) {
+					usertagManager.setString("usertags." + usertagKey, ranksYaml.getString("Usertags." + usertagKey));
+				}
+				usertagManager.save();
+			}
+
+			for (String rankName : ranksYaml.getConfigurationSection("Groups").getKeys(false)) {
+				PRRank newRank = new PRRank();
+				newRank.setName(rankName);
+
+				for (String perm : new ArrayList<String>(ranksYaml.getStringList("Groups." + rankName + ".permissions"))) {
+					PRPermission newPermission = new PRPermission();
+					newPermission.setName(perm);
+					newRank.addPermission(newPermission);
+				}
+				newRank.setInheritances(new ArrayList<String>(ranksYaml.getStringList("Groups." + rankName + ".inheritance")));
+
+				newRank.setPrefix(ranksYaml.getString("Groups." + rankName + ".chat.prefix"));
+				newRank.setSuffix(ranksYaml.getString("Groups." + rankName + ".chat.suffix"));
+				newRank.setChatcolor(ranksYaml.getString("Groups." + rankName + ".chat.chatColor"));
+				newRank.setNamecolor(ranksYaml.getString("Groups." + rankName + ".chat.nameColor"));
+
+				newRank.setPromoteRank(ranksYaml.getString("Groups." + rankName + ".level.promote"));
+				newRank.setDemoteRank(ranksYaml.getString("Groups." + rankName + ".level.demote"));
+
+				newRank.setBuyableRanks(new ArrayList<String>(ranksYaml.getStringList("Groups." + rankName + ".economy.buyable")));
+				newRank.setBuyCost(ranksYaml.getInt("Groups." + rankName + ".economy.cost"));
+				newRank.setBuyDescription(ranksYaml.getString("Groups." + rankName + ".economy.description"));
+
+				storedRanks.add(newRank);
+			}
+
+			for (String playerUUID : playersYaml.getConfigurationSection("players").getKeys(false)) {
+				PRPlayer newPlayer = new PRPlayer();
+				
+				newPlayer.setUUID(UUID.fromString(playerUUID));
+				newPlayer.setName(playersYaml.getString("players." + playerUUID + ".name"));
+				newPlayer.setRank(playersYaml.getString("players." + playerUUID + ".rank"));
+				newPlayer.setPlaytime(playersYaml.getInt("players." + playerUUID + ".playtime"));
+				if (playersYaml.getString("players." + playerUUID + ".usertag").length() > 0) {
+					newPlayer.addUsertag(playersYaml.getString("players." + playerUUID + ".usertag"));
+				}
+
+				for (String perm : new ArrayList<String>(playersYaml.getStringList("players." + playerUUID + ".permissions"))) {
+					PRPermission newPermission = new PRPermission();
+					newPermission.setName(perm);
+					newPlayer.addPermission(newPermission);
+				}
+
+				if (!playersYaml.isString("players." + playerUUID + ".subranks")) {
+					for (String playerSubrankName : playersYaml.getConfigurationSection("players." + playerUUID + ".subranks").getKeys(false)) {
+						PRSubrank newSubrank = new PRSubrank();
+
+						newSubrank.setName(playerSubrankName);
+						newSubrank.setUsingPrefix(playersYaml.getBoolean("players." + playerUUID + ".subranks." + playerSubrankName + ".use_prefix"));
+						newSubrank.setUsingSuffix(playersYaml.getBoolean("players." + playerUUID + ".subranks." + playerSubrankName + ".use_suffix"));
+						newSubrank.setUsingPermissions(playersYaml.getBoolean("players." + playerUUID + ".subranks." + playerSubrankName + ".use_permissions"));
+						newSubrank.setWorlds(new ArrayList<String>(playersYaml.getStringList("players." + playerUUID + ".subranks." + playerSubrankName + ".worlds")));
+
+						newPlayer.addSubrank(newSubrank);
+					}
+				} else {
+					newPlayer.setUsertags(new ArrayList<String>());
+				}
+				
+				storedPlayers.add(newPlayer);
+			}
+
+			storageManager.setRanks(storedRanks);
+			storageManager.setPlayers(storedPlayers);
+
+			storageManager.saveAll();
+
+			PowerRanks.getInstance().getLogger().warning("Finished converting data from a previous installation!");
 		}
 	}
 }

@@ -1577,7 +1577,7 @@ public class Users implements Listener {
 		String key = "";
 		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
 			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
-				key = entry.getKey().toString();
+				key = entry.getValue().toString();
 			}
 		}
 

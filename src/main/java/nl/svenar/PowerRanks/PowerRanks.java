@@ -713,14 +713,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 
-				if (in_world) {
-					if (subrank.getUsingPrefix()) {
-						subprefix += ChatColor.RESET + targetRank.getPrefix();
-					}
+				if (Objects.nonNull(targetRank)) {
+					if (in_world) {
+						if (subrank.getUsingPrefix()) {
+							subprefix += ChatColor.RESET + targetRank.getPrefix();
+						}
 
-					if (subrank.getUsingSuffix()) {
-						subsuffix += ChatColor.RESET + targetRank.getSuffix();
+						if (subrank.getUsingSuffix()) {
+							subsuffix += ChatColor.RESET + targetRank.getSuffix();
 
+						}
 					}
 				}
 			}
@@ -953,9 +955,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		for (PRSubrank subrank : useable_subranks) {
-			for (PRPermission permission : CacheManager.getRank(subrank.getName()).getPermissions()) {
-				permissions.add(permission);
+			if (Objects.nonNull(CacheManager.getRank(subrank.getName()))) {
+				for (PRPermission permission : CacheManager.getRank(subrank.getName()).getPermissions()) {
+					permissions.add(permission);
+				}
 			}
+			
 		}
 
 		return permissions;
