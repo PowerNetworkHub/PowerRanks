@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
@@ -152,6 +153,11 @@ public class PowerPermissibleBase extends PermissibleBase {
 				break;
 			}
 		}
+
+		if (Objects.isNull(prPermission)) {
+			return false;
+		}
+		
 		// boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
 		boolean value = prPermission.getValue();
 		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
