@@ -3,7 +3,11 @@ package nl.svenar.PowerRanks.Cache;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Events.OnJoin;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.PowerSQLConfiguration;
 import nl.svenar.common.storage.PowerStorageManager;
@@ -85,7 +89,30 @@ public class CacheManager {
                 return player;
             }
         }
-        return null;
+
+        Player player = null;
+
+        for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+            if (onlinePlayer.getName().equals(name) || onlinePlayer.getUniqueId().toString().equals(name)) {
+                player = onlinePlayer;
+                break;
+            }
+        }
+
+        if (Objects.isNull(player)) {
+            return null;
+        }
+
+        return createPlayer(player);
+    }
+
+    public static PRPlayer createPlayer(Player player) {
+        PRPlayer prPlayer = new PRPlayer();
+        prPlayer.setUUID(player.getUniqueId());
+        prPlayer.setName(player.getName());
+        prPlayer.setRank(CacheManager.getDefaultRank());
+        CacheManager.addPlayer(prPlayer);
+        return prPlayer;
     }
 
     public static String getDefaultRank() {
@@ -113,14 +140,16 @@ public class CacheManager {
                         pcm.getString("storage.mysql.username", "username"),
                         pcm.getString("storage.mysql.password", "password"), "ranks", "players");
                 storageManager = new MySQLStorageManager(configuration, pcm.getBool("storage.mysql.verbose", false));
-            // } else if (storageType.equals("MONGO") || storageType.equals("MONGODB")) {
-            //     PowerConfigManager pcm = PowerRanks.getConfigManager();
-            //     PowerSQLConfiguration configuration = new PowerSQLConfiguration(
-            //             pcm.getString("storage.mongodb.host", "127.0.0.1"), pcm.getInt("storage.mongodb.port", 3306),
-            //             pcm.getString("storage.mongodb.database", "powerranks"),
-            //             "",
-            //             "", "", "");
-            //     storageManager = new MongoDBStorageManager(configuration, pcm.getBool("storage.mongodb.verbose", false));
+                // } else if (storageType.equals("MONGO") || storageType.equals("MONGODB")) {
+                // PowerConfigManager pcm = PowerRanks.getConfigManager();
+                // PowerSQLConfiguration configuration = new PowerSQLConfiguration(
+                // pcm.getString("storage.mongodb.host", "127.0.0.1"),
+                // pcm.getInt("storage.mongodb.port", 3306),
+                // pcm.getString("storage.mongodb.database", "powerranks"),
+                // "",
+                // "", "", "");
+                // storageManager = new MongoDBStorageManager(configuration,
+                // pcm.getBool("storage.mongodb.verbose", false));
             } else { // Default to yaml
                 storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
             }
@@ -130,6 +159,10 @@ public class CacheManager {
 
         registeredRanks = (ArrayList<PRRank>) storageManager.getRanks();
         registeredPlayers = (ArrayList<PRPlayer>) storageManager.getPlayers();
+
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            OnJoin.handleJoin(PowerRanks.getInstance(), player);
+        }
     }
 
     public static void save() {

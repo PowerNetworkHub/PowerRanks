@@ -16,6 +16,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Util;
@@ -127,6 +128,15 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: "
 				+ (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled"
 						: ChatColor.DARK_RED + "disabled"));
+		
+		Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+		String pluginNames = "";
+		for (Plugin plugin : plugins) {
+			pluginNames += plugin.getName() + "(" + plugin.getDescription().getVersion() + "), ";
+		}
+		pluginNames = pluginNames.substring(0, pluginNames.length() - 2);
+		
+		sender.sendMessage(ChatColor.GREEN + "Plugins (" + plugins.length + "): " + ChatColor.DARK_GREEN + pluginNames);
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
 

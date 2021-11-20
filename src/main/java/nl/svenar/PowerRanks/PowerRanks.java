@@ -247,6 +247,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		setupMetrics();
 
 		setupTasks();
+
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			OnJoin.handleJoin(this, player);
+		}
 	}
 
 	public void onDisable() {
@@ -316,7 +320,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		int playtime_interval = 60;
 
 		try {
-			playtime_interval = configManager.getInt("general.playtime-update-interval", 0);
+			playtime_interval = configManager.getInt("general.playtime-update-interval",
+					((int) configManager.getFloat("general.playtime-update-interval", playtime_interval)));
 		} catch (Exception e) {
 		}
 

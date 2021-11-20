@@ -15,38 +15,66 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
-import nl.svenar.common.structure.PRPlayer;
 
 public class OnJoin implements Listener {
-	PowerRanks m;
+	PowerRanks plugin;
 
-	public OnJoin(PowerRanks m) {
-		this.m = m;
+	public OnJoin(PowerRanks plugin) {
+		this.plugin = plugin;
 	}
 
 	@EventHandler(ignoreCancelled = false)
 	public void onPlayerJoin(final PlayerJoinEvent e) {
 		final Player player = e.getPlayer();
 
-		validatePlayerData(player);
+		handleJoin(this.plugin, player);
 
-		this.m.playerInjectPermissible(player);
-		// this.m.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.m));
-
-		// this.m.setupPermissions(player);
-		this.m.updateTablistName(player);
-
-		long time = new Date().getTime();
-		this.m.playerPlayTimeCache.put(player.getUniqueId(), time);
-
-		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+		for (Entry<File, PowerRanksAddon> prAddon : plugin.addonsManager.addonClasses.entrySet()) {
+			PowerRanksPlayer prPlayer = new PowerRanksPlayer(plugin, player);
 			prAddon.getValue().onPlayerJoin(prPlayer);
 			if (!prAddon.getValue().onPlayerJoinMessage(prPlayer)) {
 				e.setJoinMessage("");
 			}
 			
 		}
+	}
+
+	@EventHandler(ignoreCancelled = false)
+	public void onPlayerLeave(final PlayerQuitEvent e) {
+		final Player player = e.getPlayer();
+		// this.plugin.playerUninjectPermissible(player);
+		// this.plugin.removePermissions(player);
+
+		validatePlayerData(player);
+
+		this.plugin.playerPermissionAttachment.remove(player.getUniqueId());
+
+		long leave_time = new Date().getTime();
+		long join_time = leave_time;
+		try {
+			join_time = this.plugin.playerPlayTimeCache.get(player.getUniqueId());
+		} catch (Exception e1) {
+		}
+
+		this.plugin.updatePlaytime(player, join_time, leave_time, true);
+
+		for (Entry<File, PowerRanksAddon> prAddon : this.plugin.addonsManager.addonClasses.entrySet()) {
+			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.plugin, player);
+			prAddon.getValue().onPlayerLeave(prPlayer);
+		}
+	}
+
+	public static void handleJoin(PowerRanks plugin, Player player) {
+		validatePlayerData(player);
+
+		plugin.playerInjectPermissible(player);
+		// this.plugin.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.plugin));
+
+		// this.plugin.setupPermissions(player);
+		plugin.updateTablistName(player);
+
+		long time = new Date().getTime();
+		plugin.playerPlayTimeCache.put(player.getUniqueId(), time);
 
 		if (PowerRanks.getConfigManager().getBool("general.disable-op", true)) {
 			if (player.isOp()) {
@@ -55,38 +83,9 @@ public class OnJoin implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = false)
-	public void onPlayerLeave(final PlayerQuitEvent e) {
-		final Player player = e.getPlayer();
-		// this.m.playerUninjectPermissible(player);
-		// this.m.removePermissions(player);
-
-		validatePlayerData(player);
-
-		this.m.playerPermissionAttachment.remove(player.getUniqueId());
-
-		long leave_time = new Date().getTime();
-		long join_time = leave_time;
-		try {
-			join_time = this.m.playerPlayTimeCache.get(player.getUniqueId());
-		} catch (Exception e1) {
-		}
-
-		this.m.updatePlaytime(player, join_time, leave_time, true);
-
-		for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-			prAddon.getValue().onPlayerLeave(prPlayer);
-		}
-	}
-
-	private void validatePlayerData(Player player) {
+	private static void validatePlayerData(Player player) {
 		if (CacheManager.getPlayer(player.getUniqueId().toString()) == null) {
-			PRPlayer prPlayer = new PRPlayer();
-			prPlayer.setUUID(player.getUniqueId());
-			prPlayer.setName(player.getName());
-			prPlayer.setRank(CacheManager.getDefaultRank());
-			CacheManager.addPlayer(prPlayer);
+			CacheManager.createPlayer(player);
 		}
 	}
 }
