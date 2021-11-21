@@ -130,8 +130,6 @@ public class cmd_webeditor extends PowerCommand {
 						}
 						sender.sendMessage(ChatColor.DARK_GREEN + "Editor ID: " + ChatColor.GREEN + key);
 						sender.sendMessage(ChatColor.DARK_GREEN + "Uploaded: " + ChatColor.GREEN + uploadSize + "KB");
-						// player.sendMessage(ChatColor.RED + "Link is valid only once, reloading the
-						// webpage will result in data loss!");
 						sender.sendMessage(ChatColor.DARK_AQUA + "===------------------------------===");
 					}
 

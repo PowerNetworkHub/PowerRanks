@@ -43,7 +43,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
-import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.common.storage.PowerStorageManager;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
@@ -279,7 +278,7 @@ public class JSONStorageManager extends PowerStorageManager {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<PRPlayer> getPlayersFromJSON(LinkedTreeMap<?, ?> players) { // TODO
+    public ArrayList<PRPlayer> getPlayersFromJSON(LinkedTreeMap<?, ?> players) {
         ArrayList<PRPlayer> newPlayers = new ArrayList<PRPlayer>();
 
         for (Entry<?, ?> entry : players.entrySet()) {
