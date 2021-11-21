@@ -1,7 +1,7 @@
 # All PowerRanks messages can be changed here
 
 general:
-   prefix: "&0[&b%plugin_name%&0]&r"
+   prefix: "&0[&bPR&0]&r"
 
 messages:
    no_permission: "%plugin_prefix% &4You don't have permission to perform this command!"
@@ -104,6 +104,11 @@ messages:
    error_set_buydescription: "%plugin_prefix% &cFailed to set buy description to '%argument_description%' on rank: %argument_rank%"
    success_set_buycommand: "%plugin_prefix% &aChanged buy command to '%argument_command%' on rank: %argument_rank%"
    error_set_buycommand: "%plugin_prefix% &cFailed to set buy command to '%argument_command%' on rank: %argument_rank%"
+   preparing_webeditor: "%plugin_prefix% &aPreparing web editor..."
+   timedout_webeditor: "%plugin_prefix% &cThe webeditor has timed out! Please try again later."
+   downloading_data_webeditor: "%plugin_prefix% &aDownloading data from the webeditor..."
+   downloaded_data_webeditor: "%plugin_prefix% &aFinished downloading data from the webeditor! &cIt is recommended to restart your server."
+   failed_downloading_data_webeditor: "%plugin_prefix% &cFailed to download data from the webeditor!"
 commands:
    only_numbers: "%plugin_prefix% &cOnly numbers are allowed!"
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"
@@ -161,6 +166,7 @@ commands:
    usage_command_buyrank: "%plugin_prefix% &c%base_cmd% buyrank [rank_name] [confirm]"
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
    usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
+   usage_command_webeditor: "%plugin_prefix% &c%base_cmd% we <start/load [id]>"
    response_command_checkrank: "%plugin_prefix% &a%argument_target%'s rank is %argument_rank%"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_warning: "%plugin_prefix% &4Reloading is not recommended and can cause unforseen problems. Restart instead!"

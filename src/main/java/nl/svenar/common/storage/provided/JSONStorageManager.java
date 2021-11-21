@@ -43,6 +43,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.common.storage.PowerStorageManager;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
@@ -209,12 +210,14 @@ public class JSONStorageManager extends PowerStorageManager {
         }
     }
 
-    /**
-     * Save all ranks using the storage managers storage solution.
-     */
-    @Override
-    public void saveRanks() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public String getRanksAsJSON(boolean pretty) {
+        Gson gson = null;
+
+        if (pretty) {
+            gson = new GsonBuilder().setPrettyPrinting().create();
+        } else {
+            gson = new Gson();
+        }
 
         Map<String, Object> ranks2 = new HashMap<String, Object>();
 
@@ -229,7 +232,113 @@ public class JSONStorageManager extends PowerStorageManager {
             ranks2.put(r.getName(), serializedRank);
         }
 
-        String jsonData = gson.toJson(ranks2);
+        return gson.toJson(ranks2);
+    }
+
+    public String getPlayersAsJSON(boolean pretty) {
+        Gson gson = null;
+
+        if (pretty) {
+            gson = new GsonBuilder().setPrettyPrinting().create();
+        } else {
+            gson = new Gson();
+        }
+
+        Map<String, Object> players2 = new HashMap<String, Object>();
+
+        for (PRPlayer p : this.getPlayers()) {
+            Map<String, Object> serializedPlayer = this.getSerializer().serialize(p);
+            for (Entry<String, Object> entry : serializedPlayer.entrySet()) {
+                if (entry.getValue().equals(p.getUUID().toString())) {
+                    serializedPlayer.remove(entry.getKey());
+                    break;
+                }
+            }
+            players2.put(p.getUUID().toString(), serializedPlayer);
+        }
+
+        return gson.toJson(players2);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<PRRank> getRanksFromJSON(LinkedTreeMap<?, ?> ranks) { // TODO
+        ArrayList<PRRank> newRanks = new ArrayList<PRRank>();
+
+        // PowerRanks.getInstance().getLogger().warning(ranks);
+        for (Entry<?, ?> entry : ranks.entrySet()) {
+            String rankName = (String) entry.getKey();
+            LinkedTreeMap<?, ?> rankData = (LinkedTreeMap<?, ?>) entry.getValue();
+
+            PowerRanks.getInstance().getLogger().warning(
+                    rankName + ": " + entry.getValue() + "(" + entry.getValue().getClass().getCanonicalName() + ")");
+
+            PRRank newRank = new PRRank();
+            newRank.setName(rankName);
+
+            if (rankData.containsKey("permissions")) { // TODO
+                // newRank.setPermissions((ArrayList<PRPermission>)
+                // rankData.get("permissions"));
+            }
+
+            if (rankData.containsKey("inheritances")) {
+                newRank.setInheritances((ArrayList<String>) rankData.get("inheritances"));
+            }
+
+            if (rankData.containsKey("namecolor")) {
+                newRank.setNamecolor((String) rankData.get("namecolor"));
+            }
+
+            if (rankData.containsKey("chatcolor")) {
+                newRank.setChatcolor((String) rankData.get("chatcolor"));
+            }
+
+            if (rankData.containsKey("promoteRank")) {
+                newRank.setPromoteRank((String) rankData.get("promoteRank"));
+            }
+
+            if (rankData.containsKey("demoteRank")) {
+                newRank.setDemoteRank((String) rankData.get("demoteRank"));
+            }
+
+            if (rankData.containsKey("buyCost")) {
+                newRank.setBuyCost(Float.parseFloat(rankData.get("buyCost").toString()));
+            }
+
+            if (rankData.containsKey("buyableRanks")) {
+                newRank.setBuyableRanks((ArrayList<String>) rankData.get("buyableRanks"));
+            }
+
+            if (rankData.containsKey("buyDescription")) {
+                newRank.setBuyDescription((String) rankData.get("buyDescription"));
+            }
+
+            if (rankData.containsKey("buyCommand")) {
+                newRank.setBuyCommand((String) rankData.get("buyCommand"));
+            }
+
+            if (rankData.containsKey("prefix")) {
+                newRank.setPrefix((String) rankData.get("prefix"));
+            }
+
+            if (rankData.containsKey("suffix")) {
+                newRank.setSuffix((String) rankData.get("suffix"));
+            }
+
+            newRanks.add(newRank);
+        }
+        return newRanks;
+    }
+
+    public ArrayList<PRPlayer> getPlayersFromJSON(LinkedTreeMap<?, ?> players) { // TODO
+        return new ArrayList<PRPlayer>();
+    }
+
+    /**
+     * Save all ranks using the storage managers storage solution.
+     */
+    @Override
+    public void saveRanks() {
+        String jsonData = getRanksAsJSON(true);
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.ranksFile));
@@ -245,22 +354,7 @@ public class JSONStorageManager extends PowerStorageManager {
      */
     @Override
     public void savePlayers() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        Map<String, Object> players2 = new HashMap<String, Object>();
-
-        for (PRPlayer p : this.getPlayers()) {
-            Map<String, Object> serializedPlayer = this.getSerializer().serialize(p);
-            for (Entry<String, Object> entry : serializedPlayer.entrySet()) {
-                if (entry.getValue().equals(p.getUUID().toString())) {
-                    serializedPlayer.remove(entry.getKey());
-                    break;
-                }
-            }
-            players2.put(p.getUUID().toString(), serializedPlayer);
-        }
-
-        String jsonData = gson.toJson(players2);
+        String jsonData = getPlayersAsJSON(true);
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(this.playersFile));

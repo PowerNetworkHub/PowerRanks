@@ -84,6 +84,13 @@ public class DatabinClient extends PowerHTTPClient {
         return parseJSON(response);
     }
 
+    public String getRawResponse() {
+        String response = this.rawResponse;
+        this.rawResponse = "";
+
+        return response;
+    }
+
     public Map<String, String> parseJSON(String response) {
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, String>>() {
