@@ -1020,4 +1020,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PowerRanks getInstance() {
 		return instance;
 	}
+
+	public static String getVersion() {
+		return instance.getDescription().getVersion();
+	}
 }

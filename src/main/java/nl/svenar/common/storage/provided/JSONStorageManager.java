@@ -261,76 +261,39 @@ public class JSONStorageManager extends PowerStorageManager {
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<PRRank> getRanksFromJSON(LinkedTreeMap<?, ?> ranks) { // TODO
+    public ArrayList<PRRank> getRanksFromJSON(LinkedTreeMap<?, ?> ranks) {
         ArrayList<PRRank> newRanks = new ArrayList<PRRank>();
 
-        // PowerRanks.getInstance().getLogger().warning(ranks);
         for (Entry<?, ?> entry : ranks.entrySet()) {
             String rankName = (String) entry.getKey();
             LinkedTreeMap<?, ?> rankData = (LinkedTreeMap<?, ?>) entry.getValue();
 
-            PowerRanks.getInstance().getLogger().warning(
-                    rankName + ": " + entry.getValue() + "(" + entry.getValue().getClass().getCanonicalName() + ")");
-
-            PRRank newRank = new PRRank();
-            newRank.setName(rankName);
-
-            if (rankData.containsKey("permissions")) { // TODO
-                // newRank.setPermissions((ArrayList<PRPermission>)
-                // rankData.get("permissions"));
-            }
-
-            if (rankData.containsKey("inheritances")) {
-                newRank.setInheritances((ArrayList<String>) rankData.get("inheritances"));
-            }
-
-            if (rankData.containsKey("namecolor")) {
-                newRank.setNamecolor((String) rankData.get("namecolor"));
-            }
-
-            if (rankData.containsKey("chatcolor")) {
-                newRank.setChatcolor((String) rankData.get("chatcolor"));
-            }
-
-            if (rankData.containsKey("promoteRank")) {
-                newRank.setPromoteRank((String) rankData.get("promoteRank"));
-            }
-
-            if (rankData.containsKey("demoteRank")) {
-                newRank.setDemoteRank((String) rankData.get("demoteRank"));
-            }
-
-            if (rankData.containsKey("buyCost")) {
-                newRank.setBuyCost(Float.parseFloat(rankData.get("buyCost").toString()));
-            }
-
-            if (rankData.containsKey("buyableRanks")) {
-                newRank.setBuyableRanks((ArrayList<String>) rankData.get("buyableRanks"));
-            }
-
-            if (rankData.containsKey("buyDescription")) {
-                newRank.setBuyDescription((String) rankData.get("buyDescription"));
-            }
-
-            if (rankData.containsKey("buyCommand")) {
-                newRank.setBuyCommand((String) rankData.get("buyCommand"));
-            }
-
-            if (rankData.containsKey("prefix")) {
-                newRank.setPrefix((String) rankData.get("prefix"));
-            }
-
-            if (rankData.containsKey("suffix")) {
-                newRank.setSuffix((String) rankData.get("suffix"));
-            }
+            LinkedTreeMap<String, Object> map = (LinkedTreeMap<String, Object>) rankData;
+            map.put("name", rankName);
+            PRRank newRank = this.getSerializer().deserialize(map, PRRank.class);
 
             newRanks.add(newRank);
         }
+
         return newRanks;
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayList<PRPlayer> getPlayersFromJSON(LinkedTreeMap<?, ?> players) { // TODO
-        return new ArrayList<PRPlayer>();
+        ArrayList<PRPlayer> newPlayers = new ArrayList<PRPlayer>();
+
+        for (Entry<?, ?> entry : players.entrySet()) {
+            String playerUUID = (String) entry.getKey();
+            LinkedTreeMap<?, ?> playerData = (LinkedTreeMap<?, ?>) entry.getValue();
+
+            LinkedTreeMap<String, Object> map = (LinkedTreeMap<String, Object>) playerData;
+            map.put("uuid", UUID.fromString(playerUUID));
+            PRPlayer newPlayer = this.getSerializer().deserialize(map, PRPlayer.class);
+
+            newPlayers.add(newPlayer);
+        }
+
+        return newPlayers;
     }
 
     /**

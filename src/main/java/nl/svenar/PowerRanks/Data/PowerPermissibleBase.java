@@ -85,7 +85,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
 			PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
 			PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
-			PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", getAllPermissions(permissions)) + "'");
+			PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", getAllPermissionsFormatted(permissions)) + "'");
 			PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + disallowed);
 			PowerRanksVerbose.log("hasPermission", "Has *: " + getAllPermissions(permissions).contains("*"));
 			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
@@ -262,6 +262,14 @@ public class PowerPermissibleBase extends PermissibleBase {
 		ArrayList<String> output = new ArrayList<String>();
 		for (PRPermission permission : permissions) {
 			output.add(permission.getName());
+		}
+		return output;
+	}
+
+	private ArrayList<String> getAllPermissionsFormatted(ArrayList<PRPermission> permissions) {
+		ArrayList<String> output = new ArrayList<String>();
+		for (PRPermission permission : permissions) {
+			output.add(permission.getName() + ":" + permission.getValue());
 		}
 		return output;
 	}

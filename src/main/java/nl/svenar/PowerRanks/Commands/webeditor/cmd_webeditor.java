@@ -3,6 +3,7 @@ package nl.svenar.PowerRanks.Commands.webeditor;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -71,7 +72,8 @@ public class cmd_webeditor extends PowerCommand {
 	private void startWebeditor(CommandSender sender) {
 		Messages.preparingWebeditor(sender);
 
-		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json", "dummyPlayers.json");
+		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json",
+				"dummyPlayers.json");
 		PowerStorageManager powermanager = CacheManager.getStorageManager();
 
 		jsonmanager.setRanks(powermanager.getRanks());
@@ -80,6 +82,9 @@ public class cmd_webeditor extends PowerCommand {
 		String outputJSON = "";
 
 		outputJSON += "{";
+		outputJSON += "\"serverdata\":";
+		outputJSON += getServerDataAsJSON();
+		outputJSON += ",";
 		outputJSON += "\"rankdata\":";
 		outputJSON += jsonmanager.getRanksAsJSON(false);
 		outputJSON += ",";
@@ -87,13 +92,12 @@ public class cmd_webeditor extends PowerCommand {
 		outputJSON += jsonmanager.getPlayersAsJSON(false);
 		outputJSON += "}";
 
+		jsonmanager.removeAllData();
+
 		// PowerRanks.getInstance().getLogger().info("JSON: ");
 		// PowerRanks.getInstance().getLogger().info(outputJSON);
 
-		DatabinClient client = new DatabinClient(
-			"https://databin.svenar.nl",
-			"Databinclient/1.0"
-		);
+		DatabinClient client = new DatabinClient("https://databin.svenar.nl", "Databinclient/1.0");
 
 		client.postJSON(outputJSON);
 
@@ -112,16 +116,22 @@ public class cmd_webeditor extends PowerCommand {
 					String key = client.getResponse().get("key");
 
 					if (key.length() > 0 && !key.startsWith("[FAILED]")) {
-						sender.sendMessage(ChatColor.DARK_AQUA + "===----------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "----------===");
-						// sender.sendMessage(ChatColor.DARK_GREEN + getIdentifier() + ChatColor.GREEN + " v" + getVersion());
+						sender.sendMessage(ChatColor.DARK_AQUA + "===----------" + ChatColor.DARK_BLUE
+								+ PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "----------===");
+						// sender.sendMessage(ChatColor.DARK_GREEN + getIdentifier() + ChatColor.GREEN +
+						// " v" + getVersion());
 						if (sender instanceof Player) {
-							Bukkit.getServer().dispatchCommand((CommandSender) Bukkit.getServer().getConsoleSender(), tellraw_url.replaceAll("%player%", sender.getName()).replaceAll("%url%", powerranks_webeditor_url + key).replaceAll("\n", ""));
+							Bukkit.getServer().dispatchCommand((CommandSender) Bukkit.getServer().getConsoleSender(),
+									tellraw_url.replaceAll("%player%", sender.getName())
+											.replaceAll("%url%", powerranks_webeditor_url + key).replaceAll("\n", ""));
 						} else {
-							sender.sendMessage(ChatColor.DARK_GREEN + "Web editor is ready " + ChatColor.BLACK + "[" + ChatColor.GREEN + powerranks_webeditor_url + key + ChatColor.BLACK + "]");
+							sender.sendMessage(ChatColor.DARK_GREEN + "Web editor is ready " + ChatColor.BLACK + "["
+									+ ChatColor.GREEN + powerranks_webeditor_url + key + ChatColor.BLACK + "]");
 						}
 						sender.sendMessage(ChatColor.DARK_GREEN + "Editor ID: " + ChatColor.GREEN + key);
 						sender.sendMessage(ChatColor.DARK_GREEN + "Uploaded: " + ChatColor.GREEN + uploadSize + "KB");
-		//				player.sendMessage(ChatColor.RED + "Link is valid only once, reloading the webpage will result in data loss!");
+						// player.sendMessage(ChatColor.RED + "Link is valid only once, reloading the
+						// webpage will result in data loss!");
 						sender.sendMessage(ChatColor.DARK_AQUA + "===------------------------------===");
 					}
 
@@ -142,10 +152,7 @@ public class cmd_webeditor extends PowerCommand {
 	private void loadWebeditor(CommandSender sender, String key) {
 		Messages.downloadingWebeditorData(sender);
 
-		DatabinClient client = new DatabinClient(
-			"https://databin.svenar.nl",
-			"Databinclient/1.0"
-		);
+		DatabinClient client = new DatabinClient("https://databin.svenar.nl", "Databinclient/1.0");
 
 		client.getJSON(key);
 
@@ -167,13 +174,7 @@ public class cmd_webeditor extends PowerCommand {
 					Type mapType = new TypeToken<Map<String, Object>>() {
 					}.getType();
 					Map<String, Object> jsonData = gson.fromJson(rawJSON, mapType);
-					// PowerRanks.getInstance().getLogger().warning(jsonData.get("rankdata").toString());
-					// PowerRanks.getInstance().getLogger().warning("");
-					// PowerRanks.getInstance().getLogger().warning("");
-					// PowerRanks.getInstance().getLogger().warning("");
-					// PowerRanks.getInstance().getLogger().warning(jsonData.get("playerdata").toString());
-					// Map<String, String> responseData = client.getResponse();
-					handleWebeditorDownload(sender, jsonData.get("rankdata"), jsonData.get("playerdata"));
+					handleWebeditorDownload(sender, jsonData);
 				}
 
 				if (waitTime / (20 / updateInterval) > timeout) {
@@ -187,25 +188,42 @@ public class cmd_webeditor extends PowerCommand {
 		}.runTaskTimer(PowerRanks.getInstance(), 0, updateInterval);
 	}
 
-	public void handleWebeditorDownload(CommandSender sender, Object rankData, Object playerData) {
+	public void handleWebeditorDownload(CommandSender sender, Map<String, Object> jsonData) {
 
-		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json", "dummyPlayers.json");
-		PowerStorageManager powermanager = CacheManager.getStorageManager();
+		LinkedTreeMap<?, ?> serverData = (LinkedTreeMap<?, ?>) jsonData.get("serverdata");
+
+		if (Objects.isNull(serverData) || !serverData.containsKey("powerranksVersion")) {
+			PowerRanks.getInstance().getLogger().warning(serverData.toString());
+			Messages.downloadedInvalidWebeditorData(sender);
+			return;
+		}
+
+		if (!((String) serverData.get("powerranksVersion")).equals(PowerRanks.getVersion())) {
+			Messages.incompattiblePowerRanksVersionWebeditor(sender, (String) serverData.get("powerranksVersion"),
+					PowerRanks.getVersion());
+			return;
+		}
+
+		LinkedTreeMap<?, ?> rankData = (LinkedTreeMap<?, ?>) jsonData.get("rankdata");
+		LinkedTreeMap<?, ?> playerData = (LinkedTreeMap<?, ?>) jsonData.get("playerdata");
+
+		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json",
+				"dummyPlayers.json");
 
 		if (!(rankData instanceof LinkedTreeMap<?, ?> && playerData instanceof LinkedTreeMap<?, ?>)) {
 			Messages.FailedDownloadingWebeditorData(sender);
 			return;
 		}
 
-		LinkedTreeMap<?, ?> ranks = (LinkedTreeMap<?, ?>) rankData;
-		LinkedTreeMap<?, ?> players = (LinkedTreeMap<?, ?>) playerData;
-
-		CacheManager.setRanks(jsonmanager.getRanksFromJSON(ranks));
-		CacheManager.setPlayers(jsonmanager.getPlayersFromJSON(players));
+		CacheManager.setRanks(jsonmanager.getRanksFromJSON(rankData));
+		CacheManager.setPlayers(jsonmanager.getPlayersFromJSON(playerData));
 
 		CacheManager.save();
 
+		jsonmanager.removeAllData();
+
 		Messages.downloadedWebeditorData(sender);
+		Messages.LoadedRanksPlayersWebeditor(sender, CacheManager.getRanks().size(), CacheManager.getPlayers().size());
 	}
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
@@ -217,5 +235,16 @@ public class cmd_webeditor extends PowerCommand {
 		}
 
 		return tabcomplete;
+	}
+
+	private String getServerDataAsJSON() {
+		String output = "";
+
+		output += "{";
+		output += "\"powerranksVersion\":";
+		output += "\"" + PowerRanks.getVersion() + "\"";
+		output += "}";
+
+		return output;
 	}
 }

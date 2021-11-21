@@ -109,6 +109,9 @@ messages:
    downloading_data_webeditor: "%plugin_prefix% &aDownloading data from the webeditor..."
    downloaded_data_webeditor: "%plugin_prefix% &aFinished downloading data from the webeditor! &cIt is recommended to restart your server."
    failed_downloading_data_webeditor: "%plugin_prefix% &cFailed to download data from the webeditor!"
+   loaded_ranks_players_webeditor: "%plugin_prefix% &aLoaded %ranks% ranks and %players% players from the web editor!"
+   downloaded_invalid_webeditor: "%plugin_prefix% &cInvalid webeditor data!"
+   incompattible_powerranks_version_webeditor: "%plugin_prefix% &cIncompattible PowerRanks version! (editor: %prversioneditor% | server: %prversionserver%)"
 commands:
    only_numbers: "%plugin_prefix% &cOnly numbers are allowed!"
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"

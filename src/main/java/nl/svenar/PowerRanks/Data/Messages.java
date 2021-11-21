@@ -2342,4 +2342,29 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
+
+	public static void LoadedRanksPlayersWebeditor(CommandSender sender, int ranks, int players) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.loaded_ranks_players_webeditor");
+		msg = Util.replaceAll(msg, "%ranks%", String.valueOf(ranks));
+		msg = Util.replaceAll(msg, "%players%", String.valueOf(players));
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+    public static void downloadedInvalidWebeditorData(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.downloaded_invalid_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+    }
+
+    public static void incompattiblePowerRanksVersionWebeditor(CommandSender sender, String editorPRVersion, String serverPRVersion) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.incompattible_powerranks_version_webeditor");
+		msg = Util.replaceAll(msg, "%prversioneditor%", editorPRVersion);
+		msg = Util.replaceAll(msg, "%prversionserver%", serverPRVersion);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+    }
 }
