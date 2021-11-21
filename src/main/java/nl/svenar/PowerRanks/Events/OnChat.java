@@ -133,6 +133,13 @@ public class OnChat implements Listener {
 						+ PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
 				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
+				
+				// Dirty PremiumVanish work around
+				if (Objects.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
+					if (player_formatted_chat_msg.endsWith("/")) {
+						player_formatted_chat_msg = player_formatted_chat_msg.substring(0, player_formatted_chat_msg.length() - 1);
+					}
+				}
 
 				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix)
 						.put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
