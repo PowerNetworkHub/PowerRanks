@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.0</version>
+	<version>1.10.1</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -65,6 +65,8 @@
 							<includes>
 								<!-- <include>org.mongodb:mongo-java-driver</include> -->
 								<include>com.squareup.okhttp3:okhttp</include>
+								<include>com.squareup.okio:okio</include>
+								<include>org.jetbrains.kotlin:kotlin-stdlib</include>
 								<include>org.yaml:snakeyaml</include>
 								<include>com.fasterxml.jackson.core:jackson-core</include>
 								<include>com.fasterxml.jackson.core:jackson-databind</include>
@@ -80,6 +82,14 @@
 							<relocation>
 								<pattern>okhttp3</pattern>
 								<shadedPattern>${shade.basepattern}.okhttp3</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>okio</pattern>
+								<shadedPattern>${shade.basepattern}.okio</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>kotlin</pattern>
+								<shadedPattern>${shade.basepattern}.kotlin</shadedPattern>
 							</relocation>
 							<relocation>
 								<pattern>org.yaml</pattern>
