@@ -171,4 +171,8 @@ public class CacheManager {
 
         storageManager.saveAll();
     }
+
+    public static PowerStorageManager getStorageManager() {
+        return storageManager;
+    }
 }

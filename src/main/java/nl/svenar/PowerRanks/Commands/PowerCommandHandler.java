@@ -77,6 +77,7 @@ import nl.svenar.PowerRanks.Commands.usertags.cmd_editusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_listusertags;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_removeusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_setusertag;
+import nl.svenar.PowerRanks.Commands.webeditor.cmd_webeditor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
@@ -160,6 +161,9 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_removeusertag(plugin, "removeusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_setusertag(plugin, "setusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_clearusertag(plugin, "clearusertag", COMMAND_EXECUTOR.ALL);
+
+		new cmd_webeditor(plugin, "webeditor", COMMAND_EXECUTOR.ALL);
+		new cmd_webeditor(plugin, "we", COMMAND_EXECUTOR.ALL);
 
 	}
 

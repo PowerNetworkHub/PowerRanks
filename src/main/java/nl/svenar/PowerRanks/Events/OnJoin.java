@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
-// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 

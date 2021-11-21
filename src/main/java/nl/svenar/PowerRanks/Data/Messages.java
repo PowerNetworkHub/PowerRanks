@@ -128,14 +128,14 @@ public class Messages {
 		sender.sendMessage(ChatColor.GREEN + "- NametagEdit: "
 				+ (PowerRanks.plugin_hook_nametagedit ? ChatColor.DARK_GREEN + "enabled"
 						: ChatColor.DARK_RED + "disabled"));
-		
+
 		Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
 		String pluginNames = "";
 		for (Plugin plugin : plugins) {
 			pluginNames += plugin.getName() + "(" + plugin.getDescription().getVersion() + "), ";
 		}
 		pluginNames = pluginNames.substring(0, pluginNames.length() - 2);
-		
+
 		sender.sendMessage(ChatColor.GREEN + "Plugins (" + plugins.length + "): " + ChatColor.DARK_GREEN + pluginNames);
 		sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
 	}
@@ -2299,5 +2299,47 @@ public class Messages {
 		if (msg.length() > 0) {
 			sender.sendMessage(msg);
 		}
+	}
+
+	public static void messageCommandUsageWebeditor(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "commands.usage_command_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void preparingWebeditor(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.preparing_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void webeditorTimedout(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.timedout_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+    public static void downloadingWebeditorData(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.downloading_data_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+    }
+
+	public static void downloadedWebeditorData(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.downloaded_data_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void FailedDownloadingWebeditorData(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		final String msg = getGeneralMessage(languageManager, "messages.failed_downloading_data_webeditor");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
 	}
 }
