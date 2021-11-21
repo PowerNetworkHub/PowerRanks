@@ -42,20 +42,41 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public boolean hasPermission(String permission) {
 		ArrayList<PRPermission> permissions = plugin.getEffectivePlayerPermissions(player);
+		ArrayList<String> wildcardPermissions = generateWildcardList(permission);
 
-		boolean contains_wildcard = false;
-		for (String p : generateWildcardList(permission)) {
-			if (getAllowedPermissions(permissions).contains(p)) {
-				contains_wildcard = true;
-				break;
-			}
-		}
+		boolean containsWildcard = false;
+		boolean checkedWildcard = false;
+
+		// for (String p : wildcardPermissions) {
+		// 	PowerRanksVerbose.log("wc", p);
+		// }
+
+		// for (String p : generateWildcardList(permission)) {
+		// 	for (PRPermission perm : permissions) {
+		// 		if (perm.getName().equals(p)) {
+		// 			contains_wildcard = true;
+		// 			break;
+		// 		}
+		// 	}
+		// }
 
 		boolean disallowed = false;
+
 		for (PRPermission prPermission : permissions) {
 			if (prPermission.getName().equals(permission)) {
 				disallowed = prPermission.getValue();
 				break;
+			}
+		}
+
+		if (!disallowed) {
+			checkedWildcard = true;
+			for (PRPermission perm : permissions) {
+				if (wildcardPermissions.contains(perm.getName())) {
+					containsWildcard = true;
+					disallowed = !perm.getValue();
+					break;
+				}
 			}
 		}
 
@@ -70,7 +91,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
 	//		PowerRanksVerbose.log("hasPermission", "Return #3: " + super.hasPermission(permission));
 			PowerRanksVerbose.log("hasPermission", "Is permission in list: " + getAllPermissions(permissions).contains(permission));
-			PowerRanksVerbose.log("hasPermission", "Is in wildcard tree: " + contains_wildcard);
+			PowerRanksVerbose.log("hasPermission", "Is in wildcard tree: " + (checkedWildcard ? containsWildcard : "unchecked"));
 			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
 			PowerRanksVerbose.log("hasPermission", "");
 		}
@@ -84,10 +105,9 @@ public class PowerPermissibleBase extends PermissibleBase {
 		}
 
 		try {
-			
-			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission) || contains_wildcard;
+			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission);
 		} catch (Exception e) {
-			return getAllowedPermissions(permissions).contains(permission) || contains_wildcard;
+			return getAllowedPermissions(permissions).contains(permission);
 		}
 //		
 	}
