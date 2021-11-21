@@ -49,7 +49,7 @@ public class PowerRanksVaultPermission extends Permission {
 	@Override
 	public String[] getGroups() {
 		List<String> ranks = new ArrayList<String>();
-		for (PRRank rank : users.getGroups()) {
+		for (PRRank rank : CacheManager.getRanks()) {
 			ranks.add(rank.getName());
 		}
 		return Iterables.toArray(ranks, String.class);

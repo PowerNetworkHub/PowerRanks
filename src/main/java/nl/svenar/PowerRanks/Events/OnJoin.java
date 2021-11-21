@@ -75,7 +75,7 @@ public class OnJoin implements Listener {
 		long time = new Date().getTime();
 		plugin.playerPlayTimeCache.put(player.getUniqueId(), time);
 
-		if (PowerRanks.getConfigManager().getBool("general.disable-op", true)) {
+		if (PowerRanks.getConfigManager().getBool("general.disable-op", false)) {
 			if (player.isOp()) {
 				player.setOp(false);
 			}

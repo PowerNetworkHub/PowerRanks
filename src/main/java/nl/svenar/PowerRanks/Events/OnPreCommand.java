@@ -20,7 +20,7 @@ public class OnPreCommand implements Listener {
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         String[] args = (event.getMessage().startsWith("/") ? event.getMessage().replaceFirst("/", "") : event.getMessage()).split(" ");
         String command = args[0];
-        if (PowerRanks.getConfigManager().getBool("general.disable-op", true) && (command.equalsIgnoreCase("op") || command.equalsIgnoreCase("deop"))) {
+        if (PowerRanks.getConfigManager().getBool("general.disable-op", false) && (command.equalsIgnoreCase("op") || command.equalsIgnoreCase("deop"))) {
             event.getPlayer().sendMessage(plugin.plp + ChatColor.RED + "This command is disabled");
             event.setCancelled(true);
         }

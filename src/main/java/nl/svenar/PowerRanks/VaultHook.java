@@ -5,6 +5,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -12,21 +13,26 @@ public class VaultHook {
 	
 	private static Economy vaultEconomy;
 	private static Permission vaultPermissions;
+	private static Chat vaultChat;
 
 	public VaultHook() {
 
     }
 
-    public void hook(PowerRanks plugin, boolean setupPermissions, boolean setupChat) {
+    public void hook(PowerRanks plugin, boolean setupPermissions, boolean setupEconomy) {
     	if (setupPermissions) {
 	        Plugin vault = Bukkit.getPluginManager().getPlugin("Vault");
 	        PowerRanksVaultPermission vaultPermsHook = new PowerRanksVaultPermission(plugin);
 	        Bukkit.getServicesManager().register(Permission.class, vaultPermsHook, vault, ServicePriority.High);
+
+			PowerRanksVaultChat vaultChatHook = new PowerRanksVaultChat(plugin, vaultPermsHook);
+			Bukkit.getServicesManager().register(Chat.class, vaultChatHook, vault, ServicePriority.High);
+
+			vaultPermissions = vaultPermsHook;
+			vaultChat = vaultChatHook;
     	}
-//      PowerRanksVaultChat vaultChatHook = new PowerRanksVaultChat(vaultPermsHook, plugin);
-//      Bukkit.getServicesManager().register(Chat.class, vaultChatHook, vault, ServicePriority.High);
         
-    	if (setupChat) {
+    	if (setupEconomy) {
 	        try {
 				RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
 				vaultEconomy = rsp.getProvider();
@@ -42,5 +48,9 @@ public class VaultHook {
 
 	public static Permission getVaultPermissions() {
 		return vaultPermissions;
+	}
+
+	public static Chat getVaultChat() {
+		return vaultChat;
 	}
 }
