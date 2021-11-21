@@ -149,8 +149,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log = this.getLogger();
 		PowerRanksAPI.plugin = this;
 
+		ConfigFilesUpdater.updateOldDataFiles();
 		ConfigFilesUpdater.updateConfigFiles();
-
+		
 		// PowerRanks.log.info("=== ---------- LOADING EVENTS ---------- ===");
 		// Bukkit.getServer().getPluginManager().registerEvents((Listener) this,
 		// (Plugin) this);
