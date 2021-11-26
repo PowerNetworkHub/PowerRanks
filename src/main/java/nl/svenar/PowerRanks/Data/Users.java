@@ -29,7 +29,6 @@ import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.structure.PRSubrank;
 
-@SuppressWarnings("deprecation")
 public class Users implements Listener {
 	PowerRanks m;
 
