@@ -14,55 +14,69 @@ import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRRank;
 
 public class PowerRanksAPI {
+
+	private String API_VERSION = "1.0";
 	
 	public static PowerRanks plugin;
-	private Users s;
+	private Users users;
 	
 	public PowerRanksAPI(PowerRanks plugin) {
 		PowerRanksAPI.plugin = plugin;
-		this.s = new Users(plugin);
+		this.users = new Users(plugin);
 	}
 	
 	public PowerRanksAPI() {
-		this.s = new Users(plugin);
+		this.users = new Users(plugin);
+	}
+
+	public String getName() {
+		return plugin.getName();
+	}
+
+	public String getVersion() {
+		return PowerRanks.getVersion();
+	}
+
+	public String getApiVersion() {
+		return API_VERSION;
 	}
 	
 	public String getPlayerRank(Player player) {
-		String rank = s.getGroup(player);
+		String rank = users.getGroup(player);
 		return rank;
 	}
 	
 	public boolean setPlayerRank(Player player, String rank) {
-		boolean success = s.setGroup(player, s.getRankIgnoreCase(rank), true);
+		boolean success = users.setGroup(player, users.getRankIgnoreCase(rank), true);
 		return success;
 	}
 	
 	public List<String> getPermissions(String rank) {
 		List<String> permissions = new ArrayList<String>();
-		for (PRPermission permission : CacheManager.getRank(s.getRankIgnoreCase(rank)).getPermissions()) {
+		for (PRPermission permission : CacheManager.getRank(users.getRankIgnoreCase(rank)).getPermissions()) {
 			permissions.add(permission.getName());
 		}
 		return permissions;
 	}
 	
 	public boolean addPermission(String rank, String permission) {
-		return s.addPermission(s.getRankIgnoreCase(rank), permission);
+		return users.addPermission(users.getRankIgnoreCase(rank), permission);
 	}
 	
 	public boolean removePermission(String rank, String permission) {
-		return s.removePermission(s.getRankIgnoreCase(rank), permission);
+		return users.removePermission(users.getRankIgnoreCase(rank), permission);
 	}
 	
 	public List<String> getInheritances(String rank) {
-		return s.getInheritances(s.getRankIgnoreCase(rank));
+		return users.getInheritances(users.getRankIgnoreCase(rank));
 	}
 	
 	public boolean addInheritance(String rank, String inheritance) {
-		return s.addInheritance(s.getRankIgnoreCase(rank), inheritance);
+		return users.addInheritance(users.getRankIgnoreCase(rank), inheritance);
 	}
 	
 	public boolean removeInheritance(String rank, String inheritance) {
-		return s.removeInheritance(s.getRankIgnoreCase(rank), inheritance);
+		return users.removeInheritance(users.getRankIgnoreCase(rank), inheritance);
 	}
 	
 	public Set<String> getRanks() {
@@ -148,7 +162,7 @@ public class PowerRanksAPI {
 			return CacheManager.getRank(rank).getPromoteRank();
 		}
 		return null;
-		// String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote");
+		// String value = users.getRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.promote");
 		// return value;
 	}
 	
@@ -158,7 +172,7 @@ public class PowerRanksAPI {
 			return true;
 		}
 		return false;
-		// boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.promote", new_value);
+		// boolean value = users.setRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.promote", new_value);
 		// return value;
 	}
 	
@@ -167,7 +181,7 @@ public class PowerRanksAPI {
 			return CacheManager.getRank(rank).getDemoteRank();
 		}
 		return null;
-		// String value = s.getRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote");
+		// String value = users.getRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.demote");
 		// return value;
 	}
 	
@@ -177,59 +191,59 @@ public class PowerRanksAPI {
 			return true;
 		}
 		return false;
-		// boolean value = s.setRanksConfigFieldString(s.getRankIgnoreCase(rank), "level.demote", new_value);
+		// boolean value = users.setRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.demote", new_value);
 		// return value;
 	}
 	
 	public boolean createRank(String rank) {
-		boolean value = s.createRank(rank);
+		boolean value = users.createRank(rank);
 		return value;
 	}
 	
 	public boolean deleteRank(String rank) {
-		boolean value = s.deleteRank(rank);
+		boolean value = users.deleteRank(rank);
 		return value;
 	}
 	
 	public boolean addBuyableRank(String rank, String buyable_rank) {
-		boolean value = s.addBuyableRank(rank, buyable_rank);
+		boolean value = users.addBuyableRank(rank, buyable_rank);
 		return value;
 	}
 	
 	public boolean delBuyableRank(String rank, String buyable_rank) {
-		boolean value = s.delBuyableRank(rank, buyable_rank);
+		boolean value = users.delBuyableRank(rank, buyable_rank);
 		return value;
 	}
 	
 	public boolean setRankBuyCost(String rank, int cost) {
-		return s.setBuyCost(rank, String.valueOf(cost));
+		return users.setBuyCost(rank, String.valueOf(cost));
 	}
 	
 	public List<String> getSubranks(Player player) {
-		return s.getSubranks(player.getName());
+		return users.getSubranks(player.getName());
 	}
 	
 	public boolean addSubrank(Player player, String rank) {
-		return s.addSubrank(player.getName(), rank);
+		return users.addSubrank(player.getName(), rank);
 	}
 	
 	public boolean removeSubrank(Player player, String rank) {
-		return s.removeSubrank(player.getName(), rank);
+		return users.removeSubrank(player.getName(), rank);
 	}
 	
 	public String getPlayerSubrankPrefixes(Player player) {
-		return s.getSubrankprefixes(player);
+		return users.getSubrankprefixes(player);
 	}
 	
 	public String getPlayerSubrankSuffixes(Player player) {
-		return s.getSubranksuffixes(player);
+		return users.getSubranksuffixes(player);
 	}
 
 	public boolean removePermission(Player player, String permission) {
-		return s.delPlayerPermission(player.getName(), permission);
+		return users.delPlayerPermission(player.getName(), permission);
 	}
 
 	public boolean addPermission(Player player, String permission) {
-		return s.addPlayerPermission(player.getName(), permission);
+		return users.addPlayerPermission(player.getName(), permission);
 	}
 }
