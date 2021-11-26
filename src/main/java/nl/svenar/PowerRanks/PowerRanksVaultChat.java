@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks;
 
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
 
@@ -29,125 +30,141 @@ public class PowerRanksVaultChat extends Chat {
 	}
 
 	@Override
-	public boolean getGroupInfoBoolean(String worldName, String rankName, String node, boolean defaultValue) {
-		// TODO Auto-generated method stub
+	public boolean getGroupInfoBoolean(String worldName, String rankName, String permissionNode, boolean defaultValue) {
+		// TODO: add support
 		return false;
 	}
+
 	@Override
-	public double getGroupInfoDouble(String worldName, String rankName, String node, double defaultValue) {
-		// TODO Auto-generated method stub
+	public double getGroupInfoDouble(String worldName, String rankName, String permissionNode, double defaultValue) {
+		// TODO: add support
 		return 0;
 	}
+
 	@Override
-	public int getGroupInfoInteger(String worldName, String rankName, String node, int defaultValue) {
-		// TODO Auto-generated method stub
+	public int getGroupInfoInteger(String worldName, String rankName, String permissionNode, int defaultValue) {
+		// TODO: add support
 		return 0;
 	}
+
 	@Override
-	public String getGroupInfoString(String worldName, String rankName, String node, String defaultValue) {
-		// TODO Auto-generated method stub
+	public String getGroupInfoString(String worldName, String rankName, String permissionNode, String defaultValue) {
+		// TODO: add support
 		return null;
 	}
+
 	@Override
 	public String getGroupPrefix(String worldName, String rankName) {
-		// TODO Auto-generated method stub
-		return null;
+		return PowerRanks.chatColor(CacheManager.getRank(rankName).getPrefix(), true);
 	}
+
 	@Override
 	public String getGroupSuffix(String worldName, String rankName) {
-		// TODO Auto-generated method stub
-		return null;
+		return PowerRanks.chatColor(CacheManager.getRank(rankName).getSuffix(), true);
 	}
-	
+
 	@Override
-	public boolean getPlayerInfoBoolean(String worldName, String playerName, String node, boolean defaultValue) {
-		// TODO Auto-generated method stub
+	public boolean getPlayerInfoBoolean(String worldName, String playerName, String permissionNode,
+			boolean defaultValue) {
+		// TODO: add support
 		return false;
 	}
+
 	@Override
-	public double getPlayerInfoDouble(String worldName, String playerName, String node, double defaultValue) {
-		// TODO Auto-generated method stub
+	public double getPlayerInfoDouble(String worldName, String playerName, String permissionNode, double defaultValue) {
+		// TODO: add support
 		return 0;
 	}
+
 	@Override
-	public int getPlayerInfoInteger(String worldName, String playerName, String node, int defaultValue) {
-		// TODO Auto-generated method stub
+	public int getPlayerInfoInteger(String worldName, String playerName, String permissionNode, int defaultValue) {
+		// TODO: add support
 		return 0;
 	}
+
 	@Override
-	public String getPlayerInfoString(String worldName, String playerName, String node, String defaultValue) {
-		// TODO Auto-generated method stub
+	public String getPlayerInfoString(String worldName, String playerName, String permissionNode, String defaultValue) {
+		// TODO: add support
 		return null;
 	}
+
 	@Override
 	public String getPlayerPrefix(String worldName, String playerName) {
-		// TODO Auto-generated method stub
-		return null;
+		return PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getPrefix(),
+				true);
 	}
+
 	@Override
 	public String getPlayerSuffix(String worldName, String playerName) {
-		// TODO Auto-generated method stub
-		return null;
+		return PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getSuffix(),
+				true);
 	}
-	
+
 	@Override
-	public void setGroupInfoBoolean(String worldName, String rankName, String node, boolean value) {
-		// TODO Auto-generated method stub
-		
+	public void setGroupInfoBoolean(String worldName, String rankName, String permissionNode, boolean value) {
+		// TODO: add support
+
 	}
+
 	@Override
-	public void setGroupInfoDouble(String worldName, String rankName, String node, double value) {
-		// TODO Auto-generated method stub
-		
+	public void setGroupInfoDouble(String worldName, String rankName, String permissionNode, double value) {
+		// TODO: add support
+
 	}
+
 	@Override
-	public void setGroupInfoInteger(String worldName, String rankName, String node, int value) {
-		// TODO Auto-generated method stub
-		
+	public void setGroupInfoInteger(String worldName, String rankName, String permissionNode, int value) {
+		// TODO: add support
+
 	}
+
 	@Override
-	public void setGroupInfoString(String worldName, String rankName, String node, String value) {
-		// TODO Auto-generated method stub
-		
+	public void setGroupInfoString(String worldName, String rankName, String permissionNode, String value) {
+		// TODO: add support
+
 	}
+
 	@Override
 	public void setGroupPrefix(String worldName, String rankName, String value) {
-		// TODO Auto-generated method stub
-		
+		CacheManager.getRank(rankName).setPrefix(value);
 	}
+
 	@Override
 	public void setGroupSuffix(String worldName, String rankName, String value) {
-		// TODO Auto-generated method stub
-		
+		CacheManager.getRank(rankName).setSuffix(value);
 	}
+
 	@Override
-	public void setPlayerInfoBoolean(String worldName, String playerName, String node, boolean value) {
-		// TODO Auto-generated method stub
-		
+	public void setPlayerInfoBoolean(String worldName, String playerName, String permissionNode, boolean value) {
+		// TODO: add support
+
 	}
+
 	@Override
-	public void setPlayerInfoDouble(String worldName, String playerName, String node, double value) {
-		// TODO Auto-generated method stub
-		
+	public void setPlayerInfoDouble(String worldName, String playerName, String permissionNode, double value) {
+		// TODO: add support
+
 	}
+
 	@Override
-	public void setPlayerInfoInteger(String worldName, String playerName, String node, int value) {
-		// TODO Auto-generated method stub
-		
+	public void setPlayerInfoInteger(String worldName, String playerName, String permissionNode, int value) {
+		// TODO: add support
+
 	}
+
 	@Override
-	public void setPlayerInfoString(String worldName, String playerName, String node, String value) {
-		// TODO Auto-generated method stub
-		
+	public void setPlayerInfoString(String worldName, String playerName, String permissionNode, String value) {
+		// TODO: add support
+
 	}
+
 	@Override
 	public void setPlayerPrefix(String worldName, String playerName, String value) {
-		// TODO Auto-generated method stub
-		
+		CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setPrefix(value);
 	}
+
 	@Override
 	public void setPlayerSuffix(String worldName, String playerName, String value) {
-		// TODO Auto-generated method stub
-		
+		CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setSuffix(value);
 	}
 }
