@@ -261,6 +261,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		// this.playerUninjectPermissible(player);
 		// }
 
+		CacheManager.save();
+
 		getConfigManager().save();
 		getLanguageManager().save();
 		getUsertagManager().save();
