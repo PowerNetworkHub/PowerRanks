@@ -331,7 +331,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		try {
 			playtime_interval = configManager.getInt("general.autosave-files-interval",
-					((int) configManager.getFloat("general.autosave-files-interval", playtime_interval)));
+					((int) configManager.getFloat("general.autosave-files-interval", autosave_interval)));
 		} catch (Exception e) {
 		}
 
