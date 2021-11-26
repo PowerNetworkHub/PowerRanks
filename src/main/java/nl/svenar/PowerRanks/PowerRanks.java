@@ -150,7 +150,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanksAPI.plugin = this;
 
 		ConfigFilesUpdater.updateOldDataFiles();
-		ConfigFilesUpdater.updateConfigFiles();
+		
+		if (new File(PowerRanks.fileLoc, "config.yml").exists() && new File(PowerRanks.fileLoc, "lang.yml").exists()) {
+			ConfigFilesUpdater.updateConfigFiles();
+		}
 
 		// PowerRanks.log.info("=== ---------- LOADING EVENTS ---------- ===");
 		// Bukkit.getServer().getPluginManager().registerEvents((Listener) this,
