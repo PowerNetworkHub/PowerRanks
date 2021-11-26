@@ -30,7 +30,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
-// import org.bukkit.configuration.file.FileConfiguration;
 import java.io.File;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
@@ -42,7 +41,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import nl.svenar.PowerRanks.Cache.CacheManager;
-// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
@@ -64,7 +62,6 @@ import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.metrics.Metrics;
 import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
-// import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
 import nl.svenar.PowerRanks.update.Updater.UpdateType;
@@ -92,9 +89,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public AddonsManager addonsManager;
 	public String plp;
 	public static Logger log;
-	// public static String configFileLoc;
 	public static String fileLoc;
-	// public static String langFileLoc;
 	public static String factoryresetid = null;
 	public static Instant powerranks_start_time = Instant.now();
 	private String update_available = "";
@@ -114,33 +109,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static boolean plugin_hook_nametagedit = false;
 	// Soft Dependencies
 
-	// File configFile;
-	// File ranksFile;
-	// File playersFile;
-	// File langFile;
-	// FileConfiguration config;
-	// FileConfiguration ranks;
-	// FileConfiguration players;
-	// FileConfiguration lang;
 	public String updatemsg;
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
-	// public Map<UUID, ArrayList<String>> playerDisallowedPermissions = new
-	// HashMap<UUID, ArrayList<String>>();
-	// public Map<UUID, ArrayList<String>> playerAllowedPermissions = new
-	// HashMap<UUID, ArrayList<String>>();
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
-	// public Map<UUID, Long> playerLoginTime = new HashMap<UUID, Long>();
 	public Map<UUID, Long> playerPlayTimeCache = new HashMap<UUID, Long>();
-	// private Map<UUID, Boolean> playerSetupPermissionsQueue = new HashMap<UUID,
-	// Boolean>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
 		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]"
 				+ ChatColor.RESET + " ";
-		// PowerRanks.configFileLoc = this.getDataFolder() + File.separator;
 		PowerRanks.fileLoc = this.getDataFolder() + File.separator;
-		// PowerRanks.langFileLoc = PowerRanks.configFileLoc + "lang.yml";
 		this.updatemsg = "";
 	}
 
@@ -158,9 +136,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			ConfigFilesUpdater.updateConfigFiles();
 		}
 
-		// PowerRanks.log.info("=== ---------- LOADING EVENTS ---------- ===");
-		// Bukkit.getServer().getPluginManager().registerEvents((Listener) this,
-		// (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnJoin(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
@@ -171,22 +146,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBlockChange(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnPreCommand(this), (Plugin) this);
 
-		// PowerRanks.log.info("");
-		// PowerRanks.log.info("=== --------- LOADING COMMANDS --------- ===");
-		// Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor)
-		// new Cmd(this));
-		// Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new
-		// Cmd(this));
 		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new PowerCommandHandler(this));
 
-		// Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor)
-		// new PowerCommandHandler(this));
-		// Bukkit.getServer().getPluginCommand("pr").setExecutor((CommandExecutor) new
-		// PowerCommandHandler(this));
-
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
-		// Bukkit.getServer().getPluginCommand("pr").setTabCompleter(new
-		// ChatTabExecutor(this));
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ----------- LOADING DATA ----------- ===");
@@ -201,12 +163,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
 		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
 
-		// new CachedConfig(this);
 		PowerRanks.log.info("Loading player&rank data");
 		CacheManager.load(PowerRanks.fileLoc);
 		loadDefaultRanks();
-
-		// ConfigFilesUpdater.updateConfigFiles(this); // TODO: remove
 
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			this.playerInjectPermissible(player);
@@ -220,7 +179,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ---------- LOADING ADDONS ---------- ===");
-		// PowerRanks.log.info("Loading add-ons");
 		addonsManager = new AddonsManager(this);
 		addonsManager.setup();
 
@@ -242,8 +200,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		System.setProperty("POWERRANKSRUNNING", "TRUE");
 
-		// PowerRanks.log.info("Enabled " + PowerRanks.pdf.getName() + " v" +
-		// PowerRanks.pdf.getVersion());
 		PowerRanks.log
 				.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
 
@@ -262,10 +218,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onDisable() {
 		Bukkit.getServer().getScheduler().cancelTasks(this);
-
-		// for (Player player : this.getServer().getOnlinePlayers()) {
-		// this.playerUninjectPermissible(player);
-		// }
 
 		CacheManager.save();
 
@@ -402,17 +354,21 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 		}.runTaskTimer(this, 0, 10 * TASK_TPS);
+
+		int update_check_interval = 12 * 60 * 60 * TASK_TPS;
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				handle_update_checking();
+			}
+		}.runTaskTimer(this, update_check_interval, update_check_interval);
+
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
 		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking UUID---------- ===");
 		Player player = null;
 		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
-			// PowerRanksVerbose.log("getPlayerFromUUID(UUID)",
-			// "Matching '" + online_player.getName() + "' "
-			// + (uuid == online_player.getUniqueId() ? "MATCH!" : "No match") + " (" + uuid
-			// + ", "
-			// + online_player.getUniqueId() + ")");
 			if (uuid == online_player.getUniqueId()) {
 				player = online_player;
 				break;
@@ -496,25 +452,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					getConfigBool("updates.automatic_download_updates") ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD,
 					true);
 			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-				// PowerRanks.log.info("------------------------------------");
-				// PowerRanks.log.info("A new " + PowerRanks.pdf.getName() + " version is
-				// available!");
-				// PowerRanks.log.info("Current version: " + PowerRanks.pdf.getVersion());
-				// PowerRanks.log.info("New version: " +
-				// updater.getLatestName().replaceAll("[a-zA-Z\" ]", ""));
 				if (!getConfigBool("updates.automatic_download_updates")) {
 					update_available = "Update available! (v" + updater.getLatestName().replaceAll("[a-zA-Z\" ]", "")
 							+ ")";
-					// PowerRanks.log.info("Download the new version from: " +
-					// bukkit_dev_url_powerranks);
 				} else {
 					PowerRanks.log.info("Plugin will now be updated!");
 					update_available = "Update complete! Please restart your server";
 				}
-				// PowerRanks.log.info("------------------------------------");
 			} else {
 				update_available = "No update available";
-				// log.info("No new version available");
 			}
 
 			if (updater.getResult() == UpdateResult.SUCCESS) {
@@ -670,8 +616,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.log.warning("Visit " + PowerRanks.pdf.getWebsite() + " for more info.");
 			PowerRanks.log.warning("===------------------------------===");
 		} else {
-			// PowerRanks.log.info("Version mismatch detected in: " + fileName);
-			// PowerRanks.log.info("Automatically updating " + fileName);
 			PowerRanks.log.info("Updating " + fileName);
 		}
 	}
@@ -757,22 +701,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updateTablistName(Player player) {
-		// PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() +
-		// "'s tablist format");
 		try {
 			player.updateCommands(); // TODO find a better place for this
 		} catch (NoSuchMethodError e) {
 		}
 
-		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();// CachedPlayers.getString("players."
-																						// + player.getUniqueId() +
-																						// ".rank");
-		String prefix = CacheManager.getRank(rank).getPrefix();// CachedRanks.getString("Groups." + rank +
-																// ".chat.prefix");
-		String suffix = CacheManager.getRank(rank).getSuffix();// CachedRanks.getString("Groups." + rank +
-																// ".chat.suffix");
-		String nameColor = CacheManager.getRank(rank).getNamecolor();// CachedRanks.getString("Groups." + rank +
-																		// ".chat.nameColor");
+		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
+		String prefix = CacheManager.getRank(rank).getPrefix();
+		String suffix = CacheManager.getRank(rank).getSuffix();
+		String nameColor = CacheManager.getRank(rank).getNamecolor();
 
 		String subprefix = "";
 		String subsuffix = "";
@@ -927,17 +864,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return output;
 	}
 
-	// public static YamlConfiguration loadLangFile() {
-	// File langFile = new File(PowerRanks.langFileLoc);
-	// YamlConfiguration langYaml = new YamlConfiguration();
-	// try {
-	// langYaml.load(langFile);
-	// } catch (IOException | InvalidConfigurationException e) {
-	// e.printStackTrace();
-	// }
-	// return langYaml;
-	// }
-
 	public PowerRanksAPI loadAPI() {
 		return new PowerRanksAPI();
 	}
@@ -947,25 +873,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		CacheManager.getPlayer(player.getUniqueId().toString())
 				.setPlaytime(current_playtime + (leave_time - join_time) / 1000);
-		// try {
-		// try {
-		// current_playtime = CachedPlayers.getInt("players." + player.getUniqueId() +
-		// ".playtime");
-		// } catch (Exception e) {
-		// try {
-		// current_playtime = CachedPlayers.getDouble("players." + player.getUniqueId()
-		// + ".playtime")
-		// .intValue();
-		// } catch (Exception e1) {
-		// current_playtime = CachedPlayers.getLong("players." + player.getUniqueId() +
-		// ".playtime")
-		// .intValue();
-		// }
-		// }
-		// CachedPlayers.set("players." + player.getUniqueId() + ".playtime",
-		// current_playtime + (leave_time - join_time) / 1000, !write_to_file);
-		// } catch (NullPointerException npe) {
-		// }
 	}
 
 	public void updatePlayersWithRank(Users users, String rank) {
