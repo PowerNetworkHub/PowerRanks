@@ -13,6 +13,8 @@ commands:
 permissions:
   powerranks.cmd.help:
     default: true
+  powerranks.cmd.checkrank:
+    default: true
   powerranks.cmd.reload:
     default: op
   powerranks.cmd.setrank:
@@ -27,8 +29,6 @@ permissions:
     default: op
   powerranks.cmd.listplayerpermissions:
     default: op
-  powerranks.cmd.checkrank:
-    default: true
   powerranks.cmd.addperm:
     default: op
   powerranks.cmd.delperm:
@@ -142,6 +142,8 @@ permissions:
   powerranks.cmd.pluginhook:
     default: op
   powerranks.cmd.config:
+    default: op
+  powerranks.cmd.webeditor:
     default: op
   powerranks.signs.create:
     default: op
