@@ -11,7 +11,6 @@ import org.bukkit.inventory.Inventory;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Cache.CacheManager;
-// import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
