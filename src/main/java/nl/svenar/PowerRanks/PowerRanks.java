@@ -98,12 +98,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static String factoryresetid = null;
 	public static Instant powerranks_start_time = Instant.now();
 	private String update_available = "";
+	private int TASK_TPS = 20;
 
 	private static PowerConfigManager configManager;
 	private static PowerConfigManager languageManager;
 	private static PowerConfigManager usertagManager;
 
 	// Soft Dependencies
+	private VaultHook vaultHook;
+
 	public static boolean vaultEconomyEnabled = false;
 	public static boolean vaultPermissionsEnabled = false;
 	public static PowerRanksExpansion placeholderapiExpansion;
@@ -150,7 +153,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanksAPI.plugin = this;
 
 		ConfigFilesUpdater.updateOldDataFiles();
-		
+
 		if (new File(PowerRanks.fileLoc, "config.yml").exists() && new File(PowerRanks.fileLoc, "lang.yml").exists()) {
 			ConfigFilesUpdater.updateConfigFiles();
 		}
@@ -360,7 +363,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 
 				}
-			}.runTaskTimer(this, 0, playtime_interval * 20);
+			}.runTaskTimer(this, 0, playtime_interval * TASK_TPS);
 		}
 
 		if (autosave_interval > 0) {
@@ -371,8 +374,34 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					CacheManager.save();
 				}
-			}.runTaskTimer(this, 600, autosave_interval * 20);
+			}.runTaskTimer(this, 600, autosave_interval * TASK_TPS);
 		}
+
+		new BukkitRunnable() {
+			int retryCount = 0;
+
+			@Override
+			public void run() {
+				if (Objects.nonNull(vaultHook)) {
+					if (Objects.isNull(VaultHook.getVaultEconomy())) {
+						boolean has_vault_economy = PowerRanks.getInstance().getServer().getPluginManager()
+								.getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy");
+
+						vaultHook.hook(PowerRanks.getInstance(), false, has_vault_economy, true);
+					} else {
+						this.cancel();
+					}
+				} else {
+					this.cancel();
+				}
+
+				retryCount++;
+				if (retryCount >= 30) {
+					PowerRanks.log.warning("No Vault compatible economy plugin found! Giving up.");
+					this.cancel();
+				}
+			}
+		}.runTaskTimer(this, 0, 10 * TASK_TPS);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -415,8 +444,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (has_vault_permissions) {
 					PowerRanks.log.info("Enabling Vault Permission integration.");
 				}
-				VaultHook vaultHook = new VaultHook();
-				vaultHook.hook(this, has_vault_permissions, has_vault_economy);
+
+				this.vaultHook = new VaultHook();
+				vaultHook.hook(this, has_vault_permissions, has_vault_economy, false);
 				vaultEconomyEnabled = has_vault_economy;
 				vaultPermissionsEnabled = has_vault_permissions;
 			}
