@@ -1,5 +1,6 @@
 general:
   defaultrank: 'Member'
+  autosave-files-interval: 600
   playtime-update-interval: 60
   disable-op: false
 storage:

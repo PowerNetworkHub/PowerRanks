@@ -151,7 +151,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		ConfigFilesUpdater.updateOldDataFiles();
 		ConfigFilesUpdater.updateConfigFiles();
-		
+
 		// PowerRanks.log.info("=== ---------- LOADING EVENTS ---------- ===");
 		// Bukkit.getServer().getPluginManager().registerEvents((Listener) this,
 		// (Plugin) this);
@@ -321,6 +321,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	private void setupTasks() {
 		int playtime_interval = 60;
+		int autosave_interval = 600;
 
 		try {
 			playtime_interval = configManager.getInt("general.playtime-update-interval",
@@ -328,55 +329,58 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 		}
 
-		if (playtime_interval < 1) {
-			playtime_interval = 1;
+		try {
+			playtime_interval = configManager.getInt("general.autosave-files-interval",
+					((int) configManager.getFloat("general.autosave-files-interval", playtime_interval)));
+		} catch (Exception e) {
 		}
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				PowerRanksVerbose.log("task", "Running task update player playtime");
-				// updateAllPlayersTABlist();
-				for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-					// playerPlayTimeCache
+		if (playtime_interval > 0) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					PowerRanksVerbose.log("task", "Running task update player playtime");
+					for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 
-					long current_time = new Date().getTime();
-					long last_time = current_time;
-					try {
-						last_time = playerPlayTimeCache.get(player.getUniqueId()) - 1000;
-					} catch (Exception e1) {
+						long current_time = new Date().getTime();
+						long last_time = current_time;
+						try {
+							last_time = playerPlayTimeCache.get(player.getUniqueId()) - 1000;
+						} catch (Exception e1) {
+						}
+
+						updatePlaytime(player, last_time, current_time, true);
+
+						long time = new Date().getTime();
+						playerPlayTimeCache.put(player.getUniqueId(), time);
+
 					}
 
-					// player.sendMessage("T: " + current_time + " - " + last_time + " - " +
-					// CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime"));
-					updatePlaytime(player, last_time, current_time, true);
-
-					long time = new Date().getTime();
-					playerPlayTimeCache.put(player.getUniqueId(), time);
-
-					// TimeZone tz = TimeZone.getTimeZone("UTC");
-					// SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-					// df.setTimeZone(tz);
-					// String time = df.format(new Date((CachedPlayers.getLong("players." +
-					// player.getUniqueId() + ".playtime") == null ? CachedPlayers.getInt("players."
-					// + player.getUniqueId() + ".playtime") : CachedPlayers.getLong("players." +
-					// player.getUniqueId() + ".playtime")) * 1000));
-
 				}
+			}.runTaskTimer(this, 0, playtime_interval * 20);
+		}
 
-				// CachedPlayers.save();
-			}
-		}.runTaskTimer(this, 0, playtime_interval * 20);
+		if (autosave_interval > 0) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					PowerRanksVerbose.log("task", "Running task auto-save files");
+
+					CacheManager.save();
+				}
+			}.runTaskTimer(this, 600, autosave_interval * 20);
+		}
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
 		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking UUID---------- ===");
 		Player player = null;
 		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
-			PowerRanksVerbose.log("getPlayerFromUUID(UUID)",
-					"Matching '" + online_player.getName() + "' "
-							+ (uuid == online_player.getUniqueId() ? "MATCH!" : "No match") + " (" + uuid + ", "
-							+ online_player.getUniqueId() + ")");
+			// PowerRanksVerbose.log("getPlayerFromUUID(UUID)",
+			// "Matching '" + online_player.getName() + "' "
+			// + (uuid == online_player.getUniqueId() ? "MATCH!" : "No match") + " (" + uuid
+			// + ", "
+			// + online_player.getUniqueId() + ")");
 			if (uuid == online_player.getUniqueId()) {
 				player = online_player;
 				break;
