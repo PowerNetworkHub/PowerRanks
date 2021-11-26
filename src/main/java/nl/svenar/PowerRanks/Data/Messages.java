@@ -5,10 +5,12 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.TimeZone;
 
 import org.bukkit.Bukkit;
@@ -279,6 +281,20 @@ public class Messages {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+		long playerPlaytime = CacheManager.getPlayer(player.getUniqueId().toString()).getPlaytime();
+
+		final long days = TimeUnit.SECONDS.toDays(playerPlaytime);
+		final long hours = TimeUnit.SECONDS.toHours(playerPlaytime)
+				- TimeUnit.DAYS.toHours(TimeUnit.SECONDS.toDays(playerPlaytime));
+		final long minutes = TimeUnit.SECONDS.toMinutes(playerPlaytime)
+				- TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(playerPlaytime));
+		final long seconds = TimeUnit.SECONDS.toSeconds(playerPlaytime)
+				- TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(playerPlaytime));
+
+		String playerPlaytimeFormatted = days > 0
+				? String.format("%02d %s %02d:%02d:%02d", days, days == 1 ? "day" : "days", hours, minutes, seconds)
+				: String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
 		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 				+ Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE
 				+ "===");
@@ -291,6 +307,7 @@ public class Messages {
 				+ format.format(player.getFirstPlayed()));
 		sender.sendMessage(
 				ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
+		sender.sendMessage(ChatColor.GREEN + "Playtime: " + ChatColor.DARK_GREEN + playerPlaytimeFormatted);
 		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
 		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN
 				+ CacheManager.getPlayer(player.getUniqueId().toString()).getRank());
@@ -2322,12 +2339,12 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-    public static void downloadingWebeditorData(CommandSender sender) {
+	public static void downloadingWebeditorData(CommandSender sender) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		final String msg = getGeneralMessage(languageManager, "messages.downloading_data_webeditor");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
-    }
+	}
 
 	public static void downloadedWebeditorData(CommandSender sender) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
@@ -2352,19 +2369,20 @@ public class Messages {
 			sender.sendMessage(msg);
 	}
 
-    public static void downloadedInvalidWebeditorData(CommandSender sender) {
+	public static void downloadedInvalidWebeditorData(CommandSender sender) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		final String msg = getGeneralMessage(languageManager, "messages.downloaded_invalid_webeditor");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
-    }
+	}
 
-    public static void incompattiblePowerRanksVersionWebeditor(CommandSender sender, String editorPRVersion, String serverPRVersion) {
+	public static void incompattiblePowerRanksVersionWebeditor(CommandSender sender, String editorPRVersion,
+			String serverPRVersion) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		String msg = getGeneralMessage(languageManager, "messages.incompattible_powerranks_version_webeditor");
 		msg = Util.replaceAll(msg, "%prversioneditor%", editorPRVersion);
 		msg = Util.replaceAll(msg, "%prversionserver%", serverPRVersion);
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
-    }
+	}
 }

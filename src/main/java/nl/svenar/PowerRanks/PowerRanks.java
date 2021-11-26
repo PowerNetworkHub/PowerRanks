@@ -374,7 +374,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					CacheManager.save();
 				}
-			}.runTaskTimer(this, 600, autosave_interval * TASK_TPS);
+			}.runTaskTimer(this, autosave_interval * TASK_TPS, autosave_interval * TASK_TPS);
 		}
 
 		new BukkitRunnable() {
