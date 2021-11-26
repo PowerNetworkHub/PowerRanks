@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<src.dir>src/main/java</src.dir>
 		<rsc.dir>src/main/resources</rsc.dir>
-		<shade.basepattern>nl.svenar.shaded</shade.basepattern>
+		<shade.basepattern>nl.svenar.lib</shade.basepattern>
 		<testserver.location>../../minecraft/java/bukkit_pr_v1/plugins</testserver.location>
 	</properties>
 
@@ -72,6 +72,7 @@
 								<include>com.fasterxml.jackson.core:jackson-databind</include>
 								<include>com.fasterxml.jackson.core:jackson-annotations</include>
 								<include>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</include>
+								<include>com.googlecode.json-simple:json-simple</include>
 							</includes>
 						</artifactSet>
 						<relocations>
@@ -98,6 +99,10 @@
 							<relocation>
 								<pattern>com.fasterxml</pattern>
 								<shadedPattern>${shade.basepattern}.fasterxml</shadedPattern>
+							</relocation>
+							<relocation>
+								<pattern>org.json</pattern>
+								<shadedPattern>${shade.basepattern}.json</shadedPattern>
 							</relocation>
 						</relocations>
 						<dependencyReducedPomLocation>target/reduced-pom.xml</dependencyReducedPomLocation>
@@ -175,6 +180,12 @@
 			<version>1.26</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1</version>
+			<type>jar</type>
+		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -208,8 +219,14 @@
 		<dependency>
 			<groupId>com.github.MilkBowl</groupId>
 			<artifactId>VaultAPI</artifactId>
-			<version>1.7</version>
+			<version>1.7.1</version>
 			<scope>provided</scope>
+			<exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
