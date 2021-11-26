@@ -11,7 +11,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 
 public class OnPreCommand implements Listener {
-    
+
     private PowerRanks plugin;
 
     public OnPreCommand(PowerRanks plugin) {
@@ -28,20 +28,25 @@ public class OnPreCommand implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        String[] args = (event.getMessage().startsWith("/") ? event.getMessage().replaceFirst("/", "") : event.getMessage()).split(" ");
-        String command = args[0];
-
-        if (this.handleCommand(command)) {
+        if (this.handleCommand(removeDash(event.getMessage()))) {
             event.getPlayer().sendMessage(plugin.plp + ChatColor.RED + "This command is disabled");
             event.setCancelled(true);
         }
     }
 
     private boolean handleCommand(String command) {
-        if (PowerRanks.getConfigManager().getBool("general.disable-op", false) && (command.equalsIgnoreCase("op") || command.equalsIgnoreCase("deop"))) {
+        if (PowerRanks.getConfigManager().getBool("general.disable-op", false)
+                && (command.equalsIgnoreCase("op") || command.equalsIgnoreCase("deop"))) {
             return true;
         }
 
         return false;
+    }
+
+    private static String removeDash(String input) {
+        if (input.charAt(0) == '/') {
+            return input.substring(1);
+        }
+        return input;
     }
 }
