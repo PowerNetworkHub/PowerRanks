@@ -29,124 +29,124 @@ public class PowerRanksVaultChat extends Chat {
 	}
 
 	@Override
-	public boolean getGroupInfoBoolean(String arg0, String arg1, String arg2, boolean arg3) {
+	public boolean getGroupInfoBoolean(String worldName, String rankName, String node, boolean defaultValue) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override
-	public double getGroupInfoDouble(String arg0, String arg1, String arg2, double arg3) {
+	public double getGroupInfoDouble(String worldName, String rankName, String node, double defaultValue) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
-	public int getGroupInfoInteger(String arg0, String arg1, String arg2, int arg3) {
+	public int getGroupInfoInteger(String worldName, String rankName, String node, int defaultValue) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
-	public String getGroupInfoString(String arg0, String arg1, String arg2, String arg3) {
+	public String getGroupInfoString(String worldName, String rankName, String node, String defaultValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public String getGroupPrefix(String arg0, String arg1) {
+	public String getGroupPrefix(String worldName, String rankName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public String getGroupSuffix(String arg0, String arg1) {
+	public String getGroupSuffix(String worldName, String rankName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public boolean getPlayerInfoBoolean(String arg0, String arg1, String arg2, boolean arg3) {
+	public boolean getPlayerInfoBoolean(String worldName, String playerName, String node, boolean defaultValue) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override
-	public double getPlayerInfoDouble(String arg0, String arg1, String arg2, double arg3) {
+	public double getPlayerInfoDouble(String worldName, String playerName, String node, double defaultValue) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
-	public int getPlayerInfoInteger(String arg0, String arg1, String arg2, int arg3) {
+	public int getPlayerInfoInteger(String worldName, String playerName, String node, int defaultValue) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	@Override
-	public String getPlayerInfoString(String arg0, String arg1, String arg2, String arg3) {
+	public String getPlayerInfoString(String worldName, String playerName, String node, String defaultValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public String getPlayerPrefix(String arg0, String arg1) {
+	public String getPlayerPrefix(String worldName, String playerName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public String getPlayerSuffix(String arg0, String arg1) {
+	public String getPlayerSuffix(String worldName, String playerName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
 	@Override
-	public void setGroupInfoBoolean(String arg0, String arg1, String arg2, boolean arg3) {
+	public void setGroupInfoBoolean(String worldName, String rankName, String node, boolean value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setGroupInfoDouble(String arg0, String arg1, String arg2, double arg3) {
+	public void setGroupInfoDouble(String worldName, String rankName, String node, double value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setGroupInfoInteger(String arg0, String arg1, String arg2, int arg3) {
+	public void setGroupInfoInteger(String worldName, String rankName, String node, int value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setGroupInfoString(String arg0, String arg1, String arg2, String arg3) {
+	public void setGroupInfoString(String worldName, String rankName, String node, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setGroupPrefix(String arg0, String arg1, String arg2) {
+	public void setGroupPrefix(String worldName, String rankName, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setGroupSuffix(String arg0, String arg1, String arg2) {
+	public void setGroupSuffix(String worldName, String rankName, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setPlayerInfoBoolean(String arg0, String arg1, String arg2, boolean arg3) {
+	public void setPlayerInfoBoolean(String worldName, String playerName, String node, boolean value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setPlayerInfoDouble(String arg0, String arg1, String arg2, double arg3) {
+	public void setPlayerInfoDouble(String worldName, String playerName, String node, double value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setPlayerInfoInteger(String arg0, String arg1, String arg2, int arg3) {
+	public void setPlayerInfoInteger(String worldName, String playerName, String node, int value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setPlayerInfoString(String arg0, String arg1, String arg2, String arg3) {
+	public void setPlayerInfoString(String worldName, String playerName, String node, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setPlayerPrefix(String arg0, String arg1, String arg2) {
+	public void setPlayerPrefix(String worldName, String playerName, String value) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void setPlayerSuffix(String arg0, String arg1, String arg2) {
+	public void setPlayerSuffix(String worldName, String playerName, String value) {
 		// TODO Auto-generated method stub
 		
 	}
