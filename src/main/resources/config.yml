@@ -1,69 +1,7 @@
-# --------------------
-# General
-# disable-op                prevent the /op & /deop command being used and deop every player
-# playtime-update-interval  player playtime update interval in seconds
-# --------------------
-# Chat format
-# Available options:
-# [world]                   player's current world
-# [prefix]                  rank prefix
-# [suffix]                  rank suffix
-# [subprefix]               player's subrank prefix
-# [subsuffix]               player's subrank suffix
-# [player]                  player name
-# [msg]                     message player typed
-# [format]                  get the current chat format
-# [usertag]                 player's self-assigned tag
-# Example, use the current chat format and adding the rank's prefix:
-# format: '[prefix] [format]'
-# --------------------
-# Tablist Modification
-# Change the player's name in the tablist
-# Available options:
-# [world]                   player's current world
-# [usertag]                 player's usertag
-# [prefix]                  rank prefix
-# [suffix]                  rank suffix
-# [subprefix]               player's subrank prefix
-# [subsuffix]               player's subrank suffix
-# [player]                  player name
-# --------------------
-# Signs
-# Set the player's rank using signs.
-# Available commands: promote, demote, set, check, gui, rankup
-# Format:
-# Line 1: [PowerRanks]
-# Line 2: <command>
-# Line 3: [rank]
-# --------------------
-# Plugin hooks
-# Enable or disable the use of a certain soft-dependency.
-# Vault (Economy): used for '/pr rankup'
-# Vault (Permissions): used for plugins using the Vault API
-# PlaceholderAPI: used for '%powerranks_rank%', '%powerranks_prefix%', '%powerranks_suffix%', '%powerranks_chatcolor%' and '%powerranks_namecolor%'
-# DeluxeTags: used for user tags
-# NametagEdit: used for changing the players name displayed above the head
-# --------------------
-# Announcements
-# Enable or disable server-wide announcements.
-# rankup, broadcast when a player's rank has been changed
-# promote, broadcast when a player is promoted
-# demote, broadcast when a player is demoted
-# Available options:
-# [powerranks_prefix] the PowerRanks prefix
-# [player] the player's name
-# [rank] the player's new rank
-# --------------------
-# Updates
-# 'enable_update_checking' Enable or disable update checking.
-# 'automatic_download_updates' Attempt to automatically update PowerRanks.jar to the new version.
-# 'automatic_update_config_files' Update the configuration files to the newest version.
-# --------------------
-
 general:
-  disable-op: false
-  playtime-update-interval: 60
   defaultrank: 'Member'
+  playtime-update-interval: 60
+  disable-op: false
 storage:
   type: YAML
   mysql:
@@ -72,11 +10,6 @@ storage:
     database: powerranks
     username: username
     password: password
-    verbose: false
-  mongodb:
-    host: 127.0.0.1
-    port: 3306
-    database: powerranks
     verbose: false
 chat:
   enabled: true

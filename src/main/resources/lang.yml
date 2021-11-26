@@ -318,9 +318,6 @@ commands:
       listaddons:
          command: "listaddons [page]"
          description: "List all installed add-ons"
-      gui:
-         command: "gui"
-         description: "Show the commands GUI"
       rankup:
          command: "rankup"
          description: "Buy a rank"
@@ -336,9 +333,6 @@ commands:
       setbuycost:
          command: "setbuycost <rank> <cost>"
          description: "Set the buy cost of a rank"
-      setguiicon:
-         command: "setguiicon <rank>"
-         description: "Set the icon of a rank to the current item in your hand"
       setbuydescription:
          command: "setbuydescription <rank> <buy description>"
          description: "Set the description of a buyable rank"
@@ -354,6 +348,9 @@ commands:
       addonmanager:
          command: "addonmanager"
          description: "Manage the PowerRanks add-ons"
+      webeditor:
+         command: "webeditor start/load <key>"
+         description: "Upload/download your server data to/from the PowerRanks web-editor"
       config:
          command: "config <removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
          description: "Edit the configuration file"

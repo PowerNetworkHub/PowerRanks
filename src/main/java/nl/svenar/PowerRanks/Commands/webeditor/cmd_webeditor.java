@@ -37,7 +37,7 @@ public class cmd_webeditor extends PowerCommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.webeditor") || sender.hasPermission("powerranks.cmd.admin")) {
+		if (sender.hasPermission("powerranks.cmd.webeditor")) {
 			if (args.length == 0) {
 				// No args
 			} else if (args.length == 1 || args.length == 2) {
