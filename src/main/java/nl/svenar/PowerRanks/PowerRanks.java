@@ -221,9 +221,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		CacheManager.save();
 
-		getConfigManager().save();
-		getLanguageManager().save();
-		getUsertagManager().save();
+		saveConfigurationFiles();
 
 		if (Objects.nonNull(this.addonsManager)) {
 			this.addonsManager.disable();
@@ -244,6 +242,34 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
 			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
+		}
+	}
+
+	private void saveConfigurationFiles() {
+		boolean hasErrorInSaving = false;
+		if (Objects.nonNull(getConfigManager())) {
+			getConfigManager().save();
+		} else {
+			getLogger().warning("Failed to save configuration file!");
+			hasErrorInSaving = true;
+		}
+
+		if (Objects.nonNull(getLanguageManager())) {
+			getLanguageManager().save();
+		} else {
+			getLogger().warning("Failed to save languages file!");
+			hasErrorInSaving = true;
+		}
+
+		if (Objects.nonNull(getUsertagManager())) {
+			getUsertagManager().save();
+		} else {
+			getLogger().warning("Failed to save usertags file!");
+			hasErrorInSaving = true;
+		}
+
+		if (hasErrorInSaving) {
+			getLogger().warning("This could occur when PowerRanks restarted on a reload in your server.");
 		}
 	}
 
