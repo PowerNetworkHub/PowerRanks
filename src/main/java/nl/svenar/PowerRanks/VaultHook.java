@@ -19,7 +19,7 @@ public class VaultHook {
 
 	}
 
-	public void hook(PowerRanks plugin, boolean setupPermissions, boolean setupEconomy, boolean silent) {
+	public void hook(PowerRanks plugin, boolean setupPermissions, boolean setupEconomy) {
 		if (setupPermissions) {
 			Plugin vault = Bukkit.getPluginManager().getPlugin("Vault");
 			PowerRanksVaultPermission vaultPermsHook = new PowerRanksVaultPermission(plugin);
@@ -37,10 +37,9 @@ public class VaultHook {
 				RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager()
 						.getRegistration(Economy.class);
 				vaultEconomy = rsp.getProvider();
+
+				PowerRanks.log.info("Vault compatible economy plugin found! (" + vaultEconomy.getName() + ")");
 			} catch (Exception e) {
-				if (!silent) {
-					PowerRanks.log.warning("Failed to load Vault Economy! Is an economy plugin present?");
-				}
 			}
 		}
 	}

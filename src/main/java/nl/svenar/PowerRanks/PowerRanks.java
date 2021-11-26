@@ -365,7 +365,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						boolean has_vault_economy = PowerRanks.getInstance().getServer().getPluginManager()
 								.getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy");
 
-						vaultHook.hook(PowerRanks.getInstance(), false, has_vault_economy, true);
+						vaultHook.hook(PowerRanks.getInstance(), false, has_vault_economy);
 					} else {
 						this.cancel();
 					}
@@ -428,7 +428,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 
 				this.vaultHook = new VaultHook();
-				vaultHook.hook(this, has_vault_permissions, has_vault_economy, false);
+				vaultHook.hook(this, has_vault_permissions, has_vault_economy);
 				vaultEconomyEnabled = has_vault_economy;
 				vaultPermissionsEnabled = has_vault_permissions;
 			}
