@@ -64,7 +64,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		for (PRPermission prPermission : permissions) {
 			if (prPermission.getName().equals(permission)) {
-				disallowed = prPermission.getValue();
+				disallowed = !prPermission.getValue();
 				break;
 			}
 		}
