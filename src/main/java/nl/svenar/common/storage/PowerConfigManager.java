@@ -164,6 +164,7 @@ public abstract class PowerConfigManager {
      * @param value
      */
     @SuppressWarnings("unchecked")
+    // TODO: Seems to be overwriting other keys in the same group
     public void setKV(String key, Object value) {
 
         String[] keySplit = key.split("\\.");
