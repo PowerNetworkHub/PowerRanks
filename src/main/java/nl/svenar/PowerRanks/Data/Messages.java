@@ -366,11 +366,11 @@ public class Messages {
 
 				if (in_world) {
 					if (subrank.getUsingPrefix()) {
-						subprefix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix();
+						subprefix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix() + " ";
 					}
 
 					if (subrank.getUsingSuffix()) {
-						subsuffix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix();
+						subsuffix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix() + " ";
 
 					}
 				}

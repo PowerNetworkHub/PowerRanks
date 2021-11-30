@@ -74,11 +74,11 @@ public class OnChat implements Listener {
 						if (Objects.nonNull(targetRank)) {
 							if (in_world) {
 								if (subrank.getUsingPrefix()) {
-									subprefix += ChatColor.RESET + targetRank.getPrefix();
+									subprefix += ChatColor.RESET + targetRank.getPrefix() + " ";
 								}
 
 								if (subrank.getUsingSuffix()) {
-									subsuffix += ChatColor.RESET + targetRank.getSuffix();
+									subsuffix += ChatColor.RESET + targetRank.getSuffix() + " ";
 
 								}
 							}
