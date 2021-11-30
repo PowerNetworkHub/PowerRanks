@@ -151,19 +151,28 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
 
 		PowerRanks.log.info("");
-		PowerRanks.log.info("=== ----------- LOADING DATA ----------- ===");
+		PowerRanks.log.info("=== ------- LOADING CONFIGURATION ------ ===");
 		new PowerRanksChatColor();
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
 		this.createDir(PowerRanks.fileLoc);
 
-		PowerRanks.log.info("Loading config");
+		PowerRanks.log.info("Loading config file");
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
+		PowerRanks.log.info("Loading language file");
 		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		PowerRanks.log.info("Loading usertags file");
 		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
 
-		PowerRanks.log.info("Loading player&rank data");
+		PowerRanks.log.info("");
+		PowerRanks.log.info("=== ---------- LOADING ADDONS ---------- ===");
+		addonsManager = new AddonsManager(this);
+		addonsManager.setup();
+
+		PowerRanks.log.info("");
+		PowerRanks.log.info("=== ----------- LOADING DATA ----------- ===");
+		PowerRanks.log.info("Loading player & rank data");
 		CacheManager.load(PowerRanks.fileLoc);
 		loadDefaultRanks();
 
@@ -176,11 +185,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		setupSoftDependencies();
 
 		GUI.setPlugin(this);
-
-		PowerRanks.log.info("");
-		PowerRanks.log.info("=== ---------- LOADING ADDONS ---------- ===");
-		addonsManager = new AddonsManager(this);
-		addonsManager.setup();
 
 		PowerRanks.log.info("");
 		PowerRanks.log
@@ -392,7 +396,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
-		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking UUID---------- ===");
+		// PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking UUID---------- ===");
 		Player player = null;
 		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
 			if (uuid == online_player.getUniqueId()) {
@@ -400,7 +404,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				break;
 			}
 		}
-		PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== --------------------------------- ===");
+		// PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== --------------------------------- ===");
 		return player;
 	}
 

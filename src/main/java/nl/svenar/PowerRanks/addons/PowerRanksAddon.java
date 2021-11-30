@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.addons;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -8,12 +9,14 @@ import org.bukkit.block.Block;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
+import nl.svenar.common.storage.PowerStorageManager;
 
 public abstract class PowerRanksAddon {
 
 	private PowerRanksConfig powerranksConfig = null;
 	private ArrayList<String> registeredCommands = new ArrayList<String>();
 	private ArrayList<String> registeredPermissions = new ArrayList<String>();
+	private List<String> storageManagers = new ArrayList<String>();
 
 	public enum RankChangeCause {
 		SET, PROMOTE, DEMOTE
@@ -24,7 +27,8 @@ public abstract class PowerRanksAddon {
 		PLACE, // Called when a block is placed by a player.
 
 		MOISTURE, // Called when the moisture level of a soil block changes.
-		FERTILIZE, // Called with the block changes resulting from a player fertilizing a given block with bonemeal.
+		FERTILIZE, // Called with the block changes resulting from a player fertilizing a given
+					// block with bonemeal.
 		GROW, // Called when a block grows naturally in the world.
 
 		IGNITE, // Called when a block is ignited.
@@ -88,13 +92,16 @@ public abstract class PowerRanksAddon {
 	public abstract String minimalPowerRanksVersion();
 
 	// This function is called once on add-on load
-	public void setup(PowerRanks powerranks) {}
+	public void setup(PowerRanks powerranks) {
+	}
 
 	// This function is called once on add-on load
-	public void setup() {}
+	public void setup() {
+	}
 
 	// This function is called once on add-on unload
-	public void unload() {}
+	public void unload() {
+	}
 
 	// Called when a player joins the server
 	public void onPlayerJoin(PowerRanksPlayer prPlayer) {
@@ -119,7 +126,8 @@ public abstract class PowerRanksAddon {
 	}
 
 	// Called when a player's rank changes
-	public void onPlayerRankChange(PowerRanksPlayer prPlayer, String oldRank, String newRank, RankChangeCause cause, boolean isPlayerOnline) {
+	public void onPlayerRankChange(PowerRanksPlayer prPlayer, String oldRank, String newRank, RankChangeCause cause,
+			boolean isPlayerOnline) {
 	}
 
 	// Chat handler
@@ -133,7 +141,8 @@ public abstract class PowerRanksAddon {
 	// Executed when a default PowerRanks command is not found
 	// return true after a custom command is handled, otherwise the unknown command
 	// message will display, by default it should return false
-	public boolean onPowerRanksCommand(PowerRanksPlayer prPlayer, boolean sendAsPlayer, String command, String[] arguments) {
+	public boolean onPowerRanksCommand(PowerRanksPlayer prPlayer, boolean sendAsPlayer, String command,
+			String[] arguments) {
 		return false;
 	}
 
@@ -148,5 +157,26 @@ public abstract class PowerRanksAddon {
 	// return true to cancel the event
 	public boolean onBlockChange(PowerRanksPlayer prPlayer, Block block, BlockChangeCause blockChangeCause) {
 		return false;
+	}
+
+	// Add a storage manager that PowerRanks users can use to store data with
+	// Argument: name, the name of the storage manager (used in config.yml >
+	// storage.type)
+	// Argument: storageManager, the storage manager class
+	public void registerStorageManager(String name) {
+		this.storageManagers.add(name);
+	}
+
+	// Get all registered storage engines in this add-on
+	// return a list of available storage engines
+	public List<String> getStorageManagerNames() {
+		return this.storageManagers;
+	}
+
+	public PowerStorageManager getStorageManager(String name) {
+		return null;
+	}
+
+	public void setupStorageManager(String name) {
 	}
 }

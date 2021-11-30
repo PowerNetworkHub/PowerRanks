@@ -1,13 +1,17 @@
 package nl.svenar.PowerRanks.Cache;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Events.OnJoin;
+import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.PowerSQLConfiguration;
 import nl.svenar.common.storage.PowerStorageManager;
@@ -126,7 +130,9 @@ public class CacheManager {
     public static void load(String dataDirectory) {
         String storageType = PowerRanks.getConfigManager().getString("storage.type", "yaml").toUpperCase();
         if (storageManager == null) {
-            if (storageType.equals("JSON")) {
+            if (storageType.equals("YML") || storageType.equals("YAML")) {
+                storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
+            } else if (storageType.equals("JSON")) {
                 storageManager = new JSONStorageManager(dataDirectory, "ranks.json", "players.json");
             } else if (storageType.equals("PSM")) {
                 storageManager = new PSMStorageManager(dataDirectory, "ranks.psm", "players.psm");
@@ -151,7 +157,37 @@ public class CacheManager {
                 // storageManager = new MongoDBStorageManager(configuration,
                 // pcm.getBool("storage.mongodb.verbose", false));
             } else { // Default to yaml
-                storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
+
+                PowerRanksAddon usedStorageManagerAddon = null;
+                try {
+                    PowerRanks pluginInstance = PowerRanks.getInstance();
+                    for (Entry<File, PowerRanksAddon> prAddon : pluginInstance.addonsManager.addonClasses.entrySet()) {
+                        List<String> addonStorageManager = prAddon.getValue().getStorageManagerNames();
+                        if (Objects.nonNull(addonStorageManager)) {
+                            for (String storageName : addonStorageManager) {
+                                if (storageType.equals(storageName.toUpperCase())) {
+                                    usedStorageManagerAddon = prAddon.getValue();
+                                    usedStorageManagerAddon.setupStorageManager(storageName);
+                                    storageManager = usedStorageManagerAddon.getStorageManager(storageName);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (Objects.nonNull(storageManager)) {
+                            break;
+                        }
+
+                    }
+                } catch (Exception ex) {
+                }
+
+                if (Objects.isNull(storageManager)) {
+                    PowerRanks.getInstance().getLogger().warning("Unknown storage method configured! Falling back to YAML");
+                    storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
+                } else {
+                    PowerRanks.getInstance().getLogger().info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
+                }
             }
         }
 
