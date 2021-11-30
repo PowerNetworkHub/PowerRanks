@@ -1370,7 +1370,6 @@ public class Users implements Listener {
 			return false;
 		}
 
-		// TODO: check if works
 		if (field.toLowerCase().contains("prefix")) {
 			targetSubrank.setUsingPrefix(value);
 		}
@@ -1383,7 +1382,7 @@ public class Users implements Listener {
 			targetSubrank.setUsingPermissions(value);
 		}
 
-		return false;
+		return true;
 	}
 
 	public List<PRPermission> getPlayerPermissions(String playername) {
