@@ -243,6 +243,16 @@ public class Messages {
 				- TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(playerPlaytime));
 		final long seconds = TimeUnit.SECONDS.toSeconds(playerPlaytime)
 				- TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(playerPlaytime));
+		
+		String formattedSubranks = "";
+
+		for (PRSubrank subrank : CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks()) {
+			formattedSubranks += subrank.getName() + ", ";
+		}
+
+		if (formattedSubranks.endsWith(", ")) {
+			formattedSubranks = formattedSubranks.substring(0, formattedSubranks.length() - 2);
+		}
 
 		String playerPlaytimeFormatted = days > 0
 				? String.format("%02d %s %02d:%02d:%02d", days, days == 1 ? "day" : "days", hours, minutes, seconds)
@@ -266,7 +276,7 @@ public class Messages {
 				+ CacheManager.getPlayer(player.getUniqueId().toString()).getRank());
 		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN
 				+ (CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks().size() > 0
-						? CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks()
+						? formattedSubranks
 						: "None"));
 		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
