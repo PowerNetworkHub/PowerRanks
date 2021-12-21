@@ -80,7 +80,7 @@ public class MySQLStorageManager extends PowerStorageManager {
         try {
             this.connection = DriverManager.getConnection(
                     "jdbc:mysql://" + sqlConfig.getHost() + ":" + sqlConfig.getPort() + "?autoReconnect=true"
-                            + "&useSSL=false" + "&rewriteBatchedStatements=true",
+                            + "&useSSL=" + (sqlConfig.isUsingSSL() ? "true" : "false") + "&rewriteBatchedStatements=true",
                     sqlConfig.getUsername(), sqlConfig.getPassword());
 
         } catch (SQLException e) {

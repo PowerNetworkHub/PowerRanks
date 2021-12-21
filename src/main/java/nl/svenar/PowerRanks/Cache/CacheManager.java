@@ -144,18 +144,9 @@ public class CacheManager {
                         pcm.getString("storage.mysql.host", "127.0.0.1"), pcm.getInt("storage.mysql.port", 3306),
                         pcm.getString("storage.mysql.database", "powerranks"),
                         pcm.getString("storage.mysql.username", "username"),
-                        pcm.getString("storage.mysql.password", "password"), "ranks", "players");
+                        pcm.getString("storage.mysql.password", "password"),
+                        pcm.getBool("storage.mysql.ssl", false), "ranks", "players");
                 storageManager = new MySQLStorageManager(configuration, pcm.getBool("storage.mysql.verbose", false));
-                // } else if (storageType.equals("MONGO") || storageType.equals("MONGODB")) {
-                // PowerConfigManager pcm = PowerRanks.getConfigManager();
-                // PowerSQLConfiguration configuration = new PowerSQLConfiguration(
-                // pcm.getString("storage.mongodb.host", "127.0.0.1"),
-                // pcm.getInt("storage.mongodb.port", 3306),
-                // pcm.getString("storage.mongodb.database", "powerranks"),
-                // "",
-                // "", "", "");
-                // storageManager = new MongoDBStorageManager(configuration,
-                // pcm.getBool("storage.mongodb.verbose", false));
             } else { // Default to yaml
 
                 PowerRanksAddon usedStorageManagerAddon = null;
@@ -183,10 +174,12 @@ public class CacheManager {
                 }
 
                 if (Objects.isNull(storageManager)) {
-                    PowerRanks.getInstance().getLogger().warning("Unknown storage method configured! Falling back to YAML");
+                    PowerRanks.getInstance().getLogger()
+                            .warning("Unknown storage method configured! Falling back to YAML");
                     storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
                 } else {
-                    PowerRanks.getInstance().getLogger().info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
+                    PowerRanks.getInstance().getLogger()
+                            .info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
                 }
             }
         }

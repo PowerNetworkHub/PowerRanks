@@ -35,6 +35,7 @@ public class PowerSQLConfiguration {
     private String database;
     private String username;
     private String password;
+    private boolean useSSL;
     private String tableRanks;
     private String tablePlayers;
 
@@ -46,16 +47,19 @@ public class PowerSQLConfiguration {
      * @param database
      * @param username
      * @param password
+     * @param useSSL
      * @param tableRanks
      * @param tablePlayers
      */
     public PowerSQLConfiguration(String host, int port, String database, String username, String password,
+            boolean useSSL,
             String tableRanks, String tablePlayers) {
         this.host = host;
         this.port = port;
         this.database = database;
         this.username = username;
         this.password = password;
+        this.useSSL = useSSL;
         this.tableRanks = tableRanks;
         this.tablePlayers = tablePlayers;
     }
@@ -98,6 +102,14 @@ public class PowerSQLConfiguration {
      */
     public String getPassword() {
         return this.password;
+    }
+
+    /**
+     * 
+     * @return Whether to use SSL for connecting
+     */
+    public boolean isUsingSSL() {
+        return this.useSSL;
     }
 
     /**

@@ -11,6 +11,7 @@ storage:
     database: powerranks
     username: username
     password: password
+    ssl: false
     verbose: false
 chat:
   enabled: true
