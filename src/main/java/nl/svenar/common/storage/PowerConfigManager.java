@@ -33,6 +33,11 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 
 /**
  * Configuration core that can be implemented in multiple storage methods (for
@@ -221,6 +226,7 @@ public abstract class PowerConfigManager {
 
     /**
      * Check if the data has this key
+     * 
      * @param key
      * @return if data contains the key
      */
@@ -362,6 +368,48 @@ public abstract class PowerConfigManager {
             this.setKV(key + "." + value.keySet().toArray()[0], value.values().toArray()[0]);
         } else {
             this.setKV(key, value);
+        }
+    }
+
+    /**
+     * Format the chached data as JSON string
+     * 
+     * @param pretty
+     * @return JSON formatted string
+     */
+    public String toJSON(String searchKey, boolean pretty) {
+        Gson gson = null;
+
+        if (pretty) {
+            gson = new GsonBuilder().setPrettyPrinting().create();
+        } else {
+            gson = new Gson();
+        }
+
+        if (searchKey == null || searchKey.length() == 0) {
+            return gson.toJson(this.data);
+        } else {
+            return gson.toJson(this.data.get(searchKey));
+        }
+    }
+
+    /**
+     * Import JSON data into this configuration instance.
+     * 
+     * @param input
+     */
+    public void fromJSON(String targetKey, LinkedTreeMap<?, ?> input) {
+        Map<String, Object> newData = new HashMap<String, Object>();
+
+        for (Entry<?, ?> entry : input.entrySet()) {
+            newData.put(entry.getKey().toString(), entry.getValue());
+        }
+
+        if (targetKey == null || targetKey.length() == 0) {
+            this.setRawData(newData);
+        } else {
+            this.data = new HashMap<String, Object>();
+            this.data.put(targetKey, newData);
         }
     }
 }

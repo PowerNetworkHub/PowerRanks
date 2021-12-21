@@ -90,6 +90,9 @@ public class cmd_webeditor extends PowerCommand {
 		outputJSON += ",";
 		outputJSON += "\"playerdata\":";
 		outputJSON += jsonmanager.getPlayersAsJSON(false);
+		outputJSON += ",";
+		outputJSON += "\"usertags\":";
+		outputJSON += PowerRanks.getUsertagManager().toJSON("usertags", false);
 		outputJSON += "}";
 
 		jsonmanager.removeAllData();
@@ -204,6 +207,7 @@ public class cmd_webeditor extends PowerCommand {
 
 		LinkedTreeMap<?, ?> rankData = (LinkedTreeMap<?, ?>) jsonData.get("rankdata");
 		LinkedTreeMap<?, ?> playerData = (LinkedTreeMap<?, ?>) jsonData.get("playerdata");
+		LinkedTreeMap<?, ?> usertags = (LinkedTreeMap<?, ?>) jsonData.get("usertags");
 
 		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json",
 				"dummyPlayers.json");
@@ -219,6 +223,8 @@ public class cmd_webeditor extends PowerCommand {
 		CacheManager.save();
 
 		jsonmanager.removeAllData();
+
+		PowerRanks.getUsertagManager().fromJSON("usertags", usertags);
 
 		Messages.downloadedWebeditorData(sender);
 		Messages.LoadedRanksPlayersWebeditor(sender, CacheManager.getRanks().size(), CacheManager.getPlayers().size());
