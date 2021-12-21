@@ -60,6 +60,7 @@ import nl.svenar.PowerRanks.Commands.rank.cmd_setnamecolor;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setprefix;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setpromoterank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setsuffix;
+import nl.svenar.PowerRanks.Commands.rank.cmd_setweight;
 import nl.svenar.PowerRanks.Commands.subranks.cmd_addsubrank;
 import nl.svenar.PowerRanks.Commands.subranks.cmd_addsubrankworld;
 import nl.svenar.PowerRanks.Commands.subranks.cmd_delsubrank;
@@ -136,6 +137,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_setnamecolor(plugin, "setnamecolor", COMMAND_EXECUTOR.ALL);
 		new cmd_addinheritance(plugin, "addinheritance", COMMAND_EXECUTOR.ALL);
 		new cmd_delinheritance(plugin, "delinheritance", COMMAND_EXECUTOR.ALL);
+		new cmd_setweight(plugin, "setweight", COMMAND_EXECUTOR.ALL);
 
 		new cmd_promote(plugin, "promote", COMMAND_EXECUTOR.ALL);
 		new cmd_demote(plugin, "demote", COMMAND_EXECUTOR.ALL);

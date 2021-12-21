@@ -243,7 +243,7 @@ public class Messages {
 				- TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(playerPlaytime));
 		final long seconds = TimeUnit.SECONDS.toSeconds(playerPlaytime)
 				- TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(playerPlaytime));
-		
+
 		String formattedSubranks = "";
 
 		for (PRSubrank subrank : CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks()) {
@@ -2345,6 +2345,30 @@ public class Messages {
 		String msg = getGeneralMessage(languageManager, "messages.incompattible_powerranks_version_webeditor");
 		msg = Util.replaceAll(msg, "%prversioneditor%", editorPRVersion);
 		msg = Util.replaceAll(msg, "%prversionserver%", serverPRVersion);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageErrorNotInt(CommandSender sender, String notInt) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.not_an_integer");
+		msg = Util.replaceAll(msg, "%argument_notint%", notInt);
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandWeightSet(CommandSender sender, int weight, String rankname) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "messages.rank_weight_changed");
+		msg = Util.replaceAll(msg, "%argument_rank%", rankname);
+		msg = Util.replaceAll(msg, "%argument_weight%", String.valueOf(weight));
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageSetWeight(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_setweight");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}

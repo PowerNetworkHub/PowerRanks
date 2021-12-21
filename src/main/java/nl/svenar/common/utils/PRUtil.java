@@ -1,0 +1,17 @@
+package nl.svenar.common.utils;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import nl.svenar.common.structure.PRRank;
+
+public class PRUtil {
+
+    public List<PRRank> sortRanksByWeight(List<PRRank> ranks) {
+        Comparator<PRRank> compareByWeight = (PRRank o1, PRRank o2) -> Integer.compare(o1.getWeight(), o2.getWeight());
+        Collections.sort(ranks, compareByWeight);
+
+        return ranks;
+    }
+}

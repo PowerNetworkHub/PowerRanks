@@ -47,6 +47,7 @@ public class PRRank {
     private float economyCost;
     private String economyDescription;
     private String economyBuyCommand;
+    private int weight;
 
     public PRRank() {
         name = "";
@@ -62,6 +63,7 @@ public class PRRank {
         economyCost = 0L;
         economyDescription = "";
         economyBuyCommand = "";
+        weight = 0;
     }
 
     /**
@@ -398,5 +400,23 @@ public class PRRank {
      */
     public void setBuyCommand(String buyCommand) {
         this.economyBuyCommand = buyCommand;
+    }
+
+    /**
+     * Get the weight of this rank
+     * 
+     * @return Integer weight of the rank
+     */
+    public int getWeight() {
+        return this.weight;
+    }
+
+    /**
+     * Set the weight of this rank
+     * 
+     * @param weight
+     */
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 }

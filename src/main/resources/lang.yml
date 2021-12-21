@@ -5,11 +5,12 @@ general:
 
 messages:
    no_permission: "%plugin_prefix% &4You don't have permission to perform this command!"
-   rank_set_sender: "%plugin_prefix% Set '%argument_target%' to rank: %argument_rank%"
-   rank_set_target: "%plugin_prefix% You have been promoted to: %argument_rank% by %argument_sender%"
+   rank_set_sender: "%plugin_prefix% &aSet '%argument_target%' to rank: %argument_rank%"
+   rank_set_target: "%plugin_prefix% &aYou have been promoted to: %argument_rank% by %argument_sender%"
    player_not_found: "%plugin_prefix% &cPlayer '%argument_target%' not found!"
    console_is_not_a_player: "%plugin_prefix% &cThe console isn't a valid player!"
    group_not_found: "%plugin_prefix% &cGroup '%argument_rank%' not found!"
+   not_an_integer: "%plugin_prefix% &c'%argument_notint%' is not an integer"
    usertag_not_found: "%plugin_prefix% &cUsertag '%argument_usertag%' not found!"
    player_check_rank: "%plugin_prefix% %argument_target%'s rank is %argument_rank%"
    inheritance_added: "%plugin_prefix% &aInheritance '%argument_inheritance%' added to rank: %argument_rank%"
@@ -112,6 +113,7 @@ messages:
    loaded_ranks_players_webeditor: "%plugin_prefix% &aLoaded %ranks% ranks and %players% players from the web editor!"
    downloaded_invalid_webeditor: "%plugin_prefix% &cInvalid webeditor data!"
    incompattible_powerranks_version_webeditor: "%plugin_prefix% &cIncompattible PowerRanks version! (editor: %prversioneditor% | server: %prversionserver%)"
+   rank_weight_changed: "%plugin_prefix% &aThe weight of rank '%argument_rank%' has been changed to: %argument_weight%"
 commands:
    only_numbers: "%plugin_prefix% &cOnly numbers are allowed!"
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"
@@ -170,6 +172,7 @@ commands:
    usage_command_pluginhook: "%plugin_prefix% &c%base_cmd% pluginhook [enable/disable] [plugin_name]"
    usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
    usage_command_webeditor: "%plugin_prefix% &c%base_cmd% we <start/load [id]>"
+   usage_command_setweight: "%plugin_prefix% &c%base_cmd% setweight <rank> <weight | number>"
    response_command_checkrank: "%plugin_prefix% &a%argument_target%'s rank is %argument_rank%"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_warning: "%plugin_prefix% &4Reloading is not recommended and can cause unforseen problems. Restart instead!"
@@ -339,6 +342,9 @@ commands:
       setbuycommand:
          command: "setbuycommand <rank> <command to execute>"
          description: "Set the command that will be executed after that rank is bought"
+      setweight:
+         command: "setweight <rank> <weight | number>"
+         description: "Change the weight of the rank for permission handeling. Height weight equals more priority."
       pluginhook:
          command: "pluginhook [enable/disable] [plugin_name]"
          description: "Enable or disable a plugin for PowerRanks to hook in to"

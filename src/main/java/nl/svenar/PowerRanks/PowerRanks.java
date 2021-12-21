@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,6 +72,7 @@ import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.structure.PRSubrank;
+import nl.svenar.common.utils.PRUtil;
 
 import com.google.common.collect.ImmutableMap;
 import com.nametagedit.plugin.NametagEdit;
@@ -396,7 +398,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
-		// PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking UUID---------- ===");
+		// PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== ----------Checking
+		// UUID---------- ===");
 		Player player = null;
 		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
 			if (uuid == online_player.getUniqueId()) {
@@ -404,7 +407,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				break;
 			}
 		}
-		// PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "=== --------------------------------- ===");
+		// PowerRanksVerbose.log("getPlayerFromUUID(UUID)", "===
+		// --------------------------------- ===");
 		return player;
 	}
 
@@ -934,19 +938,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 
 		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
+		PRRank playerRank = CacheManager.getRank(rank);
 
-		for (PRPermission permission : CacheManager.getRank(rank).getPermissions()) {
-			permissions.add(permission);
-		}
+		List<PRRank> effectiveRanks = new ArrayList<PRRank>();
 
-		for (String inheritance : CacheManager.getRank(rank).getInheritances()) {
-			for (PRPermission permission : CacheManager.getRank(inheritance).getPermissions()) {
-				permissions.add(permission);
+		if (Objects.nonNull(playerRank)) {
+			effectiveRanks.add(playerRank);
+
+			for (String inheritance : playerRank.getInheritances()) {
+				effectiveRanks.add(CacheManager.getRank(inheritance));
 			}
-		}
-
-		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
-			permissions.add(permission);
 		}
 
 		ArrayList<PRSubrank> useable_subranks = new ArrayList<PRSubrank>();
@@ -972,11 +973,36 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		for (PRSubrank subrank : useable_subranks) {
 			if (Objects.nonNull(CacheManager.getRank(subrank.getName()))) {
-				for (PRPermission permission : CacheManager.getRank(subrank.getName()).getPermissions()) {
+				effectiveRanks.add(CacheManager.getRank(subrank.getName()));
+			}
+
+		}
+
+		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
+		effectiveRanks = new PRUtil().sortRanksByWeight(effectiveRanks);
+
+		for (PRRank effectiveRank : effectiveRanks) {
+			if (Objects.nonNull(effectiveRank)) {
+				for (PRPermission permission : effectiveRank.getPermissions()) {
+
+					PRPermission permissionToRemove = null;
+					for (PRPermission existingPermission : permissions) {
+						if (permission.getName().equals(existingPermission.getName())) {
+							permissionToRemove = existingPermission;
+							break;
+						}
+					}
+					if (Objects.nonNull(permissionToRemove)) {
+						permissions.remove(permissionToRemove);
+					}
+
 					permissions.add(permission);
 				}
 			}
+		}
 
+		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+			permissions.add(permission);
 		}
 
 		return permissions;
