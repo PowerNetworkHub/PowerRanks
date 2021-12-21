@@ -30,7 +30,8 @@ import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
-import nl.svenar.common.structure.PRSubrank;
+import nl.svenar.common.structure.PRRank;
+import nl.svenar.common.utils.PRUtil;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -195,7 +196,7 @@ public class Messages {
 					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
 			sender.sendMessage(ChatColor.DARK_GREEN + "Ranks available to buy (click to buy):");
-			List<String> ranks = users.getBuyableRanks(users.getGroup((Player) sender));
+			List<String> ranks = users.getBuyableRanks(users.getPrimaryRank((Player) sender));
 			for (String rank : ranks) {
 				float cost = CacheManager.getRank(rank).getBuyCost();
 				String cost_color = player_balance >= cost ? "green" : "red";
@@ -244,19 +245,17 @@ public class Messages {
 		final long seconds = TimeUnit.SECONDS.toSeconds(playerPlaytime)
 				- TimeUnit.MINUTES.toSeconds(TimeUnit.SECONDS.toMinutes(playerPlaytime));
 
-		String formattedSubranks = "";
-
-		for (PRSubrank subrank : CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks()) {
-			formattedSubranks += subrank.getName() + ", ";
-		}
-
-		if (formattedSubranks.endsWith(", ")) {
-			formattedSubranks = formattedSubranks.substring(0, formattedSubranks.length() - 2);
-		}
-
 		String playerPlaytimeFormatted = days > 0
 				? String.format("%02d %s %02d:%02d:%02d", days, days == 1 ? "day" : "days", hours, minutes, seconds)
 				: String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
+		String formatted_ranks = "";
+		for (String rankname : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			formatted_ranks += rankname + " ";
+		}
+		if (formatted_ranks.endsWith(" ")) {
+			formatted_ranks = formatted_ranks.substring(0, formatted_ranks.length() - 1);
+		}
 
 		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 				+ Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE
@@ -272,12 +271,7 @@ public class Messages {
 				ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
 		sender.sendMessage(ChatColor.GREEN + "Playtime: " + ChatColor.DARK_GREEN + playerPlaytimeFormatted);
 		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
-		sender.sendMessage(ChatColor.GREEN + "Rank: " + ChatColor.DARK_GREEN
-				+ CacheManager.getPlayer(player.getUniqueId().toString()).getRank());
-		sender.sendMessage(ChatColor.GREEN + "Subrank(s): " + ChatColor.DARK_GREEN
-				+ (CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks().size() > 0
-						? formattedSubranks
-						: "None"));
+		sender.sendMessage(ChatColor.GREEN + "Rank(s): " + ChatColor.DARK_GREEN + formatted_ranks);
 		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
 		ArrayList<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
@@ -342,54 +336,45 @@ public class Messages {
 		String playersChatMessage = "message";
 
 		String format = PowerRanks.getConfigManager().getString("chat.format", "");
-		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-		String prefix = CacheManager.getRank(rank).getPrefix();
-		String suffix = CacheManager.getRank(rank).getSuffix();
-		String chatColor = CacheManager.getRank(rank).getChatcolor();
-		String nameColor = CacheManager.getRank(rank).getNamecolor();
-		String subprefix = "";
-		String subsuffix = "";
+
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		String formatted_prefix = "";
+		String formatted_suffix = "";
+		String chatColor = ranks.get(ranks.size() - 1).getChatcolor();
+		String nameColor = ranks.get(ranks.size() - 1).getNamecolor();
 		String usertag = "";
 
-		try {
-			ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks();
-			for (PRSubrank subrank : subranks) {
-				boolean in_world = false;
-
-				String player_current_world = player.getWorld().getName();
-				List<String> worlds = subrank.getWorlds();
-				for (String world : worlds) {
-					if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-						in_world = true;
-					}
-				}
-
-				if (in_world) {
-					if (subrank.getUsingPrefix()) {
-						subprefix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix() + " ";
-					}
-
-					if (subrank.getUsingSuffix()) {
-						subsuffix += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix() + " ";
-
-					}
-				}
-			}
-
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		for (PRRank rank : ranks) {
+			formatted_prefix += rank.getPrefix() + " ";
+			formatted_suffix += rank.getSuffix() + " ";
 		}
 
-		subprefix = subprefix.trim();
-		subsuffix = subsuffix.trim();
-
-		if (subsuffix.endsWith(" ")) {
-			subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
+		if (formatted_prefix.endsWith(" ")) {
+			formatted_prefix = formatted_prefix.substring(0, formatted_prefix.length() - 1);
 		}
 
-		if (subsuffix.replaceAll(" ", "").length() == 0) {
-			subsuffix = "";
+		if (formatted_suffix.endsWith(" ")) {
+			formatted_suffix = formatted_suffix.substring(0, formatted_suffix.length() - 1);
 		}
+
+		// String rank =
+		// CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
+		// String prefix = CacheManager.getRank(rank).getPrefix();
+		// String suffix = CacheManager.getRank(rank).getSuffix();
+		// String chatColor = CacheManager.getRank(rank).getChatcolor();
+		// String nameColor = CacheManager.getRank(rank).getNamecolor();
+		// String usertag = "";
 
 		PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 		Map<?, ?> availableUsertags = PowerRanks.getUsertagManager().getMap("usertags", new HashMap<String, String>());
@@ -416,8 +401,8 @@ public class Messages {
 		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 				+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
-		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix)
-				.put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
+				.put("suffix", formatted_suffix)
 				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
 				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
 				.put("world", player.getWorld().getName()).build(), '[', ']');

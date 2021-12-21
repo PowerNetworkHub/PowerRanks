@@ -41,8 +41,6 @@ public class PRRank {
     private String chatSuffix;
     private String chatNamecolor;
     private String chatChatcolor;
-    private String levelPromote;
-    private String levelDemote;
     private ArrayList<String> economyBuyable;
     private float economyCost;
     private String economyDescription;
@@ -57,8 +55,6 @@ public class PRRank {
         chatSuffix = "";
         chatNamecolor = "";
         chatChatcolor = "";
-        levelPromote = "";
-        levelDemote = "";
         economyBuyable = new ArrayList<String>();
         economyCost = 0L;
         economyDescription = "";
@@ -264,42 +260,6 @@ public class PRRank {
      */
     public String getChatcolor() {
         return this.chatChatcolor;
-    }
-
-    /**
-     * Change the promote rank name for this rank
-     * 
-     * @param promoteRankName
-     */
-    public void setPromoteRank(String promoteRankName) {
-        this.levelPromote = promoteRankName;
-    }
-
-    /**
-     * Get the promote rank name for this rank
-     * 
-     * @return promote rank name
-     */
-    public String getPromoteRank() {
-        return this.levelPromote;
-    }
-
-    /**
-     * Change the demote rank name for this rank
-     * 
-     * @param demoteRankName
-     */
-    public void setDemoteRank(String demoteRankName) {
-        this.levelDemote = demoteRankName;
-    }
-
-    /**
-     * Get the demote rank name for this rank
-     * 
-     * @return demote rank name
-     */
-    public String getDemoteRank() {
-        return this.levelDemote;
     }
 
     /**

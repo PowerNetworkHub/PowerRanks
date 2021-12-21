@@ -25,7 +25,7 @@ import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
-import nl.svenar.common.structure.PRSubrank;
+import nl.svenar.common.utils.PRUtil;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -46,57 +46,46 @@ public class OnChat implements Listener {
 
 		try {
 			if (PowerRanks.getConfigManager().getBool("chat.enabled", true)) {
-				final String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
+
 				String format = PowerRanks.getConfigManager().getString("chat.format", "");
-				String prefix = CacheManager.getRank(rank).getPrefix();
-				String suffix = CacheManager.getRank(rank).getSuffix();
-				String chatColor = CacheManager.getRank(rank).getChatcolor();
-				String nameColor = CacheManager.getRank(rank).getNamecolor();
-				String subprefix = "";
-				String subsuffix = "";
+
+				List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+
+				List<PRRank> ranks = new ArrayList<PRRank>();
+				for (String rankname : ranknames) {
+					PRRank rank = CacheManager.getRank(rankname);
+					if (rank != null) {
+						ranks.add(rank);
+					}
+				}
+
+				ranks = new PRUtil().sortRanksByWeight(ranks);
+
+				String formatted_prefix = "";
+				String formatted_suffix = "";
+				String chatColor = ranks.get(ranks.size() - 1).getChatcolor();
+				String nameColor = ranks.get(ranks.size() - 1).getNamecolor();
 				String usertag = "";
 
-				try {
-					ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString())
-							.getSubRanks();
-					for (PRSubrank subrank : subranks) {
-						PRRank targetRank = CacheManager.getRank(subrank.getName());
-						boolean in_world = false;
-
-						String player_current_world = player.getWorld().getName();
-						List<String> worlds = subrank.getWorlds();
-						for (String world : worlds) {
-							if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-								in_world = true;
-							}
-						}
-
-						if (Objects.nonNull(targetRank)) {
-							if (in_world) {
-								if (subrank.getUsingPrefix()) {
-									subprefix += ChatColor.RESET + targetRank.getPrefix() + " ";
-								}
-
-								if (subrank.getUsingSuffix()) {
-									subsuffix += ChatColor.RESET + targetRank.getSuffix() + " ";
-
-								}
-							}
-						}
-					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
+				for (PRRank rank : ranks) {
+					formatted_prefix += rank.getPrefix() + " ";
+					formatted_suffix += rank.getSuffix() + " ";
 				}
 
-				subprefix = subprefix.trim();
-				subsuffix = subsuffix.trim();
-
-				if (subsuffix.endsWith(" ")) {
-					subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
+				if (formatted_prefix.endsWith(" ")) {
+					formatted_prefix = formatted_prefix.substring(0, formatted_prefix.length() - 1);
 				}
 
-				if (subsuffix.replaceAll(" ", "").length() == 0) {
-					subsuffix = "";
+				if (formatted_suffix.endsWith(" ")) {
+					formatted_suffix = formatted_suffix.substring(0, formatted_suffix.length() - 1);
+				}
+
+				if (formatted_prefix.replaceAll(" ", "").length() == 0) {
+					formatted_prefix = "";
+				}
+
+				if (formatted_suffix.replaceAll(" ", "").length() == 0) {
+					formatted_suffix = "";
 				}
 
 				PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
@@ -133,16 +122,18 @@ public class OnChat implements Listener {
 						+ PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
 				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
-				
+
 				// Dirty PremiumVanish work around
-				if (Objects.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
+				if (Objects
+						.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
 					if (player_formatted_chat_msg.endsWith("/")) {
-						player_formatted_chat_msg = player_formatted_chat_msg.substring(0, player_formatted_chat_msg.length() - 1);
+						player_formatted_chat_msg = player_formatted_chat_msg.substring(0,
+								player_formatted_chat_msg.length() - 1);
 					}
 				}
 
-				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", prefix)
-						.put("suffix", suffix).put("subprefix", subprefix).put("subsuffix", subsuffix)
+				format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
+						.put("suffix", formatted_suffix)
 						.put("usertag",
 								!PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
 						.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)

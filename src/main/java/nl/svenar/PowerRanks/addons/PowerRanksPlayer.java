@@ -46,7 +46,7 @@ public class PowerRanksPlayer {
 	// Arguments: Returns:
 	// String (player's rank)
 	public String getRank() {
-		return users.getGroup(getPlayer());
+		return users.getPrimaryRank(getPlayer());
 	}
 	
 	public PowerRanksAPI getAPI() {

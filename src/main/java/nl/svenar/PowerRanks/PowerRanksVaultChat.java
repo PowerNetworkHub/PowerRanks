@@ -3,6 +3,11 @@ package nl.svenar.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.common.structure.PRRank;
+import nl.svenar.common.utils.PRUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
@@ -90,14 +95,41 @@ public class PowerRanksVaultChat extends Chat {
 
 	@Override
 	public String getPlayerPrefix(String worldName, String playerName) {
-		return PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getPrefix(),
-				true);
+		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		return PowerRanks.chatColor(ranks.get(ranks.size() - 1).getPrefix(), true);
+
+		// return
+		// PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getPrefix(),
+		// true);
 	}
 
 	@Override
 	public String getPlayerSuffix(String worldName, String playerName) {
-		return PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getSuffix(),
-				true);
+		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		return PowerRanks.chatColor(ranks.get(ranks.size() - 1).getSuffix(), true);
+		// return
+		// PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getSuffix(),
+		// true);
 	}
 
 	@Override
@@ -160,11 +192,35 @@ public class PowerRanksVaultChat extends Chat {
 
 	@Override
 	public void setPlayerPrefix(String worldName, String playerName, String value) {
-		CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setPrefix(value);
+		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		ranks.get(ranks.size() - 1).setPrefix(value);
+		// CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setPrefix(value);
 	}
 
 	@Override
 	public void setPlayerSuffix(String worldName, String playerName, String value) {
-		CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setSuffix(value);
+		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		ranks.get(ranks.size() - 1).setSuffix(value);
+		// CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setSuffix(value);
 	}
 }

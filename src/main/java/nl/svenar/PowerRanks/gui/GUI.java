@@ -14,6 +14,7 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
+import nl.svenar.common.structure.PRRank;
 
 public class GUI {
 
@@ -28,10 +29,12 @@ public class GUI {
 		if (guis.get(player) == null || guis.get(player).getPageID().getID() != pageID.getID()) {
 			GUIPage new_gui = new GUIPage(powerRanks, player, pageID);
 			guis.put(player, new_gui);
-			if (new_gui.getGUI() != null) player.openInventory(new_gui.getGUI());
+			if (new_gui.getGUI() != null)
+				player.openInventory(new_gui.getGUI());
 		} else {
 			guis.get(player).gui = guis.get(player).setupGUI(guis.get(player).getPageID());
-			if (guis.get(player).getGUI() != null) player.openInventory(guis.get(player).getGUI());
+			if (guis.get(player).getGUI() != null)
+				player.openInventory(guis.get(player).getGUI());
 		}
 	}
 
@@ -39,8 +42,10 @@ public class GUI {
 		boolean is_powerranks_gui = false;
 
 		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.getItem(i) != null && inventory.getItem(i).getItemMeta() != null && inventory.getItem(i).getItemMeta().getLore() != null
-					&& inventory.getItem(i).getItemMeta().getLore().get(0).toLowerCase().contains(PowerRanks.pdf.getName().toLowerCase())) {
+			if (inventory.getItem(i) != null && inventory.getItem(i).getItemMeta() != null
+					&& inventory.getItem(i).getItemMeta().getLore() != null
+					&& inventory.getItem(i).getItemMeta().getLore().get(0).toLowerCase()
+							.contains(PowerRanks.pdf.getName().toLowerCase())) {
 				is_powerranks_gui = true;
 				break;
 			}
@@ -80,10 +85,22 @@ public class GUI {
 					double player_balance = VaultHook.getVaultEconomy().getBalance(player);
 					if (cost >= 0 && player_balance >= cost) {
 						VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
-						users.setGroup(player, rankname, true);
+
+						PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
+						if (rank != null) {
+							CacheManager.getPlayer(player.getUniqueId().toString()).addRank(rank.getName());
+							Messages.messageSetRankSuccessTarget(player, "Sign", rank.getName());
+						}
+
+						// users.setGroup(player, rankname, true);
 						if (PowerRanks.getConfigManager().getBool("rankup.buy_command.enabled", false)) {
-							if (PowerRanks.getConfigManager().getString("rankup.buy_command.command", "").length() > 0) {
-								powerRanks.getServer().dispatchCommand((CommandSender) powerRanks.getServer().getConsoleSender(), PowerRanks.getConfigManager().getString("rankup.buy_command.command", "").replaceAll("%playername%", player.getName()).replaceAll("%rankname%", rankname));
+							if (PowerRanks.getConfigManager().getString("rankup.buy_command.command", "")
+									.length() > 0) {
+								powerRanks.getServer().dispatchCommand(
+										(CommandSender) powerRanks.getServer().getConsoleSender(),
+										PowerRanks.getConfigManager().getString("rankup.buy_command.command", "")
+												.replaceAll("%playername%", player.getName())
+												.replaceAll("%rankname%", rankname));
 							}
 						}
 						Messages.messageBuyRankSuccess(player, rankname);
@@ -112,31 +129,31 @@ public class GUI {
 
 					if (cmdField.equalsIgnoreCase("checkrank"))
 						openGUI(player, GUI_PAGE_ID.CMD_CHECKRANK_INPUT_PLAYER);
-					
+
 					if (cmdField.equalsIgnoreCase("promote"))
 						openGUI(player, GUI_PAGE_ID.CMD_PROMOTE_INPUT_PLAYER);
-					
+
 					if (cmdField.equalsIgnoreCase("demote"))
 						openGUI(player, GUI_PAGE_ID.CMD_DEMOTE_INPUT_PLAYER);
-					
+
 					if (cmdField.equalsIgnoreCase("setchatcolor"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_RANK);
-					
+
 					if (cmdField.equalsIgnoreCase("setnamecolor"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_RANK);
-					
+
 					if (cmdField.equalsIgnoreCase("setdefaultrank"))
 						openGUI(player, GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK);
-					
+
 					if (cmdField.equalsIgnoreCase("addinheritance"))
 						openGUI(player, GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK);
-					
+
 					if (cmdField.equalsIgnoreCase("delinheritance"))
 						openGUI(player, GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK);
-					
+
 					if (cmdField.equalsIgnoreCase("addbuyable"))
 						openGUI(player, GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK);
-					
+
 					if (cmdField.equalsIgnoreCase("delbuyable"))
 						openGUI(player, GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK);
 				}
@@ -156,7 +173,14 @@ public class GUI {
 				Users users = new Users(powerRanks);
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
 				String playername = gui.getData(player.getName() + ":playername");
-				users.setGroup(Bukkit.getPlayer(playername), rankname, true);
+
+				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
+				if (rank != null) {
+					CacheManager.getPlayer(playername).setRank(rank.getName());
+					Messages.messageSetRankSuccessTarget(player, "Sign", rank.getName());
+				}
+
+				// users.setGroup(Bukkit.getPlayer(playername), rankname, true);
 				closeGUI(player);
 			}
 		}
@@ -165,37 +189,41 @@ public class GUI {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String playername = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
 				Users users = new Users(powerRanks);
-				users.getGroup(player.getName(), playername);
+				Messages.messagePlayerCheckRank(player, playername, users.getPrimaryRank(Bukkit.getPlayer(playername)));
+				// users.getGroup(player.getName(), playername);
 				closeGUI(player);
 			}
 		}
-		
-		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_PROMOTE_INPUT_PLAYER.getID()) {
-			if (slot < gui.getGUI().getSize() - 9) {
-				String playername = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-				Users users = new Users(powerRanks);
-				if (users.promote(playername)) {
-					Messages.messageCommandPromoteSuccess(player, playername);
-				} else {
-					Messages.messageCommandPromoteError(player, playername);
-				}
-				closeGUI(player);
-			}
-		}
-		
-		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_DEMOTE_INPUT_PLAYER.getID()) {
-			if (slot < gui.getGUI().getSize() - 9) {
-				String playername = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-				Users users = new Users(powerRanks);
-				if (users.demote(playername)) {
-					Messages.messageCommandDemoteSuccess(player, playername);
-				} else {
-					Messages.messageCommandDemoteError(player, playername);
-				}
-				closeGUI(player);
-			}
-		}
-		
+
+		// if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_PROMOTE_INPUT_PLAYER.getID())
+		// {
+		// if (slot < gui.getGUI().getSize() - 9) {
+		// String playername =
+		// gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
+		// Users users = new Users(powerRanks);
+		// if (users.promote(playername)) {
+		// Messages.messageCommandPromoteSuccess(player, playername);
+		// } else {
+		// Messages.messageCommandPromoteError(player, playername);
+		// }
+		// closeGUI(player);
+		// }
+		// }
+
+		// if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_DEMOTE_INPUT_PLAYER.getID()) {
+		// if (slot < gui.getGUI().getSize() - 9) {
+		// String playername =
+		// gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
+		// Users users = new Users(powerRanks);
+		// if (users.demote(playername)) {
+		// Messages.messageCommandDemoteSuccess(player, playername);
+		// } else {
+		// Messages.messageCommandDemoteError(player, playername);
+		// }
+		// closeGUI(player);
+		// }
+		// }
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -203,7 +231,7 @@ public class GUI {
 				gui.setData(player.getName() + ":rankname", rankname);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_COLOR.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String color = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0);
@@ -211,7 +239,7 @@ public class GUI {
 				gui.setData(player.getName() + ":color", color);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_SPECIAL.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String special = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0);
@@ -223,7 +251,7 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -231,7 +259,7 @@ public class GUI {
 				gui.setData(player.getName() + ":rankname", rankname);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_COLOR.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String color = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0);
@@ -239,7 +267,7 @@ public class GUI {
 				gui.setData(player.getName() + ":color", color);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_SPECIAL.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String special = gui.getGUI().getItem(slot).getItemMeta().getLore().get(0);
@@ -251,7 +279,7 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -261,7 +289,7 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -269,7 +297,7 @@ public class GUI {
 				openGUI(player, GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK2);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK2.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String inheritance = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -280,7 +308,7 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -288,7 +316,7 @@ public class GUI {
 				openGUI(player, GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK2);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK2.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String inheritance = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -299,7 +327,7 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -307,7 +335,7 @@ public class GUI {
 				openGUI(player, GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK2);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK2.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String buyablerank = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -318,7 +346,7 @@ public class GUI {
 				closeGUI(player);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
@@ -326,7 +354,7 @@ public class GUI {
 				openGUI(player, GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK2);
 			}
 		}
-		
+
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK2.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String buyablerank = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();

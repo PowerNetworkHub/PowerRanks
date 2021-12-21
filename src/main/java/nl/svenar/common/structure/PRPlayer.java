@@ -25,6 +25,7 @@
 package nl.svenar.common.structure;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -37,16 +38,14 @@ public class PRPlayer {
 
     private UUID uuid;
     private String name;
-    private String rank;
-    private ArrayList<PRSubrank> subranks;
+    private ArrayList<String> ranks;
     private ArrayList<PRPermission> permissions;
     private ArrayList<String> usertags;
     private long playtime;
 
     public PRPlayer() {
         this.name = "";
-        this.rank = "";
-        this.subranks = new ArrayList<PRSubrank>();
+        this.ranks = new ArrayList<String>();
         this.permissions = new ArrayList<PRPermission>();
         this.usertags = new ArrayList<String>();
         this.playtime = 0L;
@@ -93,80 +92,49 @@ public class PRPlayer {
      * 
      * @return String rank of the player
      */
-    public String getRank() {
-        return this.rank;
+    public List<String> getRanks() {
+        return this.ranks;
     }
 
     /**
-     * Set the rank of this player
+     * Set the ranks of this player
      * 
-     * @param rankname
+     * @param ranks
      */
-    public void setRank(String rankname) {
-        this.rank = rankname;
+    public void setRanks(ArrayList<String> ranks) {
+        this.ranks = ranks;
     }
 
     /**
-     * Get a list with all stored subrank names
+     * Remove all ranks and set a single one on this player
      * 
-     * @return Java ArrayList with all stored rank names
+     * @param rank
      */
-    public ArrayList<PRSubrank> getSubRanks() {
-        return this.subranks;
+    public void setRank(String rank) {
+        this.ranks.clear();
+        this.ranks.add(rank);
     }
 
     /**
-     * Overwrite all stored subrank names with the provided Java ArrayList
+     * Add a rank on this player
      * 
-     * @param subranks
+     * @param rank
      */
-    public void setSubRanks(ArrayList<PRSubrank> subranks) {
-        this.subranks = subranks;
-    }
-
-    /**
-     * Add the name of a subrank to the player
-     * 
-     * @param rankname
-     */
-    public void addSubrank(PRSubrank subrank) {
-        if (Objects.isNull(this.subranks)) {
-            this.subranks = new ArrayList<PRSubrank>();
+    public void addRank(String rank) {
+        if (!this.ranks.contains(rank)) {
+            this.ranks.add(rank);
         }
-
-        this.subranks.add(subrank);
     }
 
     /**
-     * Remove a PRSubrank instance from this player
+     * Remove a rank on this player
      * 
-     * @param subrank
+     * @param rank
      */
-    public void removeSubrank(PRSubrank subrank) {
-        if (!this.subranks.contains(subrank)) {
-            return;
+    public void removeRank(String rank) {
+        if (this.ranks.contains(rank)) {
+            this.ranks.remove(rank);
         }
-
-        this.subranks.remove(subrank);
-    }
-
-    /**
-     * Check if this player instance has a specific subrank
-     * 
-     * @param subrank
-     * @return true if this player has that rank, false otherwise
-     */
-    public boolean hasSubrank(String subrank) {
-        if (Objects.isNull(this.subranks)) {
-            this.subranks = new ArrayList<PRSubrank>();
-        }
-
-        for (PRSubrank rank : this.subranks) {
-            if (rank.getName().equals(subrank)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

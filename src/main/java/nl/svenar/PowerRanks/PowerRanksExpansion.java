@@ -115,7 +115,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		Users users = new Users(null);
 
 		if (identifier.equals("rank"))
-			return users.getGroup(player);
+			return users.getPrimaryRank(player);
 
 		if (identifier.equals("prefix"))
 			return PowerRanks.chatColor(users.getPrefix(player), true) + ChatColor.RESET;
@@ -123,11 +123,11 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		if (identifier.equals("suffix"))
 			return ChatColor.RESET + PowerRanks.chatColor(users.getSuffix(player), true);
 		
-		if (identifier.equals("subrankprefix"))
-			return PowerRanks.chatColor(users.getSubrankprefixes(player), true) + ChatColor.RESET;
+		// if (identifier.equals("subrankprefix"))
+		// 	return PowerRanks.chatColor(users.getSubrankprefixes(player), true) + ChatColor.RESET;
 		
-		if (identifier.equals("subranksuffix"))
-			return ChatColor.RESET + PowerRanks.chatColor(users.getSubranksuffixes(player), true);
+		// if (identifier.equals("subranksuffix"))
+		// 	return ChatColor.RESET + PowerRanks.chatColor(users.getSubranksuffixes(player), true);
 		
 		if (identifier.equals("chatcolor"))
 			return users.getChatColor(player);

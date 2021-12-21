@@ -56,6 +56,10 @@ public class PRSerializer {
      * @return Object corresponding to the given Java map and class
      */
     public <T> T deserialize(Map<String, Object> map, Class<T> clazz) {
+        map.remove("promoteRank");
+        map.remove("demoteRank");
+        map.remove("subRanks");
+
         ObjectMapper m = new ObjectMapper();
         return clazz.cast(m.convertValue(map, clazz));
     }

@@ -104,7 +104,7 @@ public class GUIPage {
 				createGuiItem(Material.BARRIER, "Close", PowerRanks.pdf.getName().toLowerCase()));
 
 		if (pageID.getID() == GUI_PAGE_ID.RANKUP.getID()) {
-			List<String> ranks = users.getBuyableRanks(users.getGroup(player));
+			List<String> ranks = users.getBuyableRanks(users.getPrimaryRank(player));
 			int num_rank_on_page = new_gui.getSize() - 9;
 
 			while (num_rank_on_page * current_page > ranks.size()) {
@@ -117,7 +117,7 @@ public class GUIPage {
 				new_gui.setItem(new_gui.getSize() - 4, createGuiItem(Material.PAPER, "Next page",
 						PowerRanks.pdf.getName().toLowerCase(), "Page " + current_page));
 				new_gui.setItem(new_gui.getSize() - 9, createGuiItem(Material.NOTE_BLOCK, "Current rank",
-						users.getGroup(player), ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(player), true)));
+						users.getPrimaryRank(player), ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(player), true)));
 				new_gui.setItem(new_gui.getSize() - 1, createGuiItem(Material.EMERALD, "Balance",
 						VaultHook.getVaultEconomy().format(VaultHook.getVaultEconomy().getBalance(player))));
 			} catch (Exception e) {
@@ -128,7 +128,7 @@ public class GUIPage {
 			for (int i = 0; i < num_rank_on_page; i++) {
 				if (num_rank_on_page * current_page + i < ranks.size()) {
 					String rank = (String) ranks.get(num_rank_on_page * current_page + i);
-					if (!rank.equalsIgnoreCase(users.getGroup(player))) {
+					if (!rank.equalsIgnoreCase(users.getPrimaryRank(player))) {
 						try {
 							Material icon = Material.BARRIER;
 
@@ -136,8 +136,7 @@ public class GUIPage {
 							final String description = CacheManager.getRank(rank).getBuyDescription();
 							if (icon != null) {
 								new_gui.setItem(i, createGuiItem(icon, rank,
-										ChatColor.WHITE + PowerRanks.chatColorAlt(
-												this.users.getPrefix(rank).replaceAll("&r", "&r&f"), true),
+										ChatColor.WHITE + PowerRanks.chatColorAlt(CacheManager.getRank(rank).getPrefix().replaceAll("&r", "&r&f"), true),
 										"", ChatColor.WHITE + "Description:", PowerRanks.chatColor(description, true),
 										"", ChatColor.WHITE + "Cost: ", ChatColor.GREEN + String.valueOf(cost)));
 							} else {
@@ -208,7 +207,7 @@ public class GUIPage {
 			for (int i = 0; i < num_items_on_page; i++) {
 				if (num_items_on_page * current_page + i < online_players.length) {
 					Player online_player = (Player) online_players[num_items_on_page * current_page + i];
-					String online_player_current_rank = users.getGroup(online_player);
+					String online_player_current_rank = users.getPrimaryRank(online_player);
 					new_gui.setItem(i, createGuiHead(online_player, ChatColor.RESET + online_player_current_rank,
 							ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(player), true)));
 				}
@@ -242,7 +241,7 @@ public class GUIPage {
 
 						if (icon != null)
 							new_gui.setItem(i, createGuiItem(icon, rank,
-									ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true)));
+									ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
 						else
 							PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
 
@@ -271,7 +270,7 @@ public class GUIPage {
 
 							if (icon != null)
 								new_gui.setItem(i, createGuiItem(icon, rank,
-										ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true)));
+										ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
 							else
 								PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
 
@@ -299,7 +298,7 @@ public class GUIPage {
 						
 						if (icon != null)
 							new_gui.setItem(i, createGuiItem(icon, rank,
-									ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true)));
+									ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
 						else
 							PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
 				}
@@ -325,7 +324,7 @@ public class GUIPage {
 
 						if (icon != null)
 							new_gui.setItem(i, createGuiItem(icon, rank,
-									ChatColor.RESET + PowerRanks.chatColor(users.getPrefix(rank), true)));
+									ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
 						else
 							PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
 

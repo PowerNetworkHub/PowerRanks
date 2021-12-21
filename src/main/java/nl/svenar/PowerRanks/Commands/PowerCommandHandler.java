@@ -34,18 +34,15 @@ import nl.svenar.PowerRanks.Commands.core.cmd_reload;
 import nl.svenar.PowerRanks.Commands.core.cmd_stats;
 import nl.svenar.PowerRanks.Commands.core.cmd_verbose;
 import nl.svenar.PowerRanks.Commands.player.cmd_addplayerperm;
+import nl.svenar.PowerRanks.Commands.player.cmd_addrank;
 import nl.svenar.PowerRanks.Commands.player.cmd_checkrank;
 import nl.svenar.PowerRanks.Commands.player.cmd_delplayerperm;
-import nl.svenar.PowerRanks.Commands.player.cmd_demote;
 import nl.svenar.PowerRanks.Commands.player.cmd_listplayerpermissions;
 import nl.svenar.PowerRanks.Commands.player.cmd_playerinfo;
-import nl.svenar.PowerRanks.Commands.player.cmd_promote;
 import nl.svenar.PowerRanks.Commands.player.cmd_setownrank;
 import nl.svenar.PowerRanks.Commands.player.cmd_setrank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_addinheritance;
 import nl.svenar.PowerRanks.Commands.rank.cmd_addperm;
-import nl.svenar.PowerRanks.Commands.rank.cmd_cleardemoterank;
-import nl.svenar.PowerRanks.Commands.rank.cmd_clearpromoterank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_createrank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_deleterank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_delinheritance;
@@ -55,23 +52,10 @@ import nl.svenar.PowerRanks.Commands.rank.cmd_listranks;
 import nl.svenar.PowerRanks.Commands.rank.cmd_renamerank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setchatcolor;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setdefaultrank;
-import nl.svenar.PowerRanks.Commands.rank.cmd_setdemoterank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setnamecolor;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setprefix;
-import nl.svenar.PowerRanks.Commands.rank.cmd_setpromoterank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setsuffix;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setweight;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_addsubrank;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_addsubrankworld;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_delsubrank;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_delsubrankworld;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_disablesubrankpermissions;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_disablesubrankprefix;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_disablesubranksuffix;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_enablesubrankpermissions;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_enablesubrankprefix;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_enablesubranksuffix;
-import nl.svenar.PowerRanks.Commands.subranks.cmd_listsubranks;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_clearusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_createusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_editusertag;
@@ -104,26 +88,15 @@ public class PowerCommandHandler implements CommandExecutor {
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
 		new cmd_setownrank(plugin, "setownrank", COMMAND_EXECUTOR.PLAYER);
+		new cmd_addrank(plugin, "addrank", COMMAND_EXECUTOR.ALL);
 
 		new cmd_listranks(plugin, "listranks", COMMAND_EXECUTOR.ALL);
-		new cmd_listsubranks(plugin, "listsubranks", COMMAND_EXECUTOR.ALL);
 		new cmd_listpermissions(plugin, "listpermissions", COMMAND_EXECUTOR.ALL);
 		new cmd_listplayerpermissions(plugin, "listplayerpermissions", COMMAND_EXECUTOR.ALL);
 		new cmd_listaddons(plugin, "listaddons", COMMAND_EXECUTOR.ALL);
 		new cmd_listusertags(plugin, "listusertags", COMMAND_EXECUTOR.ALL);
 
 		new cmd_checkrank(plugin, "checkrank", COMMAND_EXECUTOR.ALL);
-
-		new cmd_addsubrank(plugin, "addsubrank", COMMAND_EXECUTOR.ALL);
-		new cmd_delsubrank(plugin, "delsubrank", COMMAND_EXECUTOR.ALL);
-		new cmd_enablesubrankprefix(plugin, "enablesubrankprefix", COMMAND_EXECUTOR.ALL);
-		new cmd_disablesubrankprefix(plugin, "disablesubrankprefix", COMMAND_EXECUTOR.ALL);
-		new cmd_enablesubranksuffix(plugin, "enablesubranksuffix", COMMAND_EXECUTOR.ALL);
-		new cmd_disablesubranksuffix(plugin, "disablesubranksuffix", COMMAND_EXECUTOR.ALL);
-		new cmd_enablesubrankpermissions(plugin, "enablesubrankpermissions", COMMAND_EXECUTOR.ALL);
-		new cmd_disablesubrankpermissions(plugin, "disablesubrankpermissions", COMMAND_EXECUTOR.ALL);
-		new cmd_addsubrankworld(plugin, "addsubrankworld", COMMAND_EXECUTOR.ALL);
-		new cmd_delsubrankworld(plugin, "delsubrankworld", COMMAND_EXECUTOR.ALL);
 
 		new cmd_createrank(plugin, "createrank", COMMAND_EXECUTOR.ALL);
 		new cmd_deleterank(plugin, "deleterank", COMMAND_EXECUTOR.ALL);
@@ -139,15 +112,6 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_delinheritance(plugin, "delinheritance", COMMAND_EXECUTOR.ALL);
 		new cmd_setweight(plugin, "setweight", COMMAND_EXECUTOR.ALL);
 
-		new cmd_promote(plugin, "promote", COMMAND_EXECUTOR.ALL);
-		new cmd_demote(plugin, "demote", COMMAND_EXECUTOR.ALL);
-		new cmd_setpromoterank(plugin, "setpromoterank", COMMAND_EXECUTOR.ALL);
-		new cmd_setdemoterank(plugin, "setdemoterank", COMMAND_EXECUTOR.ALL);
-		new cmd_clearpromoterank(plugin, "clearpromoterank", COMMAND_EXECUTOR.ALL);
-		new cmd_cleardemoterank(plugin, "cleardemoterank", COMMAND_EXECUTOR.ALL);
-
-		// new cmd_gui(plugin, "gui", COMMAND_EXECUTOR.PLAYER);
-		// new cmd_setguiicon(plugin, "setguiicon", COMMAND_EXECUTOR.PLAYER);
 		new cmd_buyrank(plugin, "buyrank", COMMAND_EXECUTOR.PLAYER);
 		new cmd_rankup(plugin, "rankup", COMMAND_EXECUTOR.PLAYER);
 		new cmd_addbuyablerank(plugin, "addbuyablerank", COMMAND_EXECUTOR.ALL);

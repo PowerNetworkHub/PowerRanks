@@ -27,7 +27,7 @@ public class cmd_checkrank extends PowerCommand {
 		if (sender.hasPermission("powerranks.cmd.checkrank")) {
 			if (args.length == 0) {
 				if (sender instanceof Player) {
-					String rankname = this.users.getGroup((Player) sender);
+					String rankname = this.users.getPrimaryRank((Player) sender);
 					Messages.messageCommandCheckrankResponse(sender, sender.getName(), rankname);
 				} else {
 					Messages.messageConsoleNotAPlayer(sender);
@@ -35,7 +35,7 @@ public class cmd_checkrank extends PowerCommand {
 			} else if (args.length == 1) {
 				Player targetPlayer = Util.getPlayerByName(args[0]);
 				if (targetPlayer != null) {
-					String rankname = this.users.getGroup(targetPlayer);
+					String rankname = this.users.getPrimaryRank(targetPlayer);
 					Messages.messageCommandCheckrankResponse(sender, targetPlayer.getName(), rankname);
 				} else {
 					Messages.messagePlayerNotFound(sender, args[0]);

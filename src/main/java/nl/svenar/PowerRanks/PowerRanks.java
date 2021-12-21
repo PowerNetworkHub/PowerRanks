@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,7 +72,6 @@ import nl.svenar.common.storage.provided.YAMLConfigManager;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
-import nl.svenar.common.structure.PRSubrank;
 import nl.svenar.common.utils.PRUtil;
 
 import com.google.common.collect.ImmutableMap;
@@ -680,7 +680,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-	private void updateNametagEditData(Player player, String prefix, String suffix, String subprefix, String subsuffix,
+	private void updateNametagEditData(Player player, String prefix, String suffix,
 			String usertag, String nameColor) {
 		if (plugin_hook_nametagedit) {
 			PowerRanksVerbose.log("updateNametagEditData", "Updating " + player.getName() + "'s nametag format");
@@ -704,7 +704,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					prefix_format = Util.powerFormatter(prefix_format,
 							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
-									.put("subprefix", subprefix).put("subsuffix", subsuffix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
 											: DeluxeTag.getPlayerDisplayTag(player))
 									.build(),
@@ -712,7 +711,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					suffix_format = Util.powerFormatter(suffix_format,
 							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
-									.put("subprefix", subprefix).put("subsuffix", subsuffix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
 											: DeluxeTag.getPlayerDisplayTag(player))
 									.build(),
@@ -727,7 +725,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					if (nteAPI != null) {
 						nteAPI.setNametag(player, prefix_format + (prefix_format.length() > 0 ? " " : ""),
 								(suffix_format.length() > 0 ? " " : "") + suffix_format);
-						updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor, false);
+						updateTablistName(player, prefix, suffix, usertag, nameColor, false);
 					}
 				}
 			}, 20L);
@@ -740,52 +738,45 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (NoSuchMethodError e) {
 		}
 
-		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-		String prefix = CacheManager.getRank(rank).getPrefix();
-		String suffix = CacheManager.getRank(rank).getSuffix();
-		String nameColor = CacheManager.getRank(rank).getNamecolor();
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
 
-		String subprefix = "";
-		String subsuffix = "";
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+		Collections.reverse(ranks);
+
+		String formatted_prefix = "";
+		String formatted_suffix = "";
+		String nameColor = ranks.get(0).getNamecolor();
+
 		String usertag = "";
 
 		try {
-			ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks();
-			for (PRSubrank subrank : subranks) {
-				PRRank targetRank = CacheManager.getRank(subrank.getName());
-				boolean in_world = false;
-
-				String player_current_world = player.getWorld().getName();
-				List<String> worlds = subrank.getWorlds();
-				for (String world : worlds) {
-					if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-						in_world = true;
-					}
-				}
-
-				if (Objects.nonNull(targetRank)) {
-					if (in_world) {
-						if (subrank.getUsingPrefix()) {
-							subprefix += ChatColor.RESET + targetRank.getPrefix() + " ";
-						}
-
-						if (subrank.getUsingSuffix()) {
-							subsuffix += ChatColor.RESET + targetRank.getSuffix() + " ";
-
-						}
-					}
-				}
+			for (PRRank rank : ranks) {
+				formatted_prefix += rank.getPrefix() + " ";
+				formatted_suffix += rank.getSuffix() + " ";
 			}
 
-			subprefix = subprefix.trim();
-			subsuffix = subsuffix.trim();
-
-			if (subsuffix.endsWith(" ")) {
-				subsuffix = subsuffix.substring(0, subsuffix.length() - 1);
+			if (formatted_prefix.endsWith(" ")) {
+				formatted_prefix = formatted_prefix.substring(0, formatted_prefix.length() - 1);
 			}
 
-			if (subsuffix.replaceAll(" ", "").length() == 0) {
-				subsuffix = "";
+			if (formatted_suffix.endsWith(" ")) {
+				formatted_suffix = formatted_suffix.substring(0, formatted_suffix.length() - 1);
+			}
+
+			if (formatted_prefix.replaceAll(" ", "").length() == 0) {
+				formatted_prefix = "";
+			}
+
+			if (formatted_suffix.replaceAll(" ", "").length() == 0) {
+				formatted_suffix = "";
 			}
 
 			PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
@@ -805,14 +796,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 
-			updateTablistName(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor, true);
+			updateTablistName(player, formatted_prefix, formatted_suffix, usertag, nameColor, true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void updateTablistName(Player player, String prefix, String suffix, String subprefix, String subsuffix,
+	public void updateTablistName(Player player, String prefix, String suffix,
 			String usertag, String nameColor, boolean updateNTE) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
 
@@ -821,7 +812,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		try {
 			if (updateNTE) {
-				updateNametagEditData(player, prefix, suffix, subprefix, subsuffix, usertag, nameColor);
+				updateNametagEditData(player, prefix, suffix, usertag, nameColor);
 			}
 
 			if (!configManager.getBool("tablist_modification.enabled", true))
@@ -842,8 +833,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			format = Util.powerFormatter(format,
-					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
-							.put("subprefix", subprefix).put("subsuffix", subsuffix).put("usertag", usertag)
+					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("usertag", usertag)
 							.put("player", player_formatted_name).put("world", player.getWorld().getName()).build(),
 					'[', ']');
 
@@ -918,7 +908,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void updatePlayersTABlistWithRank(Users users, String rank) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-			if (users.getGroup(p).equalsIgnoreCase(rank)) {
+			if (users.getPrimaryRank(p).equalsIgnoreCase(rank)) {
 				updateTablistName(p);
 			}
 		}
@@ -937,45 +927,27 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 
-		String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-		PRRank playerRank = CacheManager.getRank(rank);
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<PRRank> playerRanks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				playerRanks.add(rank);
+			}
+		}
+
+		// playerRanks = new PRUtil().sortRanksByWeight(playerRanks);
 
 		List<PRRank> effectiveRanks = new ArrayList<PRRank>();
 
-		if (Objects.nonNull(playerRank)) {
-			effectiveRanks.add(playerRank);
+		if (Objects.nonNull(playerRanks)) {
+			effectiveRanks.addAll(playerRanks);
 
-			for (String inheritance : playerRank.getInheritances()) {
-				effectiveRanks.add(CacheManager.getRank(inheritance));
-			}
-		}
-
-		ArrayList<PRSubrank> useable_subranks = new ArrayList<PRSubrank>();
-
-		ArrayList<PRSubrank> subranks = CacheManager.getPlayer(player.getUniqueId().toString()).getSubRanks();
-		for (PRSubrank subrank : subranks) {
-			boolean in_world = false;
-
-			String player_current_world = player.getWorld().getName();
-			List<String> worlds = subrank.getWorlds();
-			for (String world : worlds) {
-				if (player_current_world.equalsIgnoreCase(world) || world.equalsIgnoreCase("all")) {
-					in_world = true;
+			for (PRRank playerRank : playerRanks) {
+				for (String inheritance : playerRank.getInheritances()) {
+					effectiveRanks.add(CacheManager.getRank(inheritance));
 				}
 			}
-
-			if (in_world) {
-				if (subrank.getUsingPermissions()) {
-					useable_subranks.add(subrank);
-				}
-			}
-		}
-
-		for (PRSubrank subrank : useable_subranks) {
-			if (Objects.nonNull(CacheManager.getRank(subrank.getName()))) {
-				effectiveRanks.add(CacheManager.getRank(subrank.getName()));
-			}
-
 		}
 
 		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));

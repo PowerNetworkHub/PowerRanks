@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,25 +10,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.bukkit.command.ConsoleCommandSender;
-import java.io.File;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
-import nl.svenar.PowerRanks.addons.PowerRanksAddon;
-import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
-import nl.svenar.PowerRanks.addons.PowerRanksAddon.RankChangeCause;
-import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
-import nl.svenar.common.structure.PRSubrank;
+import nl.svenar.common.utils.PRUtil;
 
 public class Users implements Listener {
 	PowerRanks m;
@@ -36,237 +29,294 @@ public class Users implements Listener {
 		this.m = m;
 	}
 
-	public void setGroup(Player player, String t, String rank, boolean fireAddonEvent) {
-		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
-		if (player != null) {
-			if (player.hasPermission("powerranks.cmd.set") || player.hasPermission("powerranks.cmd.set." + rank)) {
-				PowerRanksVerbose.log("setGroup(Player, String, String, boolean)",
-						player.getName() + " Changed " + t + "'s rank to: " + rank);
-				Player target = Bukkit.getServer().getPlayer(t);
+	public String getPrimaryRank(Player player) {
+		if (player == null) {
+			return "";
+		}
 
-				if (target != null) {
-					try {
-						if (CacheManager.getRank(rank) != null) {
-							// this.m.removePermissions(player);
-							String oldRank = CacheManager.getPlayer(target.getUniqueId().toString()).getRank();
-							CacheManager.getPlayer(target.getUniqueId().toString()).setRank(rank);
-							// CachedPlayers.set("players." + target.getUniqueId() + ".rank", (Object) rank,
-							// false);
-							// if (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
-							// if (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
-							if (fireAddonEvent
-									&& PowerRanks.getConfigManager().getBool("announcements.rankup.enabled", false)) {
-								Bukkit.broadcastMessage(PowerRanks.chatColor(
-										PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
-												.replace("[player]", t).replace("[rank]", rank)
-												.replace("[powerranks_prefix]",
-														languageManager.getString("general.prefix", "")
-																.replace("%plugin_name%", PowerRanks.pdf.getName())),
-										true));
-							}
-							// }
-							// }
-
-							if (fireAddonEvent)
-								for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses
-										.entrySet()) {
-									PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, target);
-									prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET,
-											true);
-								}
-
-							Messages.messageSetRankSuccessSender(player, t, rank);
-							Messages.messageSetRankSuccessTarget(target, player.getName(), rank);
-							// this.m.setupPermissions(target);
-							this.m.updateTablistName(target);
-
-						} else {
-							Messages.messageGroupNotFound(player, rank);
-						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				} else {
-					if (CacheManager.getRank(rank) != null) {
-
-						boolean offline_player_found = false;
-
-						for (PRPlayer key : CacheManager.getPlayers()) {
-							if (key.getName().equalsIgnoreCase(t)) {
-								String oldRank = key.getRank();
-								key.setRank(rank);
-								// CachedPlayers.set("players." + key + ".rank", (Object) rank, false);
-								// if (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
-								if (fireAddonEvent && PowerRanks.getConfigManager()
-										.getBool("announcements.rankup.enabled", false)) {
-									Bukkit.broadcastMessage(PowerRanks.chatColor(PowerRanks.getConfigManager()
-											.getString("announcements.rankup.format", "").replace("[player]", t)
-											.replace("[rank]", rank).replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-											true));
-								}
-								// }
-
-								if (fireAddonEvent)
-									for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses
-											.entrySet()) {
-										PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
-										prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank,
-												RankChangeCause.SET, false);
-									}
-
-								Messages.messageSetRankSuccessSender(player, t, rank);
-
-								offline_player_found = true;
-							}
-						}
-
-						if (!offline_player_found) {
-							Messages.messagePlayerNotFound(player, t);
-						}
-					} else {
-						Messages.messageGroupNotFound(player, rank);
-					}
-				}
-			}
-		} else {
-			PowerRanksVerbose.log("setGroup(Player, String, String, boolean)",
-					"Unknown Changed " + t + "'s rank to: " + rank);
-			ConsoleCommandSender console = Bukkit.getConsoleSender();
-			Player target2 = Bukkit.getServer().getPlayer(t);
-
-			if (target2 != null) {
-				try {
-					if (CacheManager.getRank(rank) != null) {
-						// this.m.removePermissions(target2);
-						// String oldRank = CachedPlayers.getString("players." + target2.getUniqueId() +
-						// ".rank");
-						// CachedPlayers.set("players." + target2.getUniqueId() + ".rank", (Object)
-						// rank, false);
-						String oldRank = CacheManager.getPlayer(target2.getUniqueId().toString()).getRank();
-						CacheManager.getPlayer(target2.getUniqueId().toString()).setRank(rank);
-						// if (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
-						if (fireAddonEvent
-								&& PowerRanks.getConfigManager().getBool("announcements.rankup.enabled", false)) {
-							Bukkit.broadcastMessage(PowerRanks.chatColor(
-									PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
-											.replace("[player]", t).replace("[rank]", rank)
-											.replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-									true));
-						}
-						// }
-
-						if (fireAddonEvent)
-							for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-								PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, target2);
-								prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET,
-										true);
-							}
-
-						Messages.messageSetRankSuccessSender(console, t, rank);
-						Messages.messageSetRankSuccessTarget(target2, console.getName(), rank);
-						// this.m.setupPermissions(target2);
-						this.m.updateTablistName(target2);
-
-					} else {
-						Messages.messageGroupNotFound(console, rank);
-					}
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			} else {
-				if (CacheManager.getRank(rank) != null) {
-
-					boolean offline_player_found = false;
-
-					// if (CachedPlayers.getConfigurationSection("players") != null) {
-					for (PRPlayer key : CacheManager.getPlayers()) {
-						if (key.getName().equalsIgnoreCase(t)) {
-							String oldRank = key.getRank();
-							key.setRank(rank);
-							// CachedPlayers.set("players." + key + ".rank", (Object) rank, false);
-							// if (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
-							if (fireAddonEvent
-									&& PowerRanks.getConfigManager().getBool("announcements.rankup.enabled", false)) {
-								Bukkit.broadcastMessage(PowerRanks.chatColor(
-										PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
-												.replace("[player]", t).replace("[rank]", rank)
-												.replace("[powerranks_prefix]",
-														languageManager.getString("general.prefix", "")
-																.replace("%plugin_name%", PowerRanks.pdf.getName())),
-										true));
-							}
-							// }
-
-							if (fireAddonEvent)
-								for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses
-										.entrySet()) {
-									PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
-									prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET,
-											false);
-								}
-
-							Messages.messageSetRankSuccessSender(console, t, rank);
-
-							offline_player_found = true;
-						}
-					}
-					// }
-					if (!offline_player_found) {
-						Messages.messagePlayerNotFound(console, t);
-					}
-				} else {
-					Messages.messageGroupNotFound(console, rank);
-				}
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<PRRank> playerRanks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				playerRanks.add(rank);
 			}
 		}
+
+		playerRanks = new PRUtil().sortRanksByWeight(playerRanks);
+
+		return playerRanks.get(playerRanks.size() - 1).getName();
 	}
 
-	public boolean setGroup(Player player, String rank, boolean fireAddonEvent) {
-		PowerRanksVerbose.log("setGroup(Player, String, boolean)",
-				" Changed " + player.getName() + "'s rank to: " + rank);
-		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
-		boolean success = false;
-		try {
-			if (CacheManager.getRank(rank) != null) {
-				// this.m.removePermissions(player);
-				String oldRank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-				CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank);
-				// if (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
-				if (fireAddonEvent && PowerRanks.getConfigManager().getBool("announcements.rankup.enabled", false)) {
-					Bukkit.broadcastMessage(
-							PowerRanks.chatColor(
-									PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
-											.replace("[player]", player.getDisplayName()).replace("[rank]", rank)
-											.replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-									true));
-				}
-				// }
+	public void fireSetRankAddonEvent() {
+	// 	PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 
-				if (fireAddonEvent)
-					for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-						PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-						prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.SET, true);
-					}
-
-				// this.m.setupPermissions(player);
-				this.m.updateTablistName(player);
-
-				Messages.messageSetRankSuccessSender(player, player.getName(), rank);
-				success = true;
-			} else {
-				success = false;
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		return success;
+	// 	if (PowerRanks.getConfigManager().getBool("announcements.rankup.enabled", false)) {
+	// 		Bukkit.broadcastMessage(PowerRanks.chatColor(
+	// 				PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
+	// 						.replace("[player]", t).replace("[rank]", rank)
+	// 						.replace("[powerranks_prefix]",
+	// 								languageManager.getString("general.prefix", "")
+	// 										.replace("%plugin_name%", PowerRanks.pdf.getName())),
+	// 				true));
+	// 	}
 	}
+
+	// public void setGroup(Player player, String t, String rank, boolean
+	// fireAddonEvent) {
+	// PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+	// if (player != null) {
+	// if (player.hasPermission("powerranks.cmd.set") ||
+	// player.hasPermission("powerranks.cmd.set." + rank)) {
+	// PowerRanksVerbose.log("setGroup(Player, String, String, boolean)",
+	// player.getName() + " Changed " + t + "'s rank to: " + rank);
+	// Player target = Bukkit.getServer().getPlayer(t);
+
+	// if (target != null) {
+	// try {
+	// if (CacheManager.getRank(rank) != null) {
+	// // this.m.removePermissions(player);
+	// List<String> oldRanks =
+	// CacheManager.getPlayer(target.getUniqueId().toString()).getRanks();
+	// CacheManager.getPlayer(target.getUniqueId().toString()).setRank(rank);
+	// // CachedPlayers.set("players." + target.getUniqueId() + ".rank", (Object)
+	// rank,
+	// // false);
+	// // if
+	// (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
+	// // if
+	// (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
+	// if (fireAddonEvent
+	// && PowerRanks.getConfigManager().getBool("announcements.rankup.enabled",
+	// false)) {
+	// Bukkit.broadcastMessage(PowerRanks.chatColor(
+	// PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
+	// .replace("[player]", t).replace("[rank]", rank)
+	// .replace("[powerranks_prefix]",
+	// languageManager.getString("general.prefix", "")
+	// .replace("%plugin_name%", PowerRanks.pdf.getName())),
+	// true));
+	// }
+	// // }
+	// // }
+
+	// if (fireAddonEvent)
+	// for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses
+	// .entrySet()) {
+	// PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, target);
+	// prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank,
+	// RankChangeCause.SET,
+	// true);
+	// }
+
+	// Messages.messageSetRankSuccessSender(player, t, rank);
+	// Messages.messageSetRankSuccessTarget(target, player.getName(), rank);
+	// // this.m.setupPermissions(target);
+	// this.m.updateTablistName(target);
+
+	// } else {
+	// Messages.messageGroupNotFound(player, rank);
+	// }
+	// } catch (Exception e1) {
+	// e1.printStackTrace();
+	// }
+	// } else {
+	// if (CacheManager.getRank(rank) != null) {
+
+	// boolean offline_player_found = false;
+
+	// for (PRPlayer key : CacheManager.getPlayers()) {
+	// if (key.getName().equalsIgnoreCase(t)) {
+	// List<String> oldRanks = key.getRanks();
+	// key.setRank(rank);
+	// // CachedPlayers.set("players." + key + ".rank", (Object) rank, false);
+	// // if
+	// (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
+	// if (fireAddonEvent && PowerRanks.getConfigManager()
+	// .getBool("announcements.rankup.enabled", false)) {
+	// Bukkit.broadcastMessage(PowerRanks.chatColor(PowerRanks.getConfigManager()
+	// .getString("announcements.rankup.format", "").replace("[player]", t)
+	// .replace("[rank]", rank).replace("[powerranks_prefix]",
+	// languageManager.getString("general.prefix", "")
+	// .replace("%plugin_name%", PowerRanks.pdf.getName())),
+	// true));
+	// }
+	// // }
+
+	// if (fireAddonEvent)
+	// for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses
+	// .entrySet()) {
+	// PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
+	// prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank,
+	// RankChangeCause.SET, false);
+	// }
+
+	// Messages.messageSetRankSuccessSender(player, t, rank);
+
+	// offline_player_found = true;
+	// }
+	// }
+
+	// if (!offline_player_found) {
+	// Messages.messagePlayerNotFound(player, t);
+	// }
+	// } else {
+	// Messages.messageGroupNotFound(player, rank);
+	// }
+	// }
+	// }
+	// } else {
+	// PowerRanksVerbose.log("setGroup(Player, String, String, boolean)",
+	// "Unknown Changed " + t + "'s rank to: " + rank);
+	// ConsoleCommandSender console = Bukkit.getConsoleSender();
+	// Player target2 = Bukkit.getServer().getPlayer(t);
+
+	// if (target2 != null) {
+	// try {
+	// if (CacheManager.getRank(rank) != null) {
+	// // this.m.removePermissions(target2);
+	// // String oldRank = CachedPlayers.getString("players." +
+	// target2.getUniqueId() +
+	// // ".rank");
+	// // CachedPlayers.set("players." + target2.getUniqueId() + ".rank", (Object)
+	// // rank, false);
+	// List<String> oldRanks =
+	// CacheManager.getPlayer(target2.getUniqueId().toString()).getRanks();
+	// CacheManager.getPlayer(target2.getUniqueId().toString()).setRank(rank);
+	// // if
+	// (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
+	// if (fireAddonEvent
+	// && PowerRanks.getConfigManager().getBool("announcements.rankup.enabled",
+	// false)) {
+	// Bukkit.broadcastMessage(PowerRanks.chatColor(
+	// PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
+	// .replace("[player]", t).replace("[rank]", rank)
+	// .replace("[powerranks_prefix]",
+	// languageManager.getString("general.prefix", "")
+	// .replace("%plugin_name%", PowerRanks.pdf.getName())),
+	// true));
+	// }
+	// // }
+
+	// if (fireAddonEvent)
+	// for (Entry<File, PowerRanksAddon> prAddon :
+	// this.m.addonsManager.addonClasses.entrySet()) {
+	// PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, target2);
+	// prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank,
+	// RankChangeCause.SET,
+	// true);
+	// }
+
+	// Messages.messageSetRankSuccessSender(console, t, rank);
+	// Messages.messageSetRankSuccessTarget(target2, console.getName(), rank);
+	// // this.m.setupPermissions(target2);
+	// this.m.updateTablistName(target2);
+
+	// } else {
+	// Messages.messageGroupNotFound(console, rank);
+	// }
+	// } catch (Exception e2) {
+	// e2.printStackTrace();
+	// }
+	// } else {
+	// if (CacheManager.getRank(rank) != null) {
+
+	// boolean offline_player_found = false;
+
+	// // if (CachedPlayers.getConfigurationSection("players") != null) {
+	// for (PRPlayer key : CacheManager.getPlayers()) {
+	// if (key.getName().equalsIgnoreCase(t)) {
+	// List<String> oldRanks = key.getRanks();
+	// key.setRank(rank);
+	// // CachedPlayers.set("players." + key + ".rank", (Object) rank, false);
+	// // if
+	// (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
+	// if (fireAddonEvent
+	// && PowerRanks.getConfigManager().getBool("announcements.rankup.enabled",
+	// false)) {
+	// Bukkit.broadcastMessage(PowerRanks.chatColor(
+	// PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
+	// .replace("[player]", t).replace("[rank]", rank)
+	// .replace("[powerranks_prefix]",
+	// languageManager.getString("general.prefix", "")
+	// .replace("%plugin_name%", PowerRanks.pdf.getName())),
+	// true));
+	// }
+	// // }
+
+	// if (fireAddonEvent)
+	// for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses
+	// .entrySet()) {
+	// PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, t);
+	// prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank,
+	// RankChangeCause.SET,
+	// false);
+	// }
+
+	// Messages.messageSetRankSuccessSender(console, t, rank);
+
+	// offline_player_found = true;
+	// }
+	// }
+	// // }
+	// if (!offline_player_found) {
+	// Messages.messagePlayerNotFound(console, t);
+	// }
+	// } else {
+	// Messages.messageGroupNotFound(console, rank);
+	// }
+	// }
+	// }
+	// }
+
+	// public boolean setGroup(Player player, String rank, boolean fireAddonEvent) {
+	// PowerRanksVerbose.log("setGroup(Player, String, boolean)",
+	// " Changed " + player.getName() + "'s rank to: " + rank);
+	// PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+	// boolean success = false;
+	// try {
+	// if (CacheManager.getRank(rank) != null) {
+	// // this.m.removePermissions(player);
+	// List<String> oldRanks =
+	// CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+	// CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank);
+	// // if
+	// (PowerRanks.getConfigManager().contains("announcements.rankup.enabled")) {
+	// if (fireAddonEvent &&
+	// PowerRanks.getConfigManager().getBool("announcements.rankup.enabled", false))
+	// {
+	// Bukkit.broadcastMessage(
+	// PowerRanks.chatColor(
+	// PowerRanks.getConfigManager().getString("announcements.rankup.format", "")
+	// .replace("[player]", player.getDisplayName()).replace("[rank]", rank)
+	// .replace("[powerranks_prefix]",
+	// languageManager.getString("general.prefix", "")
+	// .replace("%plugin_name%", PowerRanks.pdf.getName())),
+	// true));
+	// }
+	// // }
+
+	// if (fireAddonEvent)
+	// for (Entry<File, PowerRanksAddon> prAddon :
+	// this.m.addonsManager.addonClasses.entrySet()) {
+	// PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
+	// prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank,
+	// RankChangeCause.SET, true);
+	// }
+
+	// // this.m.setupPermissions(player);
+	// this.m.updateTablistName(player);
+
+	// Messages.messageSetRankSuccessSender(player, player.getName(), rank);
+	// success = true;
+	// } else {
+	// success = false;
+	// }
+	// } catch (Exception e1) {
+	// e1.printStackTrace();
+	// }
+	// return success;
+	// }
 
 	// public String getRanksConfigFieldString(String rank, String field) {
 	// String value = "";
@@ -331,69 +381,73 @@ public class Users implements Listener {
 	// return false;
 	// }
 
-	public String getGroup(String plr, String t) {
-		Player sender = (plr == null || plr == "API") ? null : Bukkit.getServer().getPlayer(plr);
-		Player target = Bukkit.getServer().getPlayer(t);
-		String target_name = "";
-		String group = "";
-		if (target != null) {
-			try {
-				group = CacheManager.getPlayer(target.getUniqueId().toString()).getRank();// CacheManager.getPlayer(target.getUniqueId().toString()).getRank();
-				target_name = target.getName();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				for (PRPlayer key : CacheManager.getPlayers()) {
-					if (key.getName().equalsIgnoreCase(t)) {
-						group = key.getRank();
-						target_name = key.getName();
-						break;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	// public String getGroup(String plr, String t) {
+	// Player sender = (plr == null || plr == "API") ? null :
+	// Bukkit.getServer().getPlayer(plr);
+	// Player target = Bukkit.getServer().getPlayer(t);
+	// String target_name = "";
+	// List<String> ranknames = new ArrayList<String>();
+	// if (target != null) {
+	// try {
+	// ranknames =
+	// CacheManager.getPlayer(target.getUniqueId().toString()).getRanks();//
+	// CacheManager.getPlayer(target.getUniqueId().toString()).getRank();
+	// target_name = target.getName();
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// } else {
+	// try {
+	// for (PRPlayer key : CacheManager.getPlayers()) {
+	// if (key.getName().equalsIgnoreCase(t)) {
+	// ranknames = key.getRanks();
+	// target_name = key.getName();
+	// break;
+	// }
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
 
-		}
-		if (group.length() > 0) {
-			if (sender != null) {
-				Messages.messagePlayerCheckRank(sender, target_name, group);
-			} else {
-				Messages.messagePlayerCheckRank(Bukkit.getConsoleSender(), target_name, group);
-			}
-		} else {
-			if (sender != null) {
-				Messages.messagePlayerNotFound(sender, t);
-			} else {
-				Messages.messagePlayerNotFound(Bukkit.getConsoleSender(), t);
-			}
-		}
-		return (group.length() == 0) ? "error" : group;
-	}
+	// }
+	// if (ranknames.size() > 0) {
+	// if (sender != null) {
+	// Messages.messagePlayerCheckRank(sender, target_name, group);
+	// } else {
+	// Messages.messagePlayerCheckRank(Bukkit.getConsoleSender(), target_name,
+	// group);
+	// }
+	// } else {
+	// if (sender != null) {
+	// Messages.messagePlayerNotFound(sender, t);
+	// } else {
+	// Messages.messagePlayerNotFound(Bukkit.getConsoleSender(), t);
+	// }
+	// }
+	// return (group.length() == 0) ? "error" : group;
+	// }
 
-	public String getGroup(Player player) {
-		return CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-	}
+	// public String getGroup(Player player) {
+	// return CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+	// }
 
-	public String getGroup(String playername) {
-		String uuid = "";
-		String group = null;
-		if (Bukkit.getServer().getPlayer(playername) != null)
-			uuid = Bukkit.getServer().getPlayer(playername).getUniqueId().toString();
+	// public String getGroup(String playername) {
+	// String uuid = "";
+	// String group = null;
+	// if (Bukkit.getServer().getPlayer(playername) != null)
+	// uuid = Bukkit.getServer().getPlayer(playername).getUniqueId().toString();
 
-		if (uuid.length() == 0) {
-			for (PRPlayer key : CacheManager.getPlayers()) {
-				if (key.getName().equalsIgnoreCase(playername)) {
-					uuid = key.getUUID().toString();
-				}
-			}
-		} else if (uuid.length() != 0) {
-			group = CacheManager.getPlayer(uuid).getRank();
-		}
-		return group;
-	}
+	// if (uuid.length() == 0) {
+	// for (PRPlayer key : CacheManager.getPlayers()) {
+	// if (key.getName().equalsIgnoreCase(playername)) {
+	// uuid = key.getUUID().toString();
+	// }
+	// }
+	// } else if (uuid.length() != 0) {
+	// group = CacheManager.getPlayer(uuid).getRanks();
+	// }
+	// return group;
+	// }
 
 	public ArrayList<PRRank> getGroups() {
 		return CacheManager.getRanks();
@@ -630,21 +684,37 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean deleteRank(String rank) {
-		if (CacheManager.getRank(rank) == null) {
+	public boolean deleteRank(String rankToDelete) {
+		if (CacheManager.getRank(rankToDelete) == null) {
 			return false;
 		}
 
-		if (CacheManager.getRank(CacheManager.getDefaultRank()) == CacheManager.getRank(rank)) {
+		if (CacheManager.getRank(CacheManager.getDefaultRank()) == CacheManager.getRank(rankToDelete)) {
 			return false;
 		}
 		for (PRPlayer prPlayer : CacheManager.getPlayers()) {
-			if (CacheManager.getRank(CacheManager.getDefaultRank()) == CacheManager.getRank(prPlayer.getRank())) {
-				prPlayer.setRank(CacheManager.getDefaultRank());
+			List<String> ranknames = prPlayer.getRanks();
+
+			List<PRRank> ranks = new ArrayList<PRRank>();
+			for (String rankname : ranknames) {
+				PRRank rank = CacheManager.getRank(rankname);
+				if (rank != null) {
+					ranks.add(rank);
+				}
 			}
+
+			for (PRRank rank : ranks) {
+				if (rank == CacheManager.getRank(rankToDelete)) {
+					prPlayer.removeRank(rank.getName());
+				}
+			}
+			// if (CacheManager.getRank(CacheManager.getDefaultRank()) ==
+			// CacheManager.getRank(prPlayer.getRank())) {
+			// prPlayer.setRank(CacheManager.getDefaultRank());
+			// }
 		}
 
-		CacheManager.removeRank(CacheManager.getRank(rank));
+		CacheManager.removeRank(CacheManager.getRank(rankToDelete));
 
 		// for (String uuid :
 		// CachedPlayers.getConfigurationSection("players").getKeys(false)) {
@@ -692,159 +762,6 @@ public class Users implements Listener {
 		// }
 
 		return true;
-	}
-
-	public boolean promote(String playername) {
-		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
-		Player player = Bukkit.getServer().getPlayer(playername);
-		if (player != null) {
-			try {
-				String oldRank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-				String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-				if (CacheManager.getRank(rank) != null) {
-					String rankname = CacheManager.getRank(rank).getPromoteRank();
-					if (CacheManager.getRank(rankname) != null && rankname.length() > 0) {
-						this.setGroup(player, rankname, false);
-						if (PowerRanks.getConfigManager().getBool("announcements.promote.enabled", false)) {
-							Bukkit.broadcastMessage(PowerRanks.chatColor(
-									PowerRanks.getConfigManager().getString("announcements.promote.format", "")
-											.replace("[player]", playername).replace("[rank]", rankname)
-											.replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-									true));
-						}
-
-						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rank, RankChangeCause.PROMOTE,
-									true);
-						}
-						this.m.updatePlayersWithRank(this, rank);
-
-						return true;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-
-				boolean offline_player_found = false;
-
-				for (PRPlayer key : CacheManager.getPlayers()) {
-					if (key.getName().equalsIgnoreCase(playername)) {
-						String oldRank = key.getRank();
-						String rankname = CacheManager.getRank(key.getRank()).getPromoteRank();
-						if (rankname.length() == 0)
-							return false;
-
-						this.setGroup(player, rankname, false);
-						if (PowerRanks.getConfigManager().getBool("announcements.promote.enabled", false)) {
-							Bukkit.broadcastMessage(PowerRanks.chatColor(
-									PowerRanks.getConfigManager().getString("announcements.promote.format", "")
-											.replace("[player]", playername).replace("[rank]", rankname)
-											.replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-									true));
-						}
-
-						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rankname, RankChangeCause.PROMOTE,
-									true);
-						}
-
-						offline_player_found = true;
-						return true;
-					}
-				}
-
-				if (!offline_player_found) {
-					return false;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-
-	public boolean demote(String playername) {
-		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
-		Player player = Bukkit.getServer().getPlayer(playername);
-		if (player != null) {
-			try {
-				String oldRank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-				String rank = CacheManager.getPlayer(player.getUniqueId().toString()).getRank();
-				if (CacheManager.getRank(rank) != null) {
-					String rankname = CacheManager.getRank(rank).getDemoteRank();
-					if (rankname.length() > 0 && CacheManager.getRank(rankname) != null) {
-						this.setGroup(player, rankname, false);
-						if (PowerRanks.getConfigManager().getBool("announcements.demote.enabled", false)) {
-							Bukkit.broadcastMessage(PowerRanks.chatColor(
-									PowerRanks.getConfigManager().getString("announcements.demote.format", "")
-											.replace("[player]", playername).replace("[rank]", rankname)
-											.replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-									true));
-						}
-
-						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rankname, RankChangeCause.DEMOTE,
-									true);
-						}
-						this.m.updatePlayersWithRank(this, rank);
-						return true;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				boolean offline_player_found = false;
-
-				for (PRPlayer key : CacheManager.getPlayers()) {
-					if (key.getName().equalsIgnoreCase(playername)) {
-						String oldRank = key.getRank();
-						String rankname = CacheManager.getRank(oldRank).getDemoteRank();
-						if (rankname.length() == 0)
-							return false;
-
-						this.setGroup(player, rankname, false);
-						if (PowerRanks.getConfigManager().getBool("announcements.demote.enabled", false)) {
-							Bukkit.broadcastMessage(PowerRanks.chatColor(
-									PowerRanks.getConfigManager().getString("announcements.demote.format", "")
-											.replace("[player]", playername).replace("[rank]", rankname)
-											.replace("[powerranks_prefix]",
-													languageManager.getString("general.prefix", "")
-															.replace("%plugin_name%", PowerRanks.pdf.getName())),
-									true));
-						}
-
-						for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
-							PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
-							prAddon.getValue().onPlayerRankChange(prPlayer, oldRank, rankname, RankChangeCause.PROMOTE,
-									true);
-						}
-						offline_player_found = true;
-						return true;
-					}
-				}
-
-				if (!offline_player_found) {
-					return false;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
 	}
 
 	public boolean renameRank(String rank, String to) {
@@ -950,45 +867,115 @@ public class Users implements Listener {
 	}
 
 	public String getPrefix(Player player) {
-		return getPrefix(getGroup(player));
-	}
-
-	public String getPrefix(String rankname) {
 		String prefix = "";
-		rankname = this.getRankIgnoreCase(rankname);
 
-		prefix = CacheManager.getRank(rankname).getPrefix();
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+		Collections.reverse(ranks);
+
+		for (PRRank rank : ranks) {
+			prefix += rank.getPrefix() + " ";
+		}
+
+		if (prefix.endsWith(" ")) {
+			prefix = prefix.substring(0, prefix.length() - 1);
+		}
 
 		return prefix;
+		// return getPrefix(getGroup(player));
 	}
+
+	// public String getPrefix(String rankname) {
+	// String prefix = "";
+	// rankname = this.getRankIgnoreCase(rankname);
+
+	// prefix = CacheManager.getRank(rankname).getPrefix();
+
+	// return prefix;
+	// }
 
 	public String getSuffix(Player player) {
-		return getSuffix(getGroup(player));
-	}
-
-	public String getSuffix(String rankname) {
 		String suffix = "";
-		rankname = this.getRankIgnoreCase(rankname);
 
-		suffix = CacheManager.getRank(rankname).getSuffix();
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+		Collections.reverse(ranks);
+
+		for (PRRank rank : ranks) {
+			suffix += rank.getSuffix() + " ";
+		}
+
+		if (suffix.endsWith(" ")) {
+			suffix = suffix.substring(0, suffix.length() - 1);
+		}
 
 		return suffix;
+		// return getSuffix(getGroup(player));
 	}
+
+	// public String getSuffix(String rankname) {
+	// String suffix = "";
+	// rankname = this.getRankIgnoreCase(rankname);
+
+	// suffix = CacheManager.getRank(rankname).getSuffix();
+
+	// return suffix;
+	// }
 
 	public String getChatColor(Player player) {
 		String color = "";
-		String rankname = getGroup(player);
+		// String rankname = getGroup(player);
 
-		color = CacheManager.getRank(rankname).getChatcolor();
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		color = ranks.get(ranks.size() - 1).getChatcolor();
 
 		return color;
 	}
 
 	public String getNameColor(Player player) {
 		String color = "";
-		String rankname = getGroup(player);
+		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
 
-		color = CacheManager.getRank(rankname).getNamecolor();
+		List<PRRank> ranks = new ArrayList<PRRank>();
+		for (String rankname : ranknames) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				ranks.add(rank);
+			}
+		}
+
+		ranks = new PRUtil().sortRanksByWeight(ranks);
+
+		color = ranks.get(ranks.size() - 1).getNamecolor();
 
 		return color;
 	}
@@ -1268,123 +1255,6 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean addSubrank(String playername, String rankname) {
-
-		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
-		if (Objects.isNull(targetPlayer)) {
-			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
-		}
-		if (Objects.isNull(targetPlayer)) {
-			return false;
-		}
-
-		if (Objects.isNull(CacheManager.getRank(rankname))) {
-			return false;
-		}
-
-		PRSubrank newSubrank = new PRSubrank();
-		newSubrank.setName(rankname);
-
-		targetPlayer.addSubrank(newSubrank);
-
-		this.m.updateTablistName(Bukkit.getServer().getPlayer(targetPlayer.getUUID()));
-
-		return true;
-
-	}
-
-	public boolean removeSubrank(String playername, String rankname) {
-
-		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
-		if (Objects.isNull(targetPlayer)) {
-			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
-		}
-		if (Objects.isNull(targetPlayer)) {
-			return false;
-		}
-
-		if (Objects.isNull(CacheManager.getRank(rankname))) {
-			return false;
-		}
-
-		PRSubrank targetSubrank = null;
-
-		for (PRSubrank subrank : targetPlayer.getSubRanks()) {
-			if (subrank.getName().equals(rankname)) {
-				targetSubrank = subrank;
-				break;
-			}
-		}
-
-		if (Objects.isNull(targetSubrank)) {
-			return false;
-		}
-
-		targetPlayer.removeSubrank(targetSubrank);
-
-		this.m.updateTablistName(Bukkit.getServer().getPlayer(targetPlayer.getUUID()));
-
-		return true;
-	}
-
-	public List<String> getSubranks(String playername) {
-		List<String> ranks = new ArrayList<String>();
-
-		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
-		if (Objects.isNull(targetPlayer)) {
-			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
-		}
-		if (Objects.isNull(targetPlayer)) {
-			return ranks;
-		}
-
-		for (PRSubrank subrank : targetPlayer.getSubRanks()) {
-			ranks.add(subrank.getName());
-		}
-
-		return ranks;
-	}
-
-	public boolean changeSubrankField(String playername, String subrankname, String field, boolean value) {
-
-		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
-		if (Objects.isNull(targetPlayer)) {
-			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
-		}
-		if (Objects.isNull(targetPlayer)) {
-			return false;
-		}
-
-		if (Objects.isNull(CacheManager.getRank(getRankIgnoreCase(subrankname)))) {
-			return false;
-		}
-
-		PRSubrank targetSubrank = null;
-		for (PRSubrank subrank : targetPlayer.getSubRanks()) {
-			if (subrank.getName().equalsIgnoreCase(subrankname)) {
-				targetSubrank = subrank;
-
-			}
-		}
-		if (Objects.isNull(targetSubrank)) {
-			return false;
-		}
-
-		if (field.toLowerCase().contains("prefix")) {
-			targetSubrank.setUsingPrefix(value);
-		}
-
-		if (field.toLowerCase().contains("suffix")) {
-			targetSubrank.setUsingSuffix(value);
-		}
-
-		if (field.toLowerCase().contains("permission")) {
-			targetSubrank.setUsingPermissions(value);
-		}
-
-		return true;
-	}
-
 	public List<PRPermission> getPlayerPermissions(String playername) {
 		List<PRPermission> list = new ArrayList<PRPermission>();
 
@@ -1407,48 +1277,6 @@ public class Users implements Listener {
 		}
 
 		return list;
-	}
-
-	public String getSubrankprefixes(Player player) {
-		String values = "";
-
-		String uuid = player.getUniqueId().toString();
-		try {
-
-			ArrayList<PRSubrank> subranks = CacheManager.getPlayer(uuid).getSubRanks();
-
-			for (PRSubrank subrank : subranks) {
-				if (subrank.getUsingPrefix()) {
-					values += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getPrefix();
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return values;
-	}
-
-	public String getSubranksuffixes(Player player) {
-		String values = "";
-
-		String uuid = player.getUniqueId().toString();
-		try {
-
-			ArrayList<PRSubrank> subranks = CacheManager.getPlayer(uuid).getSubRanks();
-
-			for (PRSubrank subrank : subranks) {
-				if (subrank.getUsingSuffix()) {
-					values += ChatColor.RESET + CacheManager.getRank(subrank.getName()).getSuffix();
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return values;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1618,53 +1446,53 @@ public class Users implements Listener {
 		return true;
 	}
 
-	public boolean setPromoteRank(String rank, String promote_rank) {
-		try {
-			CacheManager.getRank(getRankIgnoreCase(rank)).setPromoteRank(promote_rank);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-		// return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.promote",
-		// promote_rank);
-	}
+	// public boolean setPromoteRank(String rank, String promote_rank) {
+	// try {
+	// CacheManager.getRank(getRankIgnoreCase(rank)).setPromoteRank(promote_rank);
+	// return true;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// return false;
+	// // return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.promote",
+	// // promote_rank);
+	// }
 
-	public boolean setDemoteRank(String rank, String demote_rank) {
-		try {
-			CacheManager.getRank(getRankIgnoreCase(rank)).setDemoteRank(demote_rank);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-		// return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote",
-		// demote_rank);
-	}
+	// public boolean setDemoteRank(String rank, String demote_rank) {
+	// try {
+	// CacheManager.getRank(getRankIgnoreCase(rank)).setDemoteRank(demote_rank);
+	// return true;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// return false;
+	// // return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote",
+	// // demote_rank);
+	// }
 
-	public boolean clearPromoteRank(String rank) {
-		try {
-			CacheManager.getRank(getRankIgnoreCase(rank)).setPromoteRank("");
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-		// return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.promote",
-		// "");
-	}
+	// public boolean clearPromoteRank(String rank) {
+	// try {
+	// CacheManager.getRank(getRankIgnoreCase(rank)).setPromoteRank("");
+	// return true;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// return false;
+	// // return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.promote",
+	// // "");
+	// }
 
-	public boolean clearDemoteRank(String rank) {
-		try {
-			CacheManager.getRank(getRankIgnoreCase(rank)).setDemoteRank("");
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-		// return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote",
-		// "");
-	}
+	// public boolean clearDemoteRank(String rank) {
+	// try {
+	// CacheManager.getRank(getRankIgnoreCase(rank)).setDemoteRank("");
+	// return true;
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// return false;
+	// // return setRanksConfigFieldString(getRankIgnoreCase(rank), "level.demote",
+	// // "");
+	// }
 
 	public ArrayList<String> getPlayerNames() {
 		ArrayList<String> player_names = new ArrayList<String>();
@@ -1675,88 +1503,6 @@ public class Users implements Listener {
 		}
 
 		return player_names;
-	}
-
-	public boolean addSubrankWorld(String playername, String subrankname, String worldname) {
-		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
-		if (Objects.isNull(targetPlayer)) {
-			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
-		}
-		if (Objects.isNull(targetPlayer)) {
-			return false;
-		}
-
-		if (Objects.isNull(CacheManager.getRank(subrankname))) {
-			return false;
-		}
-
-		PRSubrank targetSubrank = null;
-		for (PRSubrank subrank : targetPlayer.getSubRanks()) {
-			if (subrank.getName().equalsIgnoreCase(subrankname)) {
-				targetSubrank = subrank;
-
-			}
-		}
-		if (Objects.isNull(targetSubrank)) {
-			return false;
-		}
-
-		boolean hasWorld = false;
-		for (String world : targetSubrank.getWorlds()) {
-			if (world.equals(worldname)) {
-				hasWorld = true;
-				break;
-			}
-		}
-
-		if (hasWorld) {
-			return false;
-		}
-
-		targetSubrank.addWorld(worldname);
-
-		return true;
-	}
-
-	public boolean removeSubrankWorld(String playername, String subrankname, String worldname) {
-		PRPlayer targetPlayer = CacheManager.getPlayer(playername);
-		if (Objects.isNull(targetPlayer)) {
-			targetPlayer = CacheManager.getPlayer(Bukkit.getServer().getPlayer(playername).getUniqueId().toString());
-		}
-		if (Objects.isNull(targetPlayer)) {
-			return false;
-		}
-
-		if (Objects.isNull(CacheManager.getRank(subrankname))) {
-			return false;
-		}
-
-		PRSubrank targetSubrank = null;
-		for (PRSubrank subrank : targetPlayer.getSubRanks()) {
-			if (subrank.getName().equalsIgnoreCase(subrankname)) {
-				targetSubrank = subrank;
-
-			}
-		}
-		if (Objects.isNull(targetSubrank)) {
-			return false;
-		}
-
-		boolean hasWorld = false;
-		for (String world : targetSubrank.getWorlds()) {
-			if (world.equals(worldname)) {
-				hasWorld = true;
-				break;
-			}
-		}
-
-		if (!hasWorld) {
-			return false;
-		}
-
-		targetSubrank.removeWorld(worldname);
-
-		return true;
 	}
 
 	public boolean rankExists(String rankname) {

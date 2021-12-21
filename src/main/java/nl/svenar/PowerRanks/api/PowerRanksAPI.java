@@ -42,13 +42,35 @@ public class PowerRanksAPI {
 	}
 	
 	public String getPlayerRank(Player player) {
-		String rank = users.getGroup(player);
+		String rank = users.getPrimaryRank(player);
 		return rank;
 	}
 	
-	public boolean setPlayerRank(Player player, String rank) {
-		boolean success = users.setGroup(player, users.getRankIgnoreCase(rank), true);
-		return success;
+	public boolean setPlayerRank(Player player, String rankname) {
+		PRRank rank = CacheManager.getRank(rankname);
+		// boolean success = users.setGroup(player, users.getRankIgnoreCase(rank), true);
+		if (rank != null) {
+			CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
+		}
+		return rank != null;
+	}
+
+	public boolean addPlayerRank(Player player, String rankname) {
+		PRRank rank = CacheManager.getRank(rankname);
+		// boolean success = users.setGroup(player, users.getRankIgnoreCase(rank), true);
+		if (rank != null) {
+			CacheManager.getPlayer(player.getUniqueId().toString()).addRank(rank.getName());
+		}
+		return rank != null;
+	}
+
+	public boolean removePlayerRank(Player player, String rankname) {
+		PRRank rank = CacheManager.getRank(rankname);
+		// boolean success = users.setGroup(player, users.getRankIgnoreCase(rank), true);
+		if (rank != null) {
+			CacheManager.getPlayer(player.getUniqueId().toString()).removeRank(rank.getName());
+		}
+		return rank != null;
 	}
 	
 	public List<String> getPermissions(String rank) {
@@ -157,39 +179,43 @@ public class PowerRanksAPI {
 		return false;
 	}
 	
+	@Deprecated
 	public String getPromoteRank(String rank) {
-		if (CacheManager.getRank(rank) != null) {
-			return CacheManager.getRank(rank).getPromoteRank();
-		}
-		return null;
+		// if (CacheManager.getRank(rank) != null) {
+		// 	return CacheManager.getRank(rank).getPromoteRank();
+		// }
+		return "";
 		// String value = users.getRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.promote");
 		// return value;
 	}
 	
+	@Deprecated
 	public boolean setPromoteRank(String rank, String new_value) {
-		if (CacheManager.getRank(rank) != null) {
-			CacheManager.getRank(rank).setPromoteRank(new_value);
-			return true;
-		}
+		// if (CacheManager.getRank(rank) != null) {
+		// 	CacheManager.getRank(rank).setPromoteRank(new_value);
+		// 	return true;
+		// }
 		return false;
 		// boolean value = users.setRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.promote", new_value);
 		// return value;
 	}
 	
+	@Deprecated
 	public String getDemoteRank(String rank) {
-		if (CacheManager.getRank(rank) != null) {
-			return CacheManager.getRank(rank).getDemoteRank();
-		}
-		return null;
+		// if (CacheManager.getRank(rank) != null) {
+		// 	return CacheManager.getRank(rank).getDemoteRank();
+		// }
+		return "";
 		// String value = users.getRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.demote");
 		// return value;
 	}
 	
+	@Deprecated
 	public boolean setDemoteRank(String rank, String new_value) {
-		if (CacheManager.getRank(rank) != null) {
-			CacheManager.getRank(rank).setDemoteRank(new_value);
-			return true;
-		}
+		// if (CacheManager.getRank(rank) != null) {
+		// 	CacheManager.getRank(rank).setDemoteRank(new_value);
+		// 	return true;
+		// }
 		return false;
 		// boolean value = users.setRanksConfigFieldString(users.getRankIgnoreCase(rank), "level.demote", new_value);
 		// return value;
@@ -219,24 +245,29 @@ public class PowerRanksAPI {
 		return users.setBuyCost(rank, String.valueOf(cost));
 	}
 	
+	@Deprecated
 	public List<String> getSubranks(Player player) {
-		return users.getSubranks(player.getName());
+		return new ArrayList<String>();
 	}
 	
+	@Deprecated
 	public boolean addSubrank(Player player, String rank) {
-		return users.addSubrank(player.getName(), rank);
+		return false;
 	}
 	
+	@Deprecated
 	public boolean removeSubrank(Player player, String rank) {
-		return users.removeSubrank(player.getName(), rank);
+		return false;
 	}
 	
+	@Deprecated
 	public String getPlayerSubrankPrefixes(Player player) {
-		return users.getSubrankprefixes(player);
+		return "";
 	}
 	
+	@Deprecated
 	public String getPlayerSubrankSuffixes(Player player) {
-		return users.getSubranksuffixes(player);
+		return "";
 	}
 
 	public boolean removePermission(Player player, String permission) {

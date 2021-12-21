@@ -21,7 +21,6 @@ import nl.svenar.common.storage.provided.YAMLStorageManager;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
-import nl.svenar.common.structure.PRSubrank;
 
 public class ConfigFilesUpdater {
 
@@ -177,8 +176,8 @@ public class ConfigFilesUpdater {
 				newRank.setChatcolor(ranksYaml.getString("Groups." + rankName + ".chat.chatColor"));
 				newRank.setNamecolor(ranksYaml.getString("Groups." + rankName + ".chat.nameColor"));
 
-				newRank.setPromoteRank(ranksYaml.getString("Groups." + rankName + ".level.promote"));
-				newRank.setDemoteRank(ranksYaml.getString("Groups." + rankName + ".level.demote"));
+				// newRank.setPromoteRank(ranksYaml.getString("Groups." + rankName + ".level.promote"));
+				// newRank.setDemoteRank(ranksYaml.getString("Groups." + rankName + ".level.demote"));
 
 				newRank.setBuyableRanks(
 						new ArrayList<String>(ranksYaml.getStringList("Groups." + rankName + ".economy.buyable")));
@@ -207,24 +206,22 @@ public class ConfigFilesUpdater {
 				}
 
 				if (!playersYaml.isString("players." + playerUUID + ".subranks")) {
-					for (String playerSubrankName : playersYaml
-							.getConfigurationSection("players." + playerUUID + ".subranks").getKeys(false)) {
-						PRSubrank newSubrank = new PRSubrank();
+					for (String playerSubrankName : playersYaml.getConfigurationSection("players." + playerUUID + ".subranks").getKeys(false)) {
+						newPlayer.addRank(playerSubrankName);
+				// 		PRSubrank newSubrank = new PRSubrank();
 
-						newSubrank.setName(playerSubrankName);
-						newSubrank.setUsingPrefix(playersYaml.getBoolean(
-								"players." + playerUUID + ".subranks." + playerSubrankName + ".use_prefix"));
-						newSubrank.setUsingSuffix(playersYaml.getBoolean(
-								"players." + playerUUID + ".subranks." + playerSubrankName + ".use_suffix"));
-						newSubrank.setUsingPermissions(playersYaml.getBoolean(
-								"players." + playerUUID + ".subranks." + playerSubrankName + ".use_permissions"));
-						newSubrank.setWorlds(new ArrayList<String>(playersYaml.getStringList(
-								"players." + playerUUID + ".subranks." + playerSubrankName + ".worlds")));
+				// 		newSubrank.setName(playerSubrankName);
+				// 		newSubrank.setUsingPrefix(playersYaml.getBoolean(
+				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".use_prefix"));
+				// 		newSubrank.setUsingSuffix(playersYaml.getBoolean(
+				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".use_suffix"));
+				// 		newSubrank.setUsingPermissions(playersYaml.getBoolean(
+				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".use_permissions"));
+				// 		newSubrank.setWorlds(new ArrayList<String>(playersYaml.getStringList(
+				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".worlds")));
 
-						newPlayer.addSubrank(newSubrank);
+				// 		newPlayer.addSubrank(newSubrank);
 					}
-				} else {
-					newPlayer.setUsertags(new ArrayList<String>());
 				}
 
 				storedPlayers.add(newPlayer);
