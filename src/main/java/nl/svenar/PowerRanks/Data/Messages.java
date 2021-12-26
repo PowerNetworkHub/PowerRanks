@@ -231,6 +231,99 @@ public class Messages {
 		}
 	}
 
+	public static void messageRankInfo(CommandSender sender, PRRank rank, int page) {
+
+		String formatted_inheritances = "";
+		for (String rankname : rank.getInheritances()) {
+			formatted_inheritances += rankname + " ";
+		}
+		if (formatted_inheritances.endsWith(" ")) {
+			formatted_inheritances = formatted_inheritances.substring(0, formatted_inheritances.length() - 1);
+		}
+
+		String formatted_buyableranks = "";
+		for (String rankname : rank.getBuyableRanks()) {
+			formatted_inheritances += rankname + " ";
+		}
+		if (formatted_inheritances.endsWith(" ")) {
+			formatted_inheritances = formatted_inheritances.substring(0, formatted_inheritances.length() - 1);
+		}
+
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
+				+ Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE
+				+ "===");
+		sender.sendMessage(ChatColor.GREEN + "Name: " + ChatColor.DARK_GREEN + rank.getName());
+		sender.sendMessage(ChatColor.GREEN + "Weight: " + ChatColor.DARK_GREEN + rank.getWeight());
+		sender.sendMessage(
+				ChatColor.GREEN + "Prefix: " + ChatColor.RESET + PowerRanks.chatColor(rank.getPrefix(), true));
+		sender.sendMessage(
+				ChatColor.GREEN + "Suffix: " + ChatColor.RESET + PowerRanks.chatColor(rank.getSuffix(), true));
+		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(sender, rank));
+		sender.sendMessage(ChatColor.YELLOW + "Buyable ranks: " + ChatColor.GOLD + formatted_buyableranks);
+		sender.sendMessage(ChatColor.YELLOW + "Buy cost: " + ChatColor.GOLD + rank.getBuyCost());
+		sender.sendMessage(ChatColor.YELLOW + "Buy description: " + ChatColor.GOLD + rank.getBuyDescription());
+		sender.sendMessage(ChatColor.YELLOW + "Buy command: " + ChatColor.GOLD + rank.getBuyCommand());
+		sender.sendMessage(ChatColor.GREEN + "Inheritance(s): " + ChatColor.DARK_GREEN + formatted_inheritances);
+		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
+
+		ArrayList<PRPermission> playerPermissions = rank.getPermissions();
+		int lines_per_page = sender instanceof Player ? 5 : 10;
+		int last_page = playerPermissions.size() / lines_per_page;
+
+		if (!(sender instanceof Player)) {
+			page -= 1;
+		}
+
+		page = page < 0 ? 0 : page;
+		page = page > last_page ? last_page : page;
+
+		if (sender instanceof Player) {
+			String page_selector_tellraw = "tellraw " + sender.getName()
+					+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
+					+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
+					+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+					+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " rankinfo %rankname% " + "%previous_page%"
+					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " rankinfo %rankname% " + "%previous_page%"
+					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " rankinfo %rankname% " + "%previous_page%"
+					+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " rankinfo %rankname% " + "%next_page%"
+					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " rankinfo %rankname% " + "%next_page%"
+					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+					+ "%commandlabel%" + " rankinfo %rankname% " + "%next_page%" + "\"}}]";
+
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
+					String.valueOf(last_page + 1));
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%rankname%", rank.getName());
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
+
+			Messages.powerRanks.getServer().dispatchCommand(
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+		} else {
+			sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
+					+ ChatColor.BLUE + (last_page + 1));
+			sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " playerinfo "
+					+ sender.getName() + " " + ChatColor.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+		}
+
+		int line_index = 0;
+		for (PRPermission permission : playerPermissions) {
+			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
+				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
+						+ (!permission.getValue() ? ChatColor.RED : ChatColor.GREEN) + permission.getName());
+			}
+			line_index += 1;
+		}
+
+		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
+				+ ChatColor.BLUE + "===");
+	}
+
 	public static void messagePlayerInfo(final CommandSender sender, final Player player, int page) {
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -351,8 +444,8 @@ public class Messages {
 
 		String formatted_prefix = "";
 		String formatted_suffix = "";
-		String chatColor = ranks.get(ranks.size() - 1).getChatcolor();
-		String nameColor = ranks.get(ranks.size() - 1).getNamecolor();
+		String chatColor = ranks.get(0).getChatcolor();
+		String nameColor = ranks.get(0).getNamecolor();
 		String usertag = "";
 
 		for (PRRank rank : ranks) {
@@ -414,6 +507,45 @@ public class Messages {
 
 		for (Entry<File, PowerRanksAddon> prAddon : PowerRanks.getInstance().addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(PowerRanks.getInstance(), player);
+			format = prAddon.getValue().onPlayerChat(prPlayer, format, playersChatMessage);
+		}
+
+		format = PowerRanks.chatColor(format, true);
+
+		return format;
+	}
+
+	private static String getSampleChatFormat(CommandSender sender, PRRank rank) {
+		String playersChatMessage = "message";
+
+		String format = PowerRanks.getConfigManager().getString("chat.format", "");
+
+		String formatted_prefix = "";
+		String formatted_suffix = "";
+		String chatColor = rank.getChatcolor();
+		String nameColor = rank.getNamecolor();
+		String usertag = "";
+
+		formatted_prefix += rank.getPrefix();
+		formatted_suffix += rank.getSuffix();
+
+		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(nameColor, sender.getName());
+		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
+				+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
+
+		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
+				.put("suffix", formatted_suffix)
+				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag((Player) sender))
+				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
+				.put("world", ((Player) sender).getWorld().getName()).build(), '[', ']');
+
+		if (PowerRanks.placeholderapiExpansion != null) {
+			format = PlaceholderAPI.setPlaceholders((Player) sender, format).replaceAll("" + ChatColor.COLOR_CHAR,
+					"" + PowerRanksChatColor.unformatted_default_char);
+		}
+
+		for (Entry<File, PowerRanksAddon> prAddon : PowerRanks.getInstance().addonsManager.addonClasses.entrySet()) {
+			PowerRanksPlayer prPlayer = new PowerRanksPlayer(PowerRanks.getInstance(), (Player) sender);
 			format = prAddon.getValue().onPlayerChat(prPlayer, format, playersChatMessage);
 		}
 
@@ -1163,7 +1295,7 @@ public class Messages {
 		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		String msg = getGeneralMessage(languageManager, "commands.usage_command_addownrank");
 		if (msg.length() > 0)
-		sender.sendMessage(msg);
+			sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageCheck(CommandSender console) {

@@ -50,6 +50,7 @@ import nl.svenar.PowerRanks.Commands.rank.cmd_delinheritance;
 import nl.svenar.PowerRanks.Commands.rank.cmd_delperm;
 import nl.svenar.PowerRanks.Commands.rank.cmd_listpermissions;
 import nl.svenar.PowerRanks.Commands.rank.cmd_listranks;
+import nl.svenar.PowerRanks.Commands.rank.cmd_rankinfo;
 import nl.svenar.PowerRanks.Commands.rank.cmd_renamerank;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setchatcolor;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setdefaultrank;
@@ -113,6 +114,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_addinheritance(plugin, "addinheritance", COMMAND_EXECUTOR.ALL);
 		new cmd_delinheritance(plugin, "delinheritance", COMMAND_EXECUTOR.ALL);
 		new cmd_setweight(plugin, "setweight", COMMAND_EXECUTOR.ALL);
+		new cmd_rankinfo(plugin, "rankinfo", COMMAND_EXECUTOR.ALL);
 
 		new cmd_buyrank(plugin, "buyrank", COMMAND_EXECUTOR.PLAYER);
 		new cmd_rankup(plugin, "rankup", COMMAND_EXECUTOR.PLAYER);
