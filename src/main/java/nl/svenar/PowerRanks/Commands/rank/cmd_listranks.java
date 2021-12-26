@@ -41,7 +41,7 @@ public class cmd_listranks extends PowerCommand {
 			for (PRRank rank : ranks) {
 				index++;
 				sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GRAY + "(" + rank.getWeight()
-						+ ")" + ChatColor.GREEN + rank.getName() + ChatColor.RESET + " "
+						+ ") " + ChatColor.GREEN + rank.getName() + ChatColor.RESET + " "
 						+ PowerRanks.chatColor(rank.getPrefix(), true));
 			}
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
