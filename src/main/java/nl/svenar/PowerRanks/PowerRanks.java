@@ -748,7 +748,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.sortRanksByWeight(ranks);
 		Collections.reverse(ranks);
 
 		String formatted_prefix = "";
@@ -833,7 +833,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			format = Util.powerFormatter(format,
-					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix).put("usertag", usertag)
+					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
+							.put("usertag", usertag)
 							.put("player", player_formatted_name).put("world", player.getWorld().getName()).build(),
 					'[', ']');
 
@@ -936,7 +937,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}
 
-		// playerRanks = new PRUtil().sortRanksByWeight(playerRanks);
+		// playerRanks = PRUtil.sortRanksByWeight(playerRanks);
 
 		List<PRRank> effectiveRanks = new ArrayList<PRRank>();
 
@@ -951,7 +952,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
-		effectiveRanks = new PRUtil().sortRanksByWeight(effectiveRanks);
+		effectiveRanks = PRUtil.sortRanksByWeight(effectiveRanks);
+
+		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+			permissions.add(permission);
+		}
 
 		for (PRRank effectiveRank : effectiveRanks) {
 			if (Objects.nonNull(effectiveRank)) {
@@ -971,10 +976,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					permissions.add(permission);
 				}
 			}
-		}
-
-		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
-			permissions.add(permission);
 		}
 
 		return permissions;

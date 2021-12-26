@@ -8,10 +8,15 @@ import nl.svenar.common.structure.PRRank;
 
 public class PRUtil {
 
-    public List<PRRank> sortRanksByWeight(List<PRRank> ranks) {
+    public static List<PRRank> sortRanksByWeight(List<PRRank> ranks) {
         Comparator<PRRank> compareByWeight = (PRRank o1, PRRank o2) -> Integer.compare(o1.getWeight(), o2.getWeight());
         Collections.sort(ranks, compareByWeight);
 
+        return ranks;
+    }
+
+    public static List<PRRank> reverseRanks(List<PRRank> ranks) {
+        Collections.reverse(ranks);
         return ranks;
     }
 }

@@ -104,9 +104,9 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		return PowerRanks.chatColor(ranks.get(ranks.size() - 1).getPrefix(), true);
+		return PowerRanks.chatColor(ranks.get(0).getPrefix(), true);
 
 		// return
 		// PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getPrefix(),
@@ -124,9 +124,9 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		return PowerRanks.chatColor(ranks.get(ranks.size() - 1).getSuffix(), true);
+		return PowerRanks.chatColor(ranks.get(0).getSuffix(), true);
 		// return
 		// PowerRanks.chatColor(CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).getSuffix(),
 		// true);
@@ -201,9 +201,9 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		ranks.get(ranks.size() - 1).setPrefix(value);
+		ranks.get(0).setPrefix(value);
 		// CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setPrefix(value);
 	}
 
@@ -218,9 +218,9 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		ranks.get(ranks.size() - 1).setSuffix(value);
+		ranks.get(0).setSuffix(value);
 		// CacheManager.getRank(CacheManager.getPlayer(playerName).getRank()).setSuffix(value);
 	}
 }

@@ -1,7 +1,6 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,9 +42,9 @@ public class Users implements Listener {
 			}
 		}
 
-		playerRanks = new PRUtil().sortRanksByWeight(playerRanks);
+		playerRanks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
 
-		return playerRanks.get(playerRanks.size() - 1).getName();
+		return playerRanks.get(0).getName();
 	}
 
 	public void fireSetRankAddonEvent() {
@@ -879,8 +878,7 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
-		Collections.reverse(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
 		for (PRRank rank : ranks) {
 			prefix += rank.getPrefix() + " ";
@@ -916,8 +914,7 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
-		Collections.reverse(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
 		for (PRRank rank : ranks) {
 			suffix += rank.getSuffix() + " ";
@@ -954,9 +951,9 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		color = ranks.get(ranks.size() - 1).getChatcolor();
+		color = ranks.get(0).getChatcolor();
 
 		return color;
 	}
@@ -973,9 +970,9 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = new PRUtil().sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		color = ranks.get(ranks.size() - 1).getNamecolor();
+		color = ranks.get(0).getNamecolor();
 
 		return color;
 	}

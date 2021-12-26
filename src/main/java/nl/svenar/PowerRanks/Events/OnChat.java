@@ -59,7 +59,7 @@ public class OnChat implements Listener {
 					}
 				}
 
-				ranks = new PRUtil().sortRanksByWeight(ranks);
+				ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
 				String formatted_prefix = "";
 				String formatted_suffix = "";
