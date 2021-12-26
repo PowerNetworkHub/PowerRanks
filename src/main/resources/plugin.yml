@@ -19,7 +19,11 @@ permissions:
     default: op
   powerranks.cmd.setrank:
     default: op
+  powerranks.cmd.addrank:
+    default: op
   powerranks.cmd.setownrank:
+    default: op
+  powerranks.cmd.addownrank:
     default: op
   powerranks.cmd.listranks:
     default: op
