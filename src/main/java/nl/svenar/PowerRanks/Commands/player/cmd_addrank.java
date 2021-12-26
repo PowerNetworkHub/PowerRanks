@@ -35,9 +35,10 @@ public class cmd_addrank extends PowerCommand {
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.addRank(rank.getName());
 
-					Messages.messageSetRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
+					Messages.messageAddRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
 					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-						Messages.messageSetRankSuccessTarget(Bukkit.getPlayer(targetPlayer.getUUID()), sender.getName(), rank.getName());
+						Messages.messageAddRankSuccessTarget(Bukkit.getPlayer(targetPlayer.getUUID()), sender.getName(),
+								rank.getName());
 					}
 				}
 				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
@@ -48,7 +49,7 @@ public class cmd_addrank extends PowerCommand {
 			}
 		} else {
 			if (sender.hasPermission("powerranks.cmd.addrank") || sender.hasPermission("powerranks.cmd.addrank.*")) {
-				Messages.messageCommandUsageSet(sender);
+				Messages.messageCommandUsageAdd(sender);
 			} else {
 				Messages.noPermission(sender);
 			}

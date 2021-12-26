@@ -14,11 +14,11 @@ import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
 
-public class cmd_setownrank extends PowerCommand {
+public class cmd_addownrank extends PowerCommand {
 
 	private Users users;
 
-	public cmd_setownrank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
+	public cmd_addownrank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
 	}
@@ -27,21 +27,21 @@ public class cmd_setownrank extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (args.length == 1) {
 			String target_rank = users.getRankIgnoreCase(args[0]);
-			if (sender.hasPermission("powerranks.cmd.setownrank") || sender.hasPermission("powerranks.cmd.setrank." + target_rank.toLowerCase())) {
+			if (sender.hasPermission("powerranks.cmd.addownrank") || sender.hasPermission("powerranks.cmd.addrank." + target_rank.toLowerCase())) {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
 				if (rank != null && targetPlayer != null) {
-					targetPlayer.setRank(rank.getName());
+					targetPlayer.addRank(rank.getName());
 
 					// Messages.messageSetRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
-					Messages.messageSetRankSuccessTarget((Player) sender, sender.getName(), rank.getName());
+					Messages.messageAddRankSuccessTarget((Player) sender, sender.getName(), rank.getName());
 				}
 			} else {
 				Messages.noPermission(sender);
 			}
 		} else {
-			if (sender.hasPermission("powerranks.cmd.setownrank") || sender.hasPermission("powerranks.cmd.setrank.*")) {
-				Messages.messageCommandUsageSetown(sender);
+			if (sender.hasPermission("powerranks.cmd.addownrank") || sender.hasPermission("powerranks.cmd.addrank.*")) {
+				Messages.messageCommandUsageAddown(sender);
 			} else {
 				Messages.noPermission(sender);
 			}

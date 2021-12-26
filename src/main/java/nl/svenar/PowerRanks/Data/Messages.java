@@ -978,8 +978,22 @@ public class Messages {
 
 	public static void messageSetRankSuccessSender(CommandSender console, String target, String rank) {
 		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
-
 		String line = languageManager.getString("messages.rank_set_sender", "");
+		if (line != null) {
+			String prefix = languageManager.getString("general.prefix", "");
+			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+			line = Util.replaceAll(line, "%argument_target%", target);
+			line = Util.replaceAll(line, "%argument_rank%", rank);
+			String msg = PowerRanks.chatColor(line, true);
+			if (msg.length() > 0)
+				console.sendMessage(msg);
+		}
+	}
+
+	public static void messageAddRankSuccessSender(CommandSender console, String target, String rank) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String line = languageManager.getString("messages.rank_add_sender", "");
 		if (line != null) {
 			String prefix = languageManager.getString("general.prefix", "");
 			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
@@ -994,7 +1008,6 @@ public class Messages {
 
 	public static void messageSetRankSuccessTarget(Player target, String sender, String rank) {
 		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
-
 		String line = languageManager.getString("messages.rank_set_target", "");
 		if (line != null) {
 			String prefix = languageManager.getString("general.prefix", "");
@@ -1006,7 +1019,21 @@ public class Messages {
 			if (msg.length() > 0)
 				target.sendMessage(msg);
 		}
+	}
 
+	public static void messageAddRankSuccessTarget(Player target, String sender, String rank) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String line = languageManager.getString("messages.rank_add_target", "");
+		if (line != null) {
+			String prefix = languageManager.getString("general.prefix", "");
+			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+			line = Util.replaceAll(line, "%argument_sender%", sender);
+			line = Util.replaceAll(line, "%argument_rank%", rank);
+			String msg = PowerRanks.chatColor(line, true);
+			if (msg.length() > 0)
+				target.sendMessage(msg);
+		}
 	}
 
 	public static void messagePlayerNotFound(CommandSender console, String target) {
@@ -1118,11 +1145,25 @@ public class Messages {
 			console.sendMessage(msg);
 	}
 
+	public static void messageCommandUsageAdd(CommandSender console) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_addrank");
+		if (msg.length() > 0)
+			console.sendMessage(msg);
+	}
+
 	public static void messageCommandUsageSetown(CommandSender console) {
 		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		String msg = getGeneralMessage(languageManager, "commands.usage_command_setownrank");
 		if (msg.length() > 0)
 			console.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageAddown(CommandSender sender) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_addownrank");
+		if (msg.length() > 0)
+		sender.sendMessage(msg);
 	}
 
 	public static void messageCommandUsageCheck(CommandSender console) {
