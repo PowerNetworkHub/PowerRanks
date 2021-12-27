@@ -82,7 +82,7 @@ public class PowerRanksVerbose {
 		Date date = new Date();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
 
-		final File logFile = new File(plugin.getDataFolder() + File.separator + "logs", "verbose_" + dateFormat.format(date) + ".prlog");
+		final File logFile = new File(plugin.getDataFolder() + File.separator + "logs", "pr_verbose_" + dateFormat.format(date) + ".log");
 		final String serverPath = plugin.getServer().getWorldContainer().getAbsolutePath();
 		final File serverLogFile = new File(serverPath.substring(0, serverPath.length() - 1), "logs/latest.log");
 		PowerRanks.log.info("Saving " + VERBOSE_LOG.size() + " lines to " + logFile.getName());
