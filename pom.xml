@@ -156,6 +156,10 @@
 			<url>https://jitpack.io</url>
 		</repository>
 		<repository>
+			<id>krypton</id>
+			<url>https://repo.kryptonmc.org/releases</url>
+		</repository>
+		<repository>
 			<id>svenar</id>
 			<url>https://svenar.nl/repo/</url>
 		</repository>
@@ -205,6 +209,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>me.neznamy</groupId>
+			<artifactId>tab-api</artifactId>
+			<version>3.0.1</version>
+		  </dependency>
+		<dependency>
 			<groupId>me.clip.deluxetags</groupId>
 			<artifactId>deluxetags</artifactId>
 			<version>1.7.1</version>
@@ -222,11 +231,11 @@
 			<version>1.7.1</version>
 			<scope>provided</scope>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>

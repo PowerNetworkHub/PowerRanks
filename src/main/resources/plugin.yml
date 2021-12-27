@@ -3,7 +3,7 @@ version: ${project.version}
 main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
-softdepend: [Vault, PlaceholderAPI, DeluxeTags, NametagEdit]
+softdepend: [Vault, PlaceholderAPI, TAB, DeluxeTags, NametagEdit]
 load: startup
 website: 'https://powerranks.nl'
 commands:
