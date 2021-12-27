@@ -17,11 +17,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.VaultHook;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.BannerItem;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.External.VaultHook;
 
 public class GUIPage {
 

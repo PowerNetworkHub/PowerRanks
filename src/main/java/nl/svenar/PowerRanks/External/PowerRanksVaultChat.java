@@ -1,5 +1,6 @@
-package nl.svenar.PowerRanks;
+package nl.svenar.PowerRanks.External;
 
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;

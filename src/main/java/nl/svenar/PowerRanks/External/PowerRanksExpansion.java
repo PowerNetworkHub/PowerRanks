@@ -1,4 +1,4 @@
-package nl.svenar.PowerRanks;
+package nl.svenar.PowerRanks.External;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

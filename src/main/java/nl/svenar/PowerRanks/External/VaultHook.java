@@ -1,4 +1,4 @@
-package nl.svenar.PowerRanks;
+package nl.svenar.PowerRanks.External;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -8,6 +8,7 @@ import org.bukkit.plugin.ServicePriority;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import nl.svenar.PowerRanks.PowerRanks;
 
 public class VaultHook {
 
