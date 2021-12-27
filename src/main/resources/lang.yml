@@ -204,7 +204,7 @@ commands:
          command: "setownrank <rank_name>"
          description: "Set your own rank and remove all other ranks"
       addrank:
-         command: "setrank <player_name> <rank_name>"
+         command: "addrank <player_name> <rank_name>"
          description: "Add a rank to someone"
       addownrank:
          command: "addownrank <rank_name>"
