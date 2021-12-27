@@ -693,6 +693,10 @@ public class Messages {
 			String tellrawCommand = "tellraw %player% ";
 
 			if (hasAcceptedTerms) {
+				if (PowerRanks.getInstance().addonsManager.getAddonDownloader() == null) {
+					PowerRanks.getInstance().addonsManager.setupAddonDownloader();
+				}
+				
 				tellrawCommand += "[\"\"";
 				tellrawCommand += ",{\"text\":\"===-----\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks AddonManager\",\"color\":\"aqua\"},{\"text\":\"-----===\",\"color\":\"dark_aqua\"}";
 				tellrawCommand += ",{\"text\":\"\\n\"},";
@@ -703,6 +707,7 @@ public class Messages {
 				tellrawCommand += ",{\"text\":\"\\n\"},";
 
 				int addonIndex = 0;
+
 				for (DownloadableAddon addon : PowerRanks.getInstance().addonsManager.getAddonDownloader()
 						.getDownloadableAddons()) {
 					if (addonIndex >= pageStartIndex && addonIndex < pageEndIndex) {
