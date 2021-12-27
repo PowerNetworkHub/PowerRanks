@@ -653,8 +653,7 @@ public class Messages {
 				new HashMap<String, String>());
 
 		if (lines != null) {
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
-					+ ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = languageManager.getString("general.prefix", "");
 			for (String section : lines.keySet()) {
@@ -2527,6 +2526,13 @@ public class Messages {
 	public static void messageCommandUsageSetWeight(CommandSender sender) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		String msg = getGeneralMessage(languageManager, "commands.usage_command_setweight");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageHasPermission(CommandSender sender) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_haspermission");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}

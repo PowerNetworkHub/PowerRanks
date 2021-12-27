@@ -177,6 +177,7 @@ commands:
    usage_command_config: "%plugin_prefix% &c%base_cmd% config <removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
    usage_command_webeditor: "%plugin_prefix% &c%base_cmd% we <start/load [id]>"
    usage_command_setweight: "%plugin_prefix% &c%base_cmd% setweight <rank> <weight | number>"
+   usage_command_haspermission: "%plugin_prefix% &c%base_cmd% haspermission [playername] <permission.node>"
    response_command_checkrank: "%plugin_prefix% &a%argument_target%'s rank is %argument_rank%"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_warning: "%plugin_prefix% &4Reloading is not recommended and can cause unforseen problems. Restart instead!"
@@ -198,28 +199,16 @@ commands:
          description: "Delete a rank"
       setrank:
          command: "setrank <player_name> <rank_name>"
-         description: "Set someone's rank"
+         description: "Set someone's rank and remove all other ranks"
       setownrank:
          command: "setownrank <rank_name>"
-         description: "Set your own rank"
-      promote:
-         command: "promote <player_name>"
-         description: "Promote a player to the next rank"
-      demote:
-         command: "demote <player_name>"
-         description: "Demote a player to the previous rank"
-      setpromoterank:
-         command: "setpromoterank <rank_name> <promoterank_name>"
-         description: "Change the rank to promote to"
-      setdemoterank:
-         command: "setdemoterank <rank_name> <demoterank_name>"
-         description: "Change the rank to demote to"
-      clearpromoterank:
-         command: "clearpromoterank <rank_name>"
-         description: "Clear the promote rank"
-      cleardemoterank:
-         command: "cleardemoterank <rank_name>"
-         description: "Clear the demote rank"
+         description: "Set your own rank and remove all other ranks"
+      addrank:
+         command: "setrank <player_name> <rank_name>"
+         description: "Add a rank to someone"
+      addownrank:
+         command: "addownrank <rank_name>"
+         description: "Add a rank to yourself"
       checkrank:
          command: "checkrank [player_name]"
          description: "Check someone's rank"
@@ -370,6 +359,12 @@ commands:
       playerinfo:
          command: "playerinfo <player_name> [page]"
          description: "Show information about a player"
+      rankinfo:
+         command: "rankinfo <rank_name> [page]"
+         description: "Show information about a rank"
+      haspermission:
+         command: "haspermission [player_name] <permission.node>"
+         description: "Check if a player has a certain permission"
       stats:
          command: "stats"
          description: "Show stats about PowerRanks"

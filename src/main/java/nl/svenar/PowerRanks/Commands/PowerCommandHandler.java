@@ -38,6 +38,7 @@ import nl.svenar.PowerRanks.Commands.player.cmd_addplayerperm;
 import nl.svenar.PowerRanks.Commands.player.cmd_addrank;
 import nl.svenar.PowerRanks.Commands.player.cmd_checkrank;
 import nl.svenar.PowerRanks.Commands.player.cmd_delplayerperm;
+import nl.svenar.PowerRanks.Commands.player.cmd_haspermission;
 import nl.svenar.PowerRanks.Commands.player.cmd_listplayerpermissions;
 import nl.svenar.PowerRanks.Commands.player.cmd_playerinfo;
 import nl.svenar.PowerRanks.Commands.player.cmd_setownrank;
@@ -87,6 +88,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_addoninfo(plugin, "addoninfo", COMMAND_EXECUTOR.ALL);
 		new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
 		new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
+		new cmd_haspermission(plugin, "haspermission", COMMAND_EXECUTOR.ALL);
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
 		new cmd_setownrank(plugin, "setownrank", COMMAND_EXECUTOR.PLAYER);
