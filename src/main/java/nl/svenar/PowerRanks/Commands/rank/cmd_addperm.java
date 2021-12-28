@@ -27,8 +27,14 @@ public class cmd_addperm extends PowerCommand {
 		if (sender.hasPermission("powerranks.cmd.addperm")) {
 			if (args.length == 2) {
 				final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
-				final String permission = args[1];
-				final boolean result = this.users.addPermission(rankname, permission);
+				String permission = args[1];
+				boolean allowed = true;
+				// this.setValue(!name.startsWith("-"));
+				if (permission.startsWith("-")) {
+					permission = permission.replaceFirst("-", "");
+					allowed = false;
+				}
+				final boolean result = this.users.addPermission(rankname, permission, allowed);
 				if (result) {
 					if (rankname.equals("*")) {
 						Messages.messageCommandPermissionAddedToAllRanks(sender, permission);

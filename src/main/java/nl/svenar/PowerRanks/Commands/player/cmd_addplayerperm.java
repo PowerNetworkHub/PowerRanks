@@ -27,8 +27,14 @@ public class cmd_addplayerperm extends PowerCommand {
 		if (sender.hasPermission("powerranks.cmd.addplayerperm")) {
 			if (args.length == 2) {
 				final String target_player = args[0];
-				final String permission = args[1];
-				final boolean result = this.users.addPlayerPermission(target_player, permission);
+				String permission = args[1];
+				boolean allowed = true;
+				// this.setValue(!name.startsWith("-"));
+				if (permission.startsWith("-")) {
+					permission = permission.replaceFirst("-", "");
+					allowed = false;
+				}
+				final boolean result = this.users.addPlayerPermission(target_player, permission, allowed);
 				if (result) {
 					Messages.messageCommandPlayerPermissionAdded(sender, permission, target_player);
 				} else {

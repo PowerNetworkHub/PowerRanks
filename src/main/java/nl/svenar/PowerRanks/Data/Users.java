@@ -452,7 +452,7 @@ public class Users implements Listener {
 		return CacheManager.getRanks();
 	}
 
-	public boolean addPermission(String rank, String permission) {
+	public boolean addPermission(String rank, String permission, boolean allowed) {
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
 		}
@@ -470,7 +470,7 @@ public class Users implements Listener {
 				if (!contains) {
 					PRPermission newPermission = new PRPermission();
 					newPermission.setName(permission);
-					// newPermission.setValue(true);
+					newPermission.setValue(allowed);
 					CacheManager.getRank(rank).addPermission(newPermission);
 				}
 
@@ -490,7 +490,7 @@ public class Users implements Listener {
 					if (!contains) {
 						PRPermission newPermission = new PRPermission();
 						newPermission.setName(permission);
-						// newPermission.setValue(true);
+						newPermission.setValue(allowed);
 						r.addPermission(newPermission);
 						// list.add(permission);
 						// CachedRanks.set("Groups." + r + ".permissions", (Object) list);
@@ -1085,7 +1085,7 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean addPlayerPermission(String target_player_name, String permission) {
+	public boolean addPlayerPermission(String target_player_name, String permission, boolean allowed) {
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
 		}
@@ -1114,7 +1114,7 @@ public class Users implements Listener {
 					if (targetPermission == null) {
 						PRPermission newPermission = new PRPermission();
 						newPermission.setName(permission);
-						// newPermission.setValue(true);
+						newPermission.setValue(allowed);
 						CacheManager.getPlayer(target_player.getUniqueId().toString()).addPermission(newPermission);
 						// r.addPermission(newPermission);
 						// list.add(permission);
@@ -1156,7 +1156,7 @@ public class Users implements Listener {
 						if (targetPermission == null) {
 							PRPermission newPermission = new PRPermission();
 							newPermission.setName(permission);
-							// newPermission.setValue(true);
+							newPermission.setValue(allowed);
 							CacheManager.getPlayer(uuid).addPermission(newPermission);
 							// r.addPermission(newPermission);
 							// list.add(permission);
