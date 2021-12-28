@@ -492,6 +492,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}.runTaskTimer(this, 20, 20);
 	}
 
+	public TABHook getTABHook() {
+        return plugin_hook_tab;
+    }
+
 	private boolean handle_update_checking() {
 		if (getConfigBool("updates.enable_update_checking")) {
 			PowerRanks.log.info("Checking for updates...");

@@ -36,6 +36,8 @@ public class OnJoin implements Listener {
 			}
 			
 		}
+		
+		PowerRanks.getInstance().getTABHook().updatePlayer(e.getPlayer());
 	}
 
 	@EventHandler(ignoreCancelled = false)
