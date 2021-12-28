@@ -20,9 +20,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.External.VaultHook;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.addons.DownloadableAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;

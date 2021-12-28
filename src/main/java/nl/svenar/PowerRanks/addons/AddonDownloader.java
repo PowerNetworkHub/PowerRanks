@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.Util.Util;
 
 public class AddonDownloader {
     private String addonsURL = "http://addons.powerranks.nl/addons.json";

@@ -17,7 +17,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.Util.Util;
 
 /**
  * Check for updates on BukkitDev for a given plugin, and download the updates

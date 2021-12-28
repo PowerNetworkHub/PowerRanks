@@ -9,7 +9,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Util;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.AddonDownloader.Addon;
 
 public class DownloadableAddon {

@@ -11,9 +11,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 
 public class cmd_haspermission extends PowerCommand {

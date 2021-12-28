@@ -9,11 +9,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.External.VaultHook;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
 import nl.svenar.common.structure.PRRank;

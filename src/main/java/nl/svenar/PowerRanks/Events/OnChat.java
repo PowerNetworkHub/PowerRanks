@@ -15,12 +15,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 // import nl.svenar.PowerRanks.Cache.CachedPlayers;
 // import nl.svenar.PowerRanks.Cache.CachedRanks;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.structure.PRPlayer;

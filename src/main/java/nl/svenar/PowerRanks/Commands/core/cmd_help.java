@@ -9,8 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
-import nl.svenar.PowerRanks.Util;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.storage.PowerConfigManager;
 
 public class cmd_help extends PowerCommand {
