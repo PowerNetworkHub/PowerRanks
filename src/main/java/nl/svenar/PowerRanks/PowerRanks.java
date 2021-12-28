@@ -60,7 +60,9 @@ import nl.svenar.PowerRanks.Events.OnPreCommand;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
 import nl.svenar.PowerRanks.Events.OnWorldChange;
 import nl.svenar.PowerRanks.External.PowerRanksExpansion;
+import nl.svenar.PowerRanks.External.TABHook;
 import nl.svenar.PowerRanks.External.VaultHook;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
 import nl.svenar.PowerRanks.gui.GUI;
@@ -109,6 +111,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static boolean vaultEconomyEnabled = false;
 	public static boolean vaultPermissionsEnabled = false;
 	public static PowerRanksExpansion placeholderapiExpansion;
+	public static TABHook plugin_hook_tab;
 	public static boolean plugin_hook_deluxetags = false;
 	public static boolean plugin_hook_nametagedit = false;
 	// Soft Dependencies
@@ -421,6 +424,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				&& getConfigBool("plugin_hook.vault_permissions");
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null
 				&& getConfigBool("plugin_hook.placeholderapi");
+		boolean has_tab = this.getServer().getPluginManager().getPlugin("TAB") != null
+				&& getConfigBool("plugin_hook.tab");
 		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null
 				&& getConfigBool("plugin_hook.deluxetags");
 		boolean has_nametagedit = this.getServer().getPluginManager().getPlugin("NametagEdit") != null
@@ -453,6 +458,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			PowerRanks.placeholderapiExpansion = null;
 		}
 
+		if (has_tab) {
+			PowerRanks.log.info("TAB found!");
+			PowerRanks.log.warning("TAB INTEGRATION IS EXPERIMENTAL, USE AT YOUR OWN RISK!");
+			plugin_hook_tab = new TABHook();
+			plugin_hook_tab.setup();
+		}
+
 		if (has_deluxetags) {
 			PowerRanks.log.info("DeluxeTags found!");
 			plugin_hook_deluxetags = true;
@@ -464,7 +476,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			setup_nte();
 		}
 
-		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_deluxetags && !has_nametagedit)
+		if (!has_vault_economy && !has_vault_permissions && !has_placeholderapi && !has_tab && !has_deluxetags
+				&& !has_nametagedit)
 			PowerRanks.log.info("No other plugins found! Working stand-alone.");
 	}
 
@@ -480,6 +493,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 		}.runTaskTimer(this, 20, 20);
+	}
+
+	public TABHook getTABHook() {
+		return plugin_hook_tab;
 	}
 
 	private boolean handle_update_checking() {
