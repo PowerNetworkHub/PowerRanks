@@ -271,6 +271,7 @@ public class Metrics {
     /**
      * Collects the data and sends it afterwards.
      */
+    @Deprecated
 	private void submitData() {
         final JsonObject data = getServerData();
 
