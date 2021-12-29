@@ -24,9 +24,14 @@
 
 package nl.svenar.common.serializer;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRRank;
 
 /**
  * Serializes a given object into a Java map & deserializes a Java map into an
@@ -56,10 +61,37 @@ public class PRSerializer {
      * @return Object corresponding to the given Java map and class
      */
     public <T> T deserialize(Map<String, Object> map, Class<T> clazz) {
-        map.remove("promoteRank");
-        map.remove("demoteRank");
-        map.remove("subRanks");
+        // Convert from v1.10.0 - v1.10.3 to v1.10.4
+        if (clazz == PRPlayer.class) {
+            if (!map.containsKey("ranks")) {
+                ArrayList<String> newRanks = new ArrayList<String>();
+                if (map.containsKey("rank")) {
+                    newRanks.add(map.get("rank").toString());
+                }
+                if (map.containsKey("subRanks")) {
+                    @SuppressWarnings("unchecked")
+                    int size = ((ArrayList<Object>) map.get("subRanks")).size();
+                    if (size > 0) {
+                        @SuppressWarnings("unchecked")
+                        ArrayList<Object> subranks = (ArrayList<Object>) map.get("subRanks");
+                        for (Object subrank : subranks) {
+                            newRanks.add(LinkedHashMap.class.cast(subrank).get("name").toString());
+                        }
+                    }
+                }
+                map.put("ranks", newRanks);
+            }
+            map.remove("subRanks");
+            map.remove("rank");
+        }
 
+        if (clazz == PRRank.class) {
+            map.remove("promoteRank");
+            map.remove("demoteRank");
+        }
+        // End of convert from v1.10.0 - v1.10.3 to v1.10.4
+
+        // Deserialize
         ObjectMapper m = new ObjectMapper();
         return clazz.cast(m.convertValue(map, clazz));
     }
