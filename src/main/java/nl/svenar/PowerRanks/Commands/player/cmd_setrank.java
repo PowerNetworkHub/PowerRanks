@@ -12,6 +12,7 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
 
@@ -28,8 +29,22 @@ public class cmd_setrank extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (args.length == 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
-			if (sender.hasPermission("powerranks.cmd.setrank")
-					|| sender.hasPermission("powerranks.cmd.setrank." + target_rank.toLowerCase())) {
+			// PRPlayer prPlayer = CacheManager.getPlayer(((Player)
+			// sender).getUniqueId().toString());
+			boolean commandAllowed = sender.hasPermission("powerranks.cmd.setrank");
+			if (sender instanceof Player) {
+				for (PRPermission permission : PowerRanks.getInstance()
+						.getEffectivePlayerPermissions((Player) sender)) {
+					if (permission.getName().equalsIgnoreCase("powerranks.cmd.setrank." + target_rank)) {
+						commandAllowed = permission.getValue();
+						break;
+					}
+				}
+			}
+			// if (sender.hasPermission("powerranks.cmd.setrank") ||
+			// sender.hasPermission("powerranks.cmd.setrank." + target_rank.toLowerCase()))
+			// {
+			if (commandAllowed) {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 				if (rank != null && targetPlayer != null) {
@@ -37,7 +52,8 @@ public class cmd_setrank extends PowerCommand {
 
 					Messages.messageSetRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
 					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-						Messages.messageSetRankSuccessTarget(Bukkit.getPlayer(targetPlayer.getUUID()), sender.getName(), rank.getName());
+						Messages.messageSetRankSuccessTarget(Bukkit.getPlayer(targetPlayer.getUUID()), sender.getName(),
+								rank.getName());
 					}
 				}
 				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
