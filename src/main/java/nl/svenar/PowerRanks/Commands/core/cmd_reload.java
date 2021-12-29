@@ -28,56 +28,43 @@ public class cmd_reload extends PowerCommand {
 				Messages.messageCommandUsageReload(sender);
 			} else {
 				if (args[0].equalsIgnoreCase("config")) {
-					
+
 					Messages.messageCommandReloadConfig(sender);
 					PowerRanks.getConfigManager().reload();
 					CacheManager.load(PowerRanks.fileLoc);
 					this.plugin.updateAllPlayersTABlist();
 					Messages.messageCommandReloadConfigDone(sender);
-					
+
 				} else if (args[0].equalsIgnoreCase("plugin")) {
-					
+
 					Messages.messageCommandReloadPlugin(sender);
 					PluginReloader pluginReloader = new PluginReloader();
 					pluginReloader.reload(PowerRanks.pdf.getName());
-					// final PluginManager plg = Bukkit.getPluginManager();
-					// final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
-					// plg.disablePlugin(plgname);
-					// plg.enablePlugin(plgname);
 					Messages.messageCommandReloadPluginDone(sender);
-				
+
 				} else if (args[0].equalsIgnoreCase("addons")) {
 
 					Messages.messageCommandReloadAddons(sender);
 					PowerRanks.getInstance().addonsManager.disable();
 					PowerRanks.getInstance().addonsManager.setup();
 					Messages.messageCommandReloadAddonsDone(sender);
-					
-				} else if (args[0].equalsIgnoreCase("all")) {
-					
-					Messages.messageCommandReloadPlugin(sender);
-					PluginReloader pluginReloader = new PluginReloader();
-					pluginReloader.reload(PowerRanks.pdf.getName());
-					// final PluginManager plg = Bukkit.getPluginManager();
-					// final Plugin plgname = plg.getPlugin(PowerRanks.pdf.getName());
-					// plg.disablePlugin(plgname);
-					// plg.enablePlugin(plgname);
-					Messages.messageCommandReloadPluginDone(sender);
 
+				} else if (args[0].equalsIgnoreCase("all")) {
 
 					Messages.messageCommandReloadConfig(sender);
 					PowerRanks.getConfigManager().reload();
-					CacheManager.load(PowerRanks.fileLoc);
-					this.plugin.updateAllPlayersTABlist();
 					Messages.messageCommandReloadConfigDone(sender);
 
-					// Messages.messageCommandReloadAddons(sender);
-					// PowerRanks.getInstance().addonsManager.disable();
-					// PowerRanks.getInstance().addonsManager.setup();
-					// Messages.messageCommandReloadAddonsDone(sender);
-					
+					Messages.messageCommandReloadPlugin(sender);
+					PluginReloader pluginReloader = new PluginReloader();
+					pluginReloader.reload(PowerRanks.pdf.getName());
+
+					CacheManager.load(PowerRanks.fileLoc);
+					this.plugin.updateAllPlayersTABlist();
+					Messages.messageCommandReloadPluginDone(sender);
+
 				} else {
-					
+
 					Messages.messageCommandUsageReload(sender);
 				}
 			}
@@ -92,7 +79,7 @@ public class cmd_reload extends PowerCommand {
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
-		
+
 		if (args.length == 1) {
 			tabcomplete.add("plugin");
 			tabcomplete.add("config");
