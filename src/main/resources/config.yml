@@ -29,7 +29,6 @@ plugin_hook:
   vault_economy: true
   vault_permissions: true
   placeholderapi: true
-  tab: false
   deluxetags: false
   nametagedit: true
 announcements:
