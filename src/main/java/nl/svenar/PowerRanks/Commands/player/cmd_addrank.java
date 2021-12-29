@@ -12,6 +12,7 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
 
@@ -28,8 +29,19 @@ public class cmd_addrank extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (args.length == 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
-			if (sender.hasPermission("powerranks.cmd.addrank")
-					|| sender.hasPermission("powerranks.cmd.addrank." + target_rank.toLowerCase())) {
+			
+			boolean commandAllowed = sender.hasPermission("powerranks.cmd.addrank");
+			if (sender instanceof Player) {
+				for (PRPermission permission : PowerRanks.getInstance()
+						.getEffectivePlayerPermissions((Player) sender)) {
+					if (permission.getName().equalsIgnoreCase("powerranks.cmd.addrank." + target_rank)) {
+						commandAllowed = permission.getValue();
+						break;
+					}
+				}
+			}
+
+			if (commandAllowed) {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 				if (rank != null && targetPlayer != null) {

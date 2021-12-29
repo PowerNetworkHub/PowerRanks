@@ -29,8 +29,7 @@ public class cmd_setrank extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (args.length == 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
-			// PRPlayer prPlayer = CacheManager.getPlayer(((Player)
-			// sender).getUniqueId().toString());
+
 			boolean commandAllowed = sender.hasPermission("powerranks.cmd.setrank");
 			if (sender instanceof Player) {
 				for (PRPermission permission : PowerRanks.getInstance()
@@ -41,9 +40,7 @@ public class cmd_setrank extends PowerCommand {
 					}
 				}
 			}
-			// if (sender.hasPermission("powerranks.cmd.setrank") ||
-			// sender.hasPermission("powerranks.cmd.setrank." + target_rank.toLowerCase()))
-			// {
+
 			if (commandAllowed) {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
