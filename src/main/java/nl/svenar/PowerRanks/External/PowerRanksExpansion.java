@@ -1,7 +1,9 @@
 package nl.svenar.PowerRanks.External;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.bukkit.ChatColor;
@@ -10,6 +12,8 @@ import org.bukkit.entity.Player;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRRank;
+import nl.svenar.common.utils.PRUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 /**
@@ -115,42 +119,124 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 
 		Users users = new Users(null);
 
-		if (identifier.equals("rank"))
+		// DEPRECATED
+		if (identifier.equals("rank")) {
 			return users.getPrimaryRank(player);
+		}
 
-		if (identifier.equals("prefix"))
+		if (identifier.equals("prefix")) {
 			return PowerRanks.chatColor(users.getPrefix(player), true) + ChatColor.RESET;
-		
-		if (identifier.equals("suffix"))
+		}
+
+		if (identifier.equals("suffix")) {
 			return ChatColor.RESET + PowerRanks.chatColor(users.getSuffix(player), true);
-		
-		// if (identifier.equals("subrankprefix"))
-		// 	return PowerRanks.chatColor(users.getSubrankprefixes(player), true) + ChatColor.RESET;
-		
-		// if (identifier.equals("subranksuffix"))
-		// 	return ChatColor.RESET + PowerRanks.chatColor(users.getSubranksuffixes(player), true);
-		
-		if (identifier.equals("chatcolor"))
-			return users.getChatColor(player);
-		
-		if (identifier.equals("namecolor"))
-			return users.getNameColor(player);
-		
-		if (identifier.equals("usertag"))
-			return users.getUserTagValue(player);
-		
-		if (identifier.equals("world"))
+		}
+
+		if (identifier.equals("subrankprefix")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			List<String> prefixes = new ArrayList<String>();
+			for (PRRank rank : playerRanks) {
+				prefixes.add(PowerRanks.chatColor(rank.getPrefix(), true) + ChatColor.RESET);
+			}
+			return String.join(",", prefixes);
+		}
+
+		if (identifier.equals("subranksuffix")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			List<String> prefixes = new ArrayList<String>();
+			for (PRRank rank : playerRanks) {
+				prefixes.add(ChatColor.RESET + PowerRanks.chatColor(rank.getSuffix(), true));
+			}
+			return String.join(",", prefixes);
+		}
+		// DEPRECATED
+
+		if (identifier.equals("primary_rank")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			return playerRanks.size() > 0 ? playerRanks.get(0).getName() : "";
+		}
+
+		if (identifier.equals("ranks")) {
+			List<String> playerRankNames = new ArrayList<String>();
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			for (PRRank rank : playerRanks) {
+				playerRankNames.add(rank.getName());
+			}
+			return String.join(",", playerRankNames);
+		}
+
+		if (identifier.equals("primary_prefix")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			return playerRanks.size() > 0 ? PowerRanks.chatColor(playerRanks.get(0).getPrefix(), true) + ChatColor.RESET
+					: "";
+		}
+
+		if (identifier.equals("primary_suffix")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			return playerRanks.size() > 0 ? ChatColor.RESET + PowerRanks.chatColor(playerRanks.get(0).getSuffix(), true)
+					: "";
+		}
+
+		if (identifier.equals("prefixes")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			List<String> prefixes = new ArrayList<String>();
+			for (PRRank rank : playerRanks) {
+				prefixes.add(PowerRanks.chatColor(rank.getPrefix(), true) + ChatColor.RESET);
+			}
+			return String.join(",", prefixes);
+		}
+
+		if (identifier.equals("suffixes")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			List<String> prefixes = new ArrayList<String>();
+			for (PRRank rank : playerRanks) {
+				prefixes.add(ChatColor.RESET + PowerRanks.chatColor(rank.getSuffix(), true));
+			}
+			return String.join(",", prefixes);
+		}
+
+		if (identifier.equals("chatcolor")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			return playerRanks.size() > 0 ? PowerRanks.chatColor(playerRanks.get(0).getChatcolor(), true) : "";
+		}
+
+		if (identifier.equals("namecolor")) {
+			List<PRRank> playerRanks = getPlayerRanksSorted(player);
+			return playerRanks.size() > 0 ? PowerRanks.chatColor(playerRanks.get(0).getNamecolor(), true) : "";
+		}
+
+		if (identifier.equals("usertag")) {
+			return PowerRanks.chatColor(users.getUserTagValue(player), true);
+		}
+
+		if (identifier.equals("world")) {
 			return player.getWorld().getName();
-		
+		}
+
 		if (identifier.equals("playtime")) {
 			TimeZone tz = TimeZone.getTimeZone("UTC");
-		    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-		    df.setTimeZone(tz);
-		    String time = df.format(new Date(CacheManager.getPlayer(player.getUniqueId().toString()).getPlaytime() * 1000));
-		    // String time = df.format(new Date((CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime") == null ? CachedPlayers.getInt("players." + player.getUniqueId() + ".playtime") : CachedPlayers.getLong("players." + player.getUniqueId() + ".playtime")) * 1000));
+			SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+			df.setTimeZone(tz);
+			String time = df
+					.format(new Date(CacheManager.getPlayer(player.getUniqueId().toString()).getPlaytime() * 1000));
+			// String time = df.format(new Date((CachedPlayers.getLong("players." +
+			// player.getUniqueId() + ".playtime") == null ? CachedPlayers.getInt("players."
+			// + player.getUniqueId() + ".playtime") : CachedPlayers.getLong("players." +
+			// player.getUniqueId() + ".playtime")) * 1000));
 			return time;
 		}
 
 		return null;
+	}
+
+	private List<PRRank> getPlayerRanksSorted(Player player) {
+		List<PRRank> playerRanks = new ArrayList<PRRank>();
+		for (String rankname : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			PRRank rank = CacheManager.getRank(rankname);
+			if (rank != null) {
+				playerRanks.add(rank);
+			}
+		}
+		return PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
 	}
 }
