@@ -2,6 +2,7 @@ package nl.svenar.PowerRanks.Commands.webeditor;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import nl.svenar.PowerRanks.PowerRanks;
@@ -244,9 +246,17 @@ public class cmd_webeditor extends PowerCommand {
 	private String getServerDataAsJSON() {
 		String output = "";
 
+		List<String> server_permissions = new ArrayList<String>();
+
+		for (PermissionAttachmentInfo permission : Bukkit.getServer().getConsoleSender().getEffectivePermissions()) {
+			server_permissions.add("\"" + permission.getPermission() + "\"");
+		}
+
 		output += "{";
 		output += "\"powerranksVersion\":";
 		output += "\"" + PowerRanks.getVersion() + "\"";
+		output += ",\"serverPermissions\":";
+		output += "[" + String.join(",", server_permissions) + "]";
 		output += "}";
 
 		return output;
