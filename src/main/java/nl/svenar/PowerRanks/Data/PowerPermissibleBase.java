@@ -24,9 +24,10 @@ public class PowerPermissibleBase extends PermissibleBase {
 		super(player);
 		this.player = player;
 		this.plugin = main;
-		PowerRanksVerbose.log("PowerPermissibleBase", "attached to player " + (player == null ? "null" : player.getName()));
+		PowerRanksVerbose.log("PowerPermissibleBase",
+				"attached to player " + (player == null ? "null" : player.getName()));
 	}
-	
+
 	/*
 	 * === ----- Player has permission? ----- ===
 	 */
@@ -46,20 +47,6 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		boolean containsWildcard = false;
 		boolean checkedWildcard = false;
-
-		// for (String p : wildcardPermissions) {
-		// 	PowerRanksVerbose.log("wc", p);
-		// }
-
-		// for (String p : generateWildcardList(permission)) {
-		// 	for (PRPermission perm : permissions) {
-		// 		if (perm.getName().equals(p)) {
-		// 			contains_wildcard = true;
-		// 			break;
-		// 		}
-		// 	}
-		// }
-
 		boolean disallowed = false;
 
 		for (PRPermission prPermission : permissions) {
@@ -86,13 +73,17 @@ public class PowerPermissibleBase extends PermissibleBase {
 			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
 			PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
 			PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
-			PowerRanksVerbose.log("hasPermission", "Permissions: '" + String.join(", ", getAllPermissionsFormatted(permissions)) + "'");
+			PowerRanksVerbose.log("hasPermission",
+					"Permissions: '" + String.join(", ", getAllPermissionsFormatted(permissions)) + "'");
 			PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + disallowed);
 			PowerRanksVerbose.log("hasPermission", "Has *: " + getAllPermissions(permissions).contains("*"));
 			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
-	//		PowerRanksVerbose.log("hasPermission", "Return #3: " + super.hasPermission(permission));
-			PowerRanksVerbose.log("hasPermission", "Is permission in list: " + getAllPermissions(permissions).contains(permission));
-			PowerRanksVerbose.log("hasPermission", "Is in wildcard tree: " + (checkedWildcard ? containsWildcard : "unchecked"));
+			// PowerRanksVerbose.log("hasPermission", "Return #3: " +
+			// super.hasPermission(permission));
+			PowerRanksVerbose.log("hasPermission",
+					"Is permission in list: " + getAllPermissions(permissions).contains(permission));
+			PowerRanksVerbose.log("hasPermission",
+					"Is in wildcard tree: " + (checkedWildcard ? containsWildcard : "unchecked"));
 			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
 			PowerRanksVerbose.log("hasPermission", "");
 		}
@@ -106,13 +97,14 @@ public class PowerPermissibleBase extends PermissibleBase {
 		}
 
 		try {
-			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission) || !disallowed;
+			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission)
+					|| !disallowed;
 		} catch (Exception e) {
 			return getAllowedPermissions(permissions).contains(permission);
 		}
-//		
+		//
 	}
-	
+
 	/*
 	 * === ----- Recalculate all permissions ----- ===
 	 */
@@ -125,7 +117,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 			// player.updateCommands();
 		}
 	}
-	
+
 	/*
 	 * === ----- Get the effective permissions ----- ===
 	 */
@@ -135,7 +127,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		PowerRanksVerbose.log("getEffectivePermissions()", "called");
 		return super.getEffectivePermissions();
 	}
-	
+
 	/*
 	 * === ----- Operator handling ----- ===
 	 */
@@ -151,7 +143,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		PowerRanksVerbose.log("setOp(" + value + ")", "called");
 		super.setOp(value);
 	}
-	
+
 	/*
 	 * === ----- Is Permission Set ----- ===
 	 */
@@ -178,8 +170,9 @@ public class PowerPermissibleBase extends PermissibleBase {
 		if (Objects.isNull(prPermission)) {
 			return false;
 		}
-		
-		// boolean value = plugin.getEffectivePlayerPermissions(player).contains(permission);
+
+		// boolean value =
+		// plugin.getEffectivePlayerPermissions(player).contains(permission);
 		boolean value = prPermission.getValue();
 		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
 			PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
@@ -211,20 +204,20 @@ public class PowerPermissibleBase extends PermissibleBase {
 	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
 		return super.addAttachment(plugin, name, value, ticks);
 	}
-	
+
 	/*
 	 * === ----- Remove Attachment ----- ===
 	 */
-	
+
 	@Override
 	public void removeAttachment(PermissionAttachment attachment) {
 		super.removeAttachment(attachment);
 	}
-	
+
 	/*
 	 * === ----- Clear Permissions ----- ===
 	 */
-	
+
 	@Override
 	public synchronized void clearPermissions() {
 		super.clearPermissions();
