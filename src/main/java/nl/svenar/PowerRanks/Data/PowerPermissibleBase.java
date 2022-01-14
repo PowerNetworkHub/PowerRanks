@@ -42,7 +42,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public boolean hasPermission(String permission) {
 		ArrayList<PRPermission> permissions = plugin.getEffectivePlayerPermissions(player);
-		ArrayList<String> wildcardPermissions = generateWildcardList(permission);
+		ArrayList<String> wildcardPermissions = Util.generateWildcardList(permission);
 
 		boolean containsWildcard = false;
 		boolean checkedWildcard = false;
@@ -72,6 +72,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		if (!disallowed) {
 			checkedWildcard = true;
 			for (PRPermission perm : permissions) {
+
 				if (wildcardPermissions.contains(perm.getName())) {
 					containsWildcard = true;
 					disallowed = !perm.getValue();
@@ -105,7 +106,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		}
 
 		try {
-			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission);
+			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission) || !disallowed;
 		} catch (Exception e) {
 			return getAllowedPermissions(permissions).contains(permission);
 		}
@@ -232,21 +233,6 @@ public class PowerPermissibleBase extends PermissibleBase {
 	/*
 	 * === ----- Internal functions ----- ===
 	 */
-	
-	private ArrayList<String> generateWildcardList(String permission) {
-		ArrayList<String> output = new ArrayList<String>();
-		String[] permission_split = permission.split("\\.");
-
-		permission_split = Util.array_pop(permission_split);
-		for (int i = 0; i < permission_split.length + 1; i++) {
-			if (permission_split.length == 0)
-				break;
-			output.add(String.join(".", permission_split) + ".*");
-			permission_split = Util.array_pop(permission_split);
-		}
-
-		return output;
-	}
 
 	private ArrayList<String> getAllowedPermissions(ArrayList<PRPermission> permissions) {
 		ArrayList<String> output = new ArrayList<String>();

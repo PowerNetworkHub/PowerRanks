@@ -249,4 +249,19 @@ public class Util {
 
         return output;
     }
+
+	public static ArrayList<String> generateWildcardList(String permission) {
+		ArrayList<String> output = new ArrayList<String>();
+		String[] permission_split = permission.split("\\.");
+
+		permission_split = Util.array_pop(permission_split);
+		for (int i = 0; i < permission_split.length + 1; i++) {
+			if (permission_split.length == 0)
+				break;
+			output.add(String.join(".", permission_split) + ".*");
+			permission_split = Util.array_pop(permission_split);
+		}
+
+		return output;
+	}
 }
