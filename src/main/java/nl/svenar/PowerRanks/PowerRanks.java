@@ -59,6 +59,7 @@ import nl.svenar.PowerRanks.Events.OnMove;
 import nl.svenar.PowerRanks.Events.OnPreCommand;
 import nl.svenar.PowerRanks.Events.OnSignChanged;
 import nl.svenar.PowerRanks.Events.OnWorldChange;
+import nl.svenar.PowerRanks.External.DeluxeTagsHook;
 import nl.svenar.PowerRanks.External.PowerRanksExpansion;
 import nl.svenar.PowerRanks.External.TABHook;
 import nl.svenar.PowerRanks.External.VaultHook;
@@ -82,7 +83,6 @@ import com.google.common.collect.ImmutableMap;
 import com.nametagedit.plugin.NametagEdit;
 import com.nametagedit.plugin.api.INametagApi;
 
-import me.clip.deluxetags.DeluxeTag;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PowerRanks extends JavaPlugin implements Listener {
@@ -107,6 +107,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
+	private DeluxeTagsHook deluxeTagsHook;
 
 	public static boolean vaultEconomyEnabled = false;
 	public static boolean vaultPermissionsEnabled = false;
@@ -472,6 +473,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (has_deluxetags) {
 			PowerRanks.log.info("DeluxeTags found!");
 			plugin_hook_deluxetags = true;
+			this.deluxeTagsHook = new DeluxeTagsHook();
 		}
 
 		if (has_nametagedit) {
@@ -501,6 +503,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public TABHook getTABHook() {
 		return plugin_hook_tab;
+	}
+
+	public DeluxeTagsHook getDeluxeTagsHook() {
+		return this.deluxeTagsHook;
 	}
 
 	private boolean handle_update_checking() {
@@ -729,14 +735,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					prefix_format = Util.powerFormatter(prefix_format,
 							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
-											: DeluxeTag.getPlayerDisplayTag(player))
+											: getDeluxeTagsHook().getPlayerDisplayTag(player))
 									.build(),
 							'[', ']');
 
 					suffix_format = Util.powerFormatter(suffix_format,
 							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
-											: DeluxeTag.getPlayerDisplayTag(player))
+											: getDeluxeTagsHook().getPlayerDisplayTag(player))
 									.build(),
 							'[', ']');
 

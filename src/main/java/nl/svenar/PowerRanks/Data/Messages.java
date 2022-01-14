@@ -35,7 +35,6 @@ import nl.svenar.common.utils.PRUtil;
 
 import com.google.common.collect.ImmutableMap;
 
-import me.clip.deluxetags.DeluxeTag;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class Messages {
@@ -496,7 +495,7 @@ public class Messages {
 
 		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 				.put("suffix", formatted_suffix)
-				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag(player))
+				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : PowerRanks.getInstance().getDeluxeTagsHook().getPlayerDisplayTag(player))
 				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
 				.put("world", player.getWorld().getName()).build(), '[', ']');
 
@@ -535,7 +534,7 @@ public class Messages {
 
 		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 				.put("suffix", formatted_suffix)
-				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : DeluxeTag.getPlayerDisplayTag((Player) sender))
+				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : PowerRanks.getInstance().getDeluxeTagsHook().getPlayerDisplayTag((Player) sender))
 				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
 				.put("world", ((Player) sender).getWorld().getName()).build(), '[', ']');
 
