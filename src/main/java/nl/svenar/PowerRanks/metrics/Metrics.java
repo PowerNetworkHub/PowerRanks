@@ -92,6 +92,7 @@ public class Metrics {
      *                 <a href="https://bstats.org/what-is-my-plugin-id">What is my
      *                 plugin id?</a>
      */
+    @SuppressWarnings("deprecation")
     public Metrics(Plugin plugin, int pluginId) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
@@ -119,12 +120,24 @@ public class Metrics {
             config.addDefault("logResponseStatusText", false);
 
             // Inform the server owners about bStats
-            List<String> header = new ArrayList<String>();
-            header.add("bStats collects some data for plugin authors like how many servers are using their plugins.");
-            header.add("To honor their work, you should not disable it.");
-            header.add("This has nearly no effect on the server performance!");
-            header.add("Check out https://bStats.org/ to learn more :)");
-            config.options().setHeader(header).copyDefaults(true);
+            try {
+                List<String> header = new ArrayList<String>();
+                header.add(
+                        "bStats collects some data for plugin authors like how many servers are using their plugins.");
+                header.add("To honor their work, you should not disable it.");
+                header.add("This has nearly no effect on the server performance!");
+                header.add("Check out https://bStats.org/ to learn more :)");
+                config.options().setHeader(header).copyDefaults(true);
+            } catch (NoSuchMethodError e) {
+                config.options().header(
+                        "bStats collects some data for plugin authors like how many servers are using their plugins.\n"
+                                +
+                                "To honor their work, you should not disable it.\n" +
+                                "This has nearly no effect on the server performance!\n" +
+                                "Check out https://bStats.org/ to learn more :)")
+                        .copyDefaults(true);
+            }
+
             try {
                 config.save(configFile);
             } catch (IOException ignored) {
