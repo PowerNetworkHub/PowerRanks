@@ -15,7 +15,7 @@ storage:
     verbose: false
 chat:
   enabled: true
-  format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r» [msg]'
+  format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]&r: [msg]'
 tablist_modification:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]'
