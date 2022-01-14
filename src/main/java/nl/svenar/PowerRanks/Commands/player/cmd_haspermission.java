@@ -59,6 +59,7 @@ public class cmd_haspermission extends PowerCommand {
 			if (player != null && permissionNode != null && permissionNode.length() > 0) {
 				List<PRPermission> playerPermissions = PowerRanks.getInstance().getEffectivePlayerPermissions(player);
 				PRPermission targetPermission = null;
+				PRPermission targetWildcardPermission = null;
 
 				for (PRPermission permission : playerPermissions) {
 					if (permission.getName().equals(permissionNode)) {
@@ -67,10 +68,18 @@ public class cmd_haspermission extends PowerCommand {
 					}
 				}
 
+				ArrayList<String> wildcardPermissions = Util.generateWildcardList(permissionNode);
+				for (PRPermission perm : playerPermissions) {
+
+					if (wildcardPermissions.contains(perm.getName())) {
+						targetWildcardPermission = perm;
+						break;
+					}
+				}
+
 				sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 						+ PowerRanks.getInstance().getDescription().getName() + ChatColor.DARK_AQUA + "----------"
-						+ ChatColor.BLUE
-						+ "===");
+						+ ChatColor.BLUE + "===");
 				sender.sendMessage(ChatColor.GREEN + "Player: " + ChatColor.DARK_GREEN + player.getName());
 				sender.sendMessage(ChatColor.GREEN + "Permission: " + ChatColor.DARK_GREEN + permissionNode);
 				sender.sendMessage(ChatColor.GREEN + "Player has permission: "
@@ -79,6 +88,12 @@ public class cmd_haspermission extends PowerCommand {
 						+ (targetPermission == null ? ChatColor.GOLD + "unknown"
 								: (targetPermission.getValue() ? ChatColor.DARK_GREEN + "allowed"
 										: ChatColor.DARK_RED + "denied")));
+				sender.sendMessage(ChatColor.GREEN + "has Wildcard variant: "
+						+ (targetWildcardPermission == null ? ChatColor.GOLD + "no"
+								: ChatColor.DARK_GREEN + targetWildcardPermission.getName() + " (allowed: "
+										+ (targetWildcardPermission.getValue() ? ChatColor.DARK_GREEN + "yes"
+												: ChatColor.DARK_RED + "no")
+										+ ChatColor.DARK_GREEN + ")"));
 				sender.sendMessage(ChatColor.GREEN + "Is permission allowed: "
 						+ (player.hasPermission(permissionNode) ? ChatColor.DARK_GREEN + "yes"
 								: ChatColor.DARK_RED + "no"));
