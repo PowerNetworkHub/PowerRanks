@@ -5,7 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -254,10 +256,13 @@ public class Updater {
 		final File updaterConfigFile = new File(updaterFile, "config.yml");
 
 		YamlConfiguration config = new YamlConfiguration();
-		config.options()
-				.header("This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )" + '\n'
-						+ "If you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below." + '\n'
-						+ "Some updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
+		
+		List<String> header = new ArrayList<String>();
+		header.add("This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )");
+		header.add("If you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below.");
+		header.add("Some updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
+		config.options().setHeader(header);
+
 		config.addDefault(API_KEY_CONFIG_KEY, API_KEY_DEFAULT);
 		config.addDefault(DISABLE_CONFIG_KEY, DISABLE_DEFAULT);
 
