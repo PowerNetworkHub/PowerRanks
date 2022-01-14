@@ -164,6 +164,8 @@ commands:
    usage_command_webeditor: "%plugin_prefix% &c%base_cmd% we <start/load [id]>"
    usage_command_setweight: "%plugin_prefix% &c%base_cmd% setweight <rank> <weight | number>"
    usage_command_haspermission: "%plugin_prefix% &c%base_cmd% haspermission [playername] <permission.node>"
+   usage_command_setdefault: "%plugin_prefix% &c%base_cmd% setdefault <rankname> <true / false>"
+   usage_command_listdefaultranks: "%plugin_prefix% &c%base_cmd% listdefaultranks"
    response_command_checkrank: "%plugin_prefix% &a%argument_target%'s rank is %argument_rank%"
    response_command_checkrank_none: "%plugin_prefix% &a%argument_target% has no ranks"
    unknown_command: "%plugin_prefix% &cUnknown command."
@@ -247,9 +249,12 @@ commands:
       renamerank:
          command: "renamerank <from_rank> <to_rank>"
          description: "Rename a rank"
-      setdefaultrank:
-         command: "setdefaultrank <rank>"
+      setdefault:
+         command: "setdefault <rank> <true / false>"
          description: "Set the default rank for new players"
+      listdefaultranks:
+         command: "listdefaultranks"
+         description: "List the default ranks that will be granted to new players"
       createusertag:
          command: "createusertag <tag> <text>"
          description: "Create a new user tag"

@@ -283,8 +283,8 @@ public class GUI {
 		if (gui.getPageID().getID() == GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-				Users users = new Users(powerRanks);
-				users.setDefaultRank(rankname);
+				// Users users = new Users(powerRanks);
+				// users.setDefaultRank(rankname);
 				Messages.messageCommandSetDefaultRankSuccess(player, rankname);
 				closeGUI(player);
 			}

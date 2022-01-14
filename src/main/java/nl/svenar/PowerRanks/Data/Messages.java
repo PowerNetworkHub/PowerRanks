@@ -2592,4 +2592,18 @@ public class Messages {
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}
+
+	public static void messageCommandUsageSetDefault(CommandSender sender) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_setdefault");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageCommandUsageListDefaultRanks(CommandSender sender) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_listdefaultranks");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
 }

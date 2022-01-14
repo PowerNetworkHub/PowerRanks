@@ -292,22 +292,26 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PRRank rankMember = new PRRank();
 		rankMember.setName("Member");
+		rankMember.setDefault(true);
 		rankMember.setWeight(0);
 		rankMember.setPrefix("#127e00M#1a8704E#239109M#2c9b0eB#35a513E#3eaf18R");
 
 		PRRank rankModerator = new PRRank();
 		rankModerator.setName("Moderator");
-		rankMember.setWeight(50);
+		rankModerator.setDefault(false);
+		rankModerator.setWeight(50);
 		rankModerator.setPrefix("#9d1dffM#a51eefO#ae1fdfD#b720d0E#bf21c0R#c822b0A#d123a1T#d92491O#e22581R");
 
 		PRRank rankAdmin = new PRRank();
 		rankAdmin.setName("Admin");
-		rankMember.setWeight(75);
+		rankAdmin.setDefault(false);
+		rankAdmin.setWeight(75);
 		rankAdmin.setPrefix("#ffff00A#fbcc00D#f79900M#f36600I#ef3300N");
 
 		PRRank rankOwner = new PRRank();
 		rankOwner.setName("Owner");
-		rankMember.setWeight(100);
+		rankOwner.setDefault(false);
+		rankOwner.setWeight(100);
 		rankOwner.setPrefix("#ff00ffO#cc33ffW#9966ffN#6699ffE#33ccffR");
 
 		CacheManager.addRank(rankMember);
@@ -315,7 +319,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		CacheManager.addRank(rankAdmin);
 		CacheManager.addRank(rankOwner);
 
-		CacheManager.setDefaultRank(rankMember.getName());
 		CacheManager.save();
 	}
 

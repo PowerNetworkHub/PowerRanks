@@ -114,18 +114,31 @@ public class CacheManager {
         PRPlayer prPlayer = new PRPlayer();
         prPlayer.setUUID(player.getUniqueId());
         prPlayer.setName(player.getName());
-        prPlayer.setRank(CacheManager.getDefaultRank());
+        for (PRRank rank : CacheManager.getDefaultRanks()) {
+            prPlayer.addRank(rank.getName());
+        }
         CacheManager.addPlayer(prPlayer);
         return prPlayer;
     }
 
-    public static String getDefaultRank() {
-        return PowerRanks.getConfigManager().getString("general.defaultrank", "Member");
+    public static List<PRRank> getDefaultRanks() {
+        List<PRRank> defaultRanks = new ArrayList<PRRank>();
+        for (PRRank rank : getRanks()) {
+            if (rank.isDefault()) {
+                defaultRanks.add(rank);
+            }
+        }
+        return defaultRanks;
     }
 
-    public static void setDefaultRank(String rankname) {
-        PowerRanks.getConfigManager().setString("general.defaultrank", rankname);
-    }
+    // public static String getDefaultRank() {
+    // return PowerRanks.getConfigManager().getString("general.defaultrank",
+    // "Member");
+    // }
+
+    // public static void setDefaultRank(String rankname) {
+    // PowerRanks.getConfigManager().setString("general.defaultrank", rankname);
+    // }
 
     public static void load(String dataDirectory) {
         String storageType = PowerRanks.getConfigManager().getString("storage.type", "yaml").toUpperCase();

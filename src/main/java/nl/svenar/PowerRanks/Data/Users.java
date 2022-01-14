@@ -287,9 +287,6 @@ public class Users implements Listener {
 			return false;
 		}
 
-		if (CacheManager.getRank(CacheManager.getDefaultRank()) == CacheManager.getRank(rankToDelete)) {
-			return false;
-		}
 		for (PRPlayer prPlayer : CacheManager.getPlayers()) {
 			List<String> ranknames = prPlayer.getRanks();
 
@@ -422,15 +419,6 @@ public class Users implements Listener {
 				return true;
 			}
 		}
-		return false;
-	}
-
-	public boolean setDefaultRank(String rankname) {
-		if (CacheManager.getRank(rankname) != null) {
-			CacheManager.setDefaultRank(rankname);
-			return true;
-		}
-
 		return false;
 	}
 
@@ -574,11 +562,6 @@ public class Users implements Listener {
 		color = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 
 		return color;
-	}
-
-	public String getDefaultRanks() {
-		return CacheManager.getDefaultRank();
-		// return CachedRanks.getString("Default");
 	}
 
 	public boolean addBuyableRank(String rankname, String rankname2) {

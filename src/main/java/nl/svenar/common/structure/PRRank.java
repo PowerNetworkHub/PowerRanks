@@ -35,6 +35,7 @@ import java.util.Objects;
 public class PRRank {
 
     private String name;
+    private boolean isDefault;
     private ArrayList<PRPermission> permissions;
     private ArrayList<String> inheritances;
     private String chatPrefix;
@@ -49,6 +50,7 @@ public class PRRank {
 
     public PRRank() {
         name = "";
+        isDefault = false;
         permissions = new ArrayList<PRPermission>();
         inheritances = new ArrayList<String>();
         chatPrefix = "";
@@ -78,6 +80,25 @@ public class PRRank {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Check the default value of this rank
+     * 
+     * @return true if this rank will be granted to new players
+     */
+    public boolean isDefault() {
+        return this.isDefault;
+    }
+
+    /**
+     * Change the default value of this rank
+     * When true this rank will be granted to new players
+     * 
+     * @param isDefault
+     */
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     /**
