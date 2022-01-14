@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.4</version>
+	<version>1.10.5 BETA</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -246,7 +246,7 @@
 		<dependency>
 			<groupId>com.nametagedit</groupId>
 			<artifactId>nametagedit</artifactId>
-			<version>4.4.12</version>
+			<version>4.5.4</version>
 		</dependency>
 	</dependencies>
 </project>
