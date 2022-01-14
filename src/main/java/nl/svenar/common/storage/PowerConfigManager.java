@@ -332,7 +332,7 @@ public abstract class PowerConfigManager {
      *         list
      */
     public List<?> getList(String key, List<?> defaultValue) {
-        return this.getKV(key, defaultValue) instanceof List ? (List<?>) this.getKV(key, defaultValue) : null;
+        return this.getKV(key, defaultValue) instanceof List ? (List<?>) this.getKV(key, defaultValue) : defaultValue;
     }
 
     /**
@@ -354,7 +354,7 @@ public abstract class PowerConfigManager {
      * @return Map of unknwon types or null if the key was not found or is not a map
      */
     public Map<?, ?> getMap(String key, Map<?, ?> defaultValue) {
-        return this.getKV(key, defaultValue) instanceof Map ? (Map<?, ?>) this.getKV(key, defaultValue) : null;
+        return this.getKV(key, defaultValue) instanceof Map ? (Map<?, ?>) this.getKV(key, defaultValue) : defaultValue;
     }
 
     /**
