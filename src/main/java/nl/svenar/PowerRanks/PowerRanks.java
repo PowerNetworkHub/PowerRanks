@@ -952,6 +952,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 
+		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+			permissions.add(permission);
+		}
+
 		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
 		List<PRRank> playerRanks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
