@@ -62,8 +62,8 @@ public class OnChat implements Listener {
 
 				String formatted_prefix = "";
 				String formatted_suffix = "";
-				String chatColor = ranks.get(0).getChatcolor();
-				String nameColor = ranks.get(0).getNamecolor();
+				String chatColor = ranks.size() > 0 ? ranks.get(0).getChatcolor() : "&f";
+				String nameColor = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 				String usertag = "";
 
 				for (PRRank rank : ranks) {

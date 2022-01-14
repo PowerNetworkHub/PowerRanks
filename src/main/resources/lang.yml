@@ -7,8 +7,10 @@ messages:
    no_permission: "%plugin_prefix% &4You don't have permission to perform this command!"
    rank_set_sender: "%plugin_prefix% &aSet '%argument_target%' to rank: %argument_rank%"
    rank_add_sender: "%plugin_prefix% &aAdded %argument_rank% to %argument_target%"
+   rank_del_sender: "%plugin_prefix% &aRemoved %argument_rank% from %argument_target%"
    rank_set_target: "%plugin_prefix% &aYou have been promoted to: %argument_rank% by %argument_sender%"
    rank_add_target: "%plugin_prefix% &aThe rank %argument_rank% has been granted to you by %argument_sender%"
+   rank_del_target: "%plugin_prefix% &aThe rank %argument_rank% has been revoked from you by %argument_sender%"
    player_not_found: "%plugin_prefix% &cPlayer '%argument_target%' not found!"
    console_is_not_a_player: "%plugin_prefix% &cThe console isn't a valid player!"
    group_not_found: "%plugin_prefix% &cGroup '%argument_rank%' not found!"
@@ -115,6 +117,7 @@ commands:
    usage_command_reload: "%plugin_prefix% &c%base_cmd% reload [config/plugin/addons/all]"
    usage_command_setrank: "%plugin_prefix% &c%base_cmd% setrank <username> <rank>"
    usage_command_addrank: "%plugin_prefix% &c%base_cmd% addrank <username> <rank>"
+   usage_command_delrank: "%plugin_prefix% &c%base_cmd% delrank <username> <rank>"
    usage_command_setownrank: "%plugin_prefix% &c%base_cmd% setownrank <rank>"
    usage_command_addownrank: "%plugin_prefix% &c%base_cmd% addownrank <rank>"
    usage_command_check: "%plugin_prefix% &c%base_cmd% checkrank [player_name]"
@@ -162,6 +165,7 @@ commands:
    usage_command_setweight: "%plugin_prefix% &c%base_cmd% setweight <rank> <weight | number>"
    usage_command_haspermission: "%plugin_prefix% &c%base_cmd% haspermission [playername] <permission.node>"
    response_command_checkrank: "%plugin_prefix% &a%argument_target%'s rank is %argument_rank%"
+   response_command_checkrank_none: "%plugin_prefix% &a%argument_target% has no ranks"
    unknown_command: "%plugin_prefix% &cUnknown command."
    reload_warning: "%plugin_prefix% &4Reloading is not recommended and can cause unforseen problems. Restart instead!"
    reload_config: "%plugin_prefix% &2Reloading config"
@@ -192,6 +196,9 @@ commands:
       addownrank:
          command: "addownrank <rank_name>"
          description: "Add a rank to yourself"
+      delrank:
+         command: "delrank <player_name> <rank_name>"
+         description: "Remove a rank from someone"
       checkrank:
          command: "checkrank [player_name]"
          description: "Check someone's rank"

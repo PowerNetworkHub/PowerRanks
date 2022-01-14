@@ -783,7 +783,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		String formatted_prefix = "";
 		String formatted_suffix = "";
-		String nameColor = ranks.get(0).getNamecolor();
+		String nameColor = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 
 		String usertag = "";
 

@@ -106,7 +106,7 @@ public class Messages {
 		try {
 			"#FF0000a".replace("#FF0000", net.md_5.bungee.api.ChatColor.of("#FF0000") + "");
 			hex_color_supported = true;
-		} catch (Exception|NoSuchMethodError e) {
+		} catch (Exception | NoSuchMethodError e) {
 			hex_color_supported = false;
 		}
 		sender.sendMessage(ChatColor.GREEN + "RGB colors: "
@@ -443,8 +443,8 @@ public class Messages {
 
 		String formatted_prefix = "";
 		String formatted_suffix = "";
-		String chatColor = ranks.get(0).getChatcolor();
-		String nameColor = ranks.get(0).getNamecolor();
+		String chatColor = ranks.size() > 0 ? ranks.get(0).getChatcolor() : "&f";
+		String nameColor = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 		String usertag = "";
 
 		for (PRRank rank : ranks) {
@@ -495,7 +495,9 @@ public class Messages {
 
 		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 				.put("suffix", formatted_suffix)
-				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : PowerRanks.getInstance().getDeluxeTagsHook().getPlayerDisplayTag(player))
+				.put("usertag",
+						!PowerRanks.plugin_hook_deluxetags ? usertag
+								: PowerRanks.getInstance().getDeluxeTagsHook().getPlayerDisplayTag(player))
 				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
 				.put("world", player.getWorld().getName()).build(), '[', ']');
 
@@ -528,13 +530,16 @@ public class Messages {
 		formatted_prefix += rank.getPrefix();
 		formatted_suffix += rank.getSuffix();
 
-		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "") + PowerRanks.applyMultiColorFlow(nameColor, sender.getName());
+		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "")
+				+ PowerRanks.applyMultiColorFlow(nameColor, sender.getName());
 		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 				+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
 		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 				.put("suffix", formatted_suffix)
-				.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag : PowerRanks.getInstance().getDeluxeTagsHook().getPlayerDisplayTag((Player) sender))
+				.put("usertag",
+						!PowerRanks.plugin_hook_deluxetags ? usertag
+								: PowerRanks.getInstance().getDeluxeTagsHook().getPlayerDisplayTag((Player) sender))
 				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
 				.put("world", ((Player) sender).getWorld().getName()).build(), '[', ']');
 
@@ -652,7 +657,8 @@ public class Messages {
 				new HashMap<String, String>());
 
 		if (lines != null) {
-			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+			sender.sendMessage(ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName()
+					+ ChatColor.DARK_AQUA + "--------");
 			sender.sendMessage(ChatColor.DARK_AQUA + "[Optional] <Required>");
 			String prefix = languageManager.getString("general.prefix", "");
 			for (String section : lines.keySet()) {
@@ -695,7 +701,7 @@ public class Messages {
 				if (PowerRanks.getInstance().addonsManager.getAddonDownloader() == null) {
 					PowerRanks.getInstance().addonsManager.setupAddonDownloader();
 				}
-				
+
 				tellrawCommand += "[\"\"";
 				tellrawCommand += ",{\"text\":\"===-----\",\"color\":\"dark_aqua\"},{\"text\":\"PowerRanks AddonManager\",\"color\":\"aqua\"},{\"text\":\"-----===\",\"color\":\"dark_aqua\"}";
 				tellrawCommand += ",{\"text\":\"\\n\"},";
@@ -2434,6 +2440,15 @@ public class Messages {
 		}
 	}
 
+	public static void messageCommandCheckrankResponse(final CommandSender sender, final String target_player) {
+		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.response_command_checkrank_none");
+		msg = Util.replaceAll(msg, "%argument_target%", target_player);
+		if (msg.length() > 0) {
+			sender.sendMessage(msg);
+		}
+	}
+
 	public static void numbersOnly(CommandSender sender) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		final String msg = getGeneralMessage(languageManager, "commands.only_numbers");
@@ -2537,6 +2552,43 @@ public class Messages {
 	public static void messageCommandUsageHasPermission(CommandSender sender) {
 		final PowerConfigManager languageManager = PowerRanks.getLanguageManager();
 		String msg = getGeneralMessage(languageManager, "commands.usage_command_haspermission");
+		if (msg.length() > 0)
+			sender.sendMessage(msg);
+	}
+
+	public static void messageDelRankSuccessSender(CommandSender sender, String target, String rank) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String line = languageManager.getString("messages.rank_del_sender", "");
+		if (line != null) {
+			String prefix = languageManager.getString("general.prefix", "");
+			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+			line = Util.replaceAll(line, "%argument_target%", target);
+			line = Util.replaceAll(line, "%argument_rank%", rank);
+			String msg = PowerRanks.chatColor(line, true);
+			if (msg.length() > 0)
+				sender.sendMessage(msg);
+		}
+	}
+
+	public static void messageDelRankSuccessTarget(CommandSender target, String sender, String rank) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String line = languageManager.getString("messages.rank_del_target", "");
+		if (line != null) {
+			String prefix = languageManager.getString("general.prefix", "");
+			line = Util.replaceAll(line, "%plugin_prefix%", prefix);
+			line = Util.replaceAll(line, "%plugin_name%", PowerRanks.pdf.getName());
+			line = Util.replaceAll(line, "%argument_sender%", sender);
+			line = Util.replaceAll(line, "%argument_rank%", rank);
+			String msg = PowerRanks.chatColor(line, true);
+			if (msg.length() > 0)
+				target.sendMessage(msg);
+		}
+	}
+
+	public static void messageCommandUsageDel(CommandSender sender) {
+		PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+		String msg = getGeneralMessage(languageManager, "commands.usage_command_delrank");
 		if (msg.length() > 0)
 			sender.sendMessage(msg);
 	}

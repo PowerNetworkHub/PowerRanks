@@ -36,7 +36,11 @@ public class cmd_checkrank extends PowerCommand {
 				Player targetPlayer = Util.getPlayerByName(args[0]);
 				if (targetPlayer != null) {
 					String rankname = this.users.getPrimaryRank(targetPlayer);
-					Messages.messageCommandCheckrankResponse(sender, targetPlayer.getName(), rankname);
+					if (rankname.length() > 0) {
+						Messages.messageCommandCheckrankResponse(sender, targetPlayer.getName(), rankname);
+					} else {
+						Messages.messageCommandCheckrankResponse(sender, targetPlayer.getName());
+					}
 				} else {
 					Messages.messagePlayerNotFound(sender, args[0]);
 				}
