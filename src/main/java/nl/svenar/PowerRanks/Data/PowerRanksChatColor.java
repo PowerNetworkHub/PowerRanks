@@ -90,7 +90,7 @@ public class PowerRanksChatColor {
 
 			try {
 				text = text.replace(hex_color, net.md_5.bungee.api.ChatColor.of(hex_color.startsWith("&") ? hex_color.replaceFirst("&", "") : hex_color) + "");
-			} catch(Exception e) {
+			} catch(Exception|NoSuchMethodError e) {
 				text = text.replace(hex_color, hex_compatibility_converter(hex_color.startsWith("&") ? hex_color.replaceFirst("&", "") : hex_color) + "");
 			}
 			hex_color_matcher = hex_color_pattern.matcher(text);

@@ -107,7 +107,7 @@ public class Messages {
 		try {
 			"#FF0000a".replace("#FF0000", net.md_5.bungee.api.ChatColor.of("#FF0000") + "");
 			hex_color_supported = true;
-		} catch (Exception e) {
+		} catch (Exception|NoSuchMethodError e) {
 			hex_color_supported = false;
 		}
 		sender.sendMessage(ChatColor.GREEN + "RGB colors: "
