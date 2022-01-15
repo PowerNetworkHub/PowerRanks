@@ -14,6 +14,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.PowerStorageManager;
 import nl.svenar.common.storage.provided.YAMLConfigManager;
@@ -138,7 +139,8 @@ public class ConfigFilesUpdater {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> generalConfigData = (Map<String, Object>) newConfigManager.getMap("general",
 					new HashMap<String, Object>());
-			generalConfigData.put("defaultrank", ranksYaml.getString("Default"));
+			// generalConfigData.put("defaultrank", ranksYaml.getString("Default"));
+			CacheManager.configConverterSetDefaultRank(ranksYaml.getString("Default"));
 			newConfigManager.setMap("general", generalConfigData);
 			newConfigManager.save();
 
@@ -258,6 +260,9 @@ public class ConfigFilesUpdater {
 				if (yamlConf.isSet("plugin_hook.vault")) {
 					yamlConf.set("plugin_hook.vault_economy", yamlConf.getBoolean("plugin_hook.vault"));
 					yamlConf.set("plugin_hook.vault", null);
+				}
+				if (yamlConf.isSet("defaultrank")) {
+					CacheManager.configConverterSetDefaultRank(yamlConf.getString("defaultrank"));
 				}
 				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(false)) {
 					for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {

@@ -30,6 +30,8 @@ public class CacheManager {
     private static ArrayList<PRRank> registeredRanks = new ArrayList<PRRank>();
     private static ArrayList<PRPlayer> registeredPlayers = new ArrayList<PRPlayer>();
 
+    private static String tmpConvertDefaultRank = "";
+
     public static ArrayList<PRRank> getRanks() {
         return registeredRanks;
     }
@@ -205,6 +207,10 @@ public class CacheManager {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             OnJoin.handleJoin(PowerRanks.getInstance(), player);
         }
+
+        if (tmpConvertDefaultRank.length() > 0) {
+            getRank(tmpConvertDefaultRank).setDefault(true);
+        }
     }
 
     public static void save() {
@@ -216,5 +222,9 @@ public class CacheManager {
 
     public static PowerStorageManager getStorageManager() {
         return storageManager;
+    }
+
+    public static void configConverterSetDefaultRank(String rankname) {
+        tmpConvertDefaultRank = rankname;
     }
 }
