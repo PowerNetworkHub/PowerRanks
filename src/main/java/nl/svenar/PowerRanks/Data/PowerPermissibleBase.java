@@ -48,10 +48,12 @@ public class PowerPermissibleBase extends PermissibleBase {
 		boolean containsWildcard = false;
 		boolean checkedWildcard = false;
 		boolean disallowed = false;
+		boolean disallowedValid = false;
 
 		for (PRPermission prPermission : permissions) {
 			if (prPermission.getName().equals(permission)) {
 				disallowed = !prPermission.getValue();
+				disallowedValid = true;
 				break;
 			}
 		}
@@ -63,6 +65,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 				if (wildcardPermissions.contains(perm.getName())) {
 					containsWildcard = true;
 					disallowed = !perm.getValue();
+					disallowedValid = true;
 					break;
 				}
 			}
@@ -75,7 +78,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 			PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
 			PowerRanksVerbose.log("hasPermission",
 					"Permissions: '" + String.join(", ", getAllPermissionsFormatted(permissions)) + "'");
-			PowerRanksVerbose.log("hasPermission", "Is Disallowed: " + disallowed);
+			PowerRanksVerbose.log("hasPermission",
+					"Is Disallowed: " + disallowed + " (Valid: " + disallowedValid + ")");
 			PowerRanksVerbose.log("hasPermission", "Has *: " + getAllPermissions(permissions).contains("*"));
 			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
 			// PowerRanksVerbose.log("hasPermission", "Return #3: " +
@@ -92,13 +96,13 @@ public class PowerPermissibleBase extends PermissibleBase {
 			return false;
 		}
 
-		if (getAllPermissions(permissions).contains("*") || player.isOp()) {
+		if (getAllowedPermissions(permissions).contains("*") || player.isOp()) {
 			return true;
 		}
 
 		try {
 			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission)
-					|| !disallowed;
+					|| (disallowedValid && !disallowed);
 		} catch (Exception e) {
 			return getAllowedPermissions(permissions).contains(permission);
 		}
