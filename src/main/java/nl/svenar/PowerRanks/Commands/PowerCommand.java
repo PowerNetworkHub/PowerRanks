@@ -10,6 +10,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 public abstract class PowerCommand {
 	
 	protected PowerRanks plugin;
+	private String commandPermission = "";
 	
 	public enum COMMAND_EXECUTOR {
 		NONE,
@@ -27,11 +28,19 @@ public abstract class PowerCommand {
 		this.ce = ce;
 	}
 	
-	public abstract boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args);
+	public abstract boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args);
 	
 	public COMMAND_EXECUTOR getCommandExecutor() {
 		return this.ce;
 	}
 	
 	public abstract ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args);
+
+	protected void setCommandPermission(String permission) {
+		this.commandPermission = permission;
+	}
+
+	public String getCommandPermission() {
+		return this.commandPermission;
+	}
 }

@@ -23,7 +23,7 @@ public class cmd_setweight extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setweight")) {
 			if (args.length == 2) {
 
@@ -46,7 +46,7 @@ public class cmd_setweight extends PowerCommand {
 				Messages.messageCommandUsageSetWeight(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

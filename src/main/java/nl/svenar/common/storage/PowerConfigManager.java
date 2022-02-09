@@ -155,8 +155,10 @@ public abstract class PowerConfigManager {
         }
 
         if (output == null) {
-            this.setKV(key, defaultValue);
-            output = defaultValue;
+            if (defaultValue != null) {
+                this.setKV(key, defaultValue);
+                output = defaultValue;
+            }
         }
 
         return output;
@@ -244,6 +246,18 @@ public abstract class PowerConfigManager {
      */
     public String getString(String key, String defaultValue) {
         return this.getKV(key, defaultValue).toString();
+    }
+
+    /**
+     * Get a string from the configuration data. Do not create it if it doesn't
+     * exist.
+     * 
+     * @param key
+     * @param defaultValue
+     * @return string
+     */
+    public String getString(String key) {
+        return this.getKV(key, null).toString();
     }
 
     /**
@@ -411,5 +425,9 @@ public abstract class PowerConfigManager {
             this.data = new HashMap<String, Object>();
             this.data.put(targetKey, newData);
         }
+    }
+
+    public boolean destroyFile() {
+        return false;
     }
 }

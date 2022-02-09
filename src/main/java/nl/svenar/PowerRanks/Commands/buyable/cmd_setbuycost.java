@@ -21,7 +21,7 @@ public class cmd_setbuycost extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setbuycost")) {
 			if (args.length == 2) {
 				final String rankname = this.users.getRankIgnoreCase(args[0]);
@@ -36,7 +36,7 @@ public class cmd_setbuycost extends PowerCommand {
 				Messages.messageCommandUsageSetcost(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

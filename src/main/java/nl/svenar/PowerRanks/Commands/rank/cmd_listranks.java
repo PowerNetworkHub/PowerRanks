@@ -25,7 +25,7 @@ public class cmd_listranks extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.listranks")) {
 			List<PRRank> ranks = users.getGroups();
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
@@ -47,7 +47,7 @@ public class cmd_listranks extends PowerCommand {
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
 					+ ChatColor.BLUE + "===");
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

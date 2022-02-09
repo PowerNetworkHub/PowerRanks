@@ -43,6 +43,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import nl.svenar.PowerRanks.Cache.CacheManager;
+import nl.svenar.PowerRanks.Cache.LanguageManager;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
@@ -102,7 +103,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private int TASK_TPS = 20;
 
 	private static PowerConfigManager configManager;
-	private static PowerConfigManager languageManager;
+	private static PowerConfigManager oldLanguageManager;
+	private static LanguageManager languageManager;
 	private static PowerConfigManager usertagManager;
 
 	// Soft Dependencies
@@ -169,7 +171,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Loading config file");
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
 		PowerRanks.log.info("Loading language file");
-		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		languageManager = new LanguageManager();
 		PowerRanks.log.info("Loading usertags file");
 		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
 
@@ -266,10 +269,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			hasErrorInSaving = true;
 		}
 
+		if (Objects.nonNull(getOldLanguageManager())) {
+			getOldLanguageManager().save();
+		} else {
+			getLogger().warning("Failed to save old language file!");
+			hasErrorInSaving = true;
+		}
+
 		if (Objects.nonNull(getLanguageManager())) {
 			getLanguageManager().save();
 		} else {
-			getLogger().warning("Failed to save languages file!");
+			getLogger().warning("Failed to save language file!");
 			hasErrorInSaving = true;
 		}
 
@@ -655,7 +665,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.createDir(PowerRanks.fileLoc);
 
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
-		languageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
 
 		PowerConfigManager ranksManager = new YAMLConfigManager(PowerRanks.fileLoc, "ranks.yml");
 		PowerConfigManager playersManager = new YAMLConfigManager(PowerRanks.fileLoc, "players.yml");
@@ -1022,7 +1032,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return configManager;
 	}
 
-	public static PowerConfigManager getLanguageManager() {
+	public static PowerConfigManager getOldLanguageManager() {
+		return oldLanguageManager;
+	}
+
+	public static LanguageManager getLanguageManager() {
 		return languageManager;
 	}
 

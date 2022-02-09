@@ -150,4 +150,9 @@ public class YAMLConfigManager extends PowerConfigManager {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean destroyFile() {
+        return this.configFile.delete();
+    }
 }

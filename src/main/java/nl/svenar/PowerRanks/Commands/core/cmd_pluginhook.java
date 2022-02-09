@@ -19,7 +19,7 @@ public class cmd_pluginhook extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.pluginhook")) {
 			if (args.length == 0) {
 				Messages.messagePluginhookStats(sender);
@@ -46,7 +46,7 @@ public class cmd_pluginhook extends PowerCommand {
 				Messages.messageCommandUsagePluginhook(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

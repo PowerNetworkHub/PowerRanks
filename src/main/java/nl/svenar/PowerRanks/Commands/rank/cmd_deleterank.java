@@ -21,7 +21,7 @@ public class cmd_deleterank extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.deleterank")) {
 			if (args.length == 1) {
 				final String rank2 = this.users.getRankIgnoreCase(args[0]);
@@ -35,7 +35,7 @@ public class cmd_deleterank extends PowerCommand {
 				Messages.messageCommandUsageDeleteRank(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

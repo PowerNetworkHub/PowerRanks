@@ -19,11 +19,10 @@ public class cmd_rankinfo extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.rankinfo")) {
 			if (args.length == 1) {
 				String target_rank_name = args[0];
-				// Player target_player = Util.getPlayerByName(target_player_name);
 				PRRank target_rank = CacheManager.getRank(target_rank_name);
 				if (target_rank != null) {
 					Messages.messageRankInfo(sender, target_rank, 0);
@@ -40,10 +39,10 @@ public class cmd_rankinfo extends PowerCommand {
 					Messages.messageGroupNotFound(sender, target_rank_name);
 				}
 			} else {
-				Messages.messageCommandUsagePlayerinfo(sender);
+				Messages.messageCommandUsageRankinfo(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

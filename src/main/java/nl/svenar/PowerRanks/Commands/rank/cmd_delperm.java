@@ -23,7 +23,7 @@ public class cmd_delperm extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.delperm")) {
 			if (args.length == 2) {
 				final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
@@ -42,7 +42,7 @@ public class cmd_delperm extends PowerCommand {
 				Messages.messageCommandUsageDelperm(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

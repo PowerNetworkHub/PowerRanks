@@ -26,7 +26,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.listplayerpermissions")) {
 			if (args.length == 1) {
 				Player targetPlayer = Util.getPlayerByName(args[0]);
@@ -47,7 +47,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 				Messages.messageCommandUsageListPlayerPermissions(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

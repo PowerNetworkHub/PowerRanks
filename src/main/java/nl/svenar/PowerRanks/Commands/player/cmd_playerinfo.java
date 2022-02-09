@@ -20,7 +20,7 @@ public class cmd_playerinfo extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.playerinfo")) {
 			if (args.length == 1) {
 				String target_player_name = args[0];
@@ -43,7 +43,7 @@ public class cmd_playerinfo extends PowerCommand {
 				Messages.messageCommandUsagePlayerinfo(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

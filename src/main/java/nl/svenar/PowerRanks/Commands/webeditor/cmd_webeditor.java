@@ -38,7 +38,7 @@ public class cmd_webeditor extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.webeditor")) {
 			if (args.length == 0) {
 				// No args
@@ -65,7 +65,7 @@ public class cmd_webeditor extends PowerCommand {
 				Messages.messageCommandUsageWebeditor(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

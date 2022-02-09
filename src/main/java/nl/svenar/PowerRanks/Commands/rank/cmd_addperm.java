@@ -23,7 +23,7 @@ public class cmd_addperm extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.addperm")) {
 			if (args.length == 2) {
 				final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
@@ -48,7 +48,7 @@ public class cmd_addperm extends PowerCommand {
 				Messages.messageCommandUsageAddperm(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

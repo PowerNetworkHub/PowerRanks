@@ -19,30 +19,28 @@ public class cmd_addbuyablerank extends PowerCommand {
 	public cmd_addbuyablerank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd" + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.addbuyablerank")) {
-			if (args.length == 2) {
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				final String rankname2 = this.users.getRankIgnoreCase(args[1]);
-				final boolean success = this.users.addBuyableRank(rankname, rankname2);
-				if (CacheManager.getRank(rankname) != null && CacheManager.getRank(rankname2) != null) {
-					if (success) {
-						Messages.messageCommandAddbuyablerankSuccess(sender, rankname, rankname2);
-					} else {
-						Messages.messageCommandAddbuyablerankError(sender, rankname, rankname2);
-					}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final String rankname2 = this.users.getRankIgnoreCase(args[1]);
+			final boolean success = this.users.addBuyableRank(rankname, rankname2);
+			if (CacheManager.getRank(rankname) != null && CacheManager.getRank(rankname2) != null) {
+				if (success) {
+					Messages.messageCommandAddbuyablerankSuccess(sender, rankname, rankname2);
 				} else {
-					Messages.messageGroupNotFound(sender, CacheManager.getRank(rankname) == null ? rankname : rankname2);
+					Messages.messageCommandAddbuyablerankError(sender, rankname, rankname2);
 				}
-				
 			} else {
-				Messages.messageCommandUsageAddbuyablerank(sender);
+				Messages.messageGroupNotFound(sender, CacheManager.getRank(rankname) == null ? rankname : rankname2);
 			}
+
 		} else {
-			Messages.noPermission(sender);
+			Messages.messageCommandUsageAddbuyablerank(sender);
 		}
 
 		return false;

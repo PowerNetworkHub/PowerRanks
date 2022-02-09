@@ -22,7 +22,7 @@ public class cmd_setdefault extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setdefault")) {
 			if (args.length == 2) {
 				final String rankname = this.users.getRankIgnoreCase(args[0]);
@@ -34,7 +34,7 @@ public class cmd_setdefault extends PowerCommand {
 				Messages.messageCommandUsageSetDefault(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

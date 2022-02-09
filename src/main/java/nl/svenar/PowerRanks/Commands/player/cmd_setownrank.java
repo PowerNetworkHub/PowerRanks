@@ -25,7 +25,7 @@ public class cmd_setownrank extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (args.length == 1) {
 			String target_rank = users.getRankIgnoreCase(args[0]);
 			
@@ -50,13 +50,13 @@ public class cmd_setownrank extends PowerCommand {
 					Messages.messageSetRankSuccessTarget((Player) sender, sender.getName(), rank.getName());
 				}
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
 			if (sender.hasPermission("powerranks.cmd.setownrank") || sender.hasPermission("powerranks.cmd.setrank.*")) {
 				Messages.messageCommandUsageSetown(sender);
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		}
 

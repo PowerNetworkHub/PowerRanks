@@ -26,7 +26,7 @@ public class cmd_addrank extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (args.length == 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
 			
@@ -57,13 +57,13 @@ public class cmd_addrank extends PowerCommand {
 				// target_rank, true);
 
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
 			if (sender.hasPermission("powerranks.cmd.addrank") || sender.hasPermission("powerranks.cmd.addrank.*")) {
 				Messages.messageCommandUsageAdd(sender);
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		}
 

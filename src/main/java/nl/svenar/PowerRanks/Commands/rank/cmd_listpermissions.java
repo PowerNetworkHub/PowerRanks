@@ -26,7 +26,7 @@ public class cmd_listpermissions extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.listpermissions")) {
 			String rankName = "";
 			List<String> ranks = new ArrayList<String>();
@@ -56,7 +56,7 @@ public class cmd_listpermissions extends PowerCommand {
 			}
 
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

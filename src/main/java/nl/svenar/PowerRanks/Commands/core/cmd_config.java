@@ -22,7 +22,7 @@ public class cmd_config extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.config")) {
 			if (args.length == 1) {
 				if (args[0].equalsIgnoreCase("removeworldtag")) {
@@ -87,7 +87,7 @@ public class cmd_config extends PowerCommand {
 				Messages.messageCommandUsageConfig(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

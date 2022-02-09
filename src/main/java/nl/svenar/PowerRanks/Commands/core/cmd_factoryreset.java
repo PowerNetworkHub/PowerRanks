@@ -17,7 +17,7 @@ public class cmd_factoryreset extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.factoryreset")) {
 			if (args.length == 0) {
 				Messages.messageCommandFactoryReset(sender);
@@ -35,7 +35,7 @@ public class cmd_factoryreset extends PowerCommand {
 				Messages.messageCommandUsageFactoryReset(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

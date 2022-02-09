@@ -20,7 +20,7 @@ public class cmd_editusertag extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.editusertag")) {
 			if (!PowerRanks.plugin_hook_deluxetags) {
 				if (args.length == 2) {
@@ -39,7 +39,7 @@ public class cmd_editusertag extends PowerCommand {
 				Messages.messageUsertagsDisabled(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

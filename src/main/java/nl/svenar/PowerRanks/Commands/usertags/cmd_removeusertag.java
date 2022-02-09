@@ -20,7 +20,7 @@ public class cmd_removeusertag extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.removeusertag")) {
 			if (!PowerRanks.plugin_hook_deluxetags) {
 				if (args.length == 1) {
@@ -38,7 +38,7 @@ public class cmd_removeusertag extends PowerCommand {
 				Messages.messageUsertagsDisabled(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

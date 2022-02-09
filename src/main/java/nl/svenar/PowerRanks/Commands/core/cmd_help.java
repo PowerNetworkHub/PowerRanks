@@ -21,7 +21,7 @@ public class cmd_help extends PowerCommand {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.help")) {
 
 			String tellrawbase = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\"},{\"text\":\"/%cmd% %arg%\",\"color\":\"%color_command_allowed%\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/%cmd% %arg%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"/%cmd% %arg%\"}},{\"text\":\"]\",\"color\":\"black\"},{\"text\":\" %help%\",\"color\":\"dark_green\"}]";
@@ -35,7 +35,7 @@ public class cmd_help extends PowerCommand {
 
 			ArrayList<String> help_messages = new ArrayList<String>();
 
-			PowerConfigManager languageManager = PowerRanks.getLanguageManager();
+			PowerConfigManager languageManager = PowerRanks.getOldLanguageManager();
 			HashMap<String, String> lines = (HashMap<String, String>) languageManager.getMap("commands.help", new HashMap<String, String>());
 
 			int lines_per_page = sender instanceof Player ? 5 : 10;

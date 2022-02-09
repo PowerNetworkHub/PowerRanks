@@ -22,7 +22,7 @@ public class cmd_clearusertag extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (sender.hasPermission("powerranks.cmd.setusertag") || sender.hasPermission("powerranks.cmd.admin")) {
 			if (args.length == 0) {
 				if (sender.hasPermission("powerranks.cmd.setusertag")) {
@@ -40,7 +40,7 @@ public class cmd_clearusertag extends PowerCommand {
 						Messages.messageUsertagsDisabled(sender);
 					}
 				} else {
-					Messages.noPermission(sender);
+					sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (args.length == 1) {
 				if (sender.hasPermission("powerranks.cmd.admin")) {
@@ -58,13 +58,13 @@ public class cmd_clearusertag extends PowerCommand {
 						Messages.messageUsertagsDisabled(sender);
 					}
 				} else {
-					Messages.noPermission(sender);
+					sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else {
 				Messages.messageCommandUsageClearusertag(sender);
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 		}
 
 		return false;

@@ -24,7 +24,7 @@ public class cmd_listusertags extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 		if (!PowerRanks.plugin_hook_deluxetags) {
 			if (sender.hasPermission("powerranks.cmd.listusertags")) {
 				if (args.length == 0) {
@@ -36,7 +36,7 @@ public class cmd_listusertags extends PowerCommand {
 					Messages.messageCommandUsageListusertags(sender);
 				}
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
 			Messages.messageUsertagsDisabled(sender);
