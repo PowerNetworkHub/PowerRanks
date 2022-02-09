@@ -12,7 +12,6 @@ import org.bukkit.command.CommandSender;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 
@@ -20,7 +19,7 @@ public class cmd_addoninfo extends PowerCommand {
 
 	public cmd_addoninfo(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
-		this.setCommandPermission("powerranks.cmd" + command_name.toLowerCase());
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class cmd_addoninfo extends PowerCommand {
 								"commands." + commandName.toLowerCase() + ".failed-addon-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())
-								.put("addom", addon_name)
+								.put("addon", addon_name)
 								.build(),
 						'[', ']'));
 			}

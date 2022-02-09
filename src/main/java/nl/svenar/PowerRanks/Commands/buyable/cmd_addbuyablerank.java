@@ -2,14 +2,16 @@ package nl.svenar.PowerRanks.Commands.buyable;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_addbuyablerank extends PowerCommand {
@@ -19,7 +21,7 @@ public class cmd_addbuyablerank extends PowerCommand {
 	public cmd_addbuyablerank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
-		this.setCommandPermission("powerranks.cmd" + command_name.toLowerCase());
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
@@ -31,16 +33,41 @@ public class cmd_addbuyablerank extends PowerCommand {
 			final boolean success = this.users.addBuyableRank(rankname, rankname2);
 			if (CacheManager.getRank(rankname) != null && CacheManager.getRank(rankname2) != null) {
 				if (success) {
-					Messages.messageCommandAddbuyablerankSuccess(sender, rankname, rankname2);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success-add"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("target_rank", rankname2)
+									.build(),
+							'[', ']'));
 				} else {
-					Messages.messageCommandAddbuyablerankError(sender, rankname, rankname2);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed-add"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("target_rank", rankname2)
+									.build(),
+							'[', ']'));
 				}
 			} else {
-				Messages.messageGroupNotFound(sender, CacheManager.getRank(rankname) == null ? rankname : rankname2);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".group-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", CacheManager.getRank(rankname) == null ? rankname : rankname2)
+								.build(),
+						'[', ']'));
 			}
 
 		} else {
-			Messages.messageCommandUsageAddbuyablerank(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

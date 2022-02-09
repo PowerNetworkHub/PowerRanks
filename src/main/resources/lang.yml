@@ -3,6 +3,7 @@ lang:
       general:
          prefix: "&0[&bPR &4BETA&0]&r"
          no-permission: "&4You do not have permissions to execute this command!"
+         group-not-found: "&cGroup '[rank]' not found!"
       commands:
          addoninfo:
             arguments: "<addon_name>"
@@ -10,6 +11,34 @@ lang:
             failed-addon-not-found: "&cAn add-on called [addon] does not exist"
          listaddons:
             arguments: ""
+         addbuyablerank:
+            arguments: "<rank_name> <buyablerank_name>"
+            success-add: "&aAdded buyable rank '[rank]' to: [target_rank]"
+            failed-add: "&cError adding buyable rank '[rank]' to: [target_rank]"
+         delbuyablerank:
+            arguments: "<rank_name> <buyablerank_name>"
+            success-del: "&aRemoved buyable rank '[rank]' from: [target_rank]"
+            failed-del: "&cError removing buyable rank '[rank]' from: [target_rank]"
+         buyrank:
+            arguments: "[rank_name] [confirm]"
+            buy-not-available: "&cBuying ranks is not available on this server."
+            succes-buy: "&aYou have bought the rank [rank]"
+            failed-buy-not-enough-money: "&cInsufficient funds to buy the rank [rank]"
+         rankup:
+            arguments: ""
+            buy-not-available: "&cBuying ranks is not available on this server."
+         setbuycommand:
+            arguments: "<rank_name> <command including spaces>"
+            success-set: "&aChanged buy command to '[buycommand]' on rank: [rank]"
+            failed-set: "&cFailed to set buy command to '[buycommand]' on rank: [rank]"
+         setbuycost:
+            arguments: "<rank_name> <cost>"
+            success-set: "&aChanged buy cost to '[cost]' on rank: [rank]"
+            failed-set: "&cFailed to set buy cost to '[cost]' on rank: [rank]"
+         setbuydescription:
+            arguments: "<rank_name> <description including spaces>"
+            success-set: "&aChanged buy description to '[description]' on rank: [rank]"
+            failed-set: "&cFailed to set buy description to '[description]' on rank: [rank]"
          setrank:
             arguments: "<player_name> <rank_name>"
             description: "Set someone's rank and remove all other ranks"

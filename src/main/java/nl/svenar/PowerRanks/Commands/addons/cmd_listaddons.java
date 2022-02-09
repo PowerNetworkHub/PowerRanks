@@ -17,7 +17,7 @@ public class cmd_listaddons extends PowerCommand {
 
 	public cmd_listaddons(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
-		this.setCommandPermission("powerranks.cmd" + command_name.toLowerCase());
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
