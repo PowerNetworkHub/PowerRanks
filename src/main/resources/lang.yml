@@ -3,7 +3,9 @@ lang:
       general:
          prefix: "&0[&bPR &4BETA&0]&r"
          no-permission: "&4You do not have permissions to execute this command!"
-         group-not-found: "&cGroup '[rank]' not found!"
+         rank-not-found: "&cRank '[rank]' not found!"
+         player-not-found: "&cPlayer '[target]' not found!"
+         console-is-no-player: "&cThe console is not a player and has no ranks!"
       commands:
          addoninfo:
             arguments: "<addon_name>"
@@ -74,12 +76,46 @@ lang:
             saved: "&aVerbose log saved!"
             failed-saving: "&cError saving verbose log! Did you start logging?"
             must-stop-before-saving: "&cCannot save log wile verbose is running!"
+         addrank:
+            arguments: "<player_name> <rank_name>"
+            success-executor: "&aAdded rank [rank] to [player]"
+            failed-executor: "&cFailed to add the rank [rank] to [player]"
+            success-receiver: "&aYou have been granted the rank [rank]"
+         addownrank:
+            arguments: "<rank_name>"
+            success-executor: "&aChanged your rank to [rank]"
+            failed-executor: "&cFailed to set your rank to: [rank]"
          setrank:
             arguments: "<player_name> <rank_name>"
             description: "Set someone's rank and remove all other ranks"
             success-executor: "&aChanged [player]'s rank to [rank]"
             failed-executor: "&cFailed to set '[player]' to rank: [rank]"
             success-receiver: "&aYour rank has changed to [rank]"
+         setownrank:
+            arguments: "<rank_name>"
+            success-executor: "&aChanged your rank to [rank]"
+            failed-executor: "&cFailed to set your rank to: [rank]"
+         delrank:
+            arguments: "<player_name> <rank_name>"
+            success-executor: "&aRemoved the rank [rank] from [player]"
+            failed-executor: "&cFailed to remove the rank [rank] from [player]"
+            success-receiver: "&aThe rank [rank] has been revoked from you"
+         checkrank:
+            arguments: "<player_name>"
+         addplayerperm:
+            arguments: "<player_name> <permission.node> [allowed]"
+            success: "&aPermission [permission] added to player: [target]"
+            failed: "&cFailed to add the permission [permission] to [target]"
+         delplayerperm:
+            arguments: "<player_name> <permission.node> [allowed]"
+            success: "&aPermission [permission] removed from player: [target]"
+            failed: "&cFailed to remove the permission [permission] from [target]"
+         listplayerpermissions:
+            arguments: "<player_name>"
+         playerinfo:
+            arguments: "<player_name>"
+         haspermission:
+            arguments: "<player_name> <permission.node>"
          clearusertag:
             arguments: "[player_name] <tag_name>"
             disabled: "&cCan't clear a player's usertag. Usertags are disabled!"

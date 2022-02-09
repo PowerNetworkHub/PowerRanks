@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,8 +11,8 @@ import org.bukkit.entity.Player;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
@@ -22,18 +24,21 @@ public class cmd_addownrank extends PowerCommand {
 	public cmd_addownrank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
 		if (args.length == 1) {
 			String target_rank = users.getRankIgnoreCase(args[0]);
-			
-			boolean commandAllowed = sender.hasPermission("powerranks.cmd.addrank") || sender.hasPermission("powerranks.cmd.addownrank");
+
+			boolean commandAllowed = false;
 			if (sender instanceof Player) {
 				for (PRPermission permission : PowerRanks.getInstance()
 						.getEffectivePlayerPermissions((Player) sender)) {
-					if (permission.getName().equalsIgnoreCase("powerranks.cmd.addrank." + target_rank)) {
+					if (permission.getName()
+							.equalsIgnoreCase("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank)) {
 						commandAllowed = permission.getValue();
 						break;
 					}
@@ -46,18 +51,42 @@ public class cmd_addownrank extends PowerCommand {
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.addRank(rank.getName());
 
-					// Messages.messageSetRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
-					Messages.messageAddRankSuccessTarget((Player) sender, sender.getName(), rank.getName());
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".success-executor"),
+							ImmutableMap.<String, String>builder()
+									.put("player", targetPlayer.getName())
+									.put("rank", rank.getName())
+									.build(),
+							'[', ']'));
+
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success-receiver"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rank.getName())
+									.build(),
+							'[', ']'));
+				} else {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".failed-executor"),
+							ImmutableMap.<String, String>builder()
+									.put("player", targetPlayer.getName())
+									.put("rank", rank.getName())
+									.build(),
+							'[', ']'));
 				}
 			} else {
 				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
-			if (sender.hasPermission("powerranks.cmd.addownrank") || sender.hasPermission("powerranks.cmd.addrank.*")) {
-				Messages.messageCommandUsageAddown(sender);
-			} else {
-				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
-			}
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;
@@ -71,7 +100,7 @@ public class cmd_addownrank extends PowerCommand {
 				tabcomplete.add(rank.getName());
 			}
 		}
-		
+
 		return tabcomplete;
 	}
 }

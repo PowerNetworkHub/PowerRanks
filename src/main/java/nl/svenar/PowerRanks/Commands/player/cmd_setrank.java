@@ -13,7 +13,6 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
@@ -84,6 +83,16 @@ public class cmd_setrank extends PowerCommand {
 										.build(),
 								'[', ']'));
 					}
+				} else {
+					sender.sendMessage(Util.powerFormatter(
+					PowerRanks.getLanguageManager()
+							.getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed-executor"),
+					ImmutableMap.<String, String>builder()
+							.put("player", targetPlayer.getName())
+							.put("rank", rank.getName())
+							.build(),
+					'[', ']'));
 				}
 
 			} else {

@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,8 +12,8 @@ import org.bukkit.entity.Player;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
@@ -23,18 +25,21 @@ public class cmd_delrank extends PowerCommand {
 	public cmd_delrank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
 		if (args.length == 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
-			
-			boolean commandAllowed = sender.hasPermission("powerranks.cmd.cmd_delrank");
+
+			boolean commandAllowed = false;
 			if (sender instanceof Player) {
 				for (PRPermission permission : PowerRanks.getInstance()
 						.getEffectivePlayerPermissions((Player) sender)) {
-					if (permission.getName().equalsIgnoreCase("powerranks.cmd.cmd_delrank." + target_rank)) {
+					if (permission.getName()
+							.equalsIgnoreCase("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank)) {
 						commandAllowed = permission.getValue();
 						break;
 					}
@@ -47,11 +52,36 @@ public class cmd_delrank extends PowerCommand {
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.removeRank(rank.getName());
 
-					Messages.messageDelRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".success-executor"),
+							ImmutableMap.<String, String>builder()
+									.put("player", targetPlayer.getName())
+									.put("rank", rank.getName())
+									.build(),
+							'[', ']'));
+
 					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-						Messages.messageDelRankSuccessTarget(Bukkit.getPlayer(targetPlayer.getUUID()), sender.getName(),
-								rank.getName());
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager().getFormattedMessage(
+										"commands." + commandName.toLowerCase() + ".success-receiver"),
+								ImmutableMap.<String, String>builder()
+										.put("player", sender.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
 					}
+				} else {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".failed-executor"),
+							ImmutableMap.<String, String>builder()
+									.put("player", targetPlayer.getName())
+									.put("rank", rank.getName())
+									.build(),
+							'[', ']'));
 				}
 				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
 				// target_rank, true);
@@ -60,11 +90,9 @@ public class cmd_delrank extends PowerCommand {
 				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
-			if (sender.hasPermission("powerranks.cmd.cmd_delrank") || sender.hasPermission("powerranks.cmd.cmd_delrank.*")) {
-				Messages.messageCommandUsageDel(sender);
-			} else {
-				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
-			}
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

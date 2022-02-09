@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,8 +12,8 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 
 public class cmd_addplayerperm extends PowerCommand {
 
@@ -20,31 +22,47 @@ public class cmd_addplayerperm extends PowerCommand {
 	public cmd_addplayerperm(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.addplayerperm")) {
-			if (args.length == 2) {
-				final String target_player = args[0];
-				String permission = args[1];
-				boolean allowed = true;
-				// this.setValue(!name.startsWith("-"));
-				if (permission.startsWith("-")) {
-					permission = permission.replaceFirst("-", "");
-					allowed = false;
-				}
-				final boolean result = this.users.addPlayerPermission(target_player, permission, allowed);
-				if (result) {
-					Messages.messageCommandPlayerPermissionAdded(sender, permission, target_player);
-				} else {
-					Messages.messageErrorAddingPlayerPermission(sender, target_player, permission);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String target_player = args[0];
+			String permission = args[1];
+			boolean allowed = true;
+			// this.setValue(!name.startsWith("-"));
+			if (permission.startsWith("-")) {
+				permission = permission.replaceFirst("-", "");
+				allowed = false;
+			}
+			final boolean result = this.users.addPlayerPermission(target_player, permission, allowed);
+			if (result) {
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("target", target_player)
+								.put("permission", permission)
+								.build(),
+						'[', ']'));
 			} else {
-				Messages.messageCommandUsageAddplayerperm(sender);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("target", target_player)
+								.put("permission", permission)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

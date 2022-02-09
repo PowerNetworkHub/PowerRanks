@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -9,8 +11,8 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 
 public class cmd_delplayerperm extends PowerCommand {
@@ -20,25 +22,41 @@ public class cmd_delplayerperm extends PowerCommand {
 	public cmd_delplayerperm(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.delplayerperm")) {
-			if (args.length == 2) {
-				final String target_player = args[0];
-				final String permission = args[1];
-				final boolean result = this.users.delPlayerPermission(target_player, permission);
-				if (result) {
-					Messages.messageCommandPlayerPermissionRemoved(sender, permission, target_player);
-				} else {
-					Messages.messageErrorRemovingPlayerPermission(sender, target_player, permission);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String target_player = args[0];
+			final String permission = args[1];
+			final boolean result = this.users.delPlayerPermission(target_player, permission);
+			if (result) {
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("target", target_player)
+								.put("permission", permission)
+								.build(),
+						'[', ']'));
 			} else {
-				Messages.messageCommandUsageDelplayerperm(sender);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("target", target_player)
+								.put("permission", permission)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;
