@@ -57,8 +57,8 @@ public class cmd_setbuycommand extends PowerCommand {
 			}
 		} else {
 			sender.sendMessage(
-					PowerRanks.getLanguageManager().getFormattedMessage(
-							"commands." + commandName.toLowerCase() + ".buy-not-available"));
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

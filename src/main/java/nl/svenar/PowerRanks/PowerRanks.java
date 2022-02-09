@@ -173,6 +173,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Loading language file");
 		oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
 		languageManager = new LanguageManager();
+		languageManager.setLanguage(configManager.getString("general.language", "en"));
 		PowerRanks.log.info("Loading usertags file");
 		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
 

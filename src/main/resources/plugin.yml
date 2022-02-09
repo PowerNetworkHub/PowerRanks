@@ -4,7 +4,7 @@ main: nl.svenar.PowerRanks.PowerRanks
 api-version: 1.13
 authors: [svenar_nl]
 softdepend: [Vault, PlaceholderAPI, TAB, DeluxeTags, NametagEdit]
-load: startup
+load: STARTUP
 website: 'https://powerranks.nl'
 commands:
   powerranks:
@@ -73,21 +73,11 @@ permissions:
     default: op
   powerranks.cmd.deleterank:
     default: op
-  powerranks.cmd.enablebuild:
-    default: op
-  powerranks.cmd.disablebuild:
-    default: op
-  powerranks.cmd.promote:
-    default: op
-  powerranks.cmd.demote:
-    default: op
   powerranks.cmd.renamerank:
     default: op
   powerranks.cmd.setdefaultrank:
     default: op
   powerranks.cmd.factoryreset:
-    default: op
-  powerranks.cmd.gui:
     default: op
   powerranks.cmd.rankup:
     default: true
@@ -113,13 +103,13 @@ permissions:
     default: op
   powerranks.cmd.removeusertag:
     default: op
-  powerranks.cmd.setusertag.player:
+  powerranks.cmd.setusertag:
     default: op
-  powerranks.cmd.setusertag.admin:
+  powerranks.cmd.setusertag.other:
     default: op
-  powerranks.cmd.clearusertag.player:
+  powerranks.cmd.clearusertag:
     default: op
-  powerranks.cmd.clearusertag.admin:
+  powerranks.cmd.clearusertag.other:
     default: op
   powerranks.cmd.listusertags:
     default: op

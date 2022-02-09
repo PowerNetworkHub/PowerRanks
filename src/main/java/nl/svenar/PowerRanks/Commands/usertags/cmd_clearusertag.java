@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.usertags;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -9,8 +11,8 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 
 public class cmd_clearusertag extends PowerCommand {
 
@@ -19,52 +21,80 @@ public class cmd_clearusertag extends PowerCommand {
 	public cmd_clearusertag(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.setusertag") || sender.hasPermission("powerranks.cmd.admin")) {
-			if (args.length == 0) {
-				if (sender.hasPermission("powerranks.cmd.setusertag")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						
-						final String playername = sender.getName();
-						final boolean result = this.users.clearUserTag(playername);
-						if (result) {
-							Messages.messageCommandClearusertagSuccess(sender, playername);
-						} else {
-							Messages.messageCommandClearusertagError(sender, playername);
-						}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 0) {
+			if (!PowerRanks.plugin_hook_deluxetags) {
 
-					} else {
-						Messages.messageUsertagsDisabled(sender);
-					}
+				final String playername = sender.getName();
+				final boolean result = this.users.clearUserTag(playername);
+				if (result) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("target", playername)
+									.build(),
+							'[', ']'));
 				} else {
-					sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("target", playername)
+									.build(),
+							'[', ']'));
 				}
-			} else if (args.length == 1) {
-				if (sender.hasPermission("powerranks.cmd.admin")) {
-					if (!PowerRanks.plugin_hook_deluxetags) {
-						
-						final String playername = args[0];
-						final boolean result = this.users.clearUserTag(playername);
-						if (result) {
-							Messages.messageCommandClearusertagSuccess(sender, playername);
-						} else {
-							Messages.messageCommandClearusertagError(sender, playername);
-						}
 
+			} else {
+				sender.sendMessage(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".disabled"));
+			}
+		} else if (args.length == 1) {
+			if (sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + ".other")) {
+				if (!PowerRanks.plugin_hook_deluxetags) {
+
+					final String playername = args[0];
+					final boolean result = this.users.clearUserTag(playername);
+					if (result) {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager().getFormattedMessage(
+										"commands." + commandName.toLowerCase() + ".success"),
+								ImmutableMap.<String, String>builder()
+										.put("player", sender.getName())
+										.put("target", playername)
+										.build(),
+								'[', ']'));
 					} else {
-						Messages.messageUsertagsDisabled(sender);
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager().getFormattedMessage(
+										"commands." + commandName.toLowerCase() + ".failed"),
+								ImmutableMap.<String, String>builder()
+										.put("player", sender.getName())
+										.put("target", playername)
+										.build(),
+								'[', ']'));
 					}
+
 				} else {
-					sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".disabled"));
 				}
 			} else {
-				Messages.messageCommandUsageClearusertag(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

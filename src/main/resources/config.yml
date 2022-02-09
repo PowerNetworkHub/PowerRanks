@@ -1,4 +1,5 @@
 general:
+  language: en
   autosave-files-interval: 600
   playtime-update-interval: 60
   disable-op: false
