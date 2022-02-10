@@ -18,38 +18,37 @@ public class cmd_setsuffix extends PowerCommand {
 	public cmd_setsuffix(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.setsuffix")) {
-			if (args.length == 1) {
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				final String suffix = "";
-				final boolean result = this.users.setSuffix(rankname, suffix);
-				if (result) {
-					Messages.messageCommandSetSuffix(sender, suffix, rankname);
-				} else {
-					Messages.messageGroupNotFound(sender, rankname);
-				}
-			} else if (args.length >= 2) {
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				String suffix = "";
-				for (int i = 1; i < args.length; i++) {
-					suffix += args[i] + " ";
-				}
-				suffix = suffix.substring(0, suffix.length() - 1);
-				final boolean result = this.users.setSuffix(rankname, suffix);
-				if (result) {
-					Messages.messageCommandSetSuffix(sender, suffix, rankname);
-				} else {
-					Messages.messageGroupNotFound(sender, rankname);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 1) {
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final String suffix = "";
+			final boolean result = this.users.setSuffix(rankname, suffix);
+			if (result) {
+				Messages.messageCommandSetSuffix(sender, suffix, rankname);
 			} else {
-				Messages.messageCommandUsageSetSuffix(sender);
+				Messages.messageGroupNotFound(sender, rankname);
+			}
+		} else if (args.length >= 2) {
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			String suffix = "";
+			for (int i = 1; i < args.length; i++) {
+				suffix += args[i] + " ";
+			}
+			suffix = suffix.substring(0, suffix.length() - 1);
+			final boolean result = this.users.setSuffix(rankname, suffix);
+			if (result) {
+				Messages.messageCommandSetSuffix(sender, suffix, rankname);
+			} else {
+				Messages.messageGroupNotFound(sender, rankname);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

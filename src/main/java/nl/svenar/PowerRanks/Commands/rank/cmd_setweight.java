@@ -20,33 +20,32 @@ public class cmd_setweight extends PowerCommand {
 	public cmd_setweight(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.setweight")) {
-			if (args.length == 2) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
 
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				final PRRank rank = CacheManager.getRank(rankname);
-				if (Objects.isNull(rank)) {
-					Messages.messageGroupNotFound(sender, args[0]);
-				}
-
-				int weight = 0;
-				try {
-					weight = Integer.parseInt(args[1]);
-				} catch (Exception e) {
-					Messages.messageErrorNotInt(sender, args[1]);
-				}
-
-				rank.setWeight(weight);
-				Messages.messageCommandWeightSet(sender, weight, rankname);
-			} else {
-				Messages.messageCommandUsageSetWeight(sender);
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final PRRank rank = CacheManager.getRank(rankname);
+			if (Objects.isNull(rank)) {
+				Messages.messageGroupNotFound(sender, args[0]);
 			}
+
+			int weight = 0;
+			try {
+				weight = Integer.parseInt(args[1]);
+			} catch (Exception e) {
+				Messages.messageErrorNotInt(sender, args[1]);
+			}
+
+			rank.setWeight(weight);
+			Messages.messageCommandWeightSet(sender, weight, rankname);
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

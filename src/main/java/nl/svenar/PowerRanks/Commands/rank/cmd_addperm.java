@@ -20,35 +20,34 @@ public class cmd_addperm extends PowerCommand {
 	public cmd_addperm(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.addperm")) {
-			if (args.length == 2) {
-				final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
-				String permission = args[1];
-				boolean allowed = true;
-				// this.setValue(!name.startsWith("-"));
-				if (permission.startsWith("-")) {
-					permission = permission.replaceFirst("-", "");
-					allowed = false;
-				}
-				final boolean result = this.users.addPermission(rankname, permission, allowed);
-				if (result) {
-					if (rankname.equals("*")) {
-						Messages.messageCommandPermissionAddedToAllRanks(sender, permission);
-					} else {
-						Messages.messageCommandPermissionAdded(sender, permission, rankname);
-					}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+			String permission = args[1];
+			boolean allowed = true;
+			// this.setValue(!name.startsWith("-"));
+			if (permission.startsWith("-")) {
+				permission = permission.replaceFirst("-", "");
+				allowed = false;
+			}
+			final boolean result = this.users.addPermission(rankname, permission, allowed);
+			if (result) {
+				if (rankname.equals("*")) {
+					Messages.messageCommandPermissionAddedToAllRanks(sender, permission);
 				} else {
-					Messages.messageErrorAddingPermission(sender, rankname, permission);
+					Messages.messageCommandPermissionAdded(sender, permission, rankname);
 				}
 			} else {
-				Messages.messageCommandUsageAddperm(sender);
+				Messages.messageErrorAddingPermission(sender, rankname, permission);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

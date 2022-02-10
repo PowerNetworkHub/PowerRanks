@@ -18,25 +18,24 @@ public class cmd_renamerank extends PowerCommand {
 	public cmd_renamerank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.renamerank")) {
-			if (args.length == 2) {
-				final String from = this.users.getRankIgnoreCase(args[0]);
-				final String to = args[1];
-				final boolean success = this.users.renameRank(from, to);
-				if (success) {
-					Messages.messageCommandRenameRankSuccess(sender, from);
-				} else {
-					Messages.messageCommandRenameRankError(sender, from);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String from = this.users.getRankIgnoreCase(args[0]);
+			final String to = args[1];
+			final boolean success = this.users.renameRank(from, to);
+			if (success) {
+				Messages.messageCommandRenameRankSuccess(sender, from);
 			} else {
-				Messages.messageCommandUsageDemote(sender);
+				Messages.messageCommandRenameRankError(sender, from);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;
@@ -50,7 +49,7 @@ public class cmd_renamerank extends PowerCommand {
 				tabcomplete.add(rank.getName());
 			}
 		}
-		
+
 		return tabcomplete;
 	}
 }

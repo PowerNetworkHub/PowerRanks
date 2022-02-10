@@ -23,40 +23,38 @@ public class cmd_listpermissions extends PowerCommand {
 	public cmd_listpermissions(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.listpermissions")) {
-			String rankName = "";
-			List<String> ranks = new ArrayList<String>();
-			for (PRRank rank : users.getGroups()) {
-				ranks.add(rank.getName());
-			}
-			if (args.length == 1) {
-				rankName = users.getRankIgnoreCase(args[0]);
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		String rankName = "";
+		List<String> ranks = new ArrayList<String>();
+		for (PRRank rank : users.getGroups()) {
+			ranks.add(rank.getName());
+		}
+		if (args.length == 1) {
+			rankName = users.getRankIgnoreCase(args[0]);
 
-				if (ranks.contains(rankName)) {
-					// Messages.listRankPermissions(sender, s, rankName, 0);
-					displayRankPermissions(sender, rankName, commandLabel, 0);
-				} else {
-					Messages.messageGroupNotFound(sender, args[0]);
-				}
-			} else if (args.length == 2) {
-				rankName = users.getRankIgnoreCase(args[0]);
-				if (ranks.contains(rankName)) {
-					int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
-					// Messages.listRankPermissions(sender, s, rankName, page);
-					displayRankPermissions(sender, rankName, commandLabel, page);
-				} else {
-					Messages.messageGroupNotFound(sender, args[0]);
-				}
+			if (ranks.contains(rankName)) {
+				// Messages.listRankPermissions(sender, s, rankName, 0);
+				displayRankPermissions(sender, rankName, commandLabel, 0);
 			} else {
-				Messages.messageCommandUsageListPermissions(sender);
+				Messages.messageGroupNotFound(sender, args[0]);
 			}
-
+		} else if (args.length == 2) {
+			rankName = users.getRankIgnoreCase(args[0]);
+			if (ranks.contains(rankName)) {
+				int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
+				// Messages.listRankPermissions(sender, s, rankName, page);
+				displayRankPermissions(sender, rankName, commandLabel, page);
+			} else {
+				Messages.messageGroupNotFound(sender, args[0]);
+			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

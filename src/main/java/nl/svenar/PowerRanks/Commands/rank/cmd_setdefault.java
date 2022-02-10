@@ -19,22 +19,21 @@ public class cmd_setdefault extends PowerCommand {
 	public cmd_setdefault(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.setdefault")) {
-			if (args.length == 2) {
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				final boolean isDefault = args[1].equalsIgnoreCase("true");
-				final PRRank rank = CacheManager.getRank(rankname);
-				rank.setDefault(isDefault);
-				Messages.messageCommandSetDefaultRankSuccess(sender, rankname);
-			} else {
-				Messages.messageCommandUsageSetDefault(sender);
-			}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final boolean isDefault = args[1].equalsIgnoreCase("true");
+			final PRRank rank = CacheManager.getRank(rankname);
+			rank.setDefault(isDefault);
+			Messages.messageCommandSetDefaultRankSuccess(sender, rankname);
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

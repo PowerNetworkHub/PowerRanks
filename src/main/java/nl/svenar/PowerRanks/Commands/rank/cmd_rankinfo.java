@@ -13,36 +13,34 @@ import nl.svenar.common.structure.PRRank;
 
 public class cmd_rankinfo extends PowerCommand {
 
-
 	public cmd_rankinfo(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.rankinfo")) {
-			if (args.length == 1) {
-				String target_rank_name = args[0];
-				PRRank target_rank = CacheManager.getRank(target_rank_name);
-				if (target_rank != null) {
-					Messages.messageRankInfo(sender, target_rank, 0);
-				} else {
-					Messages.messageGroupNotFound(sender, target_rank_name);
-				}
-			} else if (args.length == 2) {
-				String target_rank_name = args[0];
-				int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
-				PRRank target_rank = CacheManager.getRank(target_rank_name);
-				if (target_rank != null) {
-					Messages.messageRankInfo(sender, target_rank, page);
-				} else {
-					Messages.messageGroupNotFound(sender, target_rank_name);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 1) {
+			String target_rank_name = args[0];
+			PRRank target_rank = CacheManager.getRank(target_rank_name);
+			if (target_rank != null) {
+				Messages.messageRankInfo(sender, target_rank, 0);
 			} else {
-				Messages.messageCommandUsageRankinfo(sender);
+				Messages.messageGroupNotFound(sender, target_rank_name);
+			}
+		} else if (args.length == 2) {
+			String target_rank_name = args[0];
+			int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
+			PRRank target_rank = CacheManager.getRank(target_rank_name);
+			if (target_rank != null) {
+				Messages.messageRankInfo(sender, target_rank, page);
+			} else {
+				Messages.messageGroupNotFound(sender, target_rank_name);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

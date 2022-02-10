@@ -18,24 +18,23 @@ public class cmd_deleterank extends PowerCommand {
 	public cmd_deleterank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.deleterank")) {
-			if (args.length == 1) {
-				final String rank2 = this.users.getRankIgnoreCase(args[0]);
-				final boolean success = this.users.deleteRank(rank2);
-				if (success) {
-					Messages.messageCommandDeleteRankSuccess(sender, rank2);
-				} else {
-					Messages.messageCommandDeleteRankError(sender, rank2);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 1) {
+			final String rank2 = this.users.getRankIgnoreCase(args[0]);
+			final boolean success = this.users.deleteRank(rank2);
+			if (success) {
+				Messages.messageCommandDeleteRankSuccess(sender, rank2);
 			} else {
-				Messages.messageCommandUsageDeleteRank(sender);
+				Messages.messageCommandDeleteRankError(sender, rank2);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

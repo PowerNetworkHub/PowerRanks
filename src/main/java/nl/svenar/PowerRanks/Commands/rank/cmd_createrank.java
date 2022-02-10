@@ -18,33 +18,33 @@ public class cmd_createrank extends PowerCommand {
 	public cmd_createrank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.createrank")) {
-			if (args.length == 1) {
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				final boolean success = this.users.createRank(rankname);
-				String[] forbiddenColorCharacters = {"&", "#"};
-				String[] forbiddenCharacters = {"`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":", ";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "="};
-				if (success) {
-					Messages.messageCommandCreateRankSuccess(sender, rankname);
-					if (Util.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
-						Messages.messageCommandCreateRankColorCharacterWarning(sender, rankname);
-					}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 1) {
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final boolean success = this.users.createRank(rankname);
+			String[] forbiddenColorCharacters = { "&", "#" };
+			String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":",
+					";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
+			if (success) {
+				Messages.messageCommandCreateRankSuccess(sender, rankname);
+				if (Util.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
+					Messages.messageCommandCreateRankColorCharacterWarning(sender, rankname);
+				}
 
-					if (Util.stringContainsItemFromList(rankname, forbiddenCharacters)) {
-						Messages.messageCommandCreateRankCharacterWarning(sender, rankname);
-					}
-				} else {
-					Messages.messageCommandCreateRankError(sender, rankname);
+				if (Util.stringContainsItemFromList(rankname, forbiddenCharacters)) {
+					Messages.messageCommandCreateRankCharacterWarning(sender, rankname);
 				}
 			} else {
-				Messages.messageCommandUsageCreateRank(sender);
+				Messages.messageCommandCreateRankError(sender, rankname);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

@@ -20,29 +20,28 @@ public class cmd_delperm extends PowerCommand {
 	public cmd_delperm(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.delperm")) {
-			if (args.length == 2) {
-				final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
-				final String permission = args[1];
-				final boolean result = this.users.removePermission(rankname, permission);
-				if (result) {
-					if (rankname.equals("*")) {
-						Messages.messageCommandPermissionRemovedFromAllRanks(sender, permission);
-					} else {
-						Messages.messageCommandPermissionRemoved(sender, permission, rankname);
-					}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+			final String permission = args[1];
+			final boolean result = this.users.removePermission(rankname, permission);
+			if (result) {
+				if (rankname.equals("*")) {
+					Messages.messageCommandPermissionRemovedFromAllRanks(sender, permission);
 				} else {
-					Messages.messageGroupNotFound(sender, rankname);
+					Messages.messageCommandPermissionRemoved(sender, permission, rankname);
 				}
 			} else {
-				Messages.messageCommandUsageDelperm(sender);
+				Messages.messageGroupNotFound(sender, rankname);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;

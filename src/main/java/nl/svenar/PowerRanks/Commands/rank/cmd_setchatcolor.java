@@ -18,25 +18,24 @@ public class cmd_setchatcolor extends PowerCommand {
 	public cmd_setchatcolor(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.setchatcolor")) {
-			if (args.length == 2) {
-				final String rankname = this.users.getRankIgnoreCase(args[0]);
-				final String color = args[1];
-				final boolean result = this.users.setChatColor(rankname, color);
-				if (result) {
-					Messages.messageCommandSetChatColor(sender, color, rankname);
-				} else {
-					Messages.messageGroupNotFound(sender, rankname);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final String color = args[1];
+			final boolean result = this.users.setChatColor(rankname, color);
+			if (result) {
+				Messages.messageCommandSetChatColor(sender, color, rankname);
 			} else {
-				Messages.messageCommandUsageSetChatColor(sender);
+				Messages.messageGroupNotFound(sender, rankname);
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+					"commands." + commandName.toLowerCase() + ".arguments"));
 		}
 
 		return false;
