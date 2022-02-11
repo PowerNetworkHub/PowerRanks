@@ -103,7 +103,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private int TASK_TPS = 20;
 
 	private static PowerConfigManager configManager;
-	private static PowerConfigManager oldLanguageManager;
 	private static LanguageManager languageManager;
 	private static PowerConfigManager usertagManager;
 
@@ -171,7 +170,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("Loading config file");
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
 		PowerRanks.log.info("Loading language file");
-		oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
 		languageManager = new LanguageManager();
 		languageManager.setLanguage(configManager.getString("general.language", "en"));
 		PowerRanks.log.info("Loading usertags file");
@@ -200,15 +198,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log
-				.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
-		PowerRanks.log.info(ChatColor.AQUA + "  ██   ██ ██   ██" + ChatColor.GREEN + "  Running on "
+				.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
+		PowerRanks.log.info(ChatColor.AQUA + "  ██   ██ ██   ██" + ChatColor.GREEN + "  Running on "
 				+ Util.getServerType(getServer()) + " v" + Util.getServerVersion(getServer()));
-		PowerRanks.log.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  Startup time: "
+		PowerRanks.log.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  Startup time: "
 				+ Duration.between(startTime, Instant.now()).toMillis() + "ms");
-		PowerRanks.log.info(ChatColor.AQUA + "  ██      ██   ██" + ChatColor.GREEN + "  Loaded "
+		PowerRanks.log.info(ChatColor.AQUA + "  ██      ██   ██" + ChatColor.GREEN + "  Loaded "
 				+ CacheManager.getRanks().size() + " ranks and " + CacheManager.getPlayers().size() + " players ("
 				+ getConfigManager().getString("storage.type", "yaml").toUpperCase() + ") " + update_available);
-		PowerRanks.log.info(ChatColor.AQUA + "  ██      ██   ██" + ChatColor.RED + "  "
+		PowerRanks.log.info(ChatColor.AQUA + "  ██      ██   ██" + ChatColor.RED + "  "
 				+ (System.getProperty("POWERRANKSRUNNING", "").equals("TRUE")
 						? "Reload detected, why do you hate yourself :C"
 						: ""));
@@ -267,13 +265,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			getConfigManager().save();
 		} else {
 			getLogger().warning("Failed to save configuration file!");
-			hasErrorInSaving = true;
-		}
-
-		if (Objects.nonNull(getOldLanguageManager())) {
-			getOldLanguageManager().save();
-		} else {
-			getLogger().warning("Failed to save old language file!");
 			hasErrorInSaving = true;
 		}
 
@@ -443,8 +434,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				&& getConfigBool("plugin_hook.vault_permissions");
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null
 				&& getConfigBool("plugin_hook.placeholderapi");
-		// boolean has_tab = this.getServer().getPluginManager().getPlugin("TAB") != null
-		// 		&& getConfigBool("plugin_hook.tab");
+		// boolean has_tab = this.getServer().getPluginManager().getPlugin("TAB") !=
+		// null
+		// && getConfigBool("plugin_hook.tab");
 		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null
 				&& getConfigBool("plugin_hook.deluxetags");
 		boolean has_nametagedit = this.getServer().getPluginManager().getPlugin("NametagEdit") != null
@@ -478,10 +470,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		// if (has_tab) {
-		// 	PowerRanks.log.info("TAB found!");
-		// 	PowerRanks.log.warning("TAB INTEGRATION IS EXPERIMENTAL, USE AT YOUR OWN RISK!");
-		// 	plugin_hook_tab = new TABHook();
-		// 	plugin_hook_tab.setup();
+		// PowerRanks.log.info("TAB found!");
+		// PowerRanks.log.warning("TAB INTEGRATION IS EXPERIMENTAL, USE AT YOUR OWN
+		// RISK!");
+		// plugin_hook_tab = new TABHook();
+		// plugin_hook_tab.setup();
 		// }
 
 		if (has_deluxetags) {
@@ -666,7 +659,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.createDir(PowerRanks.fileLoc);
 
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
-		oldLanguageManager = new YAMLConfigManager(PowerRanks.fileLoc, "lang.yml", "lang.yml");
+		languageManager = new LanguageManager();
+		languageManager.setLanguage(configManager.getString("general.language", "en"));
 
 		PowerConfigManager ranksManager = new YAMLConfigManager(PowerRanks.fileLoc, "ranks.yml");
 		PowerConfigManager playersManager = new YAMLConfigManager(PowerRanks.fileLoc, "players.yml");
@@ -1031,10 +1025,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static PowerConfigManager getConfigManager() {
 		return configManager;
-	}
-
-	public static PowerConfigManager getOldLanguageManager() {
-		return oldLanguageManager;
 	}
 
 	public static LanguageManager getLanguageManager() {
