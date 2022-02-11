@@ -31,6 +31,8 @@ plugin_hook:
   placeholderapi: true
   deluxetags: false
   nametagedit: true
+placeholderapi:
+  inject_powerranks_color: false
 announcements:
   rankup:
     enabled: false
