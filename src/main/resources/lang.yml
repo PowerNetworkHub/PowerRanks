@@ -1,7 +1,7 @@
 lang:
    en:
       general:
-         prefix: "&0[&bPR &4BETA&0]&r"
+         prefix: "&0\\[&bPR&0]&r"
          no-permission: "&4You do not have permissions to execute this command!"
          rank-not-found: "&cRank '[rank]' not found!"
          player-not-found: "&cPlayer '[target]' not found!"
