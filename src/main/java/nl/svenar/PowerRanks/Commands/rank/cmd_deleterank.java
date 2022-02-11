@@ -2,13 +2,16 @@ package nl.svenar.PowerRanks.Commands.rank;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_deleterank extends PowerCommand {
@@ -25,16 +28,31 @@ public class cmd_deleterank extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
 		if (args.length == 1) {
-			final String rank2 = this.users.getRankIgnoreCase(args[0]);
-			final boolean success = this.users.deleteRank(rank2);
+			final String rankname = this.users.getRankIgnoreCase(args[0]);
+			final boolean success = this.users.deleteRank(rankname);
 			if (success) {
-				Messages.messageCommandDeleteRankSuccess(sender, rank2);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 			} else {
-				Messages.messageCommandDeleteRankError(sender, rank2);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

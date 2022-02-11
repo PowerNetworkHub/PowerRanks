@@ -81,7 +81,7 @@ public class cmd_haspermission extends PowerCommand {
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments"));
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		if (player != null && permissionNode != null && permissionNode.length() > 0) {

@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
@@ -64,7 +65,7 @@ public class cmd_config extends PowerCommand {
 			} else {
 				sender.sendMessage(
 						PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-								"commands." + commandName.toLowerCase() + ".arguments"));
+								"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			}
 		} else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
@@ -120,12 +121,12 @@ public class cmd_config extends PowerCommand {
 				} else {
 					sender.sendMessage(
 							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-									"commands." + commandName.toLowerCase() + ".arguments"));
+									"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 				}
 			} else {
 				sender.sendMessage(
 						PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-								"commands." + commandName.toLowerCase() + ".arguments"));
+								"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			}
 		} else if (args.length == 3) {
 			if (args[0].equalsIgnoreCase("set")) {
@@ -158,7 +159,7 @@ public class cmd_config extends PowerCommand {
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments"));
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

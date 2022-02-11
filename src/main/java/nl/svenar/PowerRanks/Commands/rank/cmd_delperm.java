@@ -3,13 +3,16 @@ package nl.svenar.PowerRanks.Commands.rank;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRRank;
 
@@ -32,16 +35,41 @@ public class cmd_delperm extends PowerCommand {
 			final boolean result = this.users.removePermission(rankname, permission);
 			if (result) {
 				if (rankname.equals("*")) {
-					Messages.messageCommandPermissionRemovedFromAllRanks(sender, permission);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success-all"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("permission", permission)
+									.build(),
+							'[', ']'));
 				} else {
-					Messages.messageCommandPermissionRemoved(sender, permission, rankname);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("permission", permission)
+									.build(),
+							'[', ']'));
 				}
-			} else {
-				Messages.messageGroupNotFound(sender, rankname);
+			} else { // Rank not found
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.put("permission", permission)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

@@ -2,13 +2,16 @@ package nl.svenar.PowerRanks.Commands.rank;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_setprefix extends PowerCommand {
@@ -29,9 +32,23 @@ public class cmd_setprefix extends PowerCommand {
 			final String prefix = "";
 			final boolean result = this.users.setPrefix(rankname, prefix);
 			if (result) {
-				Messages.messageCommandSetPrefix(sender, prefix, rankname);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success-clear"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.put("prefix", prefix)
+								.build(),
+						'[', ']'));
 			} else {
-				Messages.messageGroupNotFound(sender, rankname);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage("general.rank-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 			}
 		} else if (args.length >= 2) {
 			final String rankname = this.users.getRankIgnoreCase(args[0]);
@@ -42,13 +59,29 @@ public class cmd_setprefix extends PowerCommand {
 			prefix = prefix.substring(0, prefix.length() - 1);
 			final boolean result = this.users.setPrefix(rankname, prefix);
 			if (result) {
-				Messages.messageCommandSetPrefix(sender, prefix, rankname);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.put("prefix", prefix)
+								.build(),
+						'[', ']'));
 			} else {
-				Messages.messageGroupNotFound(sender, rankname);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"general.rank-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

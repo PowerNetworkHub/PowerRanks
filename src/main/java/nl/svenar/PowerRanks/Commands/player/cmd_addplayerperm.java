@@ -62,7 +62,7 @@ public class cmd_addplayerperm extends PowerCommand {
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments"));
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

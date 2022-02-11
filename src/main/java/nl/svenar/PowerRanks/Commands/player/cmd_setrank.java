@@ -101,8 +101,9 @@ public class cmd_setrank extends PowerCommand {
 		} else {
 			if (sender.hasPermission("powerranks.cmd." + commandName.toLowerCase())
 					|| sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + ".*")) {
-				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-						"commands." + commandName.toLowerCase() + ".arguments"));
+						sender.sendMessage(
+								PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+										"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			} else {
 				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}

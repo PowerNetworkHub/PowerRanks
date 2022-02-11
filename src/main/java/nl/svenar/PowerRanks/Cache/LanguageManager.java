@@ -1,5 +1,10 @@
 package nl.svenar.PowerRanks.Cache;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.provided.YAMLConfigManager;
@@ -23,16 +28,47 @@ public class LanguageManager {
     }
 
     /**
+     * Get a list of keys for the given path
+     * 
+     * @param path
+     * @return List of found keys
+     */
+    public List<String> getKeys(String path) {
+        path = "lang." + this.language + "." + path;
+
+        List<String> keys = new ArrayList<String>();
+
+        for (Entry<?, ?> entry : this.languageManager.getMap(path, new HashMap<String, String>()).entrySet()) {
+            keys.add(String.valueOf(entry.getKey()));
+        }
+
+        return keys;
+    }
+
+    /**
      * Get a message from the language cache in a specific language.
      * 
      * @param path
-     * @return Unformatted message
+     * @return Unformatted message with plugin prefix
      */
     public String getMessage(String path) {
         path = "lang." + this.language + "." + path;
         String output = this.languageManager.getString(path);
         output = output == null ? path : output;
         output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + output;
+        return output;
+    }
+
+    /**
+     * Get a message from the language cache in a specific language.
+     * 
+     * @param path
+     * @return Unformatted message
+     */
+    public String getUnformattedMessage(String path) {
+        path = "lang." + this.language + "." + path;
+        String output = this.languageManager.getString(path);
+        output = output == null ? path : output;
         return output;
     }
 
@@ -47,16 +83,16 @@ public class LanguageManager {
         return PowerRanks.chatColor(getMessage(path), true);
     }
 
-    public String getUsageMessage(String commandLabel, String commandName, String path) {
+    public String getUsageMessage(String commandLabel, String commandName, String path, boolean isPlayer) {
         path = "lang." + this.language + "." + path;
         String output = this.languageManager.getString(path);
         output = output == null ? path : output;
-        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + commandLabel + " " + commandName + " " + output;
+        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
         return output;
     }
 
-    public String getFormattedUsageMessage(String commandLabel, String commandName, String path) {
-        return PowerRanks.chatColor(getUsageMessage(commandLabel, commandName, path), true);
+    public String getFormattedUsageMessage(String commandLabel, String commandName, String path, boolean isPlayer) {
+        return PowerRanks.chatColor(getUsageMessage(commandLabel, commandName, path, isPlayer), true);
     }
 
     /**

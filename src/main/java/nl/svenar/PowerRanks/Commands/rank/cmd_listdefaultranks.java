@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
@@ -47,8 +48,9 @@ public class cmd_listdefaultranks extends PowerCommand {
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
 					+ ChatColor.BLUE + "===");
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

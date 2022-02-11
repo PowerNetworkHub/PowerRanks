@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
@@ -34,7 +35,7 @@ public class cmd_factoryreset extends PowerCommand {
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments"));
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

@@ -151,19 +151,30 @@ lang:
             arguments: "<rank_name> <inheritance_rank_name>"
             description: "Remove a inheritance from a rank"
             success: "&aInheritance [inheritance] removed from rank: [rank]"
-            
          addperm:
             arguments: "<rank_name> <permission.node> [allowed]"
             description: "Add a permission to a rank"
+            success: "&aPermission [permission] added to rank: [rank]"
+            success-all: "&aPermission [permission] added to all ranks"
+            failed: "&cFailed to add the permission [permission] to [rank]"
          delperm:
             arguments: "<rank_name> <permission.node>"
             description: "Remove a permission from a rank"
+            success: "&aPermission [permission] removed from rank: [rank]"
+            success-all: "&aPermission [permission] removed from all ranks"
+            failed: "&cFailed to remove the permission [permission] from [rank]"
          createrank:
             arguments: "<rank_name>"
             description: "Create a new rank"
+            success: "&aRank [rank] created"
+            warning-color: "&cWarning the created rank contains characters related to colors, if this is intended you can ignore this message. Color codes in the rank name do not work, change the prefix instead."
+            warning-character: "&cWarning the created rank contains special characters, if this is intended you can ignore this message."
+            failed: "&cCould not create rank [rank]"
          deleterank:
             arguments: "<rank_name>"
             description: "Delete a rank"
+            success: "&aRank [rank] deleted"
+            failed: "&cCould not delete rank [rank]"
          listdefaultranks:
             arguments: ""
             description: "List all default ranks new players get"
@@ -179,25 +190,36 @@ lang:
          renamerank:
             arguments: "<rank_name> <new_rank_name>"
             description: "Rename a rank"
+            succes: "&aRank [rank] renamed to [new_rank]!"
+            failed: "&cFailed to rename rank [rank] to [new_rank]!"
          setchatcolor:
             arguments: "<rank_name> <color_code>"
             description: "Change the chat color of a rank"
+            success: "&aChanged chat color to '[color]'' on rank [rank]"
          setnamecolor:
             arguments: "<rank_name> <color_code>"
             description: "Change the name color of a rank"
+            success: "&aChanged name color to '[color]'' on rank [rank]"
          setdefault:
             arguments: "<rank_name> <true/false>"
             description: "Set the default rank for new players"
+            success-added: "&aAdded [rank] as default for new players"
+            success-removed: "&aRemoved [rank] as default for new players"
          setprefix:
             arguments: "<rank_name> <new ... prefix>"
             description: "Change the prefix of a rank"
+            succes: "&aChanged prefix to '[prefix]' on rank: [rank]"
+            succes-clear: "&aCleared the prefix on rank: [rank]"
          setsuffix:
             arguments: "<rank_name> <new ... suffix>"
             description: "Change the suffix of a rank"
+            succes: "&aChanged suffix to '[suffix]' on rank: [rank]"
+            succes-clear: "&aCleared the suffix on rank: [rank]"
          setweight:
             arguments: "<rank_name> <number>"
-            description: "Change the weight of the rank for permission handeling. Height weight equals more priority."
-
+            description: "Change the weight of the rank for permission handeling. Higher weight equals more priority."
+            success: "&aThe weight of rank [rank] has been changed to: [weight]"
+            numbers-only: "&cOnly numbers are allowed!"
          clearusertag:
             arguments: "[player_name] <tag_name>"
             description: "Remove a user tag"

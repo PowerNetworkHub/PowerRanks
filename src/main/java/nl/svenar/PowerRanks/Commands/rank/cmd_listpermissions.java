@@ -3,6 +3,8 @@ package nl.svenar.PowerRanks.Commands.rank;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
@@ -41,7 +42,14 @@ public class cmd_listpermissions extends PowerCommand {
 				// Messages.listRankPermissions(sender, s, rankName, 0);
 				displayRankPermissions(sender, rankName, commandLabel, 0);
 			} else {
-				Messages.messageGroupNotFound(sender, args[0]);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"general.rank-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", args[0])
+								.build(),
+						'[', ']'));
 			}
 		} else if (args.length == 2) {
 			rankName = users.getRankIgnoreCase(args[0]);
@@ -50,11 +58,19 @@ public class cmd_listpermissions extends PowerCommand {
 				// Messages.listRankPermissions(sender, s, rankName, page);
 				displayRankPermissions(sender, rankName, commandLabel, page);
 			} else {
-				Messages.messageGroupNotFound(sender, args[0]);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"general.rank-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", args[0])
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

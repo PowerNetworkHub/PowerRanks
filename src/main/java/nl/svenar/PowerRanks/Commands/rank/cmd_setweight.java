@@ -3,14 +3,17 @@ package nl.svenar.PowerRanks.Commands.rank;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_setweight extends PowerCommand {
@@ -31,21 +34,45 @@ public class cmd_setweight extends PowerCommand {
 			final String rankname = this.users.getRankIgnoreCase(args[0]);
 			final PRRank rank = CacheManager.getRank(rankname);
 			if (Objects.isNull(rank)) {
-				Messages.messageGroupNotFound(sender, args[0]);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"general.rank-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 			}
 
 			int weight = 0;
 			try {
 				weight = Integer.parseInt(args[1]);
 			} catch (Exception e) {
-				Messages.messageErrorNotInt(sender, args[1]);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".numbers-only"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.put("weight", args[1])
+								.build(),
+						'[', ']'));
 			}
 
 			rank.setWeight(weight);
-			Messages.messageCommandWeightSet(sender, weight, rankname);
+			sender.sendMessage(Util.powerFormatter(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".success"),
+					ImmutableMap.<String, String>builder()
+							.put("player", sender.getName())
+							.put("rank", rankname)
+							.put("weight", String.valueOf(weight))
+							.build(),
+					'[', ']'));
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

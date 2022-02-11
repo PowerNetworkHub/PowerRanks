@@ -2,12 +2,14 @@ package nl.svenar.PowerRanks.Commands.rank;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 
@@ -31,20 +33,49 @@ public class cmd_createrank extends PowerCommand {
 			String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":",
 					";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
 			if (success) {
-				Messages.messageCommandCreateRankSuccess(sender, rankname);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 				if (Util.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
-					Messages.messageCommandCreateRankColorCharacterWarning(sender, rankname);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".warning-color"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.build(),
+							'[', ']'));
 				}
 
 				if (Util.stringContainsItemFromList(rankname, forbiddenCharacters)) {
-					Messages.messageCommandCreateRankCharacterWarning(sender, rankname);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".warning-character"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.build(),
+							'[', ']'));
 				}
 			} else {
-				Messages.messageCommandCreateRankError(sender, rankname);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

@@ -1,7 +1,7 @@
 package nl.svenar.PowerRanks.Commands.core;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,9 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.LanguageManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Util.Util;
-import nl.svenar.common.storage.PowerConfigManager;
 
 public class cmd_help extends PowerCommand {
 
@@ -21,7 +21,6 @@ public class cmd_help extends PowerCommand {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
 		String tellrawbase = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\"},{\"text\":\"/%cmd% %arg%\",\"color\":\"%color_command_allowed%\",\"clickEvent\":{\"action\":\"suggest_command\",\"value\":\"/%cmd% %arg%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"/%cmd% %arg%\"}},{\"text\":\"]\",\"color\":\"black\"},{\"text\":\" %help%\",\"color\":\"dark_green\"}]";
@@ -44,9 +43,9 @@ public class cmd_help extends PowerCommand {
 
 		ArrayList<String> help_messages = new ArrayList<String>();
 
-		PowerConfigManager languageManager = PowerRanks.getOldLanguageManager();
-		HashMap<String, String> lines = (HashMap<String, String>) languageManager.getMap("commands.help",
-				new HashMap<String, String>());
+		LanguageManager languageManager = PowerRanks.getLanguageManager();
+		// PowerConfigManager languageManager = PowerRanks.getOldLanguageManager();
+		List<String> lines = languageManager.getKeys("commands");
 
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = lines.size() / lines_per_page;
@@ -88,11 +87,10 @@ public class cmd_help extends PowerCommand {
 			}
 
 			int line_index = 0;
-			for (String section : lines.keySet()) {
+			for (String section : lines) {
 				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-					String help_command = languageManager.getString("commands.help." + section + ".command", "");
-					String help_description = languageManager.getString("commands.help." + section + ".description",
-							"");
+					String help_command = section + " " + languageManager.getUnformattedMessage("commands." + section + ".arguments");
+					String help_description = languageManager.getUnformattedMessage("commands." + section + ".description");
 					if (sender instanceof Player) {
 						help_messages.add(tellrawbase.replaceAll("%arg%", help_command)
 								.replaceAll("%help%", help_description).replaceAll("%player%", sender.getName())

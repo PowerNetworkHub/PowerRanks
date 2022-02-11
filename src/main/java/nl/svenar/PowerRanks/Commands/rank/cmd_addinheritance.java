@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
@@ -44,7 +45,7 @@ public class cmd_addinheritance extends PowerCommand {
 			} else {
 				sender.sendMessage(Util.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
-								"commands." + commandName.toLowerCase() + ".group-not-found"),
+								"general.rank-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())
 								.put("rank", CacheManager.getRank(rankname) == null ? rankname : inheritance)
@@ -52,8 +53,9 @@ public class cmd_addinheritance extends PowerCommand {
 						'[', ']'));
 			}
 		} else {
-			sender.sendMessage(PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-					"commands." + commandName.toLowerCase() + ".arguments"));
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

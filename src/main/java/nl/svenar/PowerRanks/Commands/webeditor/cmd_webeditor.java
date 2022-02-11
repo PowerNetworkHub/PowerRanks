@@ -57,20 +57,20 @@ public class cmd_webeditor extends PowerCommand {
 					} else {
 						sender.sendMessage(
 								PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-										"commands." + commandName.toLowerCase() + ".arguments"));
+										"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 					}
 					break;
 				default:
 					sender.sendMessage(
 							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-									"commands." + commandName.toLowerCase() + ".arguments"));
+									"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 					break;
 			}
 
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments"));
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

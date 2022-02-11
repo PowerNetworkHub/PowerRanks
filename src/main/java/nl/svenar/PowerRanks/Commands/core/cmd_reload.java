@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
@@ -27,7 +28,7 @@ public class cmd_reload extends PowerCommand {
 		if (args.length != 1) {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments"));
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		} else {
 			if (args[0].equalsIgnoreCase("config")) {
 
@@ -98,7 +99,7 @@ public class cmd_reload extends PowerCommand {
 			} else {
 				sender.sendMessage(
 						PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-								"commands." + commandName.toLowerCase() + ".arguments"));
+								"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			}
 		}
 
