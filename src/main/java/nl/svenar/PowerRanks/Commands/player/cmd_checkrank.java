@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -10,18 +11,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
-import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 
 public class cmd_checkrank extends PowerCommand {
 
-	private Users users;
-
 	public cmd_checkrank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
-		this.users = new Users(plugin);
 		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
@@ -30,8 +27,28 @@ public class cmd_checkrank extends PowerCommand {
 			String[] args) {
 		if (args.length == 0) {
 			if (sender instanceof Player) {
-				String rankname = this.users.getPrimaryRank((Player) sender);
-				Messages.messageCommandCheckrankResponse(sender, sender.getName(), rankname);
+				// String rankname = this.users.getPrimaryRank();
+				List<String> playerRanks = CacheManager.getPlayer(((Player) sender).getUniqueId().toString())
+						.getRanks();
+				if (playerRanks.size() > 0) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage("commands." + commandName.toLowerCase() + ".success-self"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("ranks", String.join(", ", playerRanks))
+									.build(),
+							'[', ']'));
+				} else {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".success-self-none"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.build(),
+							'[', ']'));
+				}
 			} else {
 				sender.sendMessage(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.console-is-no-player"));
@@ -39,11 +56,28 @@ public class cmd_checkrank extends PowerCommand {
 		} else if (args.length == 1) {
 			Player targetPlayer = Util.getPlayerByName(args[0]);
 			if (targetPlayer != null) {
-				String rankname = this.users.getPrimaryRank(targetPlayer);
-				if (rankname.length() > 0) {
-					Messages.messageCommandCheckrankResponse(sender, targetPlayer.getName(), rankname);
+				List<String> playerRanks = CacheManager.getPlayer(targetPlayer.getUniqueId().toString())
+						.getRanks();
+				if (playerRanks.size() > 0) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage("commands." + commandName.toLowerCase() + ".success-target"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("target", targetPlayer.getName())
+									.put("ranks", String.join(", ", playerRanks))
+									.build(),
+							'[', ']'));
 				} else {
-					Messages.messageCommandCheckrankResponse(sender, targetPlayer.getName());
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".success-target-none"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("target", targetPlayer.getName())
+									.build(),
+							'[', ']'));
 				}
 			} else {
 				sender.sendMessage(Util.powerFormatter(

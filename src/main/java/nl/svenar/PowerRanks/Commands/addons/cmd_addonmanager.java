@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.addons;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,6 +12,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.DownloadableAddon;
 
 public class cmd_addonmanager extends PowerCommand {
@@ -29,13 +32,25 @@ public class cmd_addonmanager extends PowerCommand {
 			String addonmanagerCommand = args[0].toLowerCase();
 			if (addonmanagerCommand.equals("acceptterms")) {
 				PowerRanks.getConfigManager().setBool("addon_manager.accepted_terms", true);
-				Messages.addonManagerTermsAccepted(sender);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".terms-accepted"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.build(),
+						'[', ']'));
 				Bukkit.getServer().dispatchCommand(sender, commandLabel + " addonmanager");
 			}
 
 			if (addonmanagerCommand.equals("declineterms")) {
 				PowerRanks.getConfigManager().setBool("addon_manager.accepted_terms", false);
-				Messages.addonManagerTermsDeclined(sender);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".terms-declined"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.build(),
+						'[', ']'));
 			}
 
 			if (addonmanagerCommand.equals("page")) {
@@ -62,15 +77,42 @@ public class cmd_addonmanager extends PowerCommand {
 				if (addon.isDownloadable()) {
 					if (addon.isCompatible()) {
 						if (addon.download()) {
-							Messages.addonManagerDownloadComplete(sender, addon.getName());
+
+							sender.sendMessage(Util.powerFormatter(
+									PowerRanks.getLanguageManager().getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".download-complete"),
+									ImmutableMap.<String, String>builder()
+											.put("player", sender.getName())
+											.put("addon", addon.getName())
+											.build(),
+									'[', ']'));
 						} else {
-							Messages.addonManagerDownloadFailed(sender, addon.getName());
+							sender.sendMessage(Util.powerFormatter(
+									PowerRanks.getLanguageManager().getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".download-failed"),
+									ImmutableMap.<String, String>builder()
+											.put("player", sender.getName())
+											.put("addon", addon.getName())
+											.build(),
+									'[', ']'));
 						}
 					} else {
-						Messages.addonManagerDownloadNotAvailable(sender);
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager().getFormattedMessage(
+										"commands." + commandName.toLowerCase() + ".download-incompatible"),
+								ImmutableMap.<String, String>builder()
+										.put("player", sender.getName())
+										.build(),
+								'[', ']'));
 					}
 				} else {
-					Messages.addonManagerDownloadNotAvailable(sender);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".download-not-available"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.build(),
+							'[', ']'));
 				}
 			}
 
@@ -88,9 +130,23 @@ public class cmd_addonmanager extends PowerCommand {
 
 				if (addon != null) {
 					addon.uninstall();
-					Messages.addonManagerUninstallComplete(sender, addon.getName());
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".uninstall-complete"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("addon", addon.getName())
+									.build(),
+							'[', ']'));
 				} else {
-					Messages.messageCommandErrorAddonNotFound(sender, args[1]);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed-addon-not-found"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("addon", args[1])
+									.build(),
+							'[', ']'));
 				}
 			}
 		}

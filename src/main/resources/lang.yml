@@ -6,6 +6,12 @@ lang:
          rank-not-found: "&cRank '[rank]' not found!"
          player-not-found: "&cPlayer '[target]' not found!"
          console-is-no-player: "&cThe console is not a player and has no ranks!"
+      messages:
+         signs:
+            created: "&aNew sign command created"
+            unknown-command: "&cUnknown sign command"
+         usertags:
+            not-found: "&cUsertag [usertag] not found!"
       commands:
          addoninfo:
             arguments: "<addon_name>"
@@ -14,6 +20,14 @@ lang:
          addonmanager:
             arguments: ""
             description: "Manage the PowerRanks add-ons"
+            failed-addon-not-found: "&cAn add-on called [addon] does not exist"
+            terms-accepted: "&aAdd-on manager terms accepted!"
+            terms-declined: "&cAdd-on manager terms declined, to use the add-on manager please accept the terms"
+            download-not-available: "&cThis add-on can't be downloaded right now"
+            download-incompatible: "&cThis add-on is incompatible with the currently installed PowerRanks version"
+            download-complete: "&aSuccessfully downloaded add-on: [addon]. Do '/pr addoninfo [addon]' for more info"
+            download-failed: "&cDownload failed for add-on: [addon]"
+            uninstall-complete: "&aSuccessfully uninstalled add-on: [addon]"
          listaddons:
             arguments: ""
             description: "List all installed add-ons"
@@ -124,6 +138,10 @@ lang:
          checkrank:
             arguments: "<player_name>"
             description: "Check someone's rank"
+            success-self: "&aYour ranks are: [ranks]"
+            success-self-none: "&eYou have no ranks"
+            success-target: "&a[target]'s ranks are: [ranks]"
+            success-target-none: "&e[target] has no ranks"
          addplayerperm:
             arguments: "<player_name> <permission.node> [allowed]"
             description: "Add a permission to a player"
@@ -236,7 +254,6 @@ lang:
             arguments: "<tag_name> <text>"
             description: "Edit a user tag"
             disabled: "&cCan't edit a usertag. Usertags are disabled!"
-            not-found: "&cUsertag [usertag] not found!"
             success: "&aUsertag [usertag] successfully changed to value: [text]"
             failed: "&cFailed to edit [usertag] to value: [text]"
          listusertags:
