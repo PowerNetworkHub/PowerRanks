@@ -607,7 +607,10 @@ public class Users implements Listener {
 
 	public List<String> getBuyableRanks(String rankname) {
 		List<String> ranks = new ArrayList<String>();
-		ranks = CacheManager.getRank(rankname).getBuyableRanks();
+		PRRank rank = CacheManager.getRank(rankname);
+		if (rank != null) {
+			ranks = rank.getBuyableRanks();
+		}
 		return ranks;
 	}
 
