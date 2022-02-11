@@ -125,18 +125,18 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		}
 
 		if (identifier.equals("prefix")) {
-			return PowerRanks.chatColor(users.getPrefix(player), true) + ChatColor.RESET;
+			return users.getPrefix(player) + ChatColor.RESET;
 		}
 
 		if (identifier.equals("suffix")) {
-			return ChatColor.RESET + PowerRanks.chatColor(users.getSuffix(player), true);
+			return ChatColor.RESET + users.getSuffix(player);
 		}
 
 		if (identifier.equals("subrankprefix")) {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> prefixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
-				prefixes.add(PowerRanks.chatColor(rank.getPrefix(), true) + ChatColor.RESET);
+				prefixes.add(rank.getPrefix() + ChatColor.RESET);
 			}
 			return String.join(",", prefixes);
 		}
@@ -145,7 +145,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> prefixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
-				prefixes.add(ChatColor.RESET + PowerRanks.chatColor(rank.getSuffix(), true));
+				prefixes.add(ChatColor.RESET + rank.getSuffix());
 			}
 			return String.join(",", prefixes);
 		}
@@ -167,21 +167,19 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 
 		if (identifier.equals("primary_prefix")) {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
-			return playerRanks.size() > 0 ? PowerRanks.chatColor(playerRanks.get(0).getPrefix(), true) + ChatColor.RESET
-					: "";
+			return playerRanks.size() > 0 ? playerRanks.get(0).getPrefix() + ChatColor.RESET : "";
 		}
 
 		if (identifier.equals("primary_suffix")) {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
-			return playerRanks.size() > 0 ? ChatColor.RESET + PowerRanks.chatColor(playerRanks.get(0).getSuffix(), true)
-					: "";
+			return playerRanks.size() > 0 ? ChatColor.RESET + playerRanks.get(0).getSuffix() : "";
 		}
 
 		if (identifier.equals("prefixes")) {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> prefixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
-				prefixes.add(PowerRanks.chatColor(rank.getPrefix(), true) + ChatColor.RESET);
+				prefixes.add(rank.getPrefix() + ChatColor.RESET);
 			}
 			return String.join(",", prefixes);
 		}
@@ -190,23 +188,23 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> prefixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
-				prefixes.add(ChatColor.RESET + PowerRanks.chatColor(rank.getSuffix(), true));
+				prefixes.add(ChatColor.RESET + rank.getSuffix());
 			}
 			return String.join(",", prefixes);
 		}
 
 		if (identifier.equals("chatcolor")) {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
-			return playerRanks.size() > 0 ? PowerRanks.chatColor(playerRanks.get(0).getChatcolor(), true) : "";
+			return playerRanks.size() > 0 ? playerRanks.get(0).getChatcolor() : "";
 		}
 
 		if (identifier.equals("namecolor")) {
 			List<PRRank> playerRanks = getPlayerRanksSorted(player);
-			return playerRanks.size() > 0 ? PowerRanks.chatColor(playerRanks.get(0).getNamecolor(), true) : "";
+			return playerRanks.size() > 0 ? playerRanks.get(0).getNamecolor() : "";
 		}
 
 		if (identifier.equals("usertag")) {
-			return PowerRanks.chatColor(users.getUserTagValue(player), true);
+			return users.getUserTagValue(player);
 		}
 
 		if (identifier.equals("world")) {
