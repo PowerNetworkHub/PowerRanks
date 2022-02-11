@@ -87,7 +87,7 @@ public class Util {
 			if (endIdx == -1)
 				break;
 
-			if (text.charAt(startIdx - 1) != '\\') {
+			if (startIdx < 2 || text.charAt(startIdx - 1) != '\\') {
 				result.append(text.substring(textIdx, startIdx));
 				textIdx = endIdx + 1;
 				String value = values.get(text.substring(startIdx + 1, endIdx));
@@ -102,7 +102,16 @@ public class Util {
 					textIdx++; // Skip space after placeholder
 				}
 			} else {
-				result.append(text.substring(textIdx, endIdx + 1).replaceFirst("\\\\", ""));
+				String unformatted = text.substring(textIdx, endIdx + 1).replaceFirst("\\\\", "");
+				if (unformatted.length() > 1) {
+					String replaceText = text.substring(startIdx, endIdx + 1);
+					String baseText = text.substring(startIdx, startIdx + 1);
+					String endText = text.substring(endIdx + 1, endIdx + 1);
+					String formattedReplacement = baseText + powerFormatter(text.substring(startIdx + 1, endIdx + 1), values, openChar, closeChar) + endText;
+
+					unformatted = unformatted.replace(replaceText, formattedReplacement);
+				}
+				result.append(unformatted);
 				textIdx = endIdx + 1;
 			}
 		}
@@ -116,14 +125,6 @@ public class Util {
 	}
 
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
-		// final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) +
-		// "config" + ".yml");
-		// final YamlConfiguration configYaml = new YamlConfiguration();
-		// try {
-		// configYaml.load(configFile);
-		// } catch (IOException | InvalidConfigurationException e) {
-		// e.printStackTrace();
-		// }
 		return sign_header.toLowerCase().contains("powerranks")
 				&& PowerRanks.getConfigManager().getBool("signs.enabled", false);
 	}
