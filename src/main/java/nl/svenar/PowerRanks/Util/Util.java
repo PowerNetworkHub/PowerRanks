@@ -21,43 +21,43 @@ import nl.svenar.PowerRanks.PowerRanks;
 public class Util {
 
 	public static String getServerVersion(Server server) {
-        try {
-            Matcher matcher = Pattern.compile("\\d{1,3}.\\d{1,3}.\\d{1,3}").matcher(server.getVersion());
+		try {
+			Matcher matcher = Pattern.compile("\\d{1,3}.\\d{1,3}.\\d{1,3}").matcher(server.getVersion());
 
-            List<String> results = new ArrayList<String>();
-            while (matcher.find()) {
-                if (matcher.groupCount() > 0) {
-                    results.add(matcher.group(1));
-                } else {
-                    results.add(matcher.group());
-                }
-            }
+			List<String> results = new ArrayList<String>();
+			while (matcher.find()) {
+				if (matcher.groupCount() > 0) {
+					results.add(matcher.group(1));
+				} else {
+					results.add(matcher.group());
+				}
+			}
 
-            return results.get(0);
-        } catch (Exception e) {
-            return "Unknown";
-        }
-    }
-
-    public static String getServerType(Server server) {
-        try {
-            Matcher matcher = Pattern.compile("-\\w{1,32}-").matcher(server.getVersion());
-
-            List<String> results = new ArrayList<String>();
-            while (matcher.find()) {
-                if (matcher.groupCount() > 0) {
-                    results.add(matcher.group(1));
-                } else {
-                    results.add(matcher.group());
-                }
-            }
-
-            return results.get(0).replaceAll("-", "");
-        } catch (Exception e) {
-            return "Unknown";
-        }
+			return results.get(0);
+		} catch (Exception e) {
+			return "Unknown";
+		}
 	}
-	
+
+	public static String getServerType(Server server) {
+		try {
+			Matcher matcher = Pattern.compile("-\\w{1,32}-").matcher(server.getVersion());
+
+			List<String> results = new ArrayList<String>();
+			while (matcher.find()) {
+				if (matcher.groupCount() > 0) {
+					results.add(matcher.group(1));
+				} else {
+					results.add(matcher.group());
+				}
+			}
+
+			return results.get(0).replaceAll("-", "");
+		} catch (Exception e) {
+			return "Unknown";
+		}
+	}
+
 	public static String replaceAll(String source, String key, String value) {
 		String[] split = source.split(Pattern.quote(key));
 		if (split.length > 0) {
@@ -87,19 +87,23 @@ public class Util {
 			if (endIdx == -1)
 				break;
 
-			result.append(text.substring(textIdx, startIdx));
-			textIdx = endIdx + 1;
-			String value = values.get(text.substring(startIdx + 1, endIdx));
-			// System.out.println(value);
+			if (text.charAt(startIdx - 1) != '\\') {
+				result.append(text.substring(textIdx, startIdx));
+				textIdx = endIdx + 1;
+				String value = values.get(text.substring(startIdx + 1, endIdx));
 
-			if (value != null && !value.isEmpty()) {
-				result.append(value); // Replace placeholder with non-empty value
+				if (value != null && !value.isEmpty()) {
+					result.append(value); // Replace placeholder with non-empty value
 
-			} else if (result.length() != 0 && result.charAt(result.length() - 1) == ' ') {
-				result.setLength(result.length() - 1); // Remove space before placeholder
+				} else if (result.length() != 0 && result.charAt(result.length() - 1) == ' ') {
+					result.setLength(result.length() - 1); // Remove space before placeholder
 
-			} else if (textIdx < text.length() && text.charAt(textIdx) == ' ') {
-				textIdx++; // Skip space after placeholder
+				} else if (textIdx < text.length() && text.charAt(textIdx) == ' ') {
+					textIdx++; // Skip space after placeholder
+				}
+			} else {
+				result.append(text.substring(textIdx, endIdx + 1).replaceFirst("\\\\", ""));
+				textIdx = endIdx + 1;
 			}
 		}
 		result.append(text.substring(textIdx));
@@ -112,18 +116,20 @@ public class Util {
 	}
 
 	public static boolean isPowerRanksSign(PowerRanks main, String sign_header) {
-		// final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) + "config" + ".yml");
+		// final File configFile = new File(String.valueOf(PowerRanks.configFileLoc) +
+		// "config" + ".yml");
 		// final YamlConfiguration configYaml = new YamlConfiguration();
 		// try {
-		// 	configYaml.load(configFile);
+		// configYaml.load(configFile);
 		// } catch (IOException | InvalidConfigurationException e) {
-		// 	e.printStackTrace();
+		// e.printStackTrace();
 		// }
-		return sign_header.toLowerCase().contains("powerranks") && PowerRanks.getConfigManager().getBool("signs.enabled", false);
+		return sign_header.toLowerCase().contains("powerranks")
+				&& PowerRanks.getConfigManager().getBool("signs.enabled", false);
 	}
 
 	public static boolean stringContainsItemFromList(String inputStr, String[] items) {
-	    return Arrays.stream(items).anyMatch(inputStr::contains);
+		return Arrays.stream(items).anyMatch(inputStr::contains);
 	}
 
 	public String getCraftBukkitClassName(String simpleName) {
@@ -161,12 +167,12 @@ public class Util {
 	public static Class<?> obcClass(String className) throws ClassNotFoundException {
 		return Class.forName(obc(className));
 	}
-	
+
 	public static int calculateVersionFromString(String input) {
 		int output = 0;
 		input = input.replaceAll("[a-zA-Z- ]", "");
 		String[] input_split = input.split("\\.");
-		
+
 		String calcString = "1000000";
 		for (int i = 0; i < input_split.length; i++) {
 			if (input_split[i].length() != 0) {
@@ -177,20 +183,20 @@ public class Util {
 				output += num;
 			}
 		}
-		
+
 		return output;
 	}
 
 	public static <T> T[] array_push(T[] arr, T item) {
-        T[] tmp = Arrays.copyOf(arr, arr.length + 1);
-        tmp[tmp.length - 1] = item;
-        return tmp;
-    }
+		T[] tmp = Arrays.copyOf(arr, arr.length + 1);
+		tmp[tmp.length - 1] = item;
+		return tmp;
+	}
 
-    public static <T> T[] array_pop(T[] arr) {
-        T[] tmp = Arrays.copyOf(arr, arr.length - 1);
-        return tmp;
-    }
+	public static <T> T[] array_pop(T[] arr) {
+		T[] tmp = Arrays.copyOf(arr, arr.length - 1);
+		return tmp;
+	}
 
 	public static Player getPlayerByName(String target_player_name) {
 		Player target_player = null;
@@ -204,51 +210,51 @@ public class Util {
 	}
 
 	public static String[] splitStringEvery(String s, int interval) {
-	    int arrayLength = (int) Math.ceil(((s.length() / (double) interval)));
-	    String[] result = new String[arrayLength];
+		int arrayLength = (int) Math.ceil(((s.length() / (double) interval)));
+		String[] result = new String[arrayLength];
 
-	    int j = 0;
-	    int lastIndex = result.length - 1;
-	    for (int i = 0; i < lastIndex; i++) {
-	        result[i] = s.substring(j, j + interval);
-	        j += interval;
-	    }
-	    result[lastIndex] = s.substring(j);
+		int j = 0;
+		int lastIndex = result.length - 1;
+		for (int i = 0; i < lastIndex; i++) {
+			result[i] = s.substring(j, j + interval);
+			j += interval;
+		}
+		result[lastIndex] = s.substring(j);
 
-	    return result;
+		return result;
 	}
 
 	public static URLConnection getURL(String urlString) throws Exception {
-        int MAX_REDIRECTS = 10;
+		int MAX_REDIRECTS = 10;
 
 		URLConnection urlConnection = new URL(urlString).openConnection();
-        String redirect = urlConnection.getHeaderField("Location");
-        for (int i = 0; i < MAX_REDIRECTS ; i++) {
-            if (redirect != null) {
-                urlConnection = new URL(redirect).openConnection();
-                redirect = urlConnection.getHeaderField("Location");
-            } else {
-                break;
-            }
-        }
+		String redirect = urlConnection.getHeaderField("Location");
+		for (int i = 0; i < MAX_REDIRECTS; i++) {
+			if (redirect != null) {
+				urlConnection = new URL(redirect).openConnection();
+				redirect = urlConnection.getHeaderField("Location");
+			} else {
+				break;
+			}
+		}
 
-        return urlConnection;
+		return urlConnection;
 	}
-	
+
 	public static String readUrl(String urlString) throws Exception {
-        String output = "";
+		String output = "";
 
-        URLConnection urlConnection = getURL(urlString);
+		URLConnection urlConnection = getURL(urlString);
 
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            output += line + "\n";
-        }
-        bufferedReader.close();
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+		String line;
+		while ((line = bufferedReader.readLine()) != null) {
+			output += line + "\n";
+		}
+		bufferedReader.close();
 
-        return output;
-    }
+		return output;
+	}
 
 	public static ArrayList<String> generateWildcardList(String permission) {
 		ArrayList<String> output = new ArrayList<String>();
