@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,23 @@ public abstract class PowerConfigManager {
      */
     public boolean isNewFile() {
         return this.hasCreatedFile;
+    }
+
+    /**
+     * Get a list of keys for the given path
+     * 
+     * @param path
+     * @return List of found keys
+     */
+    public List<String> getKeys(String path) {
+
+        List<String> keys = new ArrayList<String>();
+
+        for (Entry<?, ?> entry : this.getMap(path, new HashMap<String, String>()).entrySet()) {
+            keys.add(String.valueOf(entry.getKey()));
+        }
+
+        return keys;
     }
 
     /**

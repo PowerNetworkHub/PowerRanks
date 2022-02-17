@@ -49,9 +49,12 @@ public class PowerPermissibleBase extends PermissibleBase {
 		boolean checkedWildcard = false;
 		boolean disallowed = false;
 		boolean disallowedValid = false;
+		boolean caseSensitive = PowerRanks.getConfigManager().getBool("general.case-sensitive-permissions", false);
 
 		for (PRPermission prPermission : permissions) {
-			if (prPermission.getName().equals(permission)) {
+
+			if ((caseSensitive && prPermission.getName().equals(permission))
+					|| (!caseSensitive && prPermission.getName().equalsIgnoreCase(permission))) {
 				disallowed = !prPermission.getValue();
 				disallowedValid = true;
 				break;

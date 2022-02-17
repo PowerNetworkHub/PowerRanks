@@ -67,7 +67,7 @@ lang:
             success-set: "&aChanged buy description to '[description]' on rank: [rank]"
             failed-set: "&cFailed to set buy description to '[description]' on rank: [rank]"
          config:
-            arguments: "<removeworldtag / (enable/disable chat_formatting/tablist_formatting/op) / (set playtime_update_interval <seconds>)>"
+            arguments: "<removeworldtag / (enable/disable chat_formatting/tablist_formatting/op/casesensitive_permissions) / (set playtime_update_interval <seconds>)>"
             description: "Edit fields in the configuration file"
             removed-world-tag: "&aThe world tag has been removed!"
             state-changed: "&eChanged [config_target] from &c[old_state] &eto &a[new_state]"

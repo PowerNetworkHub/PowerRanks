@@ -2,6 +2,7 @@ general:
   language: en
   autosave-files-interval: 600
   playtime-update-interval: 60
+  case-sensitive-permissions: false
   disable-op: false
 storage:
   type: YAML

@@ -102,6 +102,22 @@ public class cmd_config extends PowerCommand {
 
 					PowerRanks.getConfigManager().setBool("tablist_modification.enabled", enable);
 
+				} else if (args[1].equalsIgnoreCase("casesensitive_permissions")) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".state-changed"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("config_target", "Case Sensitive Permissions")
+									.put("old_state",
+											String.valueOf(PowerRanks.getConfigManager()
+													.getBool("general.case-sensitive-permissions", true)))
+									.put("new_state", String.valueOf(enable))
+									.build(),
+							'[', ']'));
+
+					PowerRanks.getConfigManager().setBool("general.case-sensitive-permissions", enable);
+
 				} else if (args[1].equalsIgnoreCase("op")) {
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
@@ -118,6 +134,22 @@ public class cmd_config extends PowerCommand {
 
 					PowerRanks.getConfigManager().setBool("general.disable-op", !enable);
 
+					// } else if (args[1].equalsIgnoreCase("language")) {
+					// sender.sendMessage(Util.powerFormatter(
+					// PowerRanks.getLanguageManager().getFormattedMessage(
+					// "commands." + commandName.toLowerCase() + ".state-changed"),
+					// ImmutableMap.<String, String>builder()
+					// .put("player", sender.getName())
+					// .put("config_target", "PowerRanks language (lang.yml)")
+					// .put("old_state",
+					// String.valueOf(!PowerRanks.getConfigManager()
+					// .getBool("general.language", true)))
+					// .put("new_state", String.valueOf(enable))
+					// .build(),
+					// '[', ']'));
+
+					// PowerRanks.getConfigManager().setBool("general.language", !enable);
+
 				} else {
 					sender.sendMessage(
 							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
@@ -130,6 +162,7 @@ public class cmd_config extends PowerCommand {
 			}
 		} else if (args.length == 3) {
 			if (args[0].equalsIgnoreCase("set")) {
+
 				if (args[1].equalsIgnoreCase("playtime_update_interval")) {
 					try {
 						int time = Integer.parseInt(args[2]);
@@ -153,7 +186,46 @@ public class cmd_config extends PowerCommand {
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".numbers-only"));
 					}
+				}
 
+			} else if (args[1].equalsIgnoreCase("language")) {
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".state-changed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("config_target", "PowerRanks language (lang.yml)")
+								.put("old_state",
+										String.valueOf(PowerRanks.getConfigManager()
+												.getString("general.language", "en")))
+								.put("new_state", args[2])
+								.build(),
+						'[', ']'));
+
+				PowerRanks.getConfigManager().setString("general.language", args[2]);
+
+			} else if (args[1].equalsIgnoreCase("autosave_files_interval")) {
+				try {
+					int time = Integer.parseInt(args[2]);
+
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".state-changed"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("config_target", "Data autosave interval")
+									.put("old_state",
+											String.valueOf(PowerRanks.getConfigManager()
+													.getInt("general.autosave-files-interval", 600)))
+									.put("new_state", String.valueOf(time))
+									.build(),
+							'[', ']'));
+
+					PowerRanks.getConfigManager().setInt("general.autosave-files-interval", time);
+				} catch (Exception e) {
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".numbers-only"));
 				}
 			}
 		} else {
@@ -179,13 +251,34 @@ public class cmd_config extends PowerCommand {
 			if (args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
 				tabcomplete.add("chat_formatting");
 				tabcomplete.add("tablist_formatting");
+				tabcomplete.add("casesensitive_permissions");
 				tabcomplete.add("op");
 			}
 		}
 
 		if (args.length == 2) {
 			if (args[0].equalsIgnoreCase("set")) {
+				tabcomplete.add("language");
+				tabcomplete.add("autosave_files_interval");
 				tabcomplete.add("playtime_update_interval");
+			}
+		}
+
+		if (args.length == 3) {
+			if (args[1].equalsIgnoreCase("language")) {
+				for (String key : PowerRanks.getLanguageManager().getInstance().getKeys("lang")) {
+					tabcomplete.add(key);
+				}
+			}
+		}
+
+		if (args.length == 3) {
+			if (args[1].equalsIgnoreCase("autosave_files_interval")) {
+				tabcomplete.add("60");
+				tabcomplete.add("300");
+				tabcomplete.add("600");
+				tabcomplete.add("1800");
+				tabcomplete.add("3600");
 			}
 		}
 

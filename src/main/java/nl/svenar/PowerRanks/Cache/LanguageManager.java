@@ -119,4 +119,12 @@ public class LanguageManager {
     public void save() {
         this.languageManager.save();
     }
+
+    /**
+     * Get the config file instance
+     * @return PowerConfigManager for lang.yml
+     */
+    public PowerConfigManager getInstance() {
+        return this.languageManager;
+    }
 }
