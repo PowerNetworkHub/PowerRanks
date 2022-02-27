@@ -155,10 +155,10 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<repository>
+		<!-- <repository>
 			<id>krypton</id>
 			<url>https://repo.kryptonmc.org/releases</url>
-		</repository>
+		</repository> -->
 		<repository>
 			<id>svenar</id>
 			<url>https://svenar.nl/repo/</url>

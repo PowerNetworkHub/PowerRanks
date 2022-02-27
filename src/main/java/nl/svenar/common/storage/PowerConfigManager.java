@@ -275,7 +275,7 @@ public abstract class PowerConfigManager {
      * @return string
      */
     public String getString(String key) {
-        return this.getKV(key, null).toString();
+        return this.getKV(key, "").toString();
     }
 
     /**

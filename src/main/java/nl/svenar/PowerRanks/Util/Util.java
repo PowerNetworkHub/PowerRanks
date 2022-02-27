@@ -100,6 +100,11 @@ public class Util {
 
 				} else if (textIdx < text.length() && text.charAt(textIdx) == ' ') {
 					textIdx++; // Skip space after placeholder
+				} else {
+					result.append(openChar + text.substring(startIdx + 1, endIdx) + closeChar); // Add back the original
+																								// placeholder when an
+																								// replacement isn't
+																								// found
 				}
 			} else {
 				String unformatted = text.substring(textIdx, endIdx + 1).replaceFirst("\\\\", "");
@@ -107,7 +112,9 @@ public class Util {
 					String replaceText = text.substring(startIdx, endIdx + 1);
 					String baseText = text.substring(startIdx, startIdx + 1);
 					String endText = text.substring(endIdx + 1, endIdx + 1);
-					String formattedReplacement = baseText + powerFormatter(text.substring(startIdx + 1, endIdx + 1), values, openChar, closeChar) + endText;
+					String formattedReplacement = baseText
+							+ powerFormatter(text.substring(startIdx + 1, endIdx + 1), values, openChar, closeChar)
+							+ endText;
 
 					unformatted = unformatted.replace(replaceText, formattedReplacement);
 				}

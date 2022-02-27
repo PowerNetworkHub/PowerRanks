@@ -1,7 +1,7 @@
 lang:
    en:
       general:
-         prefix: "&0\\[&bPR&0]&r"
+         prefix: "&0[&bPR&0]&r"
          no-permission: "&4You do not have permissions to execute this command!"
          rank-not-found: "&cRank '[rank]' not found!"
          player-not-found: "&cPlayer '[target]' not found!"
@@ -208,7 +208,7 @@ lang:
          renamerank:
             arguments: "<rank_name> <new_rank_name>"
             description: "Rename a rank"
-            succes: "&aRank [rank] renamed to [new_rank]!"
+            success: "&aRank [rank] renamed to [new_rank]!"
             failed: "&cFailed to rename rank [rank] to [new_rank]!"
          setchatcolor:
             arguments: "<rank_name> <color_code>"
@@ -226,12 +226,12 @@ lang:
          setprefix:
             arguments: "<rank_name> <new ... prefix>"
             description: "Change the prefix of a rank"
-            succes: "&aChanged prefix to '[prefix]' on rank: [rank]"
-            succes-clear: "&aCleared the prefix on rank: [rank]"
+            success: "&aChanged prefix to '[prefix]' on rank: [rank]"
+            success-clear: "&aCleared the prefix on rank: [rank]"
          setsuffix:
             arguments: "<rank_name> <new ... suffix>"
             description: "Change the suffix of a rank"
-            succes: "&aChanged suffix to '[suffix]' on rank: [rank]"
+            success: "&aChanged suffix to '[suffix]' on rank: [rank]"
             succes-clear: "&aCleared the suffix on rank: [rank]"
          setweight:
             arguments: "<rank_name> <number>"
@@ -242,7 +242,7 @@ lang:
             arguments: "[player_name] <tag_name>"
             description: "Remove a user tag"
             disabled: "&cCan't clear a player's usertag. Usertags are disabled!"
-            succes: "&aCleared [target]'s usertag!"
+            success: "&aCleared [target]'s usertag!"
             failed: "&cFailed to clear [target]'s usertag!"
          createusertag:
             arguments: "<tag_name> <text>"

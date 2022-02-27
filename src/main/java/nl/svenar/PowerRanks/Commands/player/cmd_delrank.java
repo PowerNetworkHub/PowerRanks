@@ -36,14 +36,9 @@ public class cmd_delrank extends PowerCommand {
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
-				for (PRPermission permission : PowerRanks.getInstance()
-						.getEffectivePlayerPermissions((Player) sender)) {
-					if (permission.getName()
-							.equalsIgnoreCase("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank)) {
-						commandAllowed = permission.getValue();
-						break;
-					}
-				}
+				commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+			} else {
+				commandAllowed = true;
 			}
 
 			if (commandAllowed) {
@@ -108,8 +103,11 @@ public class cmd_delrank extends PowerCommand {
 		}
 
 		if (args.length == 2) {
-			for (String rank : CacheManager.getPlayer(((Player) sender).getUniqueId().toString()).getRanks()) {
-				tabcomplete.add(rank);
+			Player target_player = Util.getPlayerByName(args[0]);
+			if (target_player != null) {
+				for (String rank : CacheManager.getPlayer(target_player.getUniqueId().toString()).getRanks()) {
+					tabcomplete.add(rank);
+				}
 			}
 		}
 

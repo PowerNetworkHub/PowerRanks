@@ -186,7 +186,7 @@ public class PowerCommandHandler implements CommandExecutor {
 								PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 					}
 				} else {
-					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Only players can use this command");
+					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "You can't execute this command here");
 				}
 			} else {
 				boolean addonCommandFound = false;

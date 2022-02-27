@@ -250,7 +250,7 @@ public class PowerRanksVaultPermission extends Permission {
 
 		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
 
-		return ranks.get(0).getName();
+		return ranks.size() > 0 ? ranks.get(0).getName() : "";
 	}
 
 	// -- Deprecated methods
