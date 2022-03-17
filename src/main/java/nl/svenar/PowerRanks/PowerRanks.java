@@ -988,11 +988,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			for (PRRank playerRank : playerRanks) {
 				for (String inheritance : playerRank.getInheritances()) {
-					effectiveRanks.add(CacheManager.getRank(inheritance));
+					PRRank inheritanceRank = CacheManager.getRank(inheritance);
+					if (inheritanceRank != null) {
+						effectiveRanks.add(inheritanceRank);
+					}
 				}
 			}
 		}
 
+		effectiveRanks.removeAll(Collections.singleton(null));
 		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
 		effectiveRanks = PRUtil.sortRanksByWeight(effectiveRanks);
 
