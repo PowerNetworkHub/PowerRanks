@@ -40,8 +40,6 @@ public class cmd_addrank extends PowerCommand {
 				commandAllowed = true;
 			}
 
-			System.out.println("commandAllowed: " + commandAllowed);
-
 			if (commandAllowed) {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
