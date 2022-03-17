@@ -13,7 +13,6 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
-import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
 
@@ -35,14 +34,9 @@ public class cmd_addownrank extends PowerCommand {
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
-				for (PRPermission permission : PowerRanks.getInstance()
-						.getEffectivePlayerPermissions((Player) sender)) {
-					if (permission.getName()
-							.equalsIgnoreCase("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank)) {
-						commandAllowed = permission.getValue();
-						break;
-					}
-				}
+				commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+			} else {
+				commandAllowed = true;
 			}
 
 			if (commandAllowed) {
