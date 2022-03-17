@@ -57,7 +57,7 @@ public class cmd_delrank extends PowerCommand {
 							'[', ']'));
 
 					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-						sender.sendMessage(Util.powerFormatter(
+						Bukkit.getPlayer(targetPlayer.getUUID()).sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".success-receiver"),
 								ImmutableMap.<String, String>builder()
