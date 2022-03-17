@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -132,7 +133,19 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
 		PowerRanksVerbose.log("getEffectivePermissions()", "called");
-		return super.getEffectivePermissions();
+
+		Set<PermissionAttachmentInfo> permissions = new HashSet<PermissionAttachmentInfo>();
+
+		for (PRPermission permission : plugin.getEffectivePlayerPermissions(player)) {
+			PermissionAttachmentInfo pai = new PermissionAttachmentInfo(this.player, permission.getName(), null, permission.getValue());
+			permissions.add(pai);
+		}
+		
+		for (PermissionAttachmentInfo permission : super.getEffectivePermissions()) {
+			permissions.add(permission);
+		}
+
+		return permissions;
 	}
 
 	/*
