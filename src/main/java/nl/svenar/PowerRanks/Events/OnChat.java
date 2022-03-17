@@ -105,44 +105,24 @@ public class OnChat implements Listener {
 					}
 				}
 
-				// nameColor = nameColor.replaceAll("&i", "").replaceAll("&I",
-				// "").replaceAll("&j", "").replaceAll("&J", "");
-				// chatColor = chatColor.replaceAll("&i", "").replaceAll("&I",
-				// "").replaceAll("&j", "").replaceAll("&J", "");
-				// nameColor = "&r" + nameColor;
-				// chatColor = "&r" + chatColor;
-
 				String playersChatMessage = e.getMessage();
 				if (!e.getPlayer().hasPermission("powerranks.chat.chatcolor")) {
 					playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})",
 							"");
 				}
+
 				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "")
 						+ PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
 				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
 				// Dirty PremiumVanish work around
-				if (Objects
-						.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
+				if (Objects.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
 					if (player_formatted_chat_msg.endsWith("/")) {
 						player_formatted_chat_msg = player_formatted_chat_msg.substring(0,
 								player_formatted_chat_msg.length() - 1);
 					}
 				}
-
-				// format = Util.powerFormatter(
-				// format, ImmutableMap.<String, String>builder().put("prefix",
-				// formatted_prefix)
-				// .put("suffix", formatted_suffix)
-				// .put("usertag",
-				// !PowerRanks.plugin_hook_deluxetags ? usertag
-				// : PowerRanks.getInstance().getDeluxeTagsHook()
-				// .getPlayerDisplayTag(player))
-				// .put("player", player_formatted_name).put("msg", "[msg]")
-				// .put("format", e.getFormat()).put("world",
-				// player.getWorld().getName()).build(),
-				// '[', ']');
 
 				if (PowerRanks.placeholderapiExpansion != null) {
 					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
@@ -156,14 +136,9 @@ public class OnChat implements Listener {
 										!PowerRanks.plugin_hook_deluxetags ? usertag
 												: PowerRanks.getInstance().getDeluxeTagsHook()
 														.getPlayerDisplayTag(player))
-								.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
+								.put("player", player_formatted_name).put("msg", PowerRanks.chatColor(player_formatted_chat_msg, true))
 								.put("format", e.getFormat()).put("world", player.getWorld().getName()).build(),
 						'[', ']');
-
-				// format = Util.powerFormatter(
-				// format, ImmutableMap.<String, String>builder().put("msg",
-				// player_formatted_chat_msg).build(),
-				// '[', ']');
 
 				for (Entry<File, PowerRanksAddon> prAddon : this.m.addonsManager.addonClasses.entrySet()) {
 					PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.m, player);
