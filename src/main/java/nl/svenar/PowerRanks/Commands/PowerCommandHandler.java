@@ -27,6 +27,7 @@ import nl.svenar.PowerRanks.Commands.buyable.cmd_setbuycommand;
 import nl.svenar.PowerRanks.Commands.buyable.cmd_setbuycost;
 import nl.svenar.PowerRanks.Commands.buyable.cmd_setbuydescription;
 import nl.svenar.PowerRanks.Commands.core.cmd_config;
+import nl.svenar.PowerRanks.Commands.core.cmd_dump;
 import nl.svenar.PowerRanks.Commands.core.cmd_factoryreset;
 import nl.svenar.PowerRanks.Commands.core.cmd_help;
 import nl.svenar.PowerRanks.Commands.core.cmd_pluginhook;
@@ -91,6 +92,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
 		new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
 		new cmd_haspermission(plugin, "haspermission", COMMAND_EXECUTOR.ALL);
+		new cmd_dump(plugin, "dump", COMMAND_EXECUTOR.ALL);
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
 		new cmd_setownrank(plugin, "setownrank", COMMAND_EXECUTOR.PLAYER);

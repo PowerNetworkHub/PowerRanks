@@ -285,3 +285,8 @@ lang:
             failed-downloaded: "&cFailed to download data from the web editor!"
             incompatible-version: "&cIncompattible PowerRanks version! (editor: [downloaded_version] | server: [version])"
             download-stats: "&aLoaded [rank_count] ranks and [player_count] players from the web editor!"
+         dump:
+            arguments: ""
+            description: "Upload your server data to the PowerRanks server for debugging"
+            preparing-session: "&aPreparing upload..."
+            timed-out: "&cThe upload has timed out! Please try again later."
