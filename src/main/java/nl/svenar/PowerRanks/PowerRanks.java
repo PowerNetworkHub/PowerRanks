@@ -49,6 +49,7 @@ import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
+import nl.svenar.PowerRanks.Data.TablistManager;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Events.ChatTabExecutor;
 import nl.svenar.PowerRanks.Events.OnBlockChange;
@@ -91,16 +92,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public ArrayList<String> donation_urls = new ArrayList<String>(
 			Arrays.asList("https://ko-fi.com/svenar", "https://patreon.com/svenar"));
 
+	public int TASK_TPS = 20;
 	private static PowerRanks instance;
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
+	private TablistManager tablistManager;
 	public String plp;
 	public static Logger log;
 	public static String fileLoc;
 	public static String factoryresetid = null;
 	public static Instant powerranks_start_time = Instant.now();
 	private String update_available = "";
-	private int TASK_TPS = 20;
 
 	private static PowerConfigManager configManager;
 	private static LanguageManager languageManager;
@@ -196,6 +198,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		GUI.setPlugin(this);
 
+		this.tablistManager = new TablistManager();
+		this.tablistManager.start();
+
 		PowerRanks.log.info("");
 		PowerRanks.log
 				.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
@@ -231,6 +236,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
+		this.tablistManager.stop();
+
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 
 		CacheManager.save();
@@ -863,10 +870,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			String format = configManager.getString("tablist_modification.format", "");
 
 			if (format.contains("[name]")) {
-				String tmp_format = configManager.getString("tablist_modification.format", ""); // CachedConfig.getString("tablist_modification.format");
+				String tmp_format = configManager.getString("tablist_modification.format", "");
 				tmp_format = tmp_format.replace("[name]", "[player]");
 				configManager.setString("tablist_modification.format", tmp_format);
-				// CachedConfig.set("tablist_modification.format", tmp_format);
 				format = tmp_format;
 			}
 
@@ -887,6 +893,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
+            PowerRanksVerbose.log("updateTablistName", "Updated " + player.getName() + "'s tablist format to: " + player.getPlayerListName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1026,6 +1033,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		return permissions;
 	}
+
+    public TablistManager getTablistManager() {
+        return this.tablistManager;
+    }
 
 	public static PowerConfigManager getConfigManager() {
 		return configManager;

@@ -154,7 +154,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean isOp() {
-		PowerRanksVerbose.log("isOp()", "called");
+		// PowerRanksVerbose.log("isOp()", "called");
 		return super.isOp();
 	}
 
