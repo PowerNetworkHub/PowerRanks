@@ -46,6 +46,11 @@ public class cmd_delrank extends PowerCommand {
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.removeRank(rank.getName());
 
+                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+                    }
+
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(

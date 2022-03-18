@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -44,6 +45,11 @@ public class cmd_setownrank extends PowerCommand {
 				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.setRank(rank.getName());
+
+                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+                    }
 
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()

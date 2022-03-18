@@ -46,6 +46,11 @@ public class cmd_addrank extends PowerCommand {
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.addRank(rank.getName());
 
+                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+                    }
+
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(
