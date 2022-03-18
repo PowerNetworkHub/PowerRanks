@@ -179,10 +179,21 @@ public class PowerRanksChatColor {
 
 		public String toRandom(String format_char, boolean use_unformated_char) {
 			StringBuilder sb = new StringBuilder();
+            
+            String textToFormat = text.toLowerCase().contains("&r") ? text.split("&r")[0] : text;
 
-			for (char c : text.toCharArray()) {
+			for (char c : textToFormat.toCharArray()) {
 				sb.append(PowerRanksChatColor.getRandomColorCode(false) + format_char + String.valueOf(c));
 			}
+
+            if (text.toLowerCase().contains("&r")) {
+                String[] split = text.split("&r");
+                if (split.length > 1) {
+                    sb.append(split[1]);
+                }
+
+                sb.append("&r");
+            }
 
 			return use_unformated_char ? sb.toString() : ChatColor.translateAlternateColorCodes(unformatted_default_char, sb.toString());
 		}
@@ -203,7 +214,9 @@ public class PowerRanksChatColor {
 			rainbow_colors.add("d");
 			int index = 0;
 
-			for (char c : text.toCharArray()) {
+            String textToFormat = text.toLowerCase().contains("&r") ? text.split("&r")[0] : text;
+
+			for (char c : textToFormat.toCharArray()) {
 				sb.append(unformatted_default_char + rainbow_colors.get(index) + format_char + String.valueOf(c));
 				if (index >= rainbow_colors.size() - 1) {
 					index = 0;
@@ -211,6 +224,15 @@ public class PowerRanksChatColor {
 					index++;
 				}
 			}
+
+            if (text.toLowerCase().contains("&r")) {
+                String[] split = text.split("&r");
+                if (split.length > 1) {
+                    sb.append(split[1]);
+                }
+
+                sb.append("&r");
+            }
 
 			return use_unformated_char ? sb.toString() : ChatColor.translateAlternateColorCodes(unformatted_default_char, sb.toString());
 		}
