@@ -31,7 +31,7 @@ public class TablistManager {
 
     public void start() {
         PowerRanksVerbose.log("TablistSort", "Initializing");
-        if (!PowerRanks.getConfigManager().getBool("tablist_modification.sorting.enabled", false)) {
+        if (!PowerRanks.getConfigManager().getBool("tablist_modification.sorting.enabled", true)) {
             return;
         }
 
