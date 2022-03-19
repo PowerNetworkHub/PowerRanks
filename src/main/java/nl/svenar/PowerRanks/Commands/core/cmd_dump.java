@@ -27,6 +27,7 @@ import nl.svenar.common.storage.provided.YAMLStorageManager;
 public class cmd_dump extends PowerCommand {
 
 	private String databin_url = "https://databin.svenar.nl/";
+	private String logs_powerranks_url = "https://logs.powerranks.nl/dump/?id=";
 	private String tellraw_url = "tellraw %player% [\"\",{\"text\":\"Log dump is ready \",\"color\":\"dark_green\"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"%url%\"}},{\"text\":\"click to open\",\"color\":\"dark_green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"%url%\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"%url%\"}}]";
 
 	public cmd_dump(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
@@ -69,6 +70,7 @@ public class cmd_dump extends PowerCommand {
 
 		String outputJSONLog = "";
 		outputJSONLog += "{";
+		outputJSONLog += "\"type\":\"dump\",";
 		outputJSONLog += "\"version\":{";
 		outputJSONLog += "\"powerranks\":\"" + PowerRanks.pdf.getVersion() + "\",";
 		outputJSONLog += "\"server\":\"" + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion() + "\"";
@@ -102,10 +104,15 @@ public class cmd_dump extends PowerCommand {
 		File ranksFile = new File(PowerRanks.fileLoc, "dummyRanks.yml");
 		File playersFile = new File(PowerRanks.fileLoc, "dummyPlayers.yml");
 		File configFile = new File(PowerRanks.fileLoc, "config.yml");
+		File usertagsFile = new File(PowerRanks.fileLoc, "usertags.yml");
 
 		ArrayList<String> ranksYaml = new ArrayList<String>();
 		ArrayList<String> playersYaml = new ArrayList<String>();
 		ArrayList<String> configYaml = new ArrayList<String>();
+		ArrayList<String> usertagsYaml = new ArrayList<String>();
+
+        PowerRanks.getConfigManager().save();
+        PowerRanks.getUsertagManager().save();
 
 		if (ranksFile.exists()) {
 			try (BufferedReader br = new BufferedReader(new FileReader(ranksFile))) {
@@ -146,6 +153,19 @@ public class cmd_dump extends PowerCommand {
 			configYaml.add("Config file does not exist.");
 		}
 
+        if (usertagsFile.exists()) {
+			try (BufferedReader br = new BufferedReader(new FileReader(usertagsFile))) {
+				String line;
+				while ((line = br.readLine()) != null) {
+					usertagsYaml.add(line.replaceAll("\"", "'"));
+				}
+			} catch (IOException e) {
+				usertagsYaml.add("Error reading usertags file.");
+			}
+		} else {
+			usertagsYaml.add("Usertags file does not exist.");
+		}
+
 		outputJSONLog += "\"powerranks\":{";
 		outputJSONLog += "\"ranks\": [";
 		if (ranksYaml.size() > 0) {
@@ -170,9 +190,19 @@ public class cmd_dump extends PowerCommand {
 			}
 			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
 		}
+		outputJSONLog += "],";
+		outputJSONLog += "\"usertags\": [";
+		if (usertagsYaml.size() > 0) {
+			for (String line : usertagsYaml) {
+				outputJSONLog += "\"" + line + "\",";
+			}
+			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
+		}
 		outputJSONLog += "]";
 		outputJSONLog += "}";
 		outputJSONLog += "}";
+
+        yamlmanager.removeAllData();
 
 		client.postJSON(outputJSONLog);
 
@@ -199,7 +229,7 @@ public class cmd_dump extends PowerCommand {
 											.replaceAll("%url%", databin_url + key).replaceAll("\n", ""));
 						} else {
 							sender.sendMessage(ChatColor.DARK_GREEN + "Data upload is ready " + ChatColor.BLACK + "["
-									+ ChatColor.GREEN + databin_url + key + ChatColor.BLACK + "]");
+									+ ChatColor.GREEN + logs_powerranks_url + key + ChatColor.BLACK + "]");
 						}
 						sender.sendMessage(ChatColor.DARK_GREEN + "ID: " + ChatColor.GREEN + key);
 						sender.sendMessage(ChatColor.DARK_GREEN + "Uploaded: " + ChatColor.GREEN + uploadSize + "KB");
