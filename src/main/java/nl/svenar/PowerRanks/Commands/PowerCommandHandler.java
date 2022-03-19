@@ -161,15 +161,12 @@ public class PowerCommandHandler implements CommandExecutor {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 					+ plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
-			sender.sendMessage(
-					ChatColor.GREEN + "/" + commandLabel + " help" + ChatColor.DARK_GREEN + " - For the command list.");
+			sender.sendMessage(ChatColor.GREEN + "/" + commandLabel + " help" + ChatColor.DARK_GREEN + " - For the command list.");
 			sender.sendMessage("");
-			sender.sendMessage(
-					ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + plugin.getDescription().getAuthors().get(0));
-			sender.sendMessage(
-					ChatColor.DARK_GREEN + "Version: " + ChatColor.GREEN + plugin.getDescription().getVersion());
-			sender.sendMessage(
-					ChatColor.DARK_GREEN + "Website: " + ChatColor.GREEN + plugin.getDescription().getWebsite());
+			sender.sendMessage(ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + plugin.getDescription().getAuthors().get(0));
+			sender.sendMessage(ChatColor.DARK_GREEN + "Version: " + ChatColor.GREEN + plugin.getDescription().getVersion());
+            sender.sendMessage(ChatColor.DARK_GREEN + "Website: " + ChatColor.GREEN + plugin.getDescription().getWebsite());
+            sender.sendMessage(ChatColor.DARK_GREEN + "Documentation: " + ChatColor.GREEN + "https://docs.powerranks.nl");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Support me: " + ChatColor.YELLOW + "https://ko-fi.com/svenar");
 			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
 					+ ChatColor.BLUE + "===");
@@ -230,12 +227,17 @@ public class PowerCommandHandler implements CommandExecutor {
 		power_commands.put(command_name.toLowerCase(), command_handler);
 	}
 
+    private static boolean hasCommandPermission(CommandSender sender, String cmd) {
+        boolean hasPermission = sender instanceof Player ? ((Player) sender).hasPermission("powerranks.cmd." + cmd.toLowerCase()) : true;
+        return hasPermission;
+    }
+
 	public static ArrayList<String> handle_tab_complete(CommandSender sender, String cmd, String[] args) {
 		ArrayList<String> output = new ArrayList<String>();
 		if (args.length == 0) {
 			for (Entry<String, PowerCommand> entry : power_commands.entrySet()) {
 				if (cmd.length() == 0 || entry.getKey().toLowerCase().contains(cmd.toLowerCase())) {
-					boolean is_allowed = canExecuteCommand(sender, entry.getValue());
+					boolean is_allowed = canExecuteCommand(sender, entry.getValue()) && hasCommandPermission(sender, cmd);
 					if (is_allowed) {
 						output.add(entry.getKey());
 					}
@@ -243,7 +245,9 @@ public class PowerCommandHandler implements CommandExecutor {
 			}
 		} else {
 			if (power_commands.containsKey(cmd.toLowerCase())) {
-				output = power_commands.get(cmd.toLowerCase()).tabCompleteEvent(sender, args);
+				if (hasCommandPermission(sender, cmd)) {
+                    output = power_commands.get(cmd.toLowerCase()).tabCompleteEvent(sender, args);
+                }
 			}
 
 		}
