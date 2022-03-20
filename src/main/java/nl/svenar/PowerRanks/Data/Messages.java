@@ -21,6 +21,7 @@ import org.bukkit.plugin.Plugin;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.External.VaultHook;
+import nl.svenar.PowerRanks.Util.PowerColor;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.addons.DownloadableAddon;
@@ -477,7 +478,7 @@ public class Messages {
 
 		if (PowerRanks.placeholderapiExpansion != null) {
 			format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
-					"" + PowerRanksChatColor.unformatted_default_char);
+					"" + PowerColor.UNFORMATTED_COLOR_CHAR);
 		}
 
 		for (Entry<File, PowerRanksAddon> prAddon : PowerRanks.getInstance().addonsManager.addonClasses.entrySet()) {
@@ -522,7 +523,7 @@ public class Messages {
 
 		if (PowerRanks.placeholderapiExpansion != null && sender != null) {
 			format = PlaceholderAPI.setPlaceholders((Player) sender, format).replaceAll("" + ChatColor.COLOR_CHAR,
-					"" + PowerRanksChatColor.unformatted_default_char);
+					"" + PowerColor.UNFORMATTED_COLOR_CHAR);
 		}
 
 		if (sender != null) {

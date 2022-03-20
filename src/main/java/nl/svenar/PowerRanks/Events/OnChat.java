@@ -19,7 +19,7 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 // import nl.svenar.PowerRanks.Cache.CachedPlayers;
 // import nl.svenar.PowerRanks.Cache.CachedRanks;
-import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
+import nl.svenar.PowerRanks.Util.PowerColor;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
@@ -126,7 +126,7 @@ public class OnChat implements Listener {
 
 				if (PowerRanks.placeholderapiExpansion != null) {
 					format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
-							"" + PowerRanksChatColor.unformatted_default_char);
+							"" + PowerColor.UNFORMATTED_COLOR_CHAR);
 				}
 
 				format = Util.powerFormatter(

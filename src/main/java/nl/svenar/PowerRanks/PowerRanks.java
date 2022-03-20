@@ -47,7 +47,6 @@ import nl.svenar.PowerRanks.Cache.LanguageManager;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
-import nl.svenar.PowerRanks.Data.PowerRanksChatColor;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.TablistManager;
 import nl.svenar.PowerRanks.Data.Users;
@@ -65,6 +64,7 @@ import nl.svenar.PowerRanks.External.DeluxeTagsHook;
 import nl.svenar.PowerRanks.External.PowerRanksExpansion;
 import nl.svenar.PowerRanks.External.TABHook;
 import nl.svenar.PowerRanks.External.VaultHook;
+import nl.svenar.PowerRanks.Util.PowerColor;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.AddonsManager;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
@@ -97,6 +97,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
 	private TablistManager tablistManager;
+    private static PowerColor powerColor;
 	public String plp;
 	public static Logger log;
 	public static String fileLoc;
@@ -163,7 +164,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ------- LOADING CONFIGURATION ------ ===");
-		new PowerRanksChatColor();
+        PowerRanks.powerColor = new PowerColor();
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
@@ -763,8 +764,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					prefix_format += nameColor;
 
-					prefix_format = PowerRanksChatColor.colorize(prefix_format, true);
-					suffix_format = PowerRanksChatColor.colorize(suffix_format, true);
+					prefix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, prefix_format, true, true);
+					suffix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, suffix_format, true, true);
 
 					INametagApi nteAPI = NametagEdit.getApi();
 					if (nteAPI != null) {
@@ -888,7 +889,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 			if (PowerRanks.placeholderapiExpansion != null) {
 				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
-						"" + PowerRanksChatColor.unformatted_default_char);
+						"" + PowerColor.UNFORMATTED_COLOR_CHAR);
 			}
 			format = PowerRanks.chatColor(format, true);
 
@@ -900,11 +901,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public static String chatColor(String textToTranslate, boolean custom_colors) {
-		return PowerRanksChatColor.colorize(textToTranslate, custom_colors);
+		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, true);
 	}
 
 	public static String chatColorAlt(final String textToTranslate, final boolean custom_colors) {
-		return PowerRanksChatColor.colorizeRaw(textToTranslate, custom_colors, false);
+		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false);
 	}
 
 	public static String applyMultiColorFlow(String rawColors, String text) {
@@ -1049,6 +1050,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PowerConfigManager getUsertagManager() {
 		return usertagManager;
 	}
+
+    public static PowerColor getPowerColor() {
+        return powerColor;
+    }
 
 	public static PowerRanks getInstance() {
 		return instance;
