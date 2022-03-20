@@ -88,7 +88,7 @@ public class GUI {
 
 						PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
 						if (rank != null) {
-							CacheManager.getPlayer(player.getUniqueId().toString()).addRank(rank.getName());
+							CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
 							player.sendMessage(Util.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands.setrank.success-receiver"),

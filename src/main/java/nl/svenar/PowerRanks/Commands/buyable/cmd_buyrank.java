@@ -53,7 +53,7 @@ public class cmd_buyrank extends PowerCommand {
 						PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
 						if (rank != null) {
 							if (rank != null) {
-								CacheManager.getPlayer(player.getUniqueId().toString()).addRank(rank.getName());
+								CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
 
 								sender.sendMessage(Util.powerFormatter(
 										PowerRanks.getLanguageManager().getFormattedMessage(
