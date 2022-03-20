@@ -2,76 +2,106 @@ package nl.svenar.PowerRanks.Commands.core;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
+import nl.svenar.PowerRanks.Util.Util;
 
 public class cmd_verbose extends PowerCommand {
 
-
 	public cmd_verbose(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.verbose")) {
-			if (args.length == 0) {
-				Messages.checkVerbose(sender);
-			} else if (args.length == 1 || args.length == 2) {
-				String verboseType = args[0].toLowerCase();
-				if (verboseType.equals("start")) {
-					if (!PowerRanksVerbose.USE_VERBOSE) {
-						PowerRanksVerbose.start(false);
-						if (args.length == 2) {
-							PowerRanksVerbose.setFilter(args[1]);
-						}
-						Messages.messageCommandVerboseStarted(sender);
-					} else {
-						Messages.messageCommandVerboseAlreadyRunning(sender);
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 0) {
+			Messages.checkVerbose(sender);
+		} else if (args.length == 1 || args.length == 2) {
+			String verboseType = args[0].toLowerCase();
+			if (verboseType.equals("start")) {
+				if (!PowerRanksVerbose.USE_VERBOSE) {
+					PowerRanksVerbose.start(false);
+					if (args.length == 2) {
+						PowerRanksVerbose.setFilter(args[1]);
 					}
-				} else if (verboseType.equals("startlive")) {
-					if (!PowerRanksVerbose.USE_VERBOSE) {
-						PowerRanksVerbose.start(true);
-						if (args.length == 2) {
-							PowerRanksVerbose.setFilter(args[1]);
-						}
-						Messages.messageCommandVerboseStarted(sender);
-					} else {
-						Messages.messageCommandVerboseAlreadyRunning(sender);
-					}
-				} else if (verboseType.equals("stop")) {
-					if (PowerRanksVerbose.USE_VERBOSE) {
-						PowerRanksVerbose.stop();
-						Messages.messageCommandVerboseStopped(sender);
-					} else {
-						Messages.messageCommandVerboseNotRunning(sender);
-					}
-				} else if (verboseType.equals("clear")) {
-					PowerRanksVerbose.clear();
-					Messages.messageCommandVerboseCleared(sender);
-				} else if (verboseType.equals("save")) {
-					if (!PowerRanksVerbose.USE_VERBOSE) {
-						if (PowerRanksVerbose.save()) {
-							Messages.messageCommandVerboseSaved(sender);
-						} else {
-							Messages.messageCommandErrorSavingVerbose(sender);
-						}
-					} else {
-						Messages.messageCommandVerboseMustStopBeforeSaving(sender);
-					}
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".started"));
 				} else {
-					Messages.messageCommandUsageVerbose(sender);
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".already-running"));
+				}
+			} else if (verboseType.equals("startlive")) {
+				if (!PowerRanksVerbose.USE_VERBOSE) {
+					PowerRanksVerbose.start(true);
+					if (args.length == 2) {
+						PowerRanksVerbose.setFilter(args[1]);
+					}
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".started"));
+				} else {
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".already-running"));
+				}
+			} else if (verboseType.equals("stop")) {
+				if (PowerRanksVerbose.USE_VERBOSE) {
+					PowerRanksVerbose.stop();
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".stopped"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("command", "/pr " + commandName.toLowerCase())
+									.build(),
+							'[', ']'));
+				} else {
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".not-running"));
+				}
+			} else if (verboseType.equals("clear")) {
+				PowerRanksVerbose.clear();
+				sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".cleared"));
+			} else if (verboseType.equals("save")) {
+				if (!PowerRanksVerbose.USE_VERBOSE) {
+					if (PowerRanksVerbose.save()) {
+						sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".saved"));
+				} else {
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed-saving"));
+				}
+				} else {
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".must-stop-before-saving"));
 				}
 			} else {
-				Messages.messageCommandUsageVerbose(sender);
+				sender.sendMessage(
+						PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+								"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

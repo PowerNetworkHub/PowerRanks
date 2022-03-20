@@ -2,13 +2,16 @@ package nl.svenar.PowerRanks.Commands.rank;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_renamerank extends PowerCommand {
@@ -18,25 +21,41 @@ public class cmd_renamerank extends PowerCommand {
 	public cmd_renamerank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.renamerank")) {
-			if (args.length == 2) {
-				final String from = this.users.getRankIgnoreCase(args[0]);
-				final String to = args[1];
-				final boolean success = this.users.renameRank(from, to);
-				if (success) {
-					Messages.messageCommandRenameRankSuccess(sender, from);
-				} else {
-					Messages.messageCommandRenameRankError(sender, from);
-				}
-			} else {
-				Messages.messageCommandUsageDemote(sender);
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String from = this.users.getRankIgnoreCase(args[0]);
+			final String to = args[1];
+			final boolean result = this.users.renameRank(from, to);
+			if (result) {
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", from)
+								.put("new_rank", to)
+								.build(),
+						'[', ']'));
+			} else { // Rank not found or target name already exists
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", from)
+								.put("new_rank", to)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;
@@ -50,7 +69,7 @@ public class cmd_renamerank extends PowerCommand {
 				tabcomplete.add(rank.getName());
 			}
 		}
-		
+
 		return tabcomplete;
 	}
 }

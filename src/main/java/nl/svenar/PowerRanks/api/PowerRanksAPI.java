@@ -13,7 +13,7 @@ import nl.svenar.common.structure.PRRank;
 
 public class PowerRanksAPI {
 
-	private String API_VERSION = "1.1";
+	private String API_VERSION = "1.2";
 
 	public static PowerRanks plugin;
 	private Users users;
@@ -208,6 +208,38 @@ public class PowerRanksAPI {
 	public boolean removeInheritance(String rank, String inheritance) {
 		return users.removeInheritance(users.getRankIgnoreCase(rank), inheritance);
 	}
+
+    /**
+     * Should the rank be given to the players when they join for the first time?
+     * 
+     * @param rank
+     * @param isDefault
+     * @return true if rank exists, false otherwise
+     */
+    public boolean setDefault(String rank, boolean isDefault) {
+        PRRank targetRank = CacheManager.getRank(rank);
+        if (targetRank != null) {
+            targetRank.setDefault(isDefault);
+        }
+        return targetRank != null;
+    }
+
+    /**
+     * Get the list of default ranks that are given to new players
+     * 
+     * @return List of default ranks
+     */
+    public List<String> getDefaultRanks() {
+        List<String> defaultRanks = new ArrayList<String>();
+
+        for (PRRank rank : CacheManager.getRanks()) {
+            if (rank.isDefault()) {
+                defaultRanks.add(rank.getName());
+            }
+        }
+
+        return defaultRanks;
+    }
 
 	/**
 	 * Get all available ranknames

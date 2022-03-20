@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,8 +12,8 @@ import org.bukkit.entity.Player;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRRank;
@@ -26,15 +28,17 @@ public class cmd_setrank extends PowerCommand {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
 		if (args.length == 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
 
-			boolean commandAllowed = sender.hasPermission("powerranks.cmd.setrank");
+			boolean commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase());
 			if (sender instanceof Player) {
 				for (PRPermission permission : PowerRanks.getInstance()
 						.getEffectivePlayerPermissions((Player) sender)) {
-					if (permission.getName().equalsIgnoreCase("powerranks.cmd.setrank." + target_rank)) {
+					if (permission.getName()
+							.equalsIgnoreCase("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank)) {
 						commandAllowed = permission.getValue();
 						break;
 					}
@@ -47,23 +51,66 @@ public class cmd_setrank extends PowerCommand {
 				if (rank != null && targetPlayer != null) {
 					targetPlayer.setRank(rank.getName());
 
-					Messages.messageSetRankSuccessSender(sender, targetPlayer.getName(), rank.getName());
-					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-						Messages.messageSetRankSuccessTarget(Bukkit.getPlayer(targetPlayer.getUUID()), sender.getName(),
-								rank.getName());
+                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+                    }
+
+					if (targetPlayer.getRanks().contains(rank.getName())) {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".success-executor"),
+								ImmutableMap.<String, String>builder()
+										.put("player", targetPlayer.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+					} else {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".success-executor"),
+								ImmutableMap.<String, String>builder()
+										.put("player", targetPlayer.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
 					}
+
+					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+						Bukkit.getPlayer(targetPlayer.getUUID()).sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager().getFormattedMessage(
+										"commands." + commandName.toLowerCase() + ".success-receiver"),
+								ImmutableMap.<String, String>builder()
+										.put("player", sender.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+					}
+				} else {
+					sender.sendMessage(Util.powerFormatter(
+					PowerRanks.getLanguageManager()
+							.getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed-executor"),
+					ImmutableMap.<String, String>builder()
+							.put("player", targetPlayer.getName())
+							.put("rank", rank.getName())
+							.build(),
+					'[', ']'));
 				}
-				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
-				// target_rank, true);
 
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		} else {
-			if (sender.hasPermission("powerranks.cmd.setrank") || sender.hasPermission("powerranks.cmd.setrank.*")) {
-				Messages.messageCommandUsageSet(sender);
+			if (sender.hasPermission("powerranks.cmd." + commandName.toLowerCase())
+					|| sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + ".*")) {
+						sender.sendMessage(
+								PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+										"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			} else {
-				Messages.noPermission(sender);
+				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
 		}
 

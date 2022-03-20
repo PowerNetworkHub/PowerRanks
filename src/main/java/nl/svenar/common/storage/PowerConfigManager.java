@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +111,23 @@ public abstract class PowerConfigManager {
     }
 
     /**
+     * Get a list of keys for the given path
+     * 
+     * @param path
+     * @return List of found keys
+     */
+    public List<String> getKeys(String path) {
+
+        List<String> keys = new ArrayList<String>();
+
+        for (Entry<?, ?> entry : this.getMap(path, new HashMap<String, String>()).entrySet()) {
+            keys.add(String.valueOf(entry.getKey()));
+        }
+
+        return keys;
+    }
+
+    /**
      * Get a key value pair. Create it with the default value if it doesn't exist.
      * 
      * @param key
@@ -155,8 +173,10 @@ public abstract class PowerConfigManager {
         }
 
         if (output == null) {
-            this.setKV(key, defaultValue);
-            output = defaultValue;
+            if (defaultValue != null) {
+                this.setKV(key, defaultValue);
+                output = defaultValue;
+            }
         }
 
         return output;
@@ -169,59 +189,82 @@ public abstract class PowerConfigManager {
      * @param value
      */
     @SuppressWarnings("unchecked")
-    // TODO: Seems to be overwriting other keys in the same group
     public void setKV(String key, Object value) {
 
         String[] keySplit = key.split("\\.");
-        Object tmp = null;
-        int index = 0;
+        int entries = keySplit.length;
+        Object currentKey = this.data;
 
-        for (String keyPart : keySplit) {
-            boolean isLastKeyPart = index == keySplit.length - 1;
+        for (int i = 0; i < entries; i++) {
+            boolean isLast = i == entries - 1;
 
-            if (index == 0) {
-                if (this.data.containsKey(keyPart)) {
-                    if (this.data.get(keyPart).getClass() != HashMap.class) {
-                        this.data.put(keyPart, !isLastKeyPart ? new HashMap<String, Object>() : value);
-                    }
-                    tmp = this.data.get(keyPart);
+            if (!isLast) {
+                if (currentKey instanceof HashMap) {
+                    currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
                 } else {
-                    this.data.put(keyPart, new HashMap<String, Object>());
-                    tmp = this.data.get(keyPart);
+                    if (((HashMap<String, Object>)currentKey).containsKey(keySplit[i])) {
+                        throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key + "' is not a map and has no children to be set!");
+                    } else {
+                        ((HashMap<String, Object>)currentKey).put(keySplit[i], new HashMap<String, Object>());
+                        currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                    }
                 }
             } else {
-                if (!isLastKeyPart) {
-                    if (tmp != null) {
-                        if (tmp instanceof HashMap) {
-                            Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
-
-                            if (tmpMap.containsKey(keyPart)) {
-
-                                if (tmpMap.get(keyPart).getClass() != HashMap.class) {
-                                    tmpMap.put(keyPart, new HashMap<String, Object>());
-                                }
-
-                                tmp = tmpMap.get(keyPart);
-
-                            } else {
-
-                                tmpMap.put(keyPart, new HashMap<String, Object>());
-                                tmp = tmpMap.get(keyPart);
-                            }
-                        }
-                    }
-                } else {
-                    if (tmp != null) {
-                        if (tmp instanceof HashMap) {
-                            Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
-                            tmpMap.put(keyPart, value != null ? value : new HashMap<String, Object>());
-                        }
-                    }
-                }
+                ((HashMap<String, Object>)currentKey).put(keySplit[i], value);
             }
-
-            index++;
         }
+
+        // String[] keySplit = key.split("\\.");
+        // Object tmp = null;
+        // int index = 0;
+
+        // for (String keyPart : keySplit) {
+        //     boolean isLastKeyPart = index == keySplit.length - 1;
+
+        //     if (index == 0) {
+        //         if (this.data.containsKey(keyPart)) {
+        //             tmp = this.data.get(keyPart);
+        //             if (this.data.get(keyPart).getClass() != HashMap.class) {
+        //                 this.data.put(keyPart, !isLastKeyPart ? new HashMap<String, Object>() : value);
+        //             }
+        //         } else {
+        //             tmp = this.data.get(keyPart);
+        //             this.data.put(keyPart, new HashMap<String, Object>());
+        //         }
+        //     } else {
+        //         if (!isLastKeyPart) {
+        //             if (tmp != null) {
+        //                 if (tmp instanceof HashMap) {
+        //                     Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
+
+        //                     if (tmpMap.containsKey(keyPart)) {
+
+        //                         tmp = tmpMap.get(keyPart);
+        //                         if (tmpMap.get(keyPart).getClass() != HashMap.class) {
+        //                             tmpMap.put(keyPart, new HashMap<String, Object>());
+        //                         }
+
+
+        //                     } else {
+
+        //                         tmp = tmpMap.get(keyPart);
+        //                         tmpMap.put(keyPart, new HashMap<String, Object>());
+        //                     }
+        //                 }
+        //             }
+        //         } else {
+        //             if (tmp != null) {
+        //                 if (tmp instanceof HashMap) {
+        //                     Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
+        //                     tmpMap.put(keyPart, value != null ? value : new HashMap<String, Object>());
+        //                 }
+        //             }
+        //         }
+        //     }
+
+        //     index++;
+        // }
+
     }
 
     /**
@@ -244,6 +287,18 @@ public abstract class PowerConfigManager {
      */
     public String getString(String key, String defaultValue) {
         return this.getKV(key, defaultValue).toString();
+    }
+
+    /**
+     * Get a string from the configuration data. Do not create it if it doesn't
+     * exist.
+     * 
+     * @param key
+     * @param defaultValue
+     * @return string
+     */
+    public String getString(String key) {
+        return this.getKV(key, "").toString();
     }
 
     /**
@@ -411,5 +466,9 @@ public abstract class PowerConfigManager {
             this.data = new HashMap<String, Object>();
             this.data.put(targetKey, newData);
         }
+    }
+
+    public boolean destroyFile() {
+        return false;
     }
 }

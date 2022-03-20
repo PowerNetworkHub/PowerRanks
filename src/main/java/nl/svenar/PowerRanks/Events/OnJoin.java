@@ -28,6 +28,8 @@ public class OnJoin implements Listener {
 
 		handleJoin(this.plugin, player);
 
+        this.plugin.getTablistManager().onPlayerJoin(player);
+
 		for (Entry<File, PowerRanksAddon> prAddon : plugin.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(plugin, player);
 			prAddon.getValue().onPlayerJoin(prPlayer);
@@ -45,6 +47,8 @@ public class OnJoin implements Listener {
 		// this.plugin.removePermissions(player);
 
 		validatePlayerData(player);
+
+        this.plugin.getTablistManager().onPlayerLeave(player);
 
 		this.plugin.playerPermissionAttachment.remove(player.getUniqueId());
 

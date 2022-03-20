@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -49,9 +50,12 @@ public class PowerPermissibleBase extends PermissibleBase {
 		boolean checkedWildcard = false;
 		boolean disallowed = false;
 		boolean disallowedValid = false;
+		boolean caseSensitive = PowerRanks.getConfigManager().getBool("general.case-sensitive-permissions", false);
 
 		for (PRPermission prPermission : permissions) {
-			if (prPermission.getName().equals(permission)) {
+
+			if ((caseSensitive && prPermission.getName().equals(permission))
+					|| (!caseSensitive && prPermission.getName().equalsIgnoreCase(permission))) {
 				disallowed = !prPermission.getValue();
 				disallowedValid = true;
 				break;
@@ -129,7 +133,19 @@ public class PowerPermissibleBase extends PermissibleBase {
 	@Override
 	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
 		PowerRanksVerbose.log("getEffectivePermissions()", "called");
-		return super.getEffectivePermissions();
+
+		Set<PermissionAttachmentInfo> permissions = new HashSet<PermissionAttachmentInfo>();
+
+		for (PRPermission permission : plugin.getEffectivePlayerPermissions(player)) {
+			PermissionAttachmentInfo pai = new PermissionAttachmentInfo(this.player, permission.getName(), null, permission.getValue());
+			permissions.add(pai);
+		}
+		
+		for (PermissionAttachmentInfo permission : super.getEffectivePermissions()) {
+			permissions.add(permission);
+		}
+
+		return permissions;
 	}
 
 	/*
@@ -138,7 +154,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	@Override
 	public boolean isOp() {
-		PowerRanksVerbose.log("isOp()", "called");
+		// PowerRanksVerbose.log("isOp()", "called");
 		return super.isOp();
 	}
 

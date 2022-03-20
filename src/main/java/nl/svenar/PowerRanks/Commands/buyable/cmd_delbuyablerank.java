@@ -2,13 +2,16 @@ package nl.svenar.PowerRanks.Commands.buyable;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_delbuyablerank extends PowerCommand {
@@ -18,26 +21,41 @@ public class cmd_delbuyablerank extends PowerCommand {
 	public cmd_delbuyablerank(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.delbuyablerank")) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
 			if (args.length == 2) {
 				final String rankname = this.users.getRankIgnoreCase(args[0]);
 				final String rankname2 = this.users.getRankIgnoreCase(args[1]);
 				final boolean success = this.users.delBuyableRank(rankname, rankname2);
 				if (success) {
-					Messages.messageCommandDelbuyablerankSuccess(sender, rankname, rankname2);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success-del"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("target_rank", rankname2)
+									.build(),
+							'[', ']'));
 				} else {
-					Messages.messageCommandDelbuyablerankError(sender, rankname, rankname2);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".failed-del"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("target_rank", rankname2)
+									.build(),
+							'[', ']'));
 				}
 			} else {
-				Messages.messageCommandUsageDelbuyablerank(sender);
+				sender.sendMessage(
+						PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+								"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			}
-		} else {
-			Messages.noPermission(sender);
-		}
 
 		return false;
 	}

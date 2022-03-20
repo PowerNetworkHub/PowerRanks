@@ -1,6 +1,8 @@
 general:
+  language: en
   autosave-files-interval: 600
   playtime-update-interval: 60
+  case-sensitive-permissions: false
   disable-op: false
 storage:
   type: YAML
@@ -18,6 +20,10 @@ chat:
 tablist_modification:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]'
+  sorting:
+    enabled: true
+    reverse: false
+    update-interval: 5
 nametagedit:
   prefix: '[usertag] [prefix] [subprefix]'
   suffix: '[subsuffix] [suffix]'
@@ -30,6 +36,8 @@ plugin_hook:
   placeholderapi: true
   deluxetags: false
   nametagedit: true
+placeholderapi:
+  inject_powerranks_color: false
 announcements:
   rankup:
     enabled: false

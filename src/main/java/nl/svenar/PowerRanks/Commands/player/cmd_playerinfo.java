@@ -2,6 +2,8 @@ package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -14,36 +16,47 @@ import nl.svenar.PowerRanks.Util.Util;
 
 public class cmd_playerinfo extends PowerCommand {
 
-
 	public cmd_playerinfo(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.playerinfo")) {
-			if (args.length == 1) {
-				String target_player_name = args[0];
-				Player target_player = Util.getPlayerByName(target_player_name);
-				if (target_player != null) {
-					Messages.messagePlayerInfo(sender, target_player, 0);
-				} else {
-					Messages.messagePlayerNotFound(sender, target_player_name);
-				}
-			} else if (args.length == 2) {
-				String target_player_name = args[0];
-				int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
-				Player target_player = Util.getPlayerByName(target_player_name);
-				if (target_player != null) {
-					Messages.messagePlayerInfo(sender, target_player, page);
-				} else {
-					Messages.messagePlayerNotFound(sender, target_player_name);
-				}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 1) {
+			String target_player_name = args[0];
+			Player target_player = Util.getPlayerByName(target_player_name);
+			if (target_player != null) {
+				Messages.messagePlayerInfo(sender, target_player, 0);
 			} else {
-				Messages.messageCommandUsagePlayerinfo(sender);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("target", target_player_name)
+								.build(),
+						'[', ']'));
+			}
+		} else if (args.length == 2) {
+			String target_player_name = args[0];
+			int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
+			Player target_player = Util.getPlayerByName(target_player_name);
+			if (target_player != null) {
+				Messages.messagePlayerInfo(sender, target_player, page);
+			} else {
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-found"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("target", target_player_name)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

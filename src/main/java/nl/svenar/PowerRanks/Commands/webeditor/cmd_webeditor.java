@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -21,8 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.http.DatabinClient;
 import nl.svenar.common.storage.PowerStorageManager;
 import nl.svenar.common.storage.provided.JSONStorageManager;
@@ -35,44 +36,50 @@ public class cmd_webeditor extends PowerCommand {
 
 	public cmd_webeditor(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.webeditor")) {
-			if (args.length == 0) {
-				// No args
-			} else if (args.length == 1 || args.length == 2) {
-				final String webeditorCommand = args[0].toLowerCase();
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 0) {
+			// No args
+		} else if (args.length == 1 || args.length == 2) {
+			final String webeditorCommand = args[0].toLowerCase();
 
-				switch (webeditorCommand) {
+			switch (webeditorCommand) {
 				case "start":
-					startWebeditor(sender);
+					startWebeditor(sender, commandName);
 					break;
 				case "load":
 					if (args.length == 2) {
-						loadWebeditor(sender, args[1]);
+						loadWebeditor(sender, args[1], commandName);
 					} else {
-						Messages.messageCommandUsageWebeditor(sender);
+						sender.sendMessage(
+								PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+										"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 					}
 					break;
 				default:
-					Messages.messageCommandUsageWebeditor(sender);
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+									"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 					break;
-				}
-
-			} else {
-				Messages.messageCommandUsageWebeditor(sender);
 			}
+
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;
 	}
 
-	private void startWebeditor(CommandSender sender) {
-		Messages.preparingWebeditor(sender);
+	private void startWebeditor(CommandSender sender, String commandName) {
+		sender.sendMessage(
+				PowerRanks.getLanguageManager().getFormattedMessage(
+						"commands." + commandName.toLowerCase() + ".preparing-session"));
 
 		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json",
 				"dummyPlayers.json");
@@ -144,7 +151,9 @@ public class cmd_webeditor extends PowerCommand {
 				if (waitTime / (20 / updateInterval) > timeout) {
 					this.cancel();
 
-					Messages.webeditorTimedout(sender);
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".timed-out"));
 				}
 
 				waitTime++;
@@ -152,8 +161,10 @@ public class cmd_webeditor extends PowerCommand {
 		}.runTaskTimer(PowerRanks.getInstance(), 0, updateInterval);
 	}
 
-	private void loadWebeditor(CommandSender sender, String key) {
-		Messages.downloadingWebeditorData(sender);
+	private void loadWebeditor(CommandSender sender, String key, String commandName) {
+		sender.sendMessage(
+				PowerRanks.getLanguageManager().getFormattedMessage(
+						"commands." + commandName.toLowerCase() + ".downloading-data"));
 
 		DatabinClient client = new DatabinClient("https://databin.svenar.nl", "Databinclient/1.0");
 
@@ -177,13 +188,15 @@ public class cmd_webeditor extends PowerCommand {
 					Type mapType = new TypeToken<Map<String, Object>>() {
 					}.getType();
 					Map<String, Object> jsonData = gson.fromJson(rawJSON, mapType);
-					handleWebeditorDownload(sender, jsonData);
+					handleWebeditorDownload(sender, jsonData, commandName);
 				}
 
 				if (waitTime / (20 / updateInterval) > timeout) {
 					this.cancel();
 
-					Messages.webeditorTimedout(sender);
+					sender.sendMessage(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".timed-out"));
 				}
 
 				waitTime++;
@@ -191,19 +204,28 @@ public class cmd_webeditor extends PowerCommand {
 		}.runTaskTimer(PowerRanks.getInstance(), 0, updateInterval);
 	}
 
-	public void handleWebeditorDownload(CommandSender sender, Map<String, Object> jsonData) {
+	public void handleWebeditorDownload(CommandSender sender, Map<String, Object> jsonData, String commandName) {
 
 		LinkedTreeMap<?, ?> serverData = (LinkedTreeMap<?, ?>) jsonData.get("serverdata");
 
 		if (Objects.isNull(serverData) || !serverData.containsKey("powerranksVersion")) {
 			PowerRanks.getInstance().getLogger().warning(serverData.toString());
-			Messages.downloadedInvalidWebeditorData(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".downloaded-invalid-data"));
 			return;
 		}
 
 		if (!((String) serverData.get("powerranksVersion")).equals(PowerRanks.getVersion())) {
-			Messages.incompattiblePowerRanksVersionWebeditor(sender, (String) serverData.get("powerranksVersion"),
-					PowerRanks.getVersion());
+			sender.sendMessage(Util.powerFormatter(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".incompatible-version"),
+					ImmutableMap.<String, String>builder()
+							.put("player", sender.getName())
+							.put("version", PowerRanks.getVersion())
+							.put("downloaded_version", (String) serverData.get("powerranksVersion"))
+							.build(),
+					'[', ']'));
 			return;
 		}
 
@@ -215,7 +237,9 @@ public class cmd_webeditor extends PowerCommand {
 				"dummyPlayers.json");
 
 		if (!(rankData instanceof LinkedTreeMap<?, ?> && playerData instanceof LinkedTreeMap<?, ?>)) {
-			Messages.FailedDownloadingWebeditorData(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".failed-downloaded"));
 			return;
 		}
 
@@ -228,8 +252,19 @@ public class cmd_webeditor extends PowerCommand {
 
 		PowerRanks.getUsertagManager().fromJSON("usertags", usertags);
 
-		Messages.downloadedWebeditorData(sender);
-		Messages.LoadedRanksPlayersWebeditor(sender, CacheManager.getRanks().size(), CacheManager.getPlayers().size());
+		sender.sendMessage(
+				PowerRanks.getLanguageManager().getFormattedMessage(
+						"commands." + commandName.toLowerCase() + ".success-downloaded"));
+
+		sender.sendMessage(Util.powerFormatter(
+				PowerRanks.getLanguageManager().getFormattedMessage(
+						"commands." + commandName.toLowerCase() + ".download-stats"),
+				ImmutableMap.<String, String>builder()
+						.put("player", sender.getName())
+						.put("rank_count", String.valueOf(CacheManager.getRanks().size()))
+						.put("player_count", String.valueOf(CacheManager.getPlayers().size()))
+						.build(),
+				'[', ']'));
 	}
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {

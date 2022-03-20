@@ -2,15 +2,18 @@ package nl.svenar.PowerRanks.Commands.rank;
 
 import java.util.ArrayList;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
-import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_addperm extends PowerCommand {
@@ -20,35 +23,59 @@ public class cmd_addperm extends PowerCommand {
 	public cmd_addperm(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
+		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (sender.hasPermission("powerranks.cmd.addperm")) {
-			if (args.length == 2) {
-				final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
-				String permission = args[1];
-				boolean allowed = true;
-				// this.setValue(!name.startsWith("-"));
-				if (permission.startsWith("-")) {
-					permission = permission.replaceFirst("-", "");
-					allowed = false;
-				}
-				final boolean result = this.users.addPermission(rankname, permission, allowed);
-				if (result) {
-					if (rankname.equals("*")) {
-						Messages.messageCommandPermissionAddedToAllRanks(sender, permission);
-					} else {
-						Messages.messageCommandPermissionAdded(sender, permission, rankname);
-					}
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
+			String[] args) {
+		if (args.length == 2) {
+			final String rankname = args[0].equals("*") ? args[0] : this.users.getRankIgnoreCase(args[0]);
+			String permission = args[1];
+			boolean allowed = true;
+			// this.setValue(!name.startsWith("-"));
+			if (permission.startsWith("-")) {
+				permission = permission.replaceFirst("-", "");
+				allowed = false;
+			}
+			final boolean result = this.users.addPermission(rankname, permission, allowed);
+			if (result) {
+				if (rankname.equals("*")) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success-all"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("permission", permission)
+									.build(),
+							'[', ']'));
 				} else {
-					Messages.messageErrorAddingPermission(sender, rankname, permission);
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".success"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("rank", rankname)
+									.put("permission", permission)
+									.build(),
+							'[', ']'));
 				}
-			} else {
-				Messages.messageCommandUsageAddperm(sender);
+			} else { // Rank not found
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".failed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.put("permission", permission)
+								.build(),
+						'[', ']'));
 			}
 		} else {
-			Messages.noPermission(sender);
+			sender.sendMessage(
+					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 		}
 
 		return false;

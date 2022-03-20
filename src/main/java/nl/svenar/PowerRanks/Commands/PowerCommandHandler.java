@@ -27,6 +27,7 @@ import nl.svenar.PowerRanks.Commands.buyable.cmd_setbuycommand;
 import nl.svenar.PowerRanks.Commands.buyable.cmd_setbuycost;
 import nl.svenar.PowerRanks.Commands.buyable.cmd_setbuydescription;
 import nl.svenar.PowerRanks.Commands.core.cmd_config;
+import nl.svenar.PowerRanks.Commands.core.cmd_dump;
 import nl.svenar.PowerRanks.Commands.core.cmd_factoryreset;
 import nl.svenar.PowerRanks.Commands.core.cmd_help;
 import nl.svenar.PowerRanks.Commands.core.cmd_pluginhook;
@@ -91,6 +92,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
 		new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
 		new cmd_haspermission(plugin, "haspermission", COMMAND_EXECUTOR.ALL);
+		new cmd_dump(plugin, "dump", COMMAND_EXECUTOR.ALL);
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
 		new cmd_setownrank(plugin, "setownrank", COMMAND_EXECUTOR.PLAYER);
@@ -144,31 +146,46 @@ public class PowerCommandHandler implements CommandExecutor {
 	}
 
 	private static boolean canExecuteCommand(CommandSender sender, PowerCommand command_handler) {
-		return (sender instanceof Player && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.PLAYER || command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL))
-			|| (sender instanceof ConsoleCommandSender && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.CONSOLE || command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL))
-			|| (sender instanceof BlockCommandSender && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.COMMANDBLOCK || command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL));
+		return (sender instanceof Player && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.PLAYER
+				|| command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL))
+				|| (sender instanceof ConsoleCommandSender
+						&& (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.CONSOLE
+								|| command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL))
+				|| (sender instanceof BlockCommandSender
+						&& (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.COMMANDBLOCK
+								|| command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL));
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (args.length == 0) {
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA + plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
+					+ plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 			sender.sendMessage(ChatColor.GREEN + "/" + commandLabel + " help" + ChatColor.DARK_GREEN + " - For the command list.");
 			sender.sendMessage("");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Author: " + ChatColor.GREEN + plugin.getDescription().getAuthors().get(0));
 			sender.sendMessage(ChatColor.DARK_GREEN + "Version: " + ChatColor.GREEN + plugin.getDescription().getVersion());
-			sender.sendMessage(ChatColor.DARK_GREEN + "Website: " + ChatColor.GREEN + plugin.getDescription().getWebsite());
+            sender.sendMessage(ChatColor.DARK_GREEN + "Website: " + ChatColor.GREEN + plugin.getDescription().getWebsite());
+            sender.sendMessage(ChatColor.DARK_GREEN + "Documentation: " + ChatColor.GREEN + "https://docs.powerranks.nl");
 			sender.sendMessage(ChatColor.DARK_GREEN + "Support me: " + ChatColor.YELLOW + "https://ko-fi.com/svenar");
-			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------" + ChatColor.BLUE + "===");
+			sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
+					+ ChatColor.BLUE + "===");
 		} else {
 			String command = args[0];
 			PowerCommand command_handler = get_power_command(command);
 			if (command_handler != null) {
 				boolean is_allowed = canExecuteCommand(sender, command_handler);
+				boolean hasPermission = hasPermission(sender, command_handler);
 				if (is_allowed) {
-					return command_handler.onCommand(sender, cmd, commandLabel, Arrays.copyOfRange(args, 1, args.length));
+					if (hasPermission) {
+						return command_handler.onCommand(sender, cmd, commandLabel, command,
+								Arrays.copyOfRange(args, 1, args.length));
+					} else {
+						sender.sendMessage(
+								PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					}
 				} else {
-					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "Only players can use this command");
+					sender.sendMessage(plugin.plp + ChatColor.DARK_RED + "You can't execute this command here");
 				}
 			} else {
 				boolean addonCommandFound = false;
@@ -194,6 +211,14 @@ public class PowerCommandHandler implements CommandExecutor {
 		return false;
 	}
 
+	private boolean hasPermission(CommandSender sender, PowerCommand command_handler) {
+		if (command_handler.getCommandPermission().length() == 0) {
+			return true;
+		}
+
+		return sender.hasPermission(command_handler.getCommandPermission());
+	}
+
 	public static PowerCommand get_power_command(String command_name) {
 		return power_commands.get(command_name.toLowerCase());
 	}
@@ -201,13 +226,18 @@ public class PowerCommandHandler implements CommandExecutor {
 	public static void add_power_command(String command_name, PowerCommand command_handler) {
 		power_commands.put(command_name.toLowerCase(), command_handler);
 	}
-	
+
+    private static boolean hasCommandPermission(CommandSender sender, String cmd) {
+        boolean hasPermission = sender instanceof Player ? ((Player) sender).hasPermission("powerranks.cmd." + cmd.toLowerCase()) : true;
+        return hasPermission;
+    }
+
 	public static ArrayList<String> handle_tab_complete(CommandSender sender, String cmd, String[] args) {
 		ArrayList<String> output = new ArrayList<String>();
 		if (args.length == 0) {
 			for (Entry<String, PowerCommand> entry : power_commands.entrySet()) {
 				if (cmd.length() == 0 || entry.getKey().toLowerCase().contains(cmd.toLowerCase())) {
-					boolean is_allowed = canExecuteCommand(sender, entry.getValue());
+					boolean is_allowed = canExecuteCommand(sender, entry.getValue()) && hasCommandPermission(sender, cmd);
 					if (is_allowed) {
 						output.add(entry.getKey());
 					}
@@ -215,9 +245,11 @@ public class PowerCommandHandler implements CommandExecutor {
 			}
 		} else {
 			if (power_commands.containsKey(cmd.toLowerCase())) {
-				output = power_commands.get(cmd.toLowerCase()).tabCompleteEvent(sender, args);
+				if (hasCommandPermission(sender, cmd)) {
+                    output = power_commands.get(cmd.toLowerCase()).tabCompleteEvent(sender, args);
+                }
 			}
-			
+
 		}
 		return output;
 	}
