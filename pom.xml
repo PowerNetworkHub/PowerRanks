@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.5 BETA</version>
+	<version>1.10.5</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
