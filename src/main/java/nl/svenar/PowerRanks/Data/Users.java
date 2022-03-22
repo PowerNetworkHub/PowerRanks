@@ -983,6 +983,32 @@ public class Users implements Listener {
 		return true;
 	}
 
+    @SuppressWarnings("unchecked")
+	public boolean delUserTag(Player player, String tag) {
+		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
+				new HashMap<String, String>());
+
+		PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		if (Objects.isNull(targetPlayer)) {
+			return false;
+		}
+
+		String key = "";
+		for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+			if (entry.getKey().toString().equalsIgnoreCase(tag)) {
+				key = entry.getKey().toString();
+			}
+		}
+
+		if (key.length() == 0) {
+			return false;
+		}
+
+		targetPlayer.removeUsertag(key);
+
+		return true;
+	}
+
 	public boolean setUserTag(String playername, String tag) {
 		Player player = Bukkit.getServer().getPlayer(playername);
 		return setUserTag(player, tag);
@@ -991,6 +1017,11 @@ public class Users implements Listener {
     public boolean addUserTag(String playername, String tag) {
 		Player player = Bukkit.getServer().getPlayer(playername);
 		return addUserTag(player, tag);
+	}
+
+    public boolean delUserTag(String playername, String tag) {
+		Player player = Bukkit.getServer().getPlayer(playername);
+		return delUserTag(player, tag);
 	}
 
 	@SuppressWarnings("unchecked")

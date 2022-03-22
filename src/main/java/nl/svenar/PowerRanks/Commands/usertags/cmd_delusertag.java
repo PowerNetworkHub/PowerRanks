@@ -14,11 +14,11 @@ import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 
-public class cmd_addusertag extends PowerCommand {
+public class cmd_delusertag extends PowerCommand {
 
 	private Users users;
 
-	public cmd_addusertag(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
+	public cmd_delusertag(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
 		this.users = new Users(plugin);
 		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
@@ -31,7 +31,7 @@ public class cmd_addusertag extends PowerCommand {
 			if (!PowerRanks.plugin_hook_deluxetags) {
 				final String playername = sender.getName();
 				final String tag = args[0];
-				final boolean result = this.users.addUserTag(playername, tag);
+				final boolean result = this.users.delUserTag(playername, tag);
 				if (result) {
                     Player targetPlayer = Bukkit.getServer().getPlayer(playername);
                     if (targetPlayer != null) {
@@ -68,7 +68,7 @@ public class cmd_addusertag extends PowerCommand {
 				if (!PowerRanks.plugin_hook_deluxetags) {
 					final String playername = args[0];
 					final String tag = args[1];
-					final boolean result = this.users.addUserTag(playername, tag);
+					final boolean result = this.users.delUserTag(playername, tag);
 					if (result) {
                         Player targetPlayer = Bukkit.getServer().getPlayer(playername);
                         if (targetPlayer != null) {

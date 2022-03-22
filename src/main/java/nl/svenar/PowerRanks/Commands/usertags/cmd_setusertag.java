@@ -33,6 +33,11 @@ public class cmd_setusertag extends PowerCommand {
 				final String tag = args[0];
 				final boolean result = this.users.setUserTag(playername, tag);
 				if (result) {
+                    Player targetPlayer = Bukkit.getServer().getPlayer(playername);
+                    if (targetPlayer != null) {
+                        PowerRanks.getInstance().updateTablistName(targetPlayer);
+                    }
+                    
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".success"),
@@ -65,6 +70,11 @@ public class cmd_setusertag extends PowerCommand {
 					final String tag = args[1];
 					final boolean result = this.users.setUserTag(playername, tag);
 					if (result) {
+                        Player targetPlayer = Bukkit.getServer().getPlayer(playername);
+                        if (targetPlayer != null) {
+                            PowerRanks.getInstance().updateTablistName(targetPlayer);
+                        }
+
 						sender.sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success"),
