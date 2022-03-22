@@ -13,7 +13,7 @@ import nl.svenar.common.structure.PRRank;
 
 public class PowerRanksAPI {
 
-	private String API_VERSION = "1.2";
+	private String API_VERSION = "1.3";
 
 	public static PowerRanks plugin;
 	private Users users;
@@ -459,6 +459,71 @@ public class PowerRanksAPI {
 	public boolean removePermission(Player player, String permission) {
 		return users.delPlayerPermission(player.getName(), permission);
 	}
+
+    /**
+     * Create a usertag on the server
+     * 
+     * @param usertag
+     * @param value
+     * @return true if successful, false otherwise
+     */
+    public boolean createUsertag(String usertag, String value) {
+        return this.createUsertag(usertag, value);
+    }
+
+    /**
+     * Change a usertag on the server
+     * 
+     * @param usertag
+     * @param value
+     * @return true if successful, false otherwise
+     */
+    public boolean editUsertag(String usertag, String value) {
+        return this.editUsertag(usertag, value);
+    }
+
+    /**
+     * Delete a usertag from the server
+     * 
+     * @param usertag
+     * @return true if successful, false otherwise
+     */
+    public boolean removeUsertag(String usertag) {
+        return this.users.removeUserTag(usertag);
+    }
+
+    /**
+     * Assign a usertag to an player
+     * 
+     * @param player
+     * @param usertag
+     * @return true if successful, false otherwise
+     */
+    public boolean setUsertag(Player player, String usertag) {
+        return this.users.setUserTag(player.getName(), usertag);
+    }
+
+    /**
+     * Add a usertag to an player
+     * 
+     * @param player
+     * @param usertag
+     * @return true if successful, false otherwise
+     */
+    public boolean addUsertag(Player player, String usertag) {
+        return this.users.addUserTag(player.getName(), usertag);
+    }
+
+    /**
+     * Remove an usertag from a player
+     * 
+     * @param player
+     * @param usertag
+     * @return true if successful, false otherwise
+     */
+    public boolean delUsertag(Player player, String usertag) {
+        return this.users.delUserTag(player.getName(), usertag);
+    }
 
 	/**
 	 * Deprecated | replaced by {@link #getPrimaryRank(Player)}
