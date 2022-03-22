@@ -3,6 +3,8 @@ package nl.svenar.PowerRanks.Util;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -47,6 +49,10 @@ public class PowerColor {
             hexSupported = false;
         }
 
+        if (hexSupported) {
+            output = formatHEX(output);
+        }
+
         if (special) {
             output = formatSpecial(altColorChar, output, hexSupported);
         }
@@ -58,6 +64,19 @@ public class PowerColor {
         }
 
         return output;
+    }
+
+    private String formatHEX(String text) {
+        Pattern HEXPattern = Pattern.compile("&?#[a-fA-F0-9]{6}");
+        Matcher HEXMatcher = HEXPattern.matcher(text);
+
+        while (HEXMatcher.find()) {
+            String rawHEX = text.substring(HEXMatcher.start(), HEXMatcher.end());
+            text = text.replace(rawHEX, net.md_5.bungee.api.ChatColor.of(rawHEX.startsWith("&") ? rawHEX.replaceFirst("&", "") : rawHEX) + "");
+            HEXMatcher = HEXPattern.matcher(text);
+        }
+
+        return text;
     }
 
     private String formatSpecial(char altColorChar, String input, boolean hexSupported) {
