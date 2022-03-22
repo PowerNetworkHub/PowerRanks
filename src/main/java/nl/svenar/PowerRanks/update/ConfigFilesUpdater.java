@@ -245,7 +245,7 @@ public class ConfigFilesUpdater {
 		final PowerRanks plugin = PowerRanks.getInstance();
 
 		boolean updateConfigYAML = checkVersion(PowerRanks.fileLoc, "config.yml");
-		boolean updateLangYAML = checkVersion(PowerRanks.fileLoc, "lang.yml");
+		boolean updateLangYAML = true;// checkVersion(PowerRanks.fileLoc, "lang.yml");
 
 		if (updateConfigYAML) {
 			copyTmpFile("config.yml");
@@ -291,13 +291,18 @@ public class ConfigFilesUpdater {
 				yamlConf.load(file);
 				yamlConf.set("version", null);
 				yamlConf.set("commands.help", null);
-				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(false)) {
-					for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
-						String field = key + "." + key2;
-						if (!yamlConf.contains(field)) {
-							yamlConf.set(field, tmpYamlConf.get(field));
-						}
-					}
+				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(true)) {
+                    if (!yamlConf.contains(key)) {
+                        if (tmpYamlConf.isString(key)) {
+                            yamlConf.set(key, tmpYamlConf.get(key));
+                        }
+                    }
+					// for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
+					// 	String field = key + "." + key2;
+					// 	if (!yamlConf.contains(field)) {
+					// 		yamlConf.set(field, tmpYamlConf.get(field));
+					// 	}
+					// }
 				}
 				// yamlConf.set("commands.help", null);
 				yamlConf.set("version", PowerRanks.getVersion().replaceAll("[a-zA-Z ]", ""));

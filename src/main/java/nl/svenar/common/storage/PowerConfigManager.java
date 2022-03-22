@@ -190,7 +190,8 @@ public abstract class PowerConfigManager {
      */
     @SuppressWarnings("unchecked")
     public void setKV(String key, Object value) {
-
+        System.out.println("key: " + key);
+        System.out.println("value: " + value);
         String[] keySplit = key.split("\\.");
         int entries = keySplit.length;
         Object currentKey = this.data;
@@ -210,61 +211,11 @@ public abstract class PowerConfigManager {
                     }
                 }
             } else {
-                ((HashMap<String, Object>)currentKey).put(keySplit[i], value);
+                if (currentKey != null) {
+                    ((HashMap<String, Object>)currentKey).put(keySplit[i], value);
+                }
             }
         }
-
-        // String[] keySplit = key.split("\\.");
-        // Object tmp = null;
-        // int index = 0;
-
-        // for (String keyPart : keySplit) {
-        //     boolean isLastKeyPart = index == keySplit.length - 1;
-
-        //     if (index == 0) {
-        //         if (this.data.containsKey(keyPart)) {
-        //             tmp = this.data.get(keyPart);
-        //             if (this.data.get(keyPart).getClass() != HashMap.class) {
-        //                 this.data.put(keyPart, !isLastKeyPart ? new HashMap<String, Object>() : value);
-        //             }
-        //         } else {
-        //             tmp = this.data.get(keyPart);
-        //             this.data.put(keyPart, new HashMap<String, Object>());
-        //         }
-        //     } else {
-        //         if (!isLastKeyPart) {
-        //             if (tmp != null) {
-        //                 if (tmp instanceof HashMap) {
-        //                     Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
-
-        //                     if (tmpMap.containsKey(keyPart)) {
-
-        //                         tmp = tmpMap.get(keyPart);
-        //                         if (tmpMap.get(keyPart).getClass() != HashMap.class) {
-        //                             tmpMap.put(keyPart, new HashMap<String, Object>());
-        //                         }
-
-
-        //                     } else {
-
-        //                         tmp = tmpMap.get(keyPart);
-        //                         tmpMap.put(keyPart, new HashMap<String, Object>());
-        //                     }
-        //                 }
-        //             }
-        //         } else {
-        //             if (tmp != null) {
-        //                 if (tmp instanceof HashMap) {
-        //                     Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
-        //                     tmpMap.put(keyPart, value != null ? value : new HashMap<String, Object>());
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        //     index++;
-        // }
-
     }
 
     /**
@@ -298,7 +249,7 @@ public abstract class PowerConfigManager {
      * @return string
      */
     public String getString(String key) {
-        return this.getKV(key, "").toString();
+        return this.getKV(key, key).toString();
     }
 
     /**

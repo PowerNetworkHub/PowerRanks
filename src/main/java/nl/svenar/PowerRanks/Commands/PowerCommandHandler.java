@@ -64,9 +64,11 @@ import nl.svenar.PowerRanks.Commands.rank.cmd_setsuffix;
 import nl.svenar.PowerRanks.Commands.rank.cmd_setweight;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_clearusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_createusertag;
+import nl.svenar.PowerRanks.Commands.usertags.cmd_delusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_editusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_listusertags;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_removeusertag;
+import nl.svenar.PowerRanks.Commands.usertags.cmd_addusertag;
 import nl.svenar.PowerRanks.Commands.usertags.cmd_setusertag;
 import nl.svenar.PowerRanks.Commands.webeditor.cmd_webeditor;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
@@ -137,7 +139,9 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_createusertag(plugin, "createusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_editusertag(plugin, "editusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_removeusertag(plugin, "removeusertag", COMMAND_EXECUTOR.ALL);
+		new cmd_addusertag(plugin, "addusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_setusertag(plugin, "setusertag", COMMAND_EXECUTOR.ALL);
+		new cmd_delusertag(plugin, "delusertag", COMMAND_EXECUTOR.ALL);
 		new cmd_clearusertag(plugin, "clearusertag", COMMAND_EXECUTOR.ALL);
 
 		new cmd_webeditor(plugin, "webeditor", COMMAND_EXECUTOR.ALL);
