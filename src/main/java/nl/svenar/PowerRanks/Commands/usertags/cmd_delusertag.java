@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.PowerRanks.PowerRanks;
+import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
@@ -122,8 +123,11 @@ public class cmd_delusertag extends PowerCommand {
 		}
 
 		if (args.length == 2) {
-			for (String tag : this.users.getUserTags()) {
-				tabcomplete.add(tag);
+            Player target_player = Util.getPlayerByName(args[0]);
+			if (target_player != null) {
+                for (String tag : CacheManager.getPlayer(target_player.getUniqueId().toString()).getUsertags()) {
+                    tabcomplete.add(tag);
+                }
 			}
 		}
 
