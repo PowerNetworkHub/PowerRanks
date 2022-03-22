@@ -238,6 +238,17 @@ public class PRPlayer {
     }
 
     /**
+     * Set the usertag of the player
+     * 
+     * @param usertag
+     */
+    public void setUsertag(String usertag) {
+        this.usertags = new ArrayList<String>();
+
+        this.usertags.add(usertag);
+    }
+
+    /**
      * Add a usertag to the player
      * 
      * @param usertag
@@ -247,7 +258,9 @@ public class PRPlayer {
             this.usertags = new ArrayList<String>();
         }
 
-        this.usertags.add(usertag);
+        if (!this.usertags.contains(usertag)) {
+            this.usertags.add(usertag);
+        }
     }
 
     /**

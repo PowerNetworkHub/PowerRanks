@@ -269,11 +269,18 @@ lang:
             failed: "&cFailed removing usertag [usertag]"
          setusertag:
             arguments: "[player_name] <tag_name>"
-            description: "Assign a user tag"
+            description: "Assign a user tag to an player"
             disabled: "&cCan't set a player's usertag. Usertags are disabled!"
             not-found: "&cUsertag [usertag] not found!"
             success: "&aSet [target]'s usertag to: [usertag]"
             failed: "&cFailed to change [target]'s usertag to: [usertag]"
+         addusertag:
+            arguments: "[player_name] <tag_name>"
+            description: "Add a user tag to an player"
+            disabled: "&cCan't add a player's usertag. Usertags are disabled!"
+            not-found: "&cUsertag [usertag] not found!"
+            success: "&aAdded usertag [usertag] to: [target]"
+            failed: "&cFailed to add usertag [usertag] to: [target]"
          webeditor:
             arguments: "<start/load [id]>"
             description: "Upload/download your server data to/from the PowerRanks web-editor"
