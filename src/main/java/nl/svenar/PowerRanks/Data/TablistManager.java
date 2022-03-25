@@ -221,13 +221,19 @@ public class TablistManager {
     }
 
     public void stop() {
-        // if (!PowerRanks.getTablistConfigManager().getBool("sorting.enabled", false)) {
-        //     return;
-        // }
+        for (Player player: Bukkit.getServer().getOnlinePlayers()) {
+            player.setPlayerListHeader(null);
+            player.setPlayerListFooter(null);
+        }
+
+        headerLines = new ArrayList<String>();
+        footerLines = new ArrayList<String>();
+        tablistAnimations = new HashMap<String, TablistAnimation>();
 
         for (Entry<UUID,Integer> entry : playerHighestWeight.entrySet()) {
             entry.setValue(Integer.MIN_VALUE);
         }
+
         numRanks = -1;
         totalWeight = -1;
 
