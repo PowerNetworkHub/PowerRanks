@@ -101,42 +101,6 @@ public class cmd_config extends PowerCommand {
 							'[', ']'));
 
 					PowerRanks.getConfigManager().setBool("tablist_modification.enabled", enable);
-                
-                // } else if (args[1].equalsIgnoreCase("tablist_sorting")) {
-                //     sender.sendMessage(Util.powerFormatter(
-                //         PowerRanks.getLanguageManager().getFormattedMessage(
-                //                 "commands." + commandName.toLowerCase() + ".state-changed"),
-                //         ImmutableMap.<String, String>builder()
-                //                 .put("player", sender.getName())
-                //                 .put("config_target", "Tablist sorting")
-                //                 .put("old_state",
-                //                         String.valueOf(PowerRanks.getConfigManager()
-                //                                 .getBool("tablist_modification.sorting.enabled", true)))
-                //                 .put("new_state", String.valueOf(enable))
-                //                 .build(),
-                //         '[', ']'));
-
-                // PowerRanks.getConfigManager().setBool("tablist_modification.sorting.enabled", enable);
-                // PowerRanks.getInstance().getTablistManager().stop();
-                // PowerRanks.getInstance().getTablistManager().start();
-
-                // } else if (args[1].equalsIgnoreCase("reverse_tablist_sorting")) {
-                //     sender.sendMessage(Util.powerFormatter(
-                //         PowerRanks.getLanguageManager().getFormattedMessage(
-                //                 "commands." + commandName.toLowerCase() + ".state-changed"),
-                //         ImmutableMap.<String, String>builder()
-                //                 .put("player", sender.getName())
-                //                 .put("config_target", "Reverse tablist sorting")
-                //                 .put("old_state",
-                //                         String.valueOf(PowerRanks.getConfigManager()
-                //                                 .getBool("tablist_modification.sorting.reverse", true)))
-                //                 .put("new_state", String.valueOf(enable))
-                //                 .build(),
-                //         '[', ']'));
-
-                // PowerRanks.getConfigManager().setBool("tablist_modification.sorting.reverse", enable);
-                // PowerRanks.getInstance().getTablistManager().stop();
-                // PowerRanks.getInstance().getTablistManager().start();
 
 				} else if (args[1].equalsIgnoreCase("casesensitive_permissions")) {
 					sender.sendMessage(Util.powerFormatter(
@@ -169,22 +133,6 @@ public class cmd_config extends PowerCommand {
 							'[', ']'));
 
 					PowerRanks.getConfigManager().setBool("general.disable-op", !enable);
-
-					// } else if (args[1].equalsIgnoreCase("language")) {
-					// sender.sendMessage(Util.powerFormatter(
-					// PowerRanks.getLanguageManager().getFormattedMessage(
-					// "commands." + commandName.toLowerCase() + ".state-changed"),
-					// ImmutableMap.<String, String>builder()
-					// .put("player", sender.getName())
-					// .put("config_target", "PowerRanks language (lang.yml)")
-					// .put("old_state",
-					// String.valueOf(!PowerRanks.getConfigManager()
-					// .getBool("general.language", true)))
-					// .put("new_state", String.valueOf(enable))
-					// .build(),
-					// '[', ']'));
-
-					// PowerRanks.getConfigManager().setBool("general.language", !enable);
 
 				} else {
 					sender.sendMessage(
@@ -287,8 +235,6 @@ public class cmd_config extends PowerCommand {
 			if (args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
 				tabcomplete.add("chat_formatting");
 				tabcomplete.add("tablist_formatting");
-				// tabcomplete.add("tablist_sorting");
-				// tabcomplete.add("reverse_tablist_sorting");
 				tabcomplete.add("casesensitive_permissions");
 				tabcomplete.add("op");
 			}
