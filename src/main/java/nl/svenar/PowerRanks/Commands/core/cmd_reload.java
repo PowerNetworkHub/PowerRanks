@@ -36,7 +36,11 @@ public class cmd_reload extends PowerCommand {
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".config-start"));
 
-				PowerRanks.getConfigManager().reload();
+                PowerRanks.getConfigManager().reload();
+                PowerRanks.getLanguageManager().reload();
+                PowerRanks.getUsertagManager().reload();
+                PowerRanks.getTablistConfigManager().reload();
+                
 				CacheManager.load(PowerRanks.fileLoc);
 				this.plugin.updateAllPlayersTABlist();
 
@@ -77,6 +81,9 @@ public class cmd_reload extends PowerCommand {
 								"commands." + commandName.toLowerCase() + ".config-start"));
 
 				PowerRanks.getConfigManager().reload();
+				PowerRanks.getLanguageManager().reload();
+				PowerRanks.getUsertagManager().reload();
+                PowerRanks.getTablistConfigManager().reload();
 
 				sender.sendMessage(
 						PowerRanks.getLanguageManager().getFormattedMessage(
