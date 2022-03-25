@@ -108,6 +108,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private static PowerConfigManager configManager;
 	private static LanguageManager languageManager;
 	private static PowerConfigManager usertagManager;
+	private static PowerConfigManager tablistConfigManager;
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
@@ -177,6 +178,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		languageManager.setLanguage(configManager.getString("general.language", "en"));
 		PowerRanks.log.info("Loading usertags file");
 		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
+		PowerRanks.log.info("Loading tablist file");
+		tablistConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, "tablist.yml", "tablist.yml");
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ---------- LOADING ADDONS ---------- ===");
@@ -287,6 +290,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			getUsertagManager().save();
 		} else {
 			getLogger().warning("Failed to save usertags file!");
+			hasErrorInSaving = true;
+		}
+
+		if (Objects.nonNull(getTablistConfigManager())) {
+			getTablistConfigManager().save();
+		} else {
+			getLogger().warning("Failed to save tablist config file!");
 			hasErrorInSaving = true;
 		}
 
@@ -1049,6 +1059,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static PowerConfigManager getUsertagManager() {
 		return usertagManager;
+	}
+	public static PowerConfigManager getTablistConfigManager() {
+		return tablistConfigManager;
 	}
 
     public static PowerColor getPowerColor() {
