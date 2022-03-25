@@ -12,7 +12,7 @@ header-footer:
   footer:
   - "#01b0fb-#11a5fa-#229af8-#328ff7-#4284f5-#5279f4-#636ef2-#7363f1-#8358ef-#934dee-#a442ec-#b437eb-#c42ce9-#d421e8-#e516e6-#f50be5-#f50be5-#e516e6-#d421e8-#c42ce9-#b437eb-#a442ec-#934dee-#8358ef-#7363f1-#636ef2-#5279f4-#4284f5-#328ff7-#229af8-#11a5fa-#01b0fb-"
   - ""
-  - "&b&lFooter"
+  - "#5ffb15d#61fb15e#64fb16f#66fb16a#68fb17u#6afb17l#6dfb17t #6ffb18h#71fb18e#74fb18a#76fc19d#78fc19e#7afc1ar #7dfc1a #7ffc1af#81fc1bo#84fc1bo#86fc1ct#88fc1ce#8afc1cr#8dfc1d, #8ffc1dc#91fc1dh#93fc1ea#96fc1en#98fc1fg#9afc1fe #9dfc1fi#9ffc20n #a1fc20t#a3fd21a#a6fd21b#a8fd21l#aafd22i#adfd22s#affd22t#b1fd23.#b3fd23y#b6fd24m#b8fd24l"
   animations:
     demo:
       delay: 5
@@ -29,4 +29,5 @@ header-footer:
       - "#f6fb00P#f7df05o#f8c30aw#f8a70fe#f98b14r#FFFFFFR#fb541fa#fb3824n#fc1c29k#fd002es"
       - "#f6fb00P#f7df05o#f8c30aw#f8a70fe#f98b14r#fa701aR#FFFFFFa#fb3824n#fc1c29k#fd002es"
       - "#f6fb00P#f7df05o#f8c30aw#f8a70fe#f98b14r#fa701aR#fb541fa#FFFFFFn#fc1c29k#fd002es"
+      - "#f6fb00P#f7df05o#f8c30aw#f8a70fe#f98b14r#fa701aR#fb541fa#fb3824n#FFFFFFk#fd002es"
       - "#f6fb00P#f7df05o#f8c30aw#f8a70fe#f98b14r#fa701aR#fb541fa#fb3824n#fc1c29k#FFFFFFs"
