@@ -20,10 +20,6 @@ chat:
 tablist_modification:
   enabled: true
   format: '&a[world]&r [usertag] [prefix] [subprefix] [player] [subsuffix] [suffix]'
-  sorting:
-    enabled: true
-    reverse: false
-    update-interval: 5
 nametagedit:
   prefix: '[usertag] [prefix] [subprefix]'
   suffix: '[subsuffix] [suffix]'
