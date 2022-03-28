@@ -304,6 +304,17 @@ lang:
             failed-downloaded: "&cFailed to download data from the web editor!"
             incompatible-version: "&cIncompattible PowerRanks version! (editor: [downloaded_version] | server: [version])"
             download-stats: "&aLoaded [rank_count] ranks and [player_count] players from the web editor!"
+         we:
+            arguments: "<start/load [id]>"
+            description: "Upload/download your server data to/from the PowerRanks web-editor"
+            preparing-session: "&aPreparing web editor..."
+            timed-out: "&cThe web editor has timed out! Please try again later."
+            downloading-data: "&aDownloading data from the web editor..."
+            success-downloaded: "&aFinished downloading data from the web editor! &cIt is recommended to restart your server."
+            downloaded-invalid-data: "&cInvalid web editor data!"
+            failed-downloaded: "&cFailed to download data from the web editor!"
+            incompatible-version: "&cIncompattible PowerRanks version! (editor: [downloaded_version] | server: [version])"
+            download-stats: "&aLoaded [rank_count] ranks and [player_count] players from the web editor!"
          dump:
             arguments: ""
             description: "Upload your server data to the PowerRanks server for debugging"
