@@ -2,11 +2,13 @@ package nl.svenar.common.http;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
+import nl.svenar.common.PowerLogger;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -81,7 +83,19 @@ public class DatabinClient extends PowerHTTPClient {
         String response = this.rawResponse;
         this.rawResponse = "";
 
-        return parseJSON(response);
+        try {
+            return parseJSON(response);
+        } catch (IllegalStateException ise) {
+            PowerLogger.severe("");
+            PowerLogger.severe("An error occurred while parsing response code");
+            PowerLogger.severe("=== ------------------------------------- ===");
+            PowerLogger.severe(response);
+            PowerLogger.severe("=== ------------------------------------- ===");
+            ise.printStackTrace();
+            PowerLogger.severe("");
+
+            return new HashMap<String, String>();
+        }
     }
 
     public String getRawResponse() {
