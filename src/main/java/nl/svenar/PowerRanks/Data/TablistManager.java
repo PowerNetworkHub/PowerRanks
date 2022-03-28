@@ -32,6 +32,7 @@ public class TablistManager {
     private ArrayList<String> headerLines = new ArrayList<String>();
     private ArrayList<String> footerLines = new ArrayList<String>();
     private HashMap<String, TablistAnimation> tablistAnimations = new HashMap<String, TablistAnimation>();
+    private int verboseLogInterval = 0;
 
     public TablistManager() {}
 
@@ -146,7 +147,11 @@ public class TablistManager {
                     player.setPlayerListFooter(getFooter());
                 }
 
-                PowerRanksVerbose.log("task", "Running task header/footer tablist in " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
+                if (verboseLogInterval > 100) {
+                    PowerRanksVerbose.log("task", "Running task header/footer tablist in " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
+                    verboseLogInterval = 0;
+                }
+                verboseLogInterval++;
             }
         };
         headerFooterTask.runTaskTimer(
