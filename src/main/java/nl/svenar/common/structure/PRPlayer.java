@@ -294,4 +294,44 @@ public class PRPlayer {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        String output = "uuid:" + uuid.toString()
+        + ", name:" + name
+        + ", ranks:[<<RANKS>>]"
+        + ", permissions:[<<PERMISSIONS>>]"
+        + ", usertags:[<<USERTAGS>>]";
+
+        String ranks = "";
+        for (String rank : getRanks()) {
+            ranks += rank + ";";
+        }
+        ranks = ranks.length() > 0 ? ranks.substring(0, ranks.length() - 1) : "";
+
+        String permissions = "";
+        for (PRPermission permission : getPermissions()) {
+            permissions += permission.toString() + ";";
+        }
+        permissions = permissions.length() > 0 ? permissions.substring(0, permissions.length() - 1) : "";
+
+        String usertags = "";
+        for (String usertag : getUsertags()) {
+            usertags += usertag + ";";
+        }
+        usertags = usertags.length() > 0 ? usertags.substring(0, usertags.length() - 1) : "";
+
+        output = output.replaceAll("<<RANKS>>", ranks);
+        output = output.replaceAll("<<PERMISSIONS>>", permissions);
+        output = output.replaceAll("<<USERTAGS>>", usertags);
+
+        return output;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + toString().hashCode();
+        return result;
+    }
 }

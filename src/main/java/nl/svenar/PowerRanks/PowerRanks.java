@@ -45,6 +45,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Cache.LanguageManager;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
+import nl.svenar.PowerRanks.Data.BungeecordManager;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
@@ -109,6 +110,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private static LanguageManager languageManager;
 	private static PowerConfigManager usertagManager;
 	private static PowerConfigManager tablistConfigManager;
+
+    private BungeecordManager bungeecordManager;
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
@@ -202,6 +205,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		GUI.setPlugin(this);
 
+        this.bungeecordManager = new BungeecordManager(this);
+        this.bungeecordManager.start();
+
 		this.tablistManager = new TablistManager();
 		this.tablistManager.start();
 
@@ -241,6 +247,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onDisable() {
 		this.tablistManager.stop();
+        this.bungeecordManager.stop();
 
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 
@@ -1063,6 +1070,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PowerConfigManager getTablistConfigManager() {
 		return tablistConfigManager;
 	}
+
+    public BungeecordManager getBungeecordManager() {
+        return this.bungeecordManager;
+    }
 
     public static PowerColor getPowerColor() {
         return powerColor;

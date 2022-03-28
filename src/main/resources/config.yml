@@ -4,6 +4,9 @@ general:
   playtime-update-interval: 60
   case-sensitive-permissions: false
   disable-op: false
+bungeecord:
+  enabled: false
+  server-name: Global
 storage:
   type: YAML
   mysql:

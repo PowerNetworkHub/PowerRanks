@@ -134,6 +134,22 @@ public class cmd_config extends PowerCommand {
 
 					PowerRanks.getConfigManager().setBool("general.disable-op", !enable);
 
+				} else if (args[1].equalsIgnoreCase("bungeecord")) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".state-changed"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("config_target", "Bungeecord integration")
+									.put("old_state",
+											String.valueOf(PowerRanks.getConfigManager()
+													.getBool("bungeecord.enabled", false)))
+									.put("new_state", String.valueOf(enable))
+									.build(),
+							'[', ']'));
+
+					PowerRanks.getConfigManager().setBool("bungeecord.enabled", enable);
+
 				} else {
 					sender.sendMessage(
 							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
@@ -188,6 +204,22 @@ public class cmd_config extends PowerCommand {
 
 				PowerRanks.getConfigManager().setString("general.language", args[2]);
 
+			} else if (args[1].equalsIgnoreCase("bungeecord_server_name")) {
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".state-changed"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("config_target", "PowerRanks Bungeecord server name")
+								.put("old_state",
+										String.valueOf(PowerRanks.getConfigManager()
+												.getString("bungeecors.server-name", "Global")))
+								.put("new_state", args[2])
+								.build(),
+						'[', ']'));
+
+				PowerRanks.getConfigManager().setString("bungeecors.server-name", args[2]);
+
 			} else if (args[1].equalsIgnoreCase("autosave_files_interval")) {
 				try {
 					int time = Integer.parseInt(args[2]);
@@ -227,8 +259,8 @@ public class cmd_config extends PowerCommand {
 		if (args.length == 1) {
 			tabcomplete.add("removeworldtag");
 			tabcomplete.add("enable");
-			tabcomplete.add("set");
 			tabcomplete.add("disable");
+			tabcomplete.add("set");
 		}
 
 		if (args.length == 2) {
@@ -237,6 +269,7 @@ public class cmd_config extends PowerCommand {
 				tabcomplete.add("tablist_formatting");
 				tabcomplete.add("casesensitive_permissions");
 				tabcomplete.add("op");
+				tabcomplete.add("bungeecord");
 			}
 		}
 
@@ -245,6 +278,7 @@ public class cmd_config extends PowerCommand {
 				tabcomplete.add("language");
 				tabcomplete.add("autosave_files_interval");
 				tabcomplete.add("playtime_update_interval");
+				tabcomplete.add("bungeecord_server_name");
 			}
 		}
 

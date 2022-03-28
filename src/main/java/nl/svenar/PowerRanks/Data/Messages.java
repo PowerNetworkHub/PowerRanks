@@ -93,6 +93,10 @@ public class Messages {
 		}
 		sender.sendMessage(ChatColor.GREEN + "RGB colors: "
 				+ (hex_color_supported ? ChatColor.DARK_GREEN + "" : ChatColor.DARK_RED + "un") + "supported");
+        sender.sendMessage(ChatColor.GREEN + "Bungeecord: "
+                + (PowerRanks.getInstance().getBungeecordManager().isReady() ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+        sender.sendMessage(ChatColor.GREEN + "- Connected servers: "
+                + ChatColor.DARK_GREEN + PowerRanks.getInstance().getBungeecordManager().getServerCount());
 
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: "

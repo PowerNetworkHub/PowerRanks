@@ -12,7 +12,7 @@
 		<src.dir>src/main/java</src.dir>
 		<rsc.dir>src/main/resources</rsc.dir>
 		<shade.basepattern>nl.svenar.lib</shade.basepattern>
-		<testserver.location>../../minecraft/java/bukkit_pr_v1/plugins</testserver.location>
+		<testserver.location>../../minecraft/java/bungeecord/bukkit_plugins</testserver.location>
 	</properties>
 
 	<build>

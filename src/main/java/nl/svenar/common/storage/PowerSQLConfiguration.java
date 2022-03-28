@@ -38,6 +38,7 @@ public class PowerSQLConfiguration {
     private boolean useSSL;
     private String tableRanks;
     private String tablePlayers;
+    private String tableMessages;
 
     /**
      * Constructor to initialize SQL connection data
@@ -50,10 +51,11 @@ public class PowerSQLConfiguration {
      * @param useSSL
      * @param tableRanks
      * @param tablePlayers
+     * @param tableMessages
      */
     public PowerSQLConfiguration(String host, int port, String database, String username, String password,
             boolean useSSL,
-            String tableRanks, String tablePlayers) {
+            String tableRanks, String tablePlayers, String tableMessages) {
         this.host = host;
         this.port = port;
         this.database = database;
@@ -62,6 +64,7 @@ public class PowerSQLConfiguration {
         this.useSSL = useSSL;
         this.tableRanks = tableRanks;
         this.tablePlayers = tablePlayers;
+        this.tableMessages = tableMessages;
     }
 
     /**
@@ -128,5 +131,14 @@ public class PowerSQLConfiguration {
      */
     public String getTablePlayers() {
         return this.tablePlayers;
+    }
+
+    /**
+     * Get the name used to store all message data in
+     * 
+     * @return Table name for messages
+     */
+    public String getTableMessages() {
+        return this.tableMessages;
     }
 }

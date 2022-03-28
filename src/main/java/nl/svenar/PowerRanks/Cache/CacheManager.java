@@ -3,7 +3,9 @@ package nl.svenar.PowerRanks.Cache;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -160,7 +162,7 @@ public class CacheManager {
                         pcm.getString("storage.mysql.database", "powerranks"),
                         pcm.getString("storage.mysql.username", "username"),
                         pcm.getString("storage.mysql.password", "password"),
-                        pcm.getBool("storage.mysql.ssl", false), "ranks", "players");
+                        pcm.getBool("storage.mysql.ssl", false), "ranks", "players", "messages");
                 storageManager = new MySQLStorageManager(configuration, pcm.getBool("storage.mysql.verbose", false));
             } else { // Default to yaml
 
@@ -226,5 +228,37 @@ public class CacheManager {
 
     public static void configConverterSetDefaultRank(String rankname) {
         tmpConvertDefaultRank = rankname;
+    }
+
+    // Bungeecord methods
+
+    public static void postDBMessage(UUID uuid, String key, String message) {
+        if (!(getStorageManager() instanceof MySQLStorageManager)) {
+            return;
+        }
+        MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
+        localStorageManager.SQLInsert(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(), uuid.toString() + "." + key, message);
+    }
+
+    public static Map<String, String> getDBBroadcastMessages() {
+        return getDBMessages(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    }
+
+    public static Map<String, String> getDBMessages(UUID uuid) {
+        if (!(getStorageManager() instanceof MySQLStorageManager)) {
+            return null;
+        }
+        MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
+
+        Map<String, String> messages = localStorageManager.selectSimiliarInTable(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(), uuid.toString());
+        return messages;
+    }
+
+    public static void removeDBMessage(UUID uuid, String key) {
+        if (!(getStorageManager() instanceof MySQLStorageManager)) {
+            return;
+        }
+        MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
+        localStorageManager.deleteKeyInTable(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(),uuid.toString() + "." + key);
     }
 }

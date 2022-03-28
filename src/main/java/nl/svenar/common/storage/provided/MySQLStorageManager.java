@@ -56,6 +56,7 @@ public class MySQLStorageManager extends PowerStorageManager {
 
     private Connection connection;
     private PowerSQLConfiguration sqlConfig;
+    private boolean hideErrors;
 
     /**
      * Initialize this storage method by connecting to the external database
@@ -65,6 +66,7 @@ public class MySQLStorageManager extends PowerStorageManager {
      */
     public MySQLStorageManager(PowerSQLConfiguration sqlConfig, boolean hideErrors) {
         this.sqlConfig = sqlConfig;
+        this.hideErrors = hideErrors;
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -77,6 +79,15 @@ public class MySQLStorageManager extends PowerStorageManager {
             }
         }
 
+        reconnect();
+
+        if (this.isConnected()) {
+            this.setupDatabase();
+            this.setupTables();
+        }
+    }
+
+    private void reconnect() {
         try {
             this.connection = DriverManager.getConnection(
                     "jdbc:mysql://" + sqlConfig.getHost() + ":" + sqlConfig.getPort() + "?autoReconnect=true"
@@ -84,13 +95,8 @@ public class MySQLStorageManager extends PowerStorageManager {
                     sqlConfig.getUsername(), sqlConfig.getPassword());
 
         } catch (SQLException e) {
-            if (!hideErrors)
+            if (!this.hideErrors)
                 e.printStackTrace();
-        }
-
-        if (this.isConnected()) {
-            this.setupDatabase();
-            this.setupTables();
         }
     }
 
@@ -149,6 +155,10 @@ public class MySQLStorageManager extends PowerStorageManager {
             query = SQLCreateTable(this.sqlConfig.getDatabase(), this.sqlConfig.getTablePlayers());
             result = this.connection.createStatement().executeUpdate(query);
             checkSQLResult(result, query);
+
+            query = SQLCreateTable(this.sqlConfig.getDatabase(), this.sqlConfig.getTableMessages());
+            result = this.connection.createStatement().executeUpdate(query);
+            checkSQLResult(result, query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -161,6 +171,10 @@ public class MySQLStorageManager extends PowerStorageManager {
     @Override
     @SuppressWarnings("unchecked")
     public void loadRanks() {
+        if (!isConnected()) {
+            reconnect();
+        }
+
         Gson gson = new Gson();
 
         boolean success = false;
@@ -241,7 +255,9 @@ public class MySQLStorageManager extends PowerStorageManager {
     @Override
     @SuppressWarnings("unchecked")
     public void loadPlayers() {
-        // this.setPlayers(new ArrayList<PRPlayer>());
+        if (!isConnected()) {
+            reconnect();
+        }
 
         Gson gson = new Gson();
 
@@ -322,6 +338,10 @@ public class MySQLStorageManager extends PowerStorageManager {
     @Override
     @SuppressWarnings("unchecked")
     public void saveRanks() {
+        if (!isConnected()) {
+            reconnect();
+        }
+
         Gson gson = new Gson();
 
         try {
@@ -390,6 +410,10 @@ public class MySQLStorageManager extends PowerStorageManager {
     @Override
     @SuppressWarnings("unchecked")
     public void savePlayers() {
+        if (!isConnected()) {
+            reconnect();
+        }
+
         Gson gson = new Gson();
 
         PreparedStatement stmt = null;
@@ -505,7 +529,63 @@ public class MySQLStorageManager extends PowerStorageManager {
      */
     private String SQLInsert(String databaseName, String tableName) {
         return "INSERT INTO " + (databaseName.length() > 0 ? "`" + databaseName + "`." : "") + "`" + tableName
-                + "` (keyname, val) VALUES (?, ?)";
+                + "` (keyname, val) VALUES (?, ?) ON DUPLICATE KEY UPDATE keyname = VALUES (keyname), val = VALUES (val)";
+    }
+
+    /**
+     * Insert data into a table
+     * 
+     * @param databaseName
+     * @param tableName
+     * @param key
+     * @param value
+     * @return String containing an SQL query
+     */
+    public void SQLInsert(String databaseName, String tableName, String key, String value) {
+        if (!isConnected()) {
+            reconnect();
+        }
+
+        PreparedStatement stmt = null;
+        try {
+            this.connection.setAutoCommit(false);
+            stmt = this.connection.prepareStatement(SQLInsert(databaseName, tableName));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.clearParameters();
+            stmt.setString(1, key);
+            stmt.setString(2, value);
+            stmt.addBatch();
+
+            stmt.executeBatch();
+            this.connection.commit();
+            this.connection.setAutoCommit(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteKeyInTable(String databaseName, String tableName, String key) {
+        if (!isConnected()) {
+            reconnect();
+        }
+
+        String query = "DELETE FROM `?`.? WHERE `keyname` = '?';";
+
+        query = query.replaceFirst("\\?", databaseName);
+        query = query.replaceFirst("\\?", tableName);
+        query = query.replaceFirst("\\?", key);
+
+
+        try {
+            Statement st = this.connection.createStatement();
+            st.execute(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -517,6 +597,34 @@ public class MySQLStorageManager extends PowerStorageManager {
      */
     private String SQLSelectAllInTable(String databaseName, String tableName) {
         return "SELECT * FROM `" + databaseName + "`.`" + tableName + "`;";
+    }
+
+    public Map<String, String> selectSimiliarInTable(String databaseName, String tableName, String baseKey) {
+        if (!isConnected()) {
+            reconnect();
+        }
+
+        String query = "SELECT * FROM `?`.? WHERE keyname LIKE '?%';";
+
+        query = query.replaceFirst("\\?", databaseName);
+        query = query.replaceFirst("\\?", tableName);
+        query = query.replaceFirst("\\?", baseKey);
+
+        Map<String, String> data = new HashMap<String, String>();
+
+        try {
+            Statement st = this.connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                String key = rs.getString("keyname");
+                String value = rs.getString("val");
+                data.put(key, value);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return data;
     }
 
     /**
@@ -567,5 +675,9 @@ public class MySQLStorageManager extends PowerStorageManager {
                 e.printStackTrace();
             }
         }
+    }
+
+    public PowerSQLConfiguration getConfig() {
+        return this.sqlConfig;
     }
 }

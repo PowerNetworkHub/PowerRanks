@@ -78,4 +78,16 @@ public class PRPermission {
     public void setValue(boolean value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "permission:" + name + ", value:" + value;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + toString().hashCode();
+        return result;
+    }
 }
