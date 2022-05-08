@@ -18,6 +18,7 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 // import nl.svenar.PowerRanks.Cache.CachedConfig;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -33,7 +34,10 @@ public class Users implements Listener {
 			return "";
 		}
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 		List<PRRank> playerRanks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
 			PRRank rank = CacheManager.getRank(rankname);
@@ -288,7 +292,10 @@ public class Users implements Listener {
 		}
 
 		for (PRPlayer prPlayer : CacheManager.getPlayers()) {
-			List<String> ranknames = prPlayer.getRanks();
+			List<String> ranknames = new ArrayList<>();
+			for (PRPlayerRank playerRank : prPlayer.getRanks()) {
+				ranknames.add(playerRank.getName());
+			}
 
 			List<PRRank> ranks = new ArrayList<PRRank>();
 			for (String rankname : ranknames) {
@@ -300,7 +307,16 @@ public class Users implements Listener {
 
 			for (PRRank rank : ranks) {
 				if (rank == CacheManager.getRank(rankToDelete)) {
-					prPlayer.removeRank(rank.getName());
+					PRPlayerRank playerRank = null;
+					for (PRPlayerRank targetPlayerRank : prPlayer.getRanks()) {
+						if (targetPlayerRank.getName().equals(rank.getName())) {
+							playerRank = targetPlayerRank;
+							break;
+						}
+					}
+					if (playerRank != null) {
+						prPlayer.removeRank(playerRank);
+					}
 				}
 			}
 			// if (CacheManager.getRank(CacheManager.getDefaultRank()) ==
@@ -455,7 +471,10 @@ public class Users implements Listener {
 	public String getPrefix(Player player) {
 		String prefix = "";
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
@@ -491,7 +510,10 @@ public class Users implements Listener {
 	public String getSuffix(Player player) {
 		String suffix = "";
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
@@ -528,7 +550,10 @@ public class Users implements Listener {
 		String color = "";
 		// String rankname = getGroup(player);
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
@@ -547,7 +572,10 @@ public class Users implements Listener {
 
 	public String getNameColor(Player player) {
 		String color = "";
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
@@ -957,7 +985,7 @@ public class Users implements Listener {
 		return true;
 	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public boolean addUserTag(Player player, String tag) {
 		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
 				new HashMap<String, String>());
@@ -983,7 +1011,7 @@ public class Users implements Listener {
 		return true;
 	}
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public boolean delUserTag(Player player, String tag) {
 		Map<String, String> availableUsertags = (Map<String, String>) PowerRanks.getUsertagManager().getMap("usertags",
 				new HashMap<String, String>());
@@ -1014,12 +1042,12 @@ public class Users implements Listener {
 		return setUserTag(player, tag);
 	}
 
-    public boolean addUserTag(String playername, String tag) {
+	public boolean addUserTag(String playername, String tag) {
 		Player player = Bukkit.getServer().getPlayer(playername);
 		return addUserTag(player, tag);
 	}
 
-    public boolean delUserTag(String playername, String tag) {
+	public boolean delUserTag(String playername, String tag) {
 		Player player = Bukkit.getServer().getPlayer(playername);
 		return delUserTag(player, tag);
 	}

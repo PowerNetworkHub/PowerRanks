@@ -14,6 +14,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Util.Util;
+import nl.svenar.common.structure.PRPlayerRank;
 
 public class cmd_checkrank extends PowerCommand {
 
@@ -28,8 +29,11 @@ public class cmd_checkrank extends PowerCommand {
 		if (args.length == 0) {
 			if (sender instanceof Player) {
 				// String rankname = this.users.getPrimaryRank();
-				List<String> playerRanks = CacheManager.getPlayer(((Player) sender).getUniqueId().toString())
-						.getRanks();
+				List<String> playerRanks = new ArrayList<>();
+				for (PRPlayerRank rank : CacheManager.getPlayer(((Player) sender).getUniqueId().toString())
+						.getRanks()) {
+					playerRanks.add(rank.getName());
+				}
 				if (playerRanks.size() > 0) {
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()
@@ -56,8 +60,11 @@ public class cmd_checkrank extends PowerCommand {
 		} else if (args.length == 1) {
 			Player targetPlayer = Util.getPlayerByName(args[0]);
 			if (targetPlayer != null) {
-				List<String> playerRanks = CacheManager.getPlayer(targetPlayer.getUniqueId().toString())
-						.getRanks();
+				List<String> playerRanks = new ArrayList<>();
+				for (PRPlayerRank rank : CacheManager.getPlayer(((Player) sender).getUniqueId().toString())
+						.getRanks()) {
+					playerRanks.add(rank.getName());
+				}
 				if (playerRanks.size() > 0) {
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()

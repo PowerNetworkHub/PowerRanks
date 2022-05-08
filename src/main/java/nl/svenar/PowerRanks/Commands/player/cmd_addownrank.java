@@ -15,6 +15,7 @@ import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_addownrank extends PowerCommand {
@@ -44,7 +45,9 @@ public class cmd_addownrank extends PowerCommand {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
 				if (rank != null && targetPlayer != null) {
-					targetPlayer.addRank(rank.getName());
+					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+					targetPlayer.addRank(playerRank);
+
 
                     if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
                         PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));

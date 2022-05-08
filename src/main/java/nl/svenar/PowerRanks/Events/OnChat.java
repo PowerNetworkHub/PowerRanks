@@ -24,6 +24,7 @@ import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -48,7 +49,10 @@ public class OnChat implements Listener {
 
 				String format = PowerRanks.getConfigManager().getString("chat.format", "");
 
-				List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+				List<String> ranknames = new ArrayList<>();
+				for (PRPlayerRank rank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+					ranknames.add(rank.getName());
+				}
 
 				List<PRRank> ranks = new ArrayList<PRRank>();
 				for (String rankname : ranknames) {
@@ -117,7 +121,8 @@ public class OnChat implements Listener {
 						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
 				// Dirty PremiumVanish work around
-				if (Objects.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
+				if (Objects
+						.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
 					if (player_formatted_chat_msg.endsWith("/")) {
 						player_formatted_chat_msg = player_formatted_chat_msg.substring(0,
 								player_formatted_chat_msg.length() - 1);
@@ -136,7 +141,8 @@ public class OnChat implements Listener {
 										!PowerRanks.plugin_hook_deluxetags ? usertag
 												: PowerRanks.getInstance().getDeluxeTagsHook()
 														.getPlayerDisplayTag(player))
-								.put("player", player_formatted_name).put("msg", PowerRanks.chatColor(player_formatted_chat_msg, true))
+								.put("player", player_formatted_name)
+								.put("msg", PowerRanks.chatColor(player_formatted_chat_msg, true))
 								.put("format", e.getFormat()).put("world", player.getWorld().getName()).build(),
 						'[', ']');
 
