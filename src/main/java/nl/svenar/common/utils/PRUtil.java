@@ -24,4 +24,13 @@ public class PRUtil {
         Collections.reverse(ranks);
         return ranks;
     }
+
+    public static boolean containsIgnoreCase(List<String> objects, String object) {
+        for (String obj : objects) {
+            if (obj.equalsIgnoreCase(object)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
