@@ -94,8 +94,8 @@ public class cmd_setrank extends PowerCommand {
 							.getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".failed-executor"),
 					ImmutableMap.<String, String>builder()
-							.put("player", targetPlayer.getName())
-							.put("rank", rank.getName())
+							.put("player", targetPlayer == null ? args[0] : targetPlayer.getName())
+							.put("rank", rank == null ? args[1] : rank.getName())
 							.build(),
 					'[', ']'));
 				}

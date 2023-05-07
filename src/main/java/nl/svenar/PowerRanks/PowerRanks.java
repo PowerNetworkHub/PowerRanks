@@ -75,6 +75,7 @@ import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
 import nl.svenar.PowerRanks.update.Updater.UpdateType;
+import nl.svenar.common.PowerLogger;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.provided.YAMLConfigManager;
 import nl.svenar.common.structure.PRPermission;
@@ -129,6 +130,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
 	public Map<UUID, Long> playerPlayTimeCache = new HashMap<UUID, Long>();
+    // public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -140,6 +142,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		instance = this;
+
+        new PowerLogger(getLogger());
 
 		Instant startTime = Instant.now();
 
@@ -435,6 +439,25 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}.runTaskTimer(this, update_check_interval, update_check_interval);
 
+
+        // new BukkitRunnable() {
+        //     @Override
+        //     public void run() {
+        //         PowerRanksVerbose.log("task", "Running task check player name change");
+
+        //         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+        //             if (!playerNameCache.containsKey(player.getUniqueId())) {
+        //                 playerNameCache.put(player.getUniqueId(), player.getName());
+        //             }
+
+        //             if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
+        //                 log.info("Player name changed from '" + playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() + "'");
+        //                 playerNameCache.put(player.getUniqueId(), player.getName());
+        //                 CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
+        //             }
+        //         }
+        //     }
+        // }.runTaskTimer(this, TASK_TPS, TASK_TPS);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -989,13 +1012,30 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
+        PRPlayer prPlayer = null;
+
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 
-		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+        if (player == null) {
+            return permissions;
+        }
+
+        try {
+            prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return permissions;
+        }
+
+        if (prPlayer == null) {
+            return permissions;
+        }
+
+		for (PRPermission permission : prPlayer.getPermissions()) {
 			permissions.add(permission);
 		}
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = prPlayer.getRanks();
 		List<PRRank> playerRanks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
 			PRRank rank = CacheManager.getRank(rankname);
@@ -1025,7 +1065,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
 		effectiveRanks = PRUtil.sortRanksByWeight(effectiveRanks);
 
-		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+		for (PRPermission permission : prPlayer.getPermissions()) {
 			permissions.add(permission);
 		}
 

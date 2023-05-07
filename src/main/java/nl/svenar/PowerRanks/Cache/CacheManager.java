@@ -2,6 +2,7 @@ package nl.svenar.PowerRanks.Cache;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -87,31 +88,36 @@ public class CacheManager {
         registeredPlayers.add(player);
     }
 
-    public static PRPlayer getPlayer(String name) {
-        if (Objects.isNull(registeredPlayers)) {
-            registeredPlayers = new ArrayList<PRPlayer>();
-        }
-
-        for (PRPlayer player : registeredPlayers) {
-            if (player.getName().equals(name) || player.getUUID().toString().equals(name)) {
-                return player;
+    public static PRPlayer getPlayer(String identifier) {
+        try {
+            if (Objects.isNull(registeredPlayers)) {
+                registeredPlayers = new ArrayList<PRPlayer>();
             }
-        }
 
-        Player player = null;
-
-        for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
-            if (onlinePlayer.getName().equals(name) || onlinePlayer.getUniqueId().toString().equals(name)) {
-                player = onlinePlayer;
-                break;
+            for (PRPlayer player : registeredPlayers) {
+                if (player.getName().equalsIgnoreCase(identifier) || player.getUUID().toString().replaceAll("-", "").equalsIgnoreCase(identifier.replaceAll("-", ""))) {
+                    return player;
+                }
             }
-        }
 
-        if (Objects.isNull(player)) {
+            Player player = null;
+
+            for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
+                if (onlinePlayer.getName().equals(identifier)
+                        || onlinePlayer.getUniqueId().toString().replaceAll("-", "").equalsIgnoreCase(identifier.replaceAll("-", ""))) {
+                    player = onlinePlayer;
+                    break;
+                }
+            }
+
+            if (Objects.isNull(player)) {
+                return null;
+            }
+
+            return createPlayer(player);
+        } catch (ConcurrentModificationException cme) {
             return null;
         }
-
-        return createPlayer(player);
     }
 
     public static PRPlayer createPlayer(Player player) {
@@ -135,15 +141,6 @@ public class CacheManager {
         return defaultRanks;
     }
 
-    // public static String getDefaultRank() {
-    // return PowerRanks.getConfigManager().getString("general.defaultrank",
-    // "Member");
-    // }
-
-    // public static void setDefaultRank(String rankname) {
-    // PowerRanks.getConfigManager().setString("general.defaultrank", rankname);
-    // }
-
     public static void load(String dataDirectory) {
         String storageType = PowerRanks.getConfigManager().getString("storage.type", "yaml").toUpperCase();
         if (storageManager == null) {
@@ -157,11 +154,9 @@ public class CacheManager {
                 storageManager = new SQLiteStorageManager(dataDirectory, "ranks.db", "players.db");
             } else if (storageType.equals("MYSQL")) {
                 PowerConfigManager pcm = PowerRanks.getConfigManager();
-                PowerSQLConfiguration configuration = new PowerSQLConfiguration(
-                        pcm.getString("storage.mysql.host", "127.0.0.1"), pcm.getInt("storage.mysql.port", 3306),
-                        pcm.getString("storage.mysql.database", "powerranks"),
-                        pcm.getString("storage.mysql.username", "username"),
-                        pcm.getString("storage.mysql.password", "password"),
+                PowerSQLConfiguration configuration = new PowerSQLConfiguration(pcm.getString("storage.mysql.host", "127.0.0.1"),
+                        pcm.getInt("storage.mysql.port", 3306), pcm.getString("storage.mysql.database", "powerranks"),
+                        pcm.getString("storage.mysql.username", "username"), pcm.getString("storage.mysql.password", "password"),
                         pcm.getBool("storage.mysql.ssl", false), "ranks", "players", "messages");
                 storageManager = new MySQLStorageManager(configuration, pcm.getBool("storage.mysql.verbose", false));
             } else { // Default to yaml
@@ -191,8 +186,7 @@ public class CacheManager {
                 }
 
                 if (Objects.isNull(storageManager)) {
-                    PowerRanks.getInstance().getLogger()
-                            .warning("Unknown storage method configured! Falling back to YAML");
+                    PowerRanks.getInstance().getLogger().warning("Unknown storage method configured! Falling back to YAML");
                     storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
                 } else {
                     PowerRanks.getInstance().getLogger()
@@ -237,7 +231,8 @@ public class CacheManager {
             return;
         }
         MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
-        localStorageManager.SQLInsert(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(), uuid.toString() + "." + key, message);
+        localStorageManager.SQLInsert(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(),
+                uuid.toString() + "." + key, message);
     }
 
     public static Map<String, String> getDBBroadcastMessages() {
@@ -250,7 +245,8 @@ public class CacheManager {
         }
         MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
 
-        Map<String, String> messages = localStorageManager.selectSimiliarInTable(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(), uuid.toString());
+        Map<String, String> messages = localStorageManager.selectSimiliarInTable(localStorageManager.getConfig().getDatabase(),
+                localStorageManager.getConfig().getTableMessages(), uuid.toString());
         return messages;
     }
 
@@ -259,6 +255,7 @@ public class CacheManager {
             return;
         }
         MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
-        localStorageManager.deleteKeyInTable(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(),uuid.toString() + "." + key);
+        localStorageManager.deleteKeyInTable(localStorageManager.getConfig().getDatabase(),
+                localStorageManager.getConfig().getTableMessages(), uuid.toString() + "." + key);
     }
 }

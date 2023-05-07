@@ -209,15 +209,7 @@ public class JSONStorageManager extends PowerStorageManager {
         }
     }
 
-    public String getRanksAsJSON(boolean pretty) {
-        Gson gson = null;
-
-        if (pretty) {
-            gson = new GsonBuilder().setPrettyPrinting().create();
-        } else {
-            gson = new Gson();
-        }
-
+    public Map<String, Object> getRanksAsMap() {
         Map<String, Object> ranks2 = new HashMap<String, Object>();
 
         for (PRRank r : this.getRanks()) {
@@ -231,10 +223,10 @@ public class JSONStorageManager extends PowerStorageManager {
             ranks2.put(r.getName(), serializedRank);
         }
 
-        return gson.toJson(ranks2);
+        return ranks2;
     }
 
-    public String getPlayersAsJSON(boolean pretty) {
+    public String getRanksAsJSON(boolean pretty) {
         Gson gson = null;
 
         if (pretty) {
@@ -243,6 +235,12 @@ public class JSONStorageManager extends PowerStorageManager {
             gson = new Gson();
         }
 
+        Map<String, Object> ranks2 = getRanksAsMap();
+
+        return gson.toJson(ranks2);
+    }
+
+    public Map<String, Object> getPlayersAsMap() {
         Map<String, Object> players2 = new HashMap<String, Object>();
 
         for (PRPlayer p : this.getPlayers()) {
@@ -255,6 +253,20 @@ public class JSONStorageManager extends PowerStorageManager {
             }
             players2.put(p.getUUID().toString(), serializedPlayer);
         }
+
+        return players2;
+    }
+
+    public String getPlayersAsJSON(boolean pretty) {
+        Gson gson = null;
+
+        if (pretty) {
+            gson = new GsonBuilder().setPrettyPrinting().create();
+        } else {
+            gson = new Gson();
+        }
+
+        Map<String, Object> players2 = getPlayersAsMap();
 
         return gson.toJson(players2);
     }

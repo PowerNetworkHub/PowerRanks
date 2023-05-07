@@ -1,12 +1,17 @@
 package nl.svenar.PowerRanks.Commands.core;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,245 +27,259 @@ import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.common.http.DatabinClient;
 import nl.svenar.common.storage.PowerStorageManager;
-import nl.svenar.common.storage.provided.YAMLStorageManager;
+import nl.svenar.common.storage.provided.JSONStorageManager;
+import nl.svenar.common.utils.AsyncReadFile;
 
 public class cmd_dump extends PowerCommand {
 
-	private String databin_url = "https://databin.svenar.nl/";
-	private String logs_powerranks_url = "https://logs.powerranks.nl/dump/?id=";
-	private String tellraw_url = "tellraw %player% [\"\",{\"text\":\"Log dump is ready \",\"color\":\"dark_green\"},{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"%url%\"}},{\"text\":\"click to open\",\"color\":\"dark_green\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"%url%\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"%url%\"}}]";
+    private String databin_url = "https://databin.svenar.nl";
+    private String logs_powerranks_url = "https://logs.powerranks.nl/dump/?id=";
 
-	public cmd_dump(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
-		super(plugin, command_name, ce);
-		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
-	}
+    ArrayList<String> serverLog = new ArrayList<String>();
+    Map<String, Object> coreData = new HashMap<String, Object>();
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
-		uploadLog(sender, commandName);
+    public cmd_dump(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
+        super(plugin, command_name, ce);
+        this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
+    }
 
-		return false;
-	}
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName, String[] args) {
+        if (sender instanceof Player) {
+            sender.sendMessage(
+                    ChatColor.DARK_AQUA + "--------" + ChatColor.DARK_BLUE + PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "--------");
+            sender.sendMessage(ChatColor.GREEN + "Dump has started collecting data!");
+            sender.sendMessage(ChatColor.GREEN + "Check the server console for more information.");
+            sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
+        }
+        prepareLog(sender, commandName);
 
-	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
-		ArrayList<String> tabcomplete = new ArrayList<String>();
-		return tabcomplete;
-	}
+        return false;
+    }
 
-	private void uploadLog(CommandSender sender, String commandName) {
-		DatabinClient client = new DatabinClient("https://databin.svenar.nl", "Databinclient/1.0");
+    public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
+        ArrayList<String> tabcomplete = new ArrayList<String>();
+        return tabcomplete;
+    }
 
-		ArrayList<String> serverLog = new ArrayList<String>();
+    private void readServerLog() {
+        serverLog.clear();
 
-		final String serverPath = plugin.getServer().getWorldContainer().getAbsolutePath();
-		final File serverLogFile = new File(serverPath.substring(0, serverPath.length() - 1), "logs/latest.log");
+        final String serverPath = plugin.getServer().getWorldContainer().getAbsolutePath();
+        final File serverLogFile = new File(serverPath.substring(0, serverPath.length() - 1), "logs/latest.log");
 
-		if (serverLogFile.exists()) {
-			try (BufferedReader br = new BufferedReader(new FileReader(serverLogFile))) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					serverLog.add(removeIP(line).replaceAll("\"", "'"));
-				}
-			} catch (IOException e) {
-				serverLog.add("Error reading server log file.");
-			}
-		} else {
-			serverLog.add("Server log not found.");
-		}
+        AsyncReadFile arf = new AsyncReadFile();
+        arf.setFile(serverLogFile.getPath());
+        long totalLength = arf.getFileLength();
+        arf.read();
 
-		String outputJSONLog = "";
-		outputJSONLog += "{";
-		outputJSONLog += "\"type\":\"dump\",";
-		outputJSONLog += "\"version\":{";
-		outputJSONLog += "\"powerranks\":\"" + PowerRanks.pdf.getVersion() + "\",";
-		outputJSONLog += "\"server\":\"" + Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion() + "\"";
-		outputJSONLog += "},";
-		
-		outputJSONLog += "\"plugins\":[";
-		Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
-		for (Plugin plugin : plugins) {
-			outputJSONLog += "\"" + plugin.getName() + "(" + plugin.getDescription().getVersion() + ")\",";
-		}
-		outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
+        new BukkitRunnable() {
+            Instant startTime = Instant.now();
+            int progressTimerIndex = Integer.MAX_VALUE;
 
-		outputJSONLog += "],";
-		outputJSONLog += "\"serverlog\":[";
-		if (serverLog.size() > 0) {
-			for (String line : serverLog) {
-				outputJSONLog += "\"" + line + "\",";
-			}
-			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
-		}
-		outputJSONLog += "],";
+            @Override
+            public void run() {
+                if (!arf.isReady()) {
+                    if (progressTimerIndex > 20 * 10) {
+                        progressTimerIndex = 0;
+                        int currentLength = arf.getData().length();
+                        PowerRanks.getInstance().getLogger().info("Reading server log... (" + ((100 * currentLength) / totalLength) + "%)");
+                    }
+                    progressTimerIndex++;
+                    return;
+                } else {
+                    PowerRanks.getInstance().getLogger().info("Server log:");
 
-		YAMLStorageManager yamlmanager = new YAMLStorageManager(PowerRanks.fileLoc, "dummyRanks.yml", "dummyPlayers.yml");
-		PowerStorageManager powermanager = CacheManager.getStorageManager();
+                    PowerRanks.getInstance().getLogger().info("- Removing sensitive information from server log...");
+                    for (String line : arf.getData().split("\n")) {
+                        serverLog.add(removeIP(line).replaceAll("\"", "'"));
+                    }
+                    PowerRanks.getInstance().getLogger()
+                            .info("- Reading took " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
+                    PowerRanks.getInstance().getLogger()
+                            .info("- Read " + arf.getData().split("\n").length + " lines (" + arf.getData().length() + " characters)!");
+                    this.cancel();
+                    PowerRanks.getInstance().getLogger().info("");
+                }
+            }
+        }.runTaskTimer(PowerRanks.getInstance(), 0, 1);
+    }
 
-		yamlmanager.setRanks(powermanager.getRanks());
-		yamlmanager.setPlayers(powermanager.getPlayers());
+    private void readCoreData() {
+        coreData = new HashMap<>();
 
-		yamlmanager.saveAll();
+        new BukkitRunnable() {
+            Instant startTime = Instant.now();
 
-		File ranksFile = new File(PowerRanks.fileLoc, "dummyRanks.yml");
-		File playersFile = new File(PowerRanks.fileLoc, "dummyPlayers.yml");
-		File configFile = new File(PowerRanks.fileLoc, "config.yml");
-		File usertagsFile = new File(PowerRanks.fileLoc, "usertags.yml");
+            @Override
+            public void run() {
+                PowerRanks.getInstance().getLogger().info("Plugin data:");
 
-		ArrayList<String> ranksYaml = new ArrayList<String>();
-		ArrayList<String> playersYaml = new ArrayList<String>();
-		ArrayList<String> configYaml = new ArrayList<String>();
-		ArrayList<String> usertagsYaml = new ArrayList<String>();
+                JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json", "dummyPlayers.json");
+                PowerStorageManager powermanager = CacheManager.getStorageManager();
 
-        PowerRanks.getConfigManager().save();
-        PowerRanks.getUsertagManager().save();
+                jsonmanager.setRanks(powermanager.getRanks());
+                jsonmanager.setPlayers(powermanager.getPlayers());
 
-		if (ranksFile.exists()) {
-			try (BufferedReader br = new BufferedReader(new FileReader(ranksFile))) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					ranksYaml.add(line.replaceAll("\"", "'"));
-				}
-			} catch (IOException e) {
-				ranksYaml.add("Error reading ranks file.");
-			}
-		} else {
-			ranksYaml.add("Ranks file does not exist.");
-		}
+                // jsonmanager.getRanksAsJSON(false);
+                // jsonmanager.getPlayersAsJSON(false);
+                // PowerRanks.getUsertagManager().toJSON("usertags", false);
 
-		if (playersFile.exists()) {
-			try (BufferedReader br = new BufferedReader(new FileReader(playersFile))) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					playersYaml.add(line.replaceAll("\"", "'"));
-				}
-			} catch (IOException e) {
-				playersYaml.add("Error reading players file.");
-			}
-		} else {
-			playersYaml.add("Players file does not exist.");
-		}
+                coreData.put("rankdata", jsonmanager.getRanksAsMap());
+                coreData.put("playerdata", jsonmanager.getPlayersAsMap());
+                coreData.put("config", PowerRanks.getConfigManager().getRawData());
+                coreData.put("usertags", PowerRanks.getUsertagManager().getRawData().get("usertags"));
 
-		if (configFile.exists()) {
-			try (BufferedReader br = new BufferedReader(new FileReader(configFile))) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					configYaml.add(line.replaceAll("\"", "'"));
-				}
-			} catch (IOException e) {
-				configYaml.add("Error reading config file.");
-			}
-		} else {
-			configYaml.add("Config file does not exist.");
-		}
+                PowerRanks.getInstance().getLogger().info("- Reading took " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
+                PowerRanks.getInstance().getLogger().info("- Read " + jsonmanager.getRanks().size() + " ranks and " + jsonmanager.getPlayers().size() + " players!");
+                PowerRanks.getInstance().getLogger().info("- Adding configuration & usertags");
 
-        if (usertagsFile.exists()) {
-			try (BufferedReader br = new BufferedReader(new FileReader(usertagsFile))) {
-				String line;
-				while ((line = br.readLine()) != null) {
-					usertagsYaml.add(line.replaceAll("\"", "'"));
-				}
-			} catch (IOException e) {
-				usertagsYaml.add("Error reading usertags file.");
-			}
-		} else {
-			usertagsYaml.add("Usertags file does not exist.");
-		}
+                jsonmanager.removeAllData();
+                PowerRanks.getInstance().getLogger().info("");
 
-		outputJSONLog += "\"powerranks\":{";
-		outputJSONLog += "\"ranks\": [";
-		if (ranksYaml.size() > 0) {
-			for (String line : ranksYaml) {
-				outputJSONLog += "\"" + line + "\",";
-			}
-			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
-		}
-		outputJSONLog += "],";
-		outputJSONLog += "\"players\": [";
-		if (playersYaml.size() > 0) {
-			for (String line : playersYaml) {
-				outputJSONLog += "\"" + line + "\",";
-			}
-			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
-		}
-		outputJSONLog += "],";
-		outputJSONLog += "\"config\": [";
-		if (configYaml.size() > 0) {
-			for (String line : configYaml) {
-				outputJSONLog += "\"" + line + "\",";
-			}
-			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
-		}
-		outputJSONLog += "],";
-		outputJSONLog += "\"usertags\": [";
-		if (usertagsYaml.size() > 0) {
-			for (String line : usertagsYaml) {
-				outputJSONLog += "\"" + line + "\",";
-			}
-			outputJSONLog = outputJSONLog.substring(0, outputJSONLog.length() - 1);
-		}
-		outputJSONLog += "]";
-		outputJSONLog += "}";
-		outputJSONLog += "}";
+                this.cancel();
 
-        yamlmanager.removeAllData();
+            }
+        }.runTaskTimer(PowerRanks.getInstance(), 0, 1);
+    }
 
-		client.postJSON(outputJSONLog);
+    private void prepareLog(CommandSender sender, String commandName) {
+        PowerRanks.getInstance().getLogger().info("");
+        PowerRanks.getInstance().getLogger().info("=== -------------------------------- ===");
+        PowerRanks.getInstance().getLogger().info("     PowerRanks is collecting data!     ");
+        PowerRanks.getInstance().getLogger().info("=== -------------------------------- ===");
 
-		int uploadSize = outputJSONLog.length() / 1024;
-		int updateInterval = 5;
-		int timeout = 5;
+        readServerLog();
+        readCoreData();
 
-		new BukkitRunnable() {
-			int waitTime = 0;
+        new BukkitRunnable() {
+            Instant startTime = Instant.now();
+            int progressIndex = 0;
+            Map<String, Object> elements = new HashMap<>();
+            boolean serverLogDone = false;
+            boolean coreDataDone = false;
 
-			@Override
-			public void run() {
-				PowerRanksVerbose.log("task", "Running task uploading dump data");
+            @Override
+            @SuppressWarnings("unchecked")
+            public void run() {
+                if (serverLog.size() > 0) {
+                    PowerRanks.getInstance().getLogger().info("Server log found!");
 
-				if (client.hasResponse()) {
-					String key = client.getResponse().get("key");
+                    elements.put("type", "dump");
+                    elements.put("version", new HashMap<>());
+                    ((Map<String, Object>) elements.get("version")).put("powerranks", PowerRanks.pdf.getVersion());
+                    ((Map<String, Object>) elements.get("version")).put("server",
+                            Bukkit.getVersion() + " | " + Bukkit.getServer().getBukkitVersion());
 
-					if (key.length() > 0 && !key.startsWith("[FAILED]")) {
-						sender.sendMessage(ChatColor.DARK_AQUA + "===----------" + ChatColor.DARK_BLUE
-								+ PowerRanks.pdf.getName() + ChatColor.DARK_AQUA + "----------===");
-						if (sender instanceof Player) {
-							Bukkit.getServer().dispatchCommand((CommandSender) Bukkit.getServer().getConsoleSender(),
-									tellraw_url.replaceAll("%player%", sender.getName())
-											.replaceAll("%url%", databin_url + key).replaceAll("\n", ""));
-						} else {
-							sender.sendMessage(ChatColor.DARK_GREEN + "Data upload is ready " + ChatColor.BLACK + "["
-									+ ChatColor.GREEN + logs_powerranks_url + key + ChatColor.BLACK + "]");
-						}
-						sender.sendMessage(ChatColor.DARK_GREEN + "ID: " + ChatColor.GREEN + key);
-						sender.sendMessage(ChatColor.DARK_GREEN + "Uploaded: " + ChatColor.GREEN + uploadSize + "KB");
-						sender.sendMessage(ChatColor.DARK_AQUA + "===------------------------------===");
-					}
+                    String pluginData = "";
+                    Plugin[] plugins = Bukkit.getPluginManager().getPlugins();
+                    for (Plugin plugin : plugins) {
+                        pluginData += plugin.getName() + "(" + plugin.getDescription().getVersion() + "),";
+                    }
+                    pluginData = pluginData.substring(0, pluginData.length() - 1);
+                    elements.put("plugins", pluginData);
 
-					this.cancel();
-				}
+                    elements.put("serverlog", Arrays.asList(serverLog));
 
-				if (waitTime / (20 / updateInterval) > timeout) {
-					this.cancel();
+                    serverLog = new ArrayList<>();
+                    serverLogDone = true;
+                }
 
-					sender.sendMessage(
-							PowerRanks.getLanguageManager().getFormattedMessage(
-									"commands." + commandName.toLowerCase() + ".timed-out"));
-				}
+                if (coreData.keySet().size() > 0) {
+                    PowerRanks.getInstance().getLogger().info("Core data found!");
 
-				waitTime++;
-			}
-		}.runTaskTimer(PowerRanks.getInstance(), 0, updateInterval);
-	}
+                    elements.put("coredata", coreData);
+                    coreData = new HashMap<>();
+                    coreDataDone = true;
+                }
 
-	private String removeIP(String line) {
-		String output = line;
+                if (serverLogDone && coreDataDone) {
+                    PowerRanks.getInstance().getLogger().info(
+                            "Data collected successfully in " + Duration.between(startTime, Instant.now()).toMillis() + "ms, uploading...");
+                    startTime = Instant.now();
 
-		String ipExp = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-    	Pattern ipPattern = Pattern.compile(ipExp);
+                    try {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String json = objectMapper.writeValueAsString(elements);
+                        uploadDump(json);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
 
-		Matcher matcher = ipPattern.matcher(output);
+                    PowerRanks.getInstance().getLogger()
+                            .info("Done! Uploading took " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
+
+                    this.cancel();
+                } else {
+                    progressIndex += 1;
+                    if (progressIndex > 1200) {
+                        PowerRanks.getInstance().getLogger().info("Failed to dump data!");
+                        PowerRanks.getInstance().getLogger()
+                                .info("Timed out after " + Duration.between(startTime, Instant.now()).toMillis() + "ms!");
+                        this.cancel();
+                    }
+                }
+            }
+        }.runTaskTimer(PowerRanks.getInstance(), 0, 1);
+    }
+
+    private void uploadDump(String outputJSON) {
+        DatabinClient client = new DatabinClient(databin_url, "Databinclient/1.0");
+
+        int uploadSize = outputJSON.length() / 1024;
+
+        PowerRanks.getInstance().getLogger().info("Uploading " + uploadSize + "KB, please wait...");
+
+        client.postJSON(outputJSON);
+        int updateInterval = 5;
+        int timeout = 5;
+
+        new BukkitRunnable() {
+            int waitTime = 0;
+
+            @Override
+            public void run() {
+                PowerRanksVerbose.log("task", "Running task uploading dump data");
+
+                if (client.hasResponse()) {
+                    Map<String, String> response = client.getResponse();
+                    if (response.keySet().contains("key")) {
+                        String key = response.get("key");
+
+                        if (key.length() > 0 && !key.startsWith("[FAILED]")) {
+                            PowerRanks.getInstance().getLogger().info("");
+                            PowerRanks.getInstance().getLogger().info("===----------" + PowerRanks.pdf.getName() + "----------===");
+                            PowerRanks.getInstance().getLogger().info("Data upload is ready " + "[" + logs_powerranks_url + key + "]");
+                            PowerRanks.getInstance().getLogger().info("ID: " + key);
+                            PowerRanks.getInstance().getLogger().info("Uploaded: " + uploadSize + "KB");
+                            PowerRanks.getInstance().getLogger().info("===------------------------------===");
+                        } else {
+                            PowerRanks.getInstance().getLogger().info("Uploading dump failed, received server error!");
+                        }
+                    }
+                    
+
+                    this.cancel();
+                }
+
+                if (waitTime / (20 / updateInterval) > timeout) {
+
+                    PowerRanks.getInstance().getLogger().info("Uploading dump timed-out!");
+                    this.cancel();
+                }
+            }
+        }.runTaskTimer(PowerRanks.getInstance(), 0, updateInterval);
+    }
+
+    private String removeIP(String line) {
+        String output = line;
+
+        String ipExp = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
+        Pattern ipPattern = Pattern.compile(ipExp);
+
+        Matcher matcher = ipPattern.matcher(output);
         output = matcher.replaceAll("<<IP_HIDDEN>>");
 
-		return output;
-	}
+        return output;
+    }
 }

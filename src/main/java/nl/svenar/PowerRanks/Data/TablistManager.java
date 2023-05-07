@@ -142,7 +142,10 @@ public class TablistManager {
                     animation.update();
                 }
 
-                for (Player player: Bukkit.getServer().getOnlinePlayers()) {
+                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                    // ((CraftHumanEntity) player).getHandle();
+                    // PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+                    // prPlayer.sendCustompacket(PowerPacket.Type.LIST_HEADER, new PowerPacket());
                     player.setPlayerListHeader(getHeader());
                     player.setPlayerListFooter(getFooter());
                 }
