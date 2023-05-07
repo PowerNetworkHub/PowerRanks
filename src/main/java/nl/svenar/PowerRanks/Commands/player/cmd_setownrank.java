@@ -15,6 +15,7 @@ import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_setownrank extends PowerCommand {
@@ -35,7 +36,8 @@ public class cmd_setownrank extends PowerCommand {
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
-				commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+				commandAllowed = sender
+						.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
 			} else {
 				commandAllowed = true;
 			}
@@ -44,12 +46,14 @@ public class cmd_setownrank extends PowerCommand {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
 				if (rank != null && targetPlayer != null) {
-					targetPlayer.setRank(rank.getName());
+					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+					targetPlayer.setRank(playerRank);
 
-                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
-                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
-                    }
+					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+						PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+						PowerRanks.getInstance().getTablistManager()
+								.updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+					}
 
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()

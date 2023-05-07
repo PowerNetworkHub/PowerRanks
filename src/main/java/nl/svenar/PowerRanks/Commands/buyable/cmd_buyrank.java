@@ -16,6 +16,7 @@ import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.External.VaultHook;
 import nl.svenar.PowerRanks.Util.Util;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_buyrank extends PowerCommand {
@@ -53,7 +54,8 @@ public class cmd_buyrank extends PowerCommand {
 						PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
 						if (rank != null) {
 							if (rank != null) {
-								CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
+								PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+								CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 
 								sender.sendMessage(Util.powerFormatter(
 										PowerRanks.getLanguageManager().getFormattedMessage(

@@ -1,5 +1,6 @@
 package nl.svenar.PowerRanks.Events;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
@@ -19,6 +20,7 @@ import nl.svenar.PowerRanks.External.VaultHook;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.gui.GUI;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class OnInteract implements Listener {
@@ -74,7 +76,8 @@ public class OnInteract implements Listener {
 				if (player.hasPermission("powerranks.signs.setrank")) {
 					PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
 					if (rank != null) {
-						CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
+						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+						CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 						player.sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands.setrank.success-receiver"),
@@ -92,7 +95,8 @@ public class OnInteract implements Listener {
 				if (player.hasPermission("powerranks.signs.setrank")) {
 					PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
 					if (rank != null) {
-						CacheManager.getPlayer(player.getUniqueId().toString()).addRank(rank.getName());
+						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+						CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 
 						// Messages.messageSetRankSuccessSender(player, t, rank);
 						player.sendMessage(Util.powerFormatter(
@@ -111,8 +115,10 @@ public class OnInteract implements Listener {
 			} else if (sign_command.equalsIgnoreCase("checkrank")) {
 				if (player.hasPermission("powerranks.signs.checkrank")) {
 
-					List<String> playerRanks = CacheManager.getPlayer(((Player) player).getUniqueId().toString())
-							.getRanks();
+					List<String> playerRanks = new ArrayList<>();
+					for (PRPlayerRank rank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+						playerRanks.add(rank.getName());
+					}
 					if (playerRanks.size() > 0) {
 						player.sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager()
@@ -195,8 +201,8 @@ public class OnInteract implements Listener {
 									PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
 									if (rank != null) {
 										if (rank != null) {
-											CacheManager.getPlayer(player.getUniqueId().toString())
-													.addRank(rank.getName());
+											PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+											CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 
 											player.sendMessage(Util.powerFormatter(
 													PowerRanks.getLanguageManager().getFormattedMessage(

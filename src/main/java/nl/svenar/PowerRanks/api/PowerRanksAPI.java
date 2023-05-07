@@ -9,6 +9,8 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class PowerRanksAPI {
@@ -74,7 +76,11 @@ public class PowerRanksAPI {
 	}
 
 	public List<String> getRanks(Player player) {
-		return CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranks = new ArrayList<>();
+		for (PRPlayerRank rank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranks.add(rank.getName());
+		}
+		return ranks;
 	}
 
 	/**
@@ -87,7 +93,8 @@ public class PowerRanksAPI {
 	public boolean setPlayerRank(Player player, String rankname) {
 		PRRank rank = CacheManager.getRank(rankname);
 		if (rank != null) {
-			CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
+			PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+			CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 		}
 		return rank != null;
 	}
@@ -102,7 +109,8 @@ public class PowerRanksAPI {
 	public boolean addPlayerRank(Player player, String rankname) {
 		PRRank rank = CacheManager.getRank(rankname);
 		if (rank != null) {
-			CacheManager.getPlayer(player.getUniqueId().toString()).addRank(rank.getName());
+			PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+			CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 		}
 		return rank != null;
 	}
@@ -117,7 +125,18 @@ public class PowerRanksAPI {
 	public boolean removePlayerRank(Player player, String rankname) {
 		PRRank rank = CacheManager.getRank(rankname);
 		if (rank != null) {
-			CacheManager.getPlayer(player.getUniqueId().toString()).removeRank(rank.getName());
+			PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+			PRPlayerRank playerRank = null;
+			for (PRPlayerRank targetPlayerRank : targetPlayer.getRanks()) {
+				if (targetPlayerRank.getName().equals(rank.getName())) {
+					playerRank = targetPlayerRank;
+					break;
+				}
+			}
+			if (playerRank != null) {
+				targetPlayer.removeRank(playerRank);
+			}
+			return playerRank != null;
 		}
 		return rank != null;
 	}

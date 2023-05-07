@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -261,12 +262,14 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 
 	private List<PRRank> getPlayerRanksSorted(Player player) {
 		List<PRRank> playerRanks = new ArrayList<PRRank>();
-		for (String rankname : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
-			PRRank rank = CacheManager.getRank(rankname);
+
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				playerRanks.add(rank);
 			}
 		}
+
 		return PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
 	}
 }

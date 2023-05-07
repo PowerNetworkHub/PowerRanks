@@ -24,6 +24,7 @@ import nl.svenar.common.storage.provided.PSMStorageManager;
 import nl.svenar.common.storage.provided.SQLiteStorageManager;
 import nl.svenar.common.storage.provided.YAMLStorageManager;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class CacheManager {
@@ -125,7 +126,8 @@ public class CacheManager {
         prPlayer.setUUID(player.getUniqueId());
         prPlayer.setName(player.getName());
         for (PRRank rank : CacheManager.getDefaultRanks()) {
-            prPlayer.addRank(rank.getName());
+            PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+            prPlayer.addRank(playerRank);
         }
         CacheManager.addPlayer(prPlayer);
         return prPlayer;

@@ -4,6 +4,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -96,10 +97,10 @@ public class PowerRanksVaultChat extends Chat {
 
 	@Override
 	public String getPlayerPrefix(String worldName, String playerName) {
-		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
+
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(playerName).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				ranks.add(rank);
 			}
@@ -116,10 +117,10 @@ public class PowerRanksVaultChat extends Chat {
 
 	@Override
 	public String getPlayerSuffix(String worldName, String playerName) {
-		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
+
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(playerName).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				ranks.add(rank);
 			}
@@ -193,10 +194,10 @@ public class PowerRanksVaultChat extends Chat {
 
 	@Override
 	public void setPlayerPrefix(String worldName, String playerName, String value) {
-		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
+
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(playerName).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				ranks.add(rank);
 			}
@@ -212,10 +213,10 @@ public class PowerRanksVaultChat extends Chat {
 
 	@Override
 	public void setPlayerSuffix(String worldName, String playerName, String value) {
-		List<String> ranknames = CacheManager.getPlayer(playerName).getRanks();
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
+
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(playerName).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				ranks.add(rank);
 			}

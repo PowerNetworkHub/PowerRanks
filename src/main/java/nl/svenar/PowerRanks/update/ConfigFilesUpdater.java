@@ -21,6 +21,7 @@ import nl.svenar.common.storage.provided.YAMLConfigManager;
 import nl.svenar.common.storage.provided.YAMLStorageManager;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class ConfigFilesUpdater {
@@ -194,7 +195,7 @@ public class ConfigFilesUpdater {
 
 				newPlayer.setUUID(UUID.fromString(playerUUID));
 				newPlayer.setName(playersYaml.getString("players." + playerUUID + ".name"));
-				newPlayer.setRank(playersYaml.getString("players." + playerUUID + ".rank"));
+				newPlayer.setRank(new PRPlayerRank(playersYaml.getString("players." + playerUUID + ".rank")));
 				newPlayer.setPlaytime(playersYaml.getInt("players." + playerUUID + ".playtime"));
 				if (playersYaml.getString("players." + playerUUID + ".usertag").length() > 0) {
 					newPlayer.addUsertag(playersYaml.getString("players." + playerUUID + ".usertag"));
@@ -209,7 +210,7 @@ public class ConfigFilesUpdater {
 
 				if (!playersYaml.isString("players." + playerUUID + ".subranks")) {
 					for (String playerSubrankName : playersYaml.getConfigurationSection("players." + playerUUID + ".subranks").getKeys(false)) {
-						newPlayer.addRank(playerSubrankName);
+						newPlayer.addRank(new PRPlayerRank(playerSubrankName));
 				// 		PRSubrank newSubrank = new PRSubrank();
 
 				// 		newSubrank.setName(playerSubrankName);

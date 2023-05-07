@@ -16,6 +16,7 @@ import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_setrank extends PowerCommand {
@@ -49,14 +50,22 @@ public class cmd_setrank extends PowerCommand {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 				if (rank != null && targetPlayer != null) {
-					targetPlayer.setRank(rank.getName());
+					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+					targetPlayer.setRank(playerRank);
 
                     if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
                         PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
                         PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
                     }
 
-					if (targetPlayer.getRanks().contains(rank.getName())) {
+					boolean hasRank = false;
+					for (PRPlayerRank playerrank : targetPlayer.getRanks()) {
+						if (playerrank.getName().equals(rank.getName())) {
+							hasRank = true;
+							break;
+						}
+					}
+					if (hasRank) {
 						sender.sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
