@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class PRPlayerRank {
     
-    private String rank;
+    private String name;
     private HashMap<String, String> tags;
 
     public PRPlayerRank() {
@@ -13,11 +13,11 @@ public class PRPlayerRank {
 
     public PRPlayerRank(String name) {
         this();
-        this.rank = name;
+        this.name = name;
     }
 
     public String getName() {
-        return this.rank;
+        return this.name;
     }
 
     public HashMap<String, String> getTags() {
