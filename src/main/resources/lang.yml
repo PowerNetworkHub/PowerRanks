@@ -131,6 +131,7 @@ lang:
             description: "Add a rank to yourself"
             success-executor: "&aChanged your rank to [rank]"
             failed-executor: "&cFailed to set your rank to: [rank]"
+            success-receiver: "&aYou have been granted the rank [rank]"
          setrank:
             arguments: "<player_name> <rank_name>"
             description: "Set someone's rank and remove all other ranks"
@@ -142,6 +143,7 @@ lang:
             description: "Set your own rank and remove all other ranks"
             success-executor: "&aChanged your rank to [rank]"
             failed-executor: "&cFailed to set your rank to: [rank]"
+            success-receiver: "&aYour rank has changed to [rank]"
          delrank:
             arguments: "<player_name> <rank_name>"
             success-executor: "&aRemoved the rank [rank] from [player]"
