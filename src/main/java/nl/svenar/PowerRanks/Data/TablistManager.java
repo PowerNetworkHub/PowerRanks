@@ -84,7 +84,9 @@ public class TablistManager {
 
                 int newTotalRankWeight = 0;
                 for (PRRank rank : sortedRanks) {
-                    newTotalRankWeight += rank.getWeight();
+                    if (rank != null) {
+                        newTotalRankWeight += rank.getWeight();
+                    }
                 }
                 if (totalWeight != newTotalRankWeight) {
                     totalWeight = newTotalRankWeight;
