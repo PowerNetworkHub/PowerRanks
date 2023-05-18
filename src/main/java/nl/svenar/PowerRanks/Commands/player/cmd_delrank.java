@@ -1,6 +1,7 @@
 package nl.svenar.PowerRanks.Commands.player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -15,6 +16,7 @@ import nl.svenar.PowerRanks.Commands.PowerCommand;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class cmd_delrank extends PowerCommand {
@@ -35,7 +37,8 @@ public class cmd_delrank extends PowerCommand {
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
-				commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+				commandAllowed = sender
+						.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
 			} else {
 				commandAllowed = true;
 			}
@@ -44,12 +47,22 @@ public class cmd_delrank extends PowerCommand {
 				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 				if (rank != null && targetPlayer != null) {
-					targetPlayer.removeRank(rank.getName());
+					PRPlayerRank playerRank = null;
+					for (PRPlayerRank targetPlayerRank : targetPlayer.getRanks()) {
+						if (targetPlayerRank.getName().equals(rank.getName())) {
+							playerRank = targetPlayerRank;
+							break;
+						}
+					}
+					if (playerRank != null) {
+						targetPlayer.removeRank(playerRank);
+					}
 
-                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
-                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
-                    }
+					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+						PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+						PowerRanks.getInstance().getTablistManager()
+								.updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+					}
 
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()
@@ -109,7 +122,11 @@ public class cmd_delrank extends PowerCommand {
 		if (args.length == 2) {
 			Player target_player = Util.getPlayerByName(args[0]);
 			if (target_player != null) {
-				for (String rank : CacheManager.getPlayer(target_player.getUniqueId().toString()).getRanks()) {
+				List<String> ranks = new ArrayList<>();
+				for (PRPlayerRank rank : CacheManager.getPlayer(target_player.getUniqueId().toString()).getRanks()) {
+					ranks.add(rank.getName());
+				}
+				for (String rank : ranks) {
 					tabcomplete.add(rank);
 				}
 			}

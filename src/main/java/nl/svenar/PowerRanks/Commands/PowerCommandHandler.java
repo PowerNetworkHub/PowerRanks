@@ -33,6 +33,7 @@ import nl.svenar.PowerRanks.Commands.core.cmd_help;
 import nl.svenar.PowerRanks.Commands.core.cmd_pluginhook;
 import nl.svenar.PowerRanks.Commands.core.cmd_reload;
 import nl.svenar.PowerRanks.Commands.core.cmd_stats;
+import nl.svenar.PowerRanks.Commands.core.cmd_tablist;
 import nl.svenar.PowerRanks.Commands.core.cmd_verbose;
 import nl.svenar.PowerRanks.Commands.player.cmd_addownrank;
 import nl.svenar.PowerRanks.Commands.player.cmd_addplayerperm;
@@ -88,6 +89,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_verbose(plugin, "verbose", COMMAND_EXECUTOR.ALL);
 		new cmd_pluginhook(plugin, "pluginhook", COMMAND_EXECUTOR.ALL);
 		new cmd_config(plugin, "config", COMMAND_EXECUTOR.ALL);
+		new cmd_tablist(plugin, "tablist", COMMAND_EXECUTOR.ALL);
 		new cmd_stats(plugin, "stats", COMMAND_EXECUTOR.ALL);
 		new cmd_factoryreset(plugin, "factoryreset", COMMAND_EXECUTOR.ALL);
 		new cmd_addoninfo(plugin, "addoninfo", COMMAND_EXECUTOR.ALL);

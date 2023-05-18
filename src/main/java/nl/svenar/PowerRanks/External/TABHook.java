@@ -10,6 +10,7 @@ import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Util.PluginReloader;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -99,7 +100,8 @@ public class TABHook {
                 newSortingTypes.add(type);
             } else {
 
-                // PowerRanks.getInstance().getLogger().warning(type.split(":")[1] + " - " + String.join(",", sortingList));
+                // PowerRanks.getInstance().getLogger().warning(type.split(":")[1] + " - " +
+                // String.join(",", sortingList));
 
                 if (String.join(",", sortingList).length() != type.split(":")[1].length()) {
                     // doRestart = true; // Restart the plugin
@@ -130,9 +132,9 @@ public class TABHook {
 
     static List<PRRank> getSortedRanks(PRPlayer prPlayer) {
         List<PRRank> playerRanks = new ArrayList<PRRank>();
-        for (String rankname : prPlayer.getRanks()) {
-            if (CacheManager.getRank(rankname) != null) {
-                playerRanks.add(CacheManager.getRank(rankname));
+        for (PRPlayerRank rank : prPlayer.getRanks()) {
+            if (CacheManager.getRank(rank.getName()) != null) {
+                playerRanks.add(CacheManager.getRank(rank.getName()));
             }
         }
 

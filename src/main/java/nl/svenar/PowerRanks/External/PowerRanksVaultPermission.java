@@ -12,6 +12,7 @@ import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.api.PowerRanksAPI;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -220,7 +221,10 @@ public class PowerRanksVaultPermission extends Permission {
 		ArrayList<String> groups = new ArrayList<String>();
 		// groups.add(CachedPlayers.getString("players." + player.getUniqueId() +
 		// ".rank"));
-		List<String> ranks = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranks = new ArrayList<>();
+		for (PRPlayerRank rank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranks.add(rank.getName());
+		}
 		if (ranks != null) {
 			for (String rank : ranks) {
 				groups.add(rank);
@@ -239,10 +243,9 @@ public class PowerRanksVaultPermission extends Permission {
 	@Override
 	public String getPrimaryGroup(String world, OfflinePlayer player) {
 		PowerRanksVerbose.log("PowerRanksVaultPermission.getPrimaryGroup(...)", "Called, player: " + player.getName());
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				ranks.add(rank);
 			}

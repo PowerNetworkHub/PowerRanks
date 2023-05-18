@@ -400,4 +400,54 @@ public class PRRank {
     public void setWeight(int weight) {
         this.weight = weight;
     }
+
+    @Override
+    public String toString() {
+        String output = "name:" + name
+        + ", isDefault:" + isDefault
+        + ", permissions:[<<PERMISSIONS>>]"
+        + ", inheritances:[<<INHERITANCES>>]"
+        + ", chatPrefix:" + chatPrefix
+        + ", chatSuffix:" + chatSuffix
+        + ", chatNamecolor:" + chatNamecolor
+        + ", chatChatcolor:" + chatChatcolor
+        + ", economyBuyable:" + economyBuyable
+        + ", economyCost:" + economyCost
+        + ", economyDescription:" + economyDescription
+        + ", economyBuyCommand:" + economyBuyCommand
+        + ", buyableRanks:[<<BUYABLERANKS>>]"
+        + ", weight:" + weight
+        + ", economyBuyable:" + economyBuyable;
+
+        String permissions = "";
+        for (PRPermission permission : getPermissions()) {
+            permissions += permission.toString() + ";";
+        }
+        permissions = permissions.length() > 0 ? permissions.substring(0, permissions.length() - 1) : "";
+
+        String inheritances = "";
+        for (String inheritance : getInheritances()) {
+            inheritances += inheritance + ";";
+        }
+        inheritances = inheritances.length() > 0 ? inheritances.substring(0, inheritances.length() - 1) : "";
+
+        String buyableRanks = "";
+        for (String buyable : getBuyableRanks()) {
+            buyableRanks += buyable + ";";
+        }
+        buyableRanks = buyableRanks.length() > 0 ? buyableRanks.substring(0, buyableRanks.length() - 1) : "";
+
+        output = output.replaceAll("<<PERMISSIONS>>", permissions);
+        output = output.replaceAll("<<INHERITANCES>>", inheritances);
+        output = output.replaceAll("<<BUYABLERANKS>>", buyableRanks);
+
+        return output;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + toString().hashCode();
+        return result;
+    }
 }

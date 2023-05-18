@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.PowerRanks.Cache.CacheManager;
+import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
 import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 
@@ -87,7 +88,10 @@ public class OnJoin implements Listener {
 	}
 
 	private static void validatePlayerData(Player player) {
-		if (CacheManager.getPlayer(player.getUniqueId().toString()) == null) {
+        boolean exists = CacheManager.getPlayer(player.getUniqueId().toString()) != null;
+        PowerRanksVerbose.log("onJoin", "Player " + player.getName() + " (" + player.getUniqueId().toString() + " " + (exists ? "exists" : "does not exist"));
+        
+		if (!exists) {
 			CacheManager.createPlayer(player);
 		}
 	}

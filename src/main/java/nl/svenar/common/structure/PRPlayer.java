@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 /**
  * Structure to store player data.
@@ -38,14 +39,14 @@ public class PRPlayer {
 
     private UUID uuid;
     private String name;
-    private ArrayList<String> ranks;
+    private ArrayList<PRPlayerRank> ranks;
     private ArrayList<PRPermission> permissions;
     private ArrayList<String> usertags;
     private long playtime;
 
     public PRPlayer() {
         this.name = "";
-        this.ranks = new ArrayList<String>();
+        this.ranks = new ArrayList<PRPlayerRank>();
         this.permissions = new ArrayList<PRPermission>();
         this.usertags = new ArrayList<String>();
         this.playtime = 0L;
@@ -92,7 +93,7 @@ public class PRPlayer {
      * 
      * @return String rank of the player
      */
-    public List<String> getRanks() {
+    public List<PRPlayerRank> getRanks() {
         return this.ranks;
     }
 
@@ -101,7 +102,7 @@ public class PRPlayer {
      * 
      * @param ranks
      */
-    public void setRanks(ArrayList<String> ranks) {
+    public void setRanks(ArrayList<PRPlayerRank> ranks) {
         this.ranks = ranks;
     }
 
@@ -110,7 +111,7 @@ public class PRPlayer {
      * 
      * @param rank
      */
-    public void setRank(String rank) {
+    public void setRank(PRPlayerRank rank) {
         this.ranks.clear();
         this.ranks.add(rank);
     }
@@ -120,7 +121,7 @@ public class PRPlayer {
      * 
      * @param rank
      */
-    public void addRank(String rank) {
+    public void addRank(PRPlayerRank rank) {
         if (!this.ranks.contains(rank)) {
             this.ranks.add(rank);
         }
@@ -131,7 +132,7 @@ public class PRPlayer {
      * 
      * @param rank
      */
-    public void removeRank(String rank) {
+    public void removeRank(PRPlayerRank rank) {
         if (this.ranks.contains(rank)) {
             this.ranks.remove(rank);
         }
@@ -293,5 +294,50 @@ public class PRPlayer {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        String output = "uuid:" + uuid.toString()
+        + ", name:" + name
+        + ", ranks:[<<RANKS>>]"
+        + ", permissions:[<<PERMISSIONS>>]"
+        + ", usertags:[<<USERTAGS>>]";
+
+        String ranks = "";
+        for (PRPlayerRank rank : getRanks()) {
+            ranks += rank.getName() + " (";
+            for (Entry<String, String> entry : rank.getTags().entrySet()) {
+                ranks += entry.getKey() + "=" + entry.getValue() + ",";
+            }
+            ranks = rank.getTags().size() > 0 ? ranks.substring(0, ranks.length() - 1) : "";
+            ranks += ");";
+        }
+        ranks = ranks.length() > 0 ? ranks.substring(0, ranks.length() - 1) : "";
+
+        String permissions = "";
+        for (PRPermission permission : getPermissions()) {
+            permissions += permission.toString() + ";";
+        }
+        permissions = permissions.length() > 0 ? permissions.substring(0, permissions.length() - 1) : "";
+
+        String usertags = "";
+        for (String usertag : getUsertags()) {
+            usertags += usertag + ";";
+        }
+        usertags = usertags.length() > 0 ? usertags.substring(0, usertags.length() - 1) : "";
+
+        output = output.replaceAll("<<RANKS>>", ranks);
+        output = output.replaceAll("<<PERMISSIONS>>", permissions);
+        output = output.replaceAll("<<USERTAGS>>", usertags);
+
+        return output;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + toString().hashCode();
+        return result;
     }
 }

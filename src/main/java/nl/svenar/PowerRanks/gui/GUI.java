@@ -14,6 +14,7 @@ import nl.svenar.PowerRanks.Data.Users;
 import nl.svenar.PowerRanks.External.VaultHook;
 import nl.svenar.PowerRanks.Util.Util;
 import nl.svenar.PowerRanks.gui.GUIPage.GUI_PAGE_ID;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 
 public class GUI {
@@ -88,7 +89,8 @@ public class GUI {
 
 						PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
 						if (rank != null) {
-							CacheManager.getPlayer(player.getUniqueId().toString()).setRank(rank.getName());
+							PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+							CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 							player.sendMessage(Util.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands.setrank.success-receiver"),

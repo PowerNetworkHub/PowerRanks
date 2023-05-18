@@ -190,8 +190,6 @@ public abstract class PowerConfigManager {
      */
     @SuppressWarnings("unchecked")
     public void setKV(String key, Object value) {
-        System.out.println("key: " + key);
-        System.out.println("value: " + value);
         String[] keySplit = key.split("\\.");
         int entries = keySplit.length;
         Object currentKey = this.data;

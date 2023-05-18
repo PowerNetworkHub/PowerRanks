@@ -29,6 +29,7 @@ import nl.svenar.PowerRanks.addons.PowerRanksAddon;
 import nl.svenar.PowerRanks.addons.PowerRanksPlayer;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -93,6 +94,10 @@ public class Messages {
 		}
 		sender.sendMessage(ChatColor.GREEN + "RGB colors: "
 				+ (hex_color_supported ? ChatColor.DARK_GREEN + "" : ChatColor.DARK_RED + "un") + "supported");
+        sender.sendMessage(ChatColor.GREEN + "Bungeecord: "
+                + (PowerRanks.getInstance().getBungeecordManager().isReady() ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
+        sender.sendMessage(ChatColor.GREEN + "- Connected servers: "
+                + ChatColor.DARK_GREEN + PowerRanks.getInstance().getBungeecordManager().getServerCount());
 
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: "
@@ -325,7 +330,13 @@ public class Messages {
 				: String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
 		String formatted_ranks = "";
-		for (String rankname : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
+
+		for (String rankname : ranknames) {
 			formatted_ranks += rankname + " ";
 		}
 		if (formatted_ranks.endsWith(" ")) {
@@ -412,7 +423,10 @@ public class Messages {
 
 		String format = PowerRanks.getConfigManager().getString("chat.format", "");
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {

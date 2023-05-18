@@ -114,14 +114,21 @@ public class LanguageManager {
     }
 
     /**
-     * Save the language data to the files system.
+     * Save the language data to the files system
      */
     public void save() {
         this.languageManager.save();
     }
+    /**
+     * Reload the language data
+     */
+    public void reload() {
+        this.languageManager.reload();
+    }
 
     /**
      * Get the config file instance
+     * 
      * @return PowerConfigManager for lang.yml
      */
     public PowerConfigManager getInstance() {

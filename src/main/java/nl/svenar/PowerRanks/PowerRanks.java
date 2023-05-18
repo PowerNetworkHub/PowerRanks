@@ -45,6 +45,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import nl.svenar.PowerRanks.Cache.CacheManager;
 import nl.svenar.PowerRanks.Cache.LanguageManager;
 import nl.svenar.PowerRanks.Commands.PowerCommandHandler;
+import nl.svenar.PowerRanks.Data.BungeecordManager;
 import nl.svenar.PowerRanks.Data.Messages;
 import nl.svenar.PowerRanks.Data.PowerPermissibleBase;
 import nl.svenar.PowerRanks.Data.PowerRanksVerbose;
@@ -74,10 +75,12 @@ import nl.svenar.PowerRanks.update.ConfigFilesUpdater;
 import nl.svenar.PowerRanks.update.Updater;
 import nl.svenar.PowerRanks.update.Updater.UpdateResult;
 import nl.svenar.PowerRanks.update.Updater.UpdateType;
+import nl.svenar.common.PowerLogger;
 import nl.svenar.common.storage.PowerConfigManager;
 import nl.svenar.common.storage.provided.YAMLConfigManager;
 import nl.svenar.common.structure.PRPermission;
 import nl.svenar.common.structure.PRPlayer;
+import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 
@@ -97,7 +100,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
 	private TablistManager tablistManager;
-    private static PowerColor powerColor;
+	private static PowerColor powerColor;
 	public String plp;
 	public static Logger log;
 	public static String fileLoc;
@@ -108,6 +111,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private static PowerConfigManager configManager;
 	private static LanguageManager languageManager;
 	private static PowerConfigManager usertagManager;
+	private static PowerConfigManager tablistConfigManager;
+
+	private BungeecordManager bungeecordManager;
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
@@ -125,6 +131,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
 	public Map<UUID, Long> playerPlayTimeCache = new HashMap<UUID, Long>();
+    // public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -136,6 +143,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		instance = this;
+
+        new PowerLogger(getLogger());
 
 		Instant startTime = Instant.now();
 
@@ -164,7 +173,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ------- LOADING CONFIGURATION ------ ===");
-        PowerRanks.powerColor = new PowerColor();
+		PowerRanks.powerColor = new PowerColor();
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
@@ -177,6 +186,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		languageManager.setLanguage(configManager.getString("general.language", "en"));
 		PowerRanks.log.info("Loading usertags file");
 		usertagManager = new YAMLConfigManager(PowerRanks.fileLoc, "usertags.yml");
+		PowerRanks.log.info("Loading tablist file");
+		tablistConfigManager = new YAMLConfigManager(PowerRanks.fileLoc, "tablist.yml", "tablist.yml");
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ---------- LOADING ADDONS ---------- ===");
@@ -198,6 +209,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		setupSoftDependencies();
 
 		GUI.setPlugin(this);
+
+		this.bungeecordManager = new BungeecordManager(this);
+		this.bungeecordManager.start();
 
 		this.tablistManager = new TablistManager();
 		this.tablistManager.start();
@@ -238,6 +252,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public void onDisable() {
 		this.tablistManager.stop();
+		this.bungeecordManager.stop();
 
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 
@@ -287,6 +302,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			getUsertagManager().save();
 		} else {
 			getLogger().warning("Failed to save usertags file!");
+			hasErrorInSaving = true;
+		}
+
+		if (Objects.nonNull(getTablistConfigManager())) {
+			getTablistConfigManager().save();
+		} else {
+			getLogger().warning("Failed to save tablist config file!");
 			hasErrorInSaving = true;
 		}
 
@@ -418,6 +440,25 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}.runTaskTimer(this, update_check_interval, update_check_interval);
 
+
+        // new BukkitRunnable() {
+        //     @Override
+        //     public void run() {
+        //         PowerRanksVerbose.log("task", "Running task check player name change");
+
+        //         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+        //             if (!playerNameCache.containsKey(player.getUniqueId())) {
+        //                 playerNameCache.put(player.getUniqueId(), player.getName());
+        //             }
+
+        //             if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
+        //                 log.info("Player name changed from '" + playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() + "'");
+        //                 playerNameCache.put(player.getUniqueId(), player.getName());
+        //                 CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
+        //             }
+        //         }
+        //     }
+        // }.runTaskTimer(this, TASK_TPS, TASK_TPS);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -764,8 +805,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					prefix_format += nameColor;
 
-					prefix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, prefix_format, true, true);
-					suffix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, suffix_format, true, true);
+					prefix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, prefix_format, true,
+							true);
+					suffix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, suffix_format, true,
+							true);
 
 					INametagApi nteAPI = NametagEdit.getApi();
 					if (nteAPI != null) {
@@ -784,7 +827,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (NoSuchMethodError e) {
 		}
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
@@ -894,7 +940,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			format = PowerRanks.chatColor(format, true);
 
 			player.setPlayerListName(format);
-            PowerRanksVerbose.log("updateTablistName", "Updated " + player.getName() + "'s tablist format to: " + player.getPlayerListName());
+			PowerRanksVerbose.log("updateTablistName",
+					"Updated " + player.getName() + "'s tablist format to: " + player.getPlayerListName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -972,13 +1019,34 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
+        PRPlayer prPlayer = null;
+
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 
-		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+        if (player == null) {
+            return permissions;
+        }
+
+        try {
+            prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return permissions;
+        }
+
+        if (prPlayer == null) {
+            return permissions;
+        }
+
+		for (PRPermission permission : prPlayer.getPermissions()) {
 			permissions.add(permission);
 		}
 
-		List<String> ranknames = CacheManager.getPlayer(player.getUniqueId().toString()).getRanks();
+		List<String> ranknames = new ArrayList<>();
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+			ranknames.add(playerRank.getName());
+		}
+
 		List<PRRank> playerRanks = new ArrayList<PRRank>();
 		for (String rankname : ranknames) {
 			PRRank rank = CacheManager.getRank(rankname);
@@ -1008,7 +1076,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
 		effectiveRanks = PRUtil.sortRanksByWeight(effectiveRanks);
 
-		for (PRPermission permission : CacheManager.getPlayer(player.getUniqueId().toString()).getPermissions()) {
+		for (PRPermission permission : prPlayer.getPermissions()) {
 			permissions.add(permission);
 		}
 
@@ -1035,9 +1103,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return permissions;
 	}
 
-    public TablistManager getTablistManager() {
-        return this.tablistManager;
-    }
+	public TablistManager getTablistManager() {
+		return this.tablistManager;
+	}
 
 	public static PowerConfigManager getConfigManager() {
 		return configManager;
@@ -1051,9 +1119,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return usertagManager;
 	}
 
-    public static PowerColor getPowerColor() {
-        return powerColor;
-    }
+	public static PowerConfigManager getTablistConfigManager() {
+		return tablistConfigManager;
+	}
+
+	public BungeecordManager getBungeecordManager() {
+		return this.bungeecordManager;
+	}
+
+	public static PowerColor getPowerColor() {
+		return powerColor;
+	}
 
 	public static PowerRanks getInstance() {
 		return instance;
