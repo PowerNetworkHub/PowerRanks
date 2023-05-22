@@ -27,6 +27,8 @@ public class cmd_tablist extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
 
+        // TODO: Fix arguments showing
+        
 		if (args.length >= 1) {
 			if (args[0].equalsIgnoreCase("animation")) {
 				handleAnimationCommand(sender, cmd, commandLabel, commandName,
