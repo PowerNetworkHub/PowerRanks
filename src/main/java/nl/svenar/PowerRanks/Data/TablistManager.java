@@ -71,8 +71,7 @@ public class TablistManager {
 
                 boolean doUpdateRanks = false;
 
-                List<PRRank> sortedRanks = PRUtil.sortRanksByWeight(
-                        CacheManager.getRanks());
+                List<PRRank> sortedRanks = PRUtil.sortRanksByWeight(CacheManager.getRanks());
                 if (!PowerRanks.getTablistConfigManager().getBool("sorting.reverse", false)) {
                     Collections.reverse(sortedRanks);
                 }
@@ -102,8 +101,7 @@ public class TablistManager {
                     }
                     for (int i = 0; i < sortedRanks.size(); i++) {
                         scoreboard.registerNewTeam(i + "-" + sortedRanks.get(i).getName());
-                        PowerRanksVerbose.log("TablistSort",
-                                "Creating new scoreboard team: " + i + "-" + sortedRanks.get(i).getName());
+                        PowerRanksVerbose.log("TablistSort", "Creating new scoreboard team: " + i + "-" + sortedRanks.get(i).getName());
                     }
                 }
 
@@ -115,11 +113,8 @@ public class TablistManager {
                         "Running task sort tablist in " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
             }
         };
-        sortingTask.runTaskTimer(
-                PowerRanks.getInstance(),
-                0,
-                PowerRanks.getInstance().TASK_TPS
-                        * PowerRanks.getTablistConfigManager().getInt("sorting.update-interval", 1));
+        sortingTask.runTaskTimer(PowerRanks.getInstance(), 0,
+                PowerRanks.getInstance().TASK_TPS * PowerRanks.getTablistConfigManager().getInt("sorting.update-interval", 1));
     }
 
     @SuppressWarnings("unchecked")
@@ -136,8 +131,7 @@ public class TablistManager {
 
         for (String animationName : PowerRanks.getTablistConfigManager().getKeys("header-footer.animations")) {
             TablistAnimation newAnimation = new TablistAnimation();
-            newAnimation.setDelay(PowerRanks.getTablistConfigManager()
-                    .getInt("header-footer.animations." + animationName + ".delay", 1));
+            newAnimation.setDelay(PowerRanks.getTablistConfigManager().getInt("header-footer.animations." + animationName + ".delay", 1));
             newAnimation.setFrames((ArrayList<String>) PowerRanks.getTablistConfigManager()
                     .getList("header-footer.animations." + animationName + ".frames", new ArrayList<String>()));
             tablistAnimations.put(animationName, newAnimation);
@@ -161,16 +155,14 @@ public class TablistManager {
                 }
 
                 if (verboseLogInterval > 100) {
-                    PowerRanksVerbose.log("task", "Running task header/footer tablist in "
-                            + Duration.between(startTime, Instant.now()).toMillis() + "ms");
+                    PowerRanksVerbose.log("task",
+                            "Running task header/footer tablist in " + Duration.between(startTime, Instant.now()).toMillis() + "ms");
                     verboseLogInterval = 0;
                 }
                 verboseLogInterval++;
             }
         };
-        headerFooterTask.runTaskTimer(
-                PowerRanks.getInstance(),
-                0,
+        headerFooterTask.runTaskTimer(PowerRanks.getInstance(), 0,
                 PowerRanks.getTablistConfigManager().getInt("header-footer.update-interval", 1));
     }
 
@@ -191,16 +183,11 @@ public class TablistManager {
             key = key.substring(1, key.length() - 1);
             value = value.substring(1, value.length() - 1);
 
-            switch (key.toLowerCase()) {
-                case "animation":
-                    TablistAnimation animation = tablistAnimations.get(value);
-                    if (animation != null) {
-                        replacement = animation.getCurrentFrame();
-                    }
-                    break;
-
-                default:
-                    break;
+            if (key.equalsIgnoreCase("animation")) {
+                TablistAnimation animation = tablistAnimations.get(value);
+                if (animation != null) {
+                    replacement = animation.getCurrentFrame();
+                }
             }
 
             line = line.replace(symbol, replacement);
@@ -280,50 +267,42 @@ public class TablistManager {
     }
 
     public void updateSorting(Player player) {
-        if (!playerHighestWeight.containsKey(player.getUniqueId())) {
-            playerHighestWeight.put(player.getUniqueId(), Integer.MIN_VALUE);
-        }
-
-        PRPlayer targetPlayer = CacheManager.getPlayer(
-                player.getUniqueId().toString());
-        int playerHighestRankWeight = Integer.MIN_VALUE;
-        PRRank playerHighestRank = null;
-
-        List<String> ranknames = new ArrayList<>();
-        for (PRPlayerRank playerRank : targetPlayer.getRanks()) {
-            ranknames.add(playerRank.getName());
-        }
-
-        for (String rankname : ranknames) {
-            PRRank rank = CacheManager.getRank(rankname);
-            if (rank != null) {
+        if (PowerRanks.getTablistConfigManager().getBool("sorting.enabled", true) && scoreboard != null) {
+            if (!playerHighestWeight.containsKey(player.getUniqueId()))
+                playerHighestWeight.put(player.getUniqueId(), Integer.MIN_VALUE);
+            PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+            int playerHighestRankWeight = Integer.MIN_VALUE;
+            PRRank playerHighestRank = null;
+            List<String> ranknames = new ArrayList<>();
+            for (PRPlayerRank playerRank : targetPlayer.getRanks())
+                ranknames.add(playerRank.getName());
+            for (String rankname : ranknames) {
+                PRRank rank = CacheManager.getRank(rankname);
                 if (rank.getWeight() > playerHighestRankWeight) {
                     playerHighestRankWeight = rank.getWeight();
                     playerHighestRank = rank;
                 }
             }
-        }
-        if (playerHighestWeight.get(player.getUniqueId()) != playerHighestRankWeight) {
-            playerHighestWeight.put(player.getUniqueId(), playerHighestRankWeight);
-            if (playerHighestRank != null) {
-                for (Team team : scoreboard.getTeams()) {
-                    if (team.getName().contains("-")) {
-                        if (team.getName().split("-")[1].equals(playerHighestRank.getName())) {
+            if (playerHighestWeight.get(player.getUniqueId()) != playerHighestRankWeight) {
+                playerHighestWeight.put(player.getUniqueId(), playerHighestRankWeight);
+                if (playerHighestRank != null) {
+                    for (Team team : scoreboard.getTeams()) {
+                        if (team.getName().contains("-") && team.getName().split("-")[1].equals(playerHighestRank.getName())) {
                             team.addEntry(player.getName());
-                            PowerRanksVerbose.log("TablistSort",
-                                    "Setting " + player.getName() + " to scoreboard team: " + team.getName());
-                        } else {
+                            PowerRanksVerbose.log("TablistSort", "Setting " + player.getName() + " to scoreboard team: " + team.getName());
+                        } else
                             team.removeEntry(player.getName());
-                        }
                     }
+                    PowerRanks.getInstance().updateTablistName(player);
                 }
-
-                PowerRanks.getInstance().updateTablistName(player);
             }
         }
     }
 
     public void onPlayerJoin(Player player) {
+        if (this.scoreboard == null) {
+            return;
+        }
         player.setScoreboard(this.scoreboard);
     }
 
