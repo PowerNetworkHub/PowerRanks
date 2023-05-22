@@ -73,7 +73,7 @@ lang:
             state-changed: "&eChanged [config_target] from &c[old_state] &eto &a[new_state]"
             numbers-only: "&cOnly numbers are allowed!"
          tablist:
-            arguments: "<removeworldtag / (enable/disable tablist_sorting/reverse_tablist_sorting) / set (sorting_update_interval <seconds> / header_footer_update_interval <ticks>) / animation ...>"
+            arguments: "<animation <list / create <name> / delete <name> / delay <animation> <seconds>> / enable/disable <tablist_sorting / reverse_tablist_sorting> / set <sorting_update_interval <seconds> / header_footer_update_interval <seconds>>>"
             description: "Edit fields in the tablist configuration file"
             state-changed: "&eChanged [config_target] from &c[old_state] &eto &a[new_state]"
             numbers-only: "&cOnly numbers are allowed!"
