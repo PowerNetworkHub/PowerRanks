@@ -22,7 +22,8 @@ public class Util {
 
 	public static String getServerVersion(Server server) {
 		try {
-			Matcher matcher = Pattern.compile("\\d{1,3}.\\d{1,3}.\\d{1,3}").matcher(server.getVersion());
+			Matcher matcher = Pattern.compile("\\d{1,3}.\\d{1,3}|\\d{1,3}.\\d{1,3}.\\d{1,3}")
+					.matcher(server.getVersion());
 
 			List<String> results = new ArrayList<String>();
 			while (matcher.find()) {
