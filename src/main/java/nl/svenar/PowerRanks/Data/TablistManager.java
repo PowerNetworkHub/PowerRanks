@@ -12,16 +12,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import nl.svenar.PowerRanks.Cache.CacheManager;
+import nl.svenar.PowerRanks.Util.PowerColor;
 import nl.svenar.PowerRanks.PowerRanks;
 import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import me.clip.placeholderapi.PlaceholderAPI;
 
 public class TablistManager {
 
@@ -156,8 +160,8 @@ public class TablistManager {
                     // ((CraftHumanEntity) player).getHandle();
                     // PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
                     // prPlayer.sendCustompacket(PowerPacket.Type.LIST_HEADER, new PowerPacket());
-                    player.setPlayerListHeader(getHeader());
-                    player.setPlayerListFooter(getFooter());
+                    player.setPlayerListHeader(getHeader(player));
+                    player.setPlayerListFooter(getFooter(player));
                 }
 
                 if (verboseLogInterval > 100) {
@@ -210,11 +214,16 @@ public class TablistManager {
         return line;
     }
 
-    private String getHeader() {
+    private String getHeader(Player player) {
         String output = "";
 
         for (String line : headerLines) {
             output += line + "\n";
+        }
+
+        if (PowerRanks.placeholderapiExpansion != null) {
+            output = PlaceholderAPI.setPlaceholders(player, output).replaceAll("" + ChatColor.COLOR_CHAR,
+                    "" + PowerColor.UNFORMATTED_COLOR_CHAR);
         }
 
         output = output.substring(0, output.length() - 1);
@@ -224,11 +233,16 @@ public class TablistManager {
         return output;
     }
 
-    private String getFooter() {
+    private String getFooter(Player player) {
         String output = "";
 
         for (String line : footerLines) {
             output += line + "\n";
+        }
+
+        if (PowerRanks.placeholderapiExpansion != null) {
+            output = PlaceholderAPI.setPlaceholders(player, output).replaceAll("" + ChatColor.COLOR_CHAR,
+                    "" + PowerColor.UNFORMATTED_COLOR_CHAR);
         }
 
         output = output.substring(0, output.length() - 1);
@@ -305,26 +319,30 @@ public class TablistManager {
         }
         if (playerHighestWeight.get(player.getUniqueId()) != playerHighestRankWeight) {
             playerHighestWeight.put(player.getUniqueId(), playerHighestRankWeight);
-            if (playerHighestRank != null) {
-                for (Team team : scoreboard.getTeams()) {
-                    if (team.getName().contains("-")) {
-                        if (team.getName().split("-")[1].equals(playerHighestRank.getName())) {
-                            team.addEntry(player.getName());
-                            PowerRanksVerbose.log("TablistSort",
-                                    "Setting " + player.getName() + " to scoreboard team: " + team.getName());
-                        } else {
-                            team.removeEntry(player.getName());
+            if (scoreboard != null) {
+                if (playerHighestRank != null) {
+                    for (Team team : scoreboard.getTeams()) {
+                        if (team.getName().contains("-")) {
+                            if (team.getName().split("-")[1].equals(playerHighestRank.getName())) {
+                                team.addEntry(player.getName());
+                                PowerRanksVerbose.log("TablistSort",
+                                        "Setting " + player.getName() + " to scoreboard team: " + team.getName());
+                            } else {
+                                team.removeEntry(player.getName());
+                            }
                         }
                     }
-                }
 
-                PowerRanks.getInstance().updateTablistName(player);
+                    PowerRanks.getInstance().updateTablistName(player);
+                }
             }
         }
     }
 
     public void onPlayerJoin(Player player) {
-        player.setScoreboard(this.scoreboard);
+        if (this.scoreboard != null) {
+            player.setScoreboard(this.scoreboard);
+        }
     }
 
     public void onPlayerLeave(Player player) {
