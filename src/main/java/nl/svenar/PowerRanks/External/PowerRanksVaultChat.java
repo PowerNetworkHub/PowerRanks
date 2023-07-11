@@ -39,25 +39,25 @@ public class PowerRanksVaultChat extends Chat {
 	@Override
 	public boolean getGroupInfoBoolean(String worldName, String rankName, String permissionNode, boolean defaultValue) {
 		// TODO: add support
-		return false;
+		return defaultValue;
 	}
 
 	@Override
 	public double getGroupInfoDouble(String worldName, String rankName, String permissionNode, double defaultValue) {
 		// TODO: add support
-		return 0;
+		return defaultValue;
 	}
 
 	@Override
 	public int getGroupInfoInteger(String worldName, String rankName, String permissionNode, int defaultValue) {
 		// TODO: add support
-		return 0;
+		return defaultValue;
 	}
 
 	@Override
 	public String getGroupInfoString(String worldName, String rankName, String permissionNode, String defaultValue) {
 		// TODO: add support
-		return null;
+		return defaultValue;
 	}
 
 	@Override
@@ -74,25 +74,25 @@ public class PowerRanksVaultChat extends Chat {
 	public boolean getPlayerInfoBoolean(String worldName, String playerName, String permissionNode,
 			boolean defaultValue) {
 		// TODO: add support
-		return false;
+		return defaultValue;
 	}
 
 	@Override
 	public double getPlayerInfoDouble(String worldName, String playerName, String permissionNode, double defaultValue) {
 		// TODO: add support
-		return 0;
+		return defaultValue;
 	}
 
 	@Override
 	public int getPlayerInfoInteger(String worldName, String playerName, String permissionNode, int defaultValue) {
 		// TODO: add support
-		return 0;
+		return defaultValue;
 	}
 
 	@Override
 	public String getPlayerInfoString(String worldName, String playerName, String permissionNode, String defaultValue) {
 		// TODO: add support
-		return null;
+		return defaultValue;
 	}
 
 	@Override
