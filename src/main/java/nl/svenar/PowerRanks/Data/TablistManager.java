@@ -61,7 +61,7 @@ public class TablistManager {
 
                 if (scoreboard == null) {
                     try {
-                        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                        scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
                         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                             onPlayerJoin(player);
                         }
