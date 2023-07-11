@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.6</version>
+	<version>1.10.7B1</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -12,7 +12,7 @@
 		<src.dir>src/main/java</src.dir>
 		<rsc.dir>src/main/resources</rsc.dir>
 		<shade.basepattern>nl.svenar.lib</shade.basepattern>
-		<testserver.location>../../minecraft/java/latest_server/plugins/</testserver.location>
+		<testserver.location>../../servers/latest/plugins/</testserver.location>
 	</properties>
 
 	<build>
@@ -144,10 +144,10 @@
 			<id>spigotmc-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<repository>
+		<!-- <repository>
 			<id>extendedclip-repo</id>
 			<url>http://repo.extendedclip.com/content/repositories/public/</url>
-		</repository>
+		</repository> -->
 		<repository>
 			<id>placeholderapi</id>
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
