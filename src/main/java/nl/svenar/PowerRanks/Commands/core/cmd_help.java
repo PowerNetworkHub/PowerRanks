@@ -52,7 +52,7 @@ public class cmd_help extends PowerCommand {
 
 		int page = 0;
 		if (args.length > 0) {
-			page = Integer.parseInt(args[0].replaceAll("[a-zA-Z]", ""));
+			page = args[0].replaceAll("[a-zA-Z]", "").length() > 0 ? Integer.parseInt(args[0].replaceAll("[a-zA-Z]", "")) : 0;
 
 			if (!(sender instanceof Player)) {
 				page -= 1;
