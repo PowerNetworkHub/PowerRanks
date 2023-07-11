@@ -36,11 +36,11 @@ public class cmd_reload extends PowerCommand {
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".config-start"));
 
-                PowerRanks.getConfigManager().reload();
-                PowerRanks.getLanguageManager().reload();
-                PowerRanks.getUsertagManager().reload();
-                PowerRanks.getTablistConfigManager().reload();
-                
+				PowerRanks.getConfigManager().reload();
+				PowerRanks.getLanguageManager().reload();
+				PowerRanks.getUsertagManager().reload();
+				PowerRanks.getTablistConfigManager().reload();
+
 				CacheManager.load(PowerRanks.fileLoc);
 				this.plugin.updateAllPlayersTABlist();
 
@@ -74,6 +74,20 @@ public class cmd_reload extends PowerCommand {
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".addons-done"));
 
+			} else if (args[0].equalsIgnoreCase("tablist")) {
+
+				sender.sendMessage(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".tablist-start"));
+
+				PowerRanks.getInstance().getTablistManager().stop();
+				PowerRanks.getTablistConfigManager().reload();
+				PowerRanks.getInstance().getTablistManager().start();
+
+				sender.sendMessage(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".tablist-done"));
+
 			} else if (args[0].equalsIgnoreCase("all")) {
 
 				sender.sendMessage(
@@ -83,7 +97,7 @@ public class cmd_reload extends PowerCommand {
 				PowerRanks.getConfigManager().reload();
 				PowerRanks.getLanguageManager().reload();
 				PowerRanks.getUsertagManager().reload();
-                PowerRanks.getTablistConfigManager().reload();
+				PowerRanks.getTablistConfigManager().reload();
 
 				sender.sendMessage(
 						PowerRanks.getLanguageManager().getFormattedMessage(
@@ -120,6 +134,7 @@ public class cmd_reload extends PowerCommand {
 			tabcomplete.add("plugin");
 			tabcomplete.add("config");
 			tabcomplete.add("addons");
+			tabcomplete.add("tablist");
 			tabcomplete.add("all");
 		}
 

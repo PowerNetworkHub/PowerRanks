@@ -106,6 +106,8 @@ lang:
             plugin-done: "&2Reloaded plugin!"
             addons-start: "&2Reloading add-ons..."
             addons-done: "&2Reloaded add-ons!"
+            tablist-start: "&2Reloading tablist..."
+            tablist-done: "&2Reloaded tablist!"
          stats:
             arguments: ""
             description: "Show stats about PowerRanks"
