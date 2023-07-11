@@ -53,6 +53,7 @@ public class cmd_tablist extends PowerCommand {
 							'[', ']'));
 
 					PowerRanks.getTablistConfigManager().setBool("sorting.enabled", enable);
+					PowerRanks.getTablistConfigManager().save();
 					PowerRanks.getInstance().getTablistManager().stop();
 					PowerRanks.getInstance().getTablistManager().start();
 
@@ -71,6 +72,26 @@ public class cmd_tablist extends PowerCommand {
 							'[', ']'));
 
 					PowerRanks.getTablistConfigManager().setBool("sorting.reverse", enable);
+					PowerRanks.getTablistConfigManager().save();
+					PowerRanks.getInstance().getTablistManager().stop();
+					PowerRanks.getInstance().getTablistManager().start();
+
+				} else if (args[1].equalsIgnoreCase("header_footer")) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".state-changed"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.put("config_target", "Header & Footer")
+									.put("old_state",
+											String.valueOf(PowerRanks.getTablistConfigManager()
+													.getBool("header-footer.enabled", true)))
+									.put("new_state", String.valueOf(enable))
+									.build(),
+							'[', ']'));
+
+					PowerRanks.getTablistConfigManager().setBool("header-footer.enabled", enable);
+					PowerRanks.getTablistConfigManager().save();
 					PowerRanks.getInstance().getTablistManager().stop();
 					PowerRanks.getInstance().getTablistManager().start();
 
@@ -105,6 +126,7 @@ public class cmd_tablist extends PowerCommand {
 								'[', ']'));
 
 						PowerRanks.getTablistConfigManager().setInt("sorting.update-interval", time);
+						PowerRanks.getTablistConfigManager().save();
 						PowerRanks.getInstance().getTablistManager().stop();
 						PowerRanks.getInstance().getTablistManager().start();
 					} catch (Exception e) {
@@ -130,6 +152,7 @@ public class cmd_tablist extends PowerCommand {
 								'[', ']'));
 
 						PowerRanks.getTablistConfigManager().setInt("header-footer.update-interval", time);
+						PowerRanks.getTablistConfigManager().save();
 						PowerRanks.getInstance().getTablistManager().stop();
 						PowerRanks.getInstance().getTablistManager().start();
 					} catch (Exception e) {
@@ -184,6 +207,7 @@ public class cmd_tablist extends PowerCommand {
 							20);
 					PowerRanks.getTablistConfigManager().setKV("header-footer.animations" + animationName + ".frames",
 							new ArrayList<String>());
+					PowerRanks.getTablistConfigManager().save();
 					sender.sendMessage(
 							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
 									"commands." + commandName.toLowerCase() + ".animation.created",
@@ -202,6 +226,7 @@ public class cmd_tablist extends PowerCommand {
 						return;
 					}
 					PowerRanks.getTablistConfigManager().setKV("header-footer.animations" + animationName, null);
+					PowerRanks.getTablistConfigManager().save();
 					// TODO: take animation name case into account
 					sender.sendMessage(
 							PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
@@ -272,6 +297,7 @@ public class cmd_tablist extends PowerCommand {
 			if (args[0].equalsIgnoreCase("enable") || args[0].equalsIgnoreCase("disable")) {
 				tabcomplete.add("tablist_sorting");
 				tabcomplete.add("reverse_tablist_sorting");
+				tabcomplete.add("header_footer");
 			}
 
 			if (args[0].equalsIgnoreCase("animation")) {
