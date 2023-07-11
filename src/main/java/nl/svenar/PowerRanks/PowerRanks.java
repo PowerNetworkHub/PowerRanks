@@ -416,7 +416,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						boolean has_vault_economy = PowerRanks.getInstance().getServer().getPluginManager()
 								.getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy");
 
-						vaultHook.hook(PowerRanks.getInstance(), false, has_vault_economy);
+						vaultHook.hook(PowerRanks.getInstance(), false, false, has_vault_economy);
 					} else {
 						this.cancel();
 					}
@@ -481,6 +481,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				&& getConfigBool("plugin_hook.vault_economy");
 		boolean has_vault_permissions = this.getServer().getPluginManager().getPlugin("Vault") != null
 				&& getConfigBool("plugin_hook.vault_permissions");
+		boolean has_vault_experimental_permissions = this.getServer().getPluginManager().getPlugin("Vault") != null
+				&& getConfigBool("plugin_hook.vault_permissions_experimental");
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null
 				&& getConfigBool("plugin_hook.placeholderapi");
 		// boolean has_tab = this.getServer().getPluginManager().getPlugin("TAB") !=
@@ -502,9 +504,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (has_vault_permissions) {
 					PowerRanks.log.info("Enabling Vault Permission integration.");
 				}
+				if (has_vault_experimental_permissions) {
+					PowerRanks.log.info("Enabling Vault Permission integration (experimental).");
+				}
 
 				this.vaultHook = new VaultHook();
-				vaultHook.hook(this, has_vault_permissions, has_vault_economy);
+				vaultHook.hook(this, has_vault_permissions, has_vault_experimental_permissions, has_vault_economy);
 				vaultEconomyEnabled = has_vault_economy;
 				vaultPermissionsEnabled = has_vault_permissions;
 			}

@@ -20,17 +20,19 @@ public class VaultHook {
 
 	}
 
-	public void hook(PowerRanks plugin, boolean setupPermissions, boolean setupEconomy) {
+	public void hook(PowerRanks plugin, boolean setupPermissions, boolean setupExperimentalPermissions,
+			boolean setupEconomy) {
 		if (setupPermissions) {
 			Plugin vault = Bukkit.getPluginManager().getPlugin("Vault");
 			PowerRanksVaultPermission vaultPermsHook = new PowerRanksVaultPermission(plugin);
 			Bukkit.getServicesManager().register(Permission.class, vaultPermsHook, vault, ServicePriority.High);
-
-			PowerRanksVaultChat vaultChatHook = new PowerRanksVaultChat(plugin, vaultPermsHook);
-			Bukkit.getServicesManager().register(Chat.class, vaultChatHook, vault, ServicePriority.High);
-
 			vaultPermissions = vaultPermsHook;
-			vaultChat = vaultChatHook;
+
+			if (setupExperimentalPermissions) {
+				PowerRanksVaultChat vaultChatHook = new PowerRanksVaultChat(plugin, vaultPermsHook);
+				Bukkit.getServicesManager().register(Chat.class, vaultChatHook, vault, ServicePriority.High);
+				vaultChat = vaultChatHook;
+			}
 		}
 
 		if (setupEconomy) {

@@ -32,6 +32,7 @@ signs:
 plugin_hook:
   vault_economy: true
   vault_permissions: true
+  vault_permissions_experimental: true
   placeholderapi: true
   deluxetags: false
   nametagedit: true
