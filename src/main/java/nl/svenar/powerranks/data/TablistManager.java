@@ -196,16 +196,11 @@ public class TablistManager {
             key = key.substring(1, key.length() - 1);
             value = value.substring(1, value.length() - 1);
 
-            switch (key.toLowerCase()) {
-                case "animation":
-                    TablistAnimation animation = tablistAnimations.get(value);
-                    if (animation != null) {
-                        replacement = animation.getCurrentFrame();
-                    }
-                    break;
-
-                default:
-                    break;
+            if (key.equalsIgnoreCase("animation")) {
+                TablistAnimation animation = tablistAnimations.get(value);
+                if (animation != null) {
+                    replacement = animation.getCurrentFrame();
+                }
             }
 
             line = line.replace(symbol, replacement);
@@ -295,45 +290,40 @@ public class TablistManager {
     }
 
     public void updateSorting(Player player) {
-        if (!playerHighestWeight.containsKey(player.getUniqueId())) {
-            playerHighestWeight.put(player.getUniqueId(), Integer.MIN_VALUE);
-        }
+        if (PowerRanks.getTablistConfigManager().getBool("sorting.enabled", true) && scoreboard != null) {
+            if (!playerHighestWeight.containsKey(player.getUniqueId())) {
+                playerHighestWeight.put(player.getUniqueId(), Integer.MIN_VALUE);
+            }
 
-        PRPlayer targetPlayer = CacheManager.getPlayer(
-                player.getUniqueId().toString());
-        int playerHighestRankWeight = Integer.MIN_VALUE;
-        PRRank playerHighestRank = null;
+            PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+            int playerHighestRankWeight = Integer.MIN_VALUE;
+            PRRank playerHighestRank = null;
+            List<String> ranknames = new ArrayList<>();
 
-        List<String> ranknames = new ArrayList<>();
-        for (PRPlayerRank playerRank : targetPlayer.getRanks()) {
-            ranknames.add(playerRank.getName());
-        }
+            for (PRPlayerRank playerRank : targetPlayer.getRanks()) {
+                ranknames.add(playerRank.getName());
+            }
 
-        for (String rankname : ranknames) {
-            PRRank rank = CacheManager.getRank(rankname);
-            if (rank != null) {
+            for (String rankname : ranknames) {
+                PRRank rank = CacheManager.getRank(rankname);
                 if (rank.getWeight() > playerHighestRankWeight) {
                     playerHighestRankWeight = rank.getWeight();
                     playerHighestRank = rank;
                 }
             }
-        }
-        if (playerHighestWeight.get(player.getUniqueId()) != playerHighestRankWeight) {
-            playerHighestWeight.put(player.getUniqueId(), playerHighestRankWeight);
-            if (scoreboard != null) {
+
+            if (playerHighestWeight.get(player.getUniqueId()) != playerHighestRankWeight) {
+                playerHighestWeight.put(player.getUniqueId(), playerHighestRankWeight);
                 if (playerHighestRank != null) {
                     for (Team team : scoreboard.getTeams()) {
-                        if (team.getName().contains("-")) {
-                            if (team.getName().split("-")[1].equals(playerHighestRank.getName())) {
-                                team.addEntry(player.getName());
-                                PowerRanksVerbose.log("TablistSort",
-                                        "Setting " + player.getName() + " to scoreboard team: " + team.getName());
-                            } else {
-                                team.removeEntry(player.getName());
-                            }
-                        }
+                        if (team.getName().contains("-")
+                                && team.getName().split("-")[1].equals(playerHighestRank.getName())) {
+                            team.addEntry(player.getName());
+                            PowerRanksVerbose.log("TablistSort",
+                                    "Setting " + player.getName() + " to scoreboard team: " + team.getName());
+                        } else
+                            team.removeEntry(player.getName());
                     }
-
                     PowerRanks.getInstance().updateTablistName(player);
                 }
             }
