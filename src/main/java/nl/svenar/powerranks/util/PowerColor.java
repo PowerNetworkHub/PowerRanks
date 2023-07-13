@@ -121,7 +121,7 @@ public class PowerColor {
             if (doFormat && !c.equals(" ")) {
                 output += (formatColor == "i" ? altColorChar + (hexSupported ? rainbowHEXColors[charIndex % rainbowHEXColors.length] : rainbowColors[charIndex % rainbowColors.length])
                         : (formatColor == "j"
-                                ? altColorChar + availableColors[random.nextInt(0, availableColors.length)]
+                                ? altColorChar + availableColors[random.nextInt(availableColors.length)]
                                 : ""))
                         + (formatModifier.length() > 0 ? altColorChar + formatModifier : "")
                         + c;
