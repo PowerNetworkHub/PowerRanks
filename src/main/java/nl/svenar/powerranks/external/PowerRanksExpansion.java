@@ -150,7 +150,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					prefixes.add(rank.getPrefix() + ChatColor.RESET);
 				}
 			}
-			return String.join(" ", prefixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), prefixes);
 		}
 
 		if (identifier.equals("subranksuffix")) {
@@ -163,7 +163,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					suffixes.add(ChatColor.RESET + rank.getSuffix());
 				}
 			}
-			return String.join(" ", suffixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), suffixes);
 		}
 		// DEPRECATED
 
@@ -178,7 +178,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			for (PRRank rank : playerRanks) {
 				playerRankNames.add(rank.getName());
 			}
-			return String.join(" ", playerRankNames);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), playerRankNames);
 		}
 
 		if (identifier.equals("primary_prefix")) {
@@ -207,7 +207,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					prefixes.add(rank.getPrefix() + ChatColor.RESET);
 				}
 			}
-			return String.join(" ", prefixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), prefixes);
 		}
 
 		if (identifier.equals("suffixes")) {
@@ -220,7 +220,7 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					suffixes.add(ChatColor.RESET + rank.getSuffix());
 				}
 			}
-			return String.join(" ", suffixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), suffixes);
 		}
 
 		if (identifier.equals("chatcolor")) {

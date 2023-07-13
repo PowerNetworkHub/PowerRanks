@@ -349,12 +349,12 @@ public class ConfigFilesUpdater {
 				yamlConf.save(file);
 				PowerRanks.log.info("Setting up file: " + fileName);
 				return !plugin.configContainsKey("updates.automatic_update_config_files")
-						|| plugin.getConfigBool("updates.automatic_update_config_files");
+						|| plugin.getConfigBool("updates.automatic_update_config_files", false);
 			} else {
 				if (!yamlConf.getString("version")
 						.equalsIgnoreCase(PowerRanks.getVersion().replaceAll("[a-zA-Z ]", ""))) {
 					if (!plugin.configContainsKey("updates.automatic_update_config_files")
-							|| plugin.getConfigBool("updates.automatic_update_config_files")) {
+							|| plugin.getConfigBool("updates.automatic_update_config_files", false)) {
 						plugin.printVersionError(fileName, true);
 						return true;
 					} else {

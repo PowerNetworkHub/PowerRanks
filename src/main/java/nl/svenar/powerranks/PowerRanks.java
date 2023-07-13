@@ -18,7 +18,6 @@ import java.util.concurrent.Callable;
 
 import org.bukkit.permissions.PermissionAttachment;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.time.Duration;
@@ -26,12 +25,10 @@ import java.time.Instant;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import org.bukkit.entity.Player;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
 import java.io.File;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
@@ -421,7 +418,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				if (Objects.nonNull(vaultHook)) {
 					if (Objects.isNull(VaultHook.getVaultEconomy())) {
 						boolean has_vault_economy = PowerRanks.getInstance().getServer().getPluginManager()
-								.getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy");
+								.getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy", false);
 
 						vaultHook.hook(PowerRanks.getInstance(), false, false, has_vault_economy);
 					} else {
@@ -485,20 +482,20 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	private void setupSoftDependencies() {
 		boolean has_vault_economy = this.getServer().getPluginManager().getPlugin("Vault") != null
-				&& getConfigBool("plugin_hook.vault_economy");
+				&& getConfigBool("plugin_hook.vault_economy", false);
 		boolean has_vault_permissions = this.getServer().getPluginManager().getPlugin("Vault") != null
-				&& getConfigBool("plugin_hook.vault_permissions");
+				&& getConfigBool("plugin_hook.vault_permissions", false);
 		boolean has_vault_experimental_permissions = this.getServer().getPluginManager().getPlugin("Vault") != null
-				&& getConfigBool("plugin_hook.vault_permissions_experimental");
+				&& getConfigBool("plugin_hook.vault_permissions_experimental", false);
 		boolean has_placeholderapi = this.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null
-				&& getConfigBool("plugin_hook.placeholderapi");
+				&& getConfigBool("plugin_hook.placeholderapi", false);
 		// boolean has_tab = this.getServer().getPluginManager().getPlugin("TAB") !=
 		// null
 		// && getConfigBool("plugin_hook.tab");
 		boolean has_deluxetags = this.getServer().getPluginManager().getPlugin("DeluxeTags") != null
-				&& getConfigBool("plugin_hook.deluxetags");
+				&& getConfigBool("plugin_hook.deluxetags", false);
 		boolean has_nametagedit = this.getServer().getPluginManager().getPlugin("NametagEdit") != null
-				&& getConfigBool("plugin_hook.nametagedit");
+				&& getConfigBool("plugin_hook.nametagedit", false);
 
 		PowerRanks.log.info("Checking for plugins to hook in to:");
 
@@ -578,13 +575,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	private boolean handle_update_checking() {
-		if (getConfigBool("updates.enable_update_checking")) {
+		if (getConfigBool("updates.enable_update_checking", false)) {
 			PowerRanks.log.info("Checking for updates...");
 			Updater updater = new Updater(this, 79251, this.getFile(),
-					getConfigBool("updates.automatic_download_updates") ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD,
+					getConfigBool("updates.automatic_download_updates", false) ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD,
 					true);
 			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-				if (!getConfigBool("updates.automatic_download_updates")) {
+				if (!getConfigBool("updates.automatic_download_updates", false)) {
 					update_available = "Update available! (v" + updater.getLatestName().replaceAll("[a-zA-Z\" ]", "")
 							+ ")";
 				} else {
@@ -671,32 +668,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return rounded;
 	}
 
-	public boolean getConfigBool(String path) {
-		boolean val = false;
-		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-		final YamlConfiguration configYaml = new YamlConfiguration();
-		try {
-			configYaml.load(configFile);
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
+	public boolean getConfigBool(String path, boolean defaultValue) {
+		return configManager.getBool(path, defaultValue);
+	}
 
-		val = configYaml.getBoolean(path);
-		return val;
+	public String getConfigString(String path, String defaultValue) {
+		return configManager.getString(path, defaultValue);
 	}
 
 	public boolean configContainsKey(String path) {
-		boolean val = false;
-		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
-		final YamlConfiguration configYaml = new YamlConfiguration();
-		try {
-			configYaml.load(configFile);
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
-
-		val = configYaml.isSet(path);
-		return val;
+		return configManager.hasKey(path);
 	}
 
 	public void createDir(final String path) {
