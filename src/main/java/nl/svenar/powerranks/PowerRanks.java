@@ -23,10 +23,13 @@ import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.Instant;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import org.bukkit.entity.Player;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import java.io.File;
@@ -662,15 +665,52 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public boolean getConfigBool(String path, boolean defaultValue) {
-		return configManager.getBool(path, defaultValue);
+		if (configManager != null) {
+			return configManager.getBool(path, defaultValue);
+		}
+		
+		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		return configYaml.getBoolean(path, defaultValue);
 	}
 
 	public String getConfigString(String path, String defaultValue) {
-		return configManager.getString(path, defaultValue);
+		if (configManager != null) {
+			return configManager.getString(path, defaultValue);
+		}
+		
+		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		return configYaml.getString(path, defaultValue);
+		
 	}
 
 	public boolean configContainsKey(String path) {
-		return configManager.hasKey(path);
+		if (configManager != null) {
+			return configManager.hasKey(path);
+		}
+		
+		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
+		final YamlConfiguration configYaml = new YamlConfiguration();
+		try {
+			configYaml.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+
+		return configYaml.isSet(path);
 	}
 
 	public void createDir(final String path) {
