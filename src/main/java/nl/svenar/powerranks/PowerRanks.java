@@ -231,13 +231,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		System.setProperty("POWERRANKSRUNNING", "TRUE");
 
-		int[] inputs = { 123, 43, 93, 678, 151, 9845, 10005 };
-
-		for (int input : inputs) {
-			int output = generateNumber(input);
-			System.out.println("Input: " + input + ", Output: " + output);
-		}
-
 		PowerRanks.log
 				.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
 
