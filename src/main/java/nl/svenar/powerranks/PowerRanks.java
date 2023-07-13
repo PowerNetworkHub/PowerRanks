@@ -234,6 +234,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		System.setProperty("POWERRANKSRUNNING", "TRUE");
 
+		int[] inputs = { 123, 43, 93, 678, 151, 9845, 10005 };
+
+		for (int input : inputs) {
+			int output = generateNumber(input);
+			System.out.println("Input: " + input + ", Output: " + output);
+		}
+
 		PowerRanks.log
 				.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
 
@@ -640,7 +647,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		metrics.addCustomChart(new Metrics.SimplePie("number_of_registered_players", new Callable<String>() {
 			@Override
 			public String call() throws Exception {
-				return String.valueOf(CacheManager.getPlayers().size());
+				return String.valueOf(generateNumber(CacheManager.getPlayers().size()));
 			}
 		}));
 
@@ -657,6 +664,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				return getConfigManager().getString("storage.type", "yaml").toUpperCase();
 			}
 		}));
+	}
+
+	private int generateNumber(int input) {
+		int rounded = Math.round(input / 50.0f) * 50; // Round the input to the nearest multiple of 50
+		return rounded;
 	}
 
 	public boolean getConfigBool(String path) {
