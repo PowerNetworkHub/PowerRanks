@@ -487,7 +487,7 @@ public class PowerRanksAPI {
      * @return true if successful, false otherwise
      */
     public boolean createUsertag(String usertag, String value) {
-        return this.createUsertag(usertag, value);
+        return this.users.createUserTag(usertag, value);
     }
 
     /**
@@ -498,7 +498,7 @@ public class PowerRanksAPI {
      * @return true if successful, false otherwise
      */
     public boolean editUsertag(String usertag, String value) {
-        return this.editUsertag(usertag, value);
+        return this.users.editUserTag(usertag, value);
     }
 
     /**
