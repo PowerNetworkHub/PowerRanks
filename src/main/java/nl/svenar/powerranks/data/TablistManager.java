@@ -306,9 +306,11 @@ public class TablistManager {
 
             for (String rankname : ranknames) {
                 PRRank rank = CacheManager.getRank(rankname);
-                if (rank.getWeight() > playerHighestRankWeight) {
-                    playerHighestRankWeight = rank.getWeight();
-                    playerHighestRank = rank;
+                if (rank != null) {
+                    if (rank.getWeight() > playerHighestRankWeight) {
+                        playerHighestRankWeight = rank.getWeight();
+                        playerHighestRank = rank;
+                    }
                 }
             }
 
