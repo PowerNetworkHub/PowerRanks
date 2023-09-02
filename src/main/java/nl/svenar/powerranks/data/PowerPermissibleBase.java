@@ -1,8 +1,6 @@
 package nl.svenar.powerranks.data;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
@@ -13,263 +11,184 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.powerranks.PowerRanks;
+import nl.svenar.powerranks.cache.CacheManager;
 import nl.svenar.powerranks.util.Util;
 
 public class PowerPermissibleBase extends PermissibleBase {
 
 	private PowerRanks plugin;
 	private Player player;
+	private PRPlayer prPlayer;
 
-	public PowerPermissibleBase(Player player, PowerRanks main) {
+	public PowerPermissibleBase(Player player, PowerRanks plugin) {
 		super(player);
 		this.player = player;
-		this.plugin = main;
+		this.plugin = plugin;
+		this.prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		if (prPlayer == null) {
+			CacheManager.createPlayer(player);
+			this.prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		}
+
 		PowerRanksVerbose.log("PowerPermissibleBase",
 				"attached to player " + (player == null ? "null" : player.getName()));
+
+		recalculatePermissions();
 	}
-
-	/*
-	 * === ----- Player has permission? ----- ===
-	 */
-
-	@Override
-	public boolean hasPermission(Permission permission) {
-		if (permission.getName().toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
-			PowerRanksVerbose.log("hasPermission(Permission)", "hasPerm: " + permission.getName());
-		}
-		return hasPermission(permission.getName());
-	}
-
-	@Override
-	public boolean hasPermission(String permission) {
-		ArrayList<PRPermission> permissions = plugin.getEffectivePlayerPermissions(player);
-		ArrayList<String> wildcardPermissions = Util.generateWildcardList(permission);
-
-		boolean containsWildcard = false;
-		boolean checkedWildcard = false;
-		boolean disallowed = false;
-		boolean disallowedValid = false;
-		boolean caseSensitive = PowerRanks.getConfigManager().getBool("general.case-sensitive-permissions", false);
-
-		for (PRPermission prPermission : permissions) {
-
-			if ((caseSensitive && prPermission.getName().equals(permission))
-					|| (!caseSensitive && prPermission.getName().equalsIgnoreCase(permission))) {
-				disallowed = !prPermission.getValue();
-				disallowedValid = true;
-				break;
-			}
-		}
-
-		if (!disallowed) {
-			checkedWildcard = true;
-			for (PRPermission perm : permissions) {
-
-				if (wildcardPermissions.contains(perm.getName())) {
-					containsWildcard = true;
-					disallowed = !perm.getValue();
-					disallowedValid = true;
-					break;
-				}
-			}
-		}
-
-		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
-			PowerRanksVerbose.log("hasPermission", "");
-			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
-			PowerRanksVerbose.log("hasPermission", "Player: " + player.getName());
-			PowerRanksVerbose.log("hasPermission", "Permission: " + permission);
-			PowerRanksVerbose.log("hasPermission",
-					"Permissions: '" + String.join(", ", getAllPermissionsFormatted(permissions)) + "'");
-			PowerRanksVerbose.log("hasPermission",
-					"Is Disallowed: " + disallowed + " (Valid: " + disallowedValid + ")");
-			PowerRanksVerbose.log("hasPermission", "Has *: " + getAllPermissions(permissions).contains("*"));
-			PowerRanksVerbose.log("hasPermission", "Is Operator: " + player.isOp());
-			// PowerRanksVerbose.log("hasPermission", "Return #3: " +
-			// super.hasPermission(permission));
-			PowerRanksVerbose.log("hasPermission",
-					"Is permission in list: " + getAllPermissions(permissions).contains(permission));
-			PowerRanksVerbose.log("hasPermission",
-					"Is in wildcard tree: " + (checkedWildcard ? containsWildcard : "unchecked"));
-			PowerRanksVerbose.log("hasPermission", "===== ---------- hasPermission ---------- =====");
-			PowerRanksVerbose.log("hasPermission", "");
-		}
-
-		if (disallowed) {
-			return false;
-		}
-
-		if (getAllowedPermissions(permissions).contains("*") || player.isOp()) {
-			return true;
-		}
-
-		try {
-			return super.hasPermission(permission) || getAllowedPermissions(permissions).contains(permission)
-					|| (disallowedValid && !disallowed);
-		} catch (Exception e) {
-			return getAllowedPermissions(permissions).contains(permission);
-		}
-		//
-	}
-
-	/*
-	 * === ----- Recalculate all permissions ----- ===
-	 */
-
-	@Override
-	public void recalculatePermissions() {
-		PowerRanksVerbose.log("recalculatePermissions()", "called");
-		super.recalculatePermissions();
-		if (player != null) {
-			// player.updateCommands();
-		}
-	}
-
-	/*
-	 * === ----- Get the effective permissions ----- ===
-	 */
-
-	@Override
-	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-		PowerRanksVerbose.log("getEffectivePermissions()", "called");
-
-		Set<PermissionAttachmentInfo> permissions = new HashSet<PermissionAttachmentInfo>();
-
-		for (PRPermission permission : plugin.getEffectivePlayerPermissions(player)) {
-			PermissionAttachmentInfo pai = new PermissionAttachmentInfo(this.player, permission.getName(), null, permission.getValue());
-			permissions.add(pai);
-		}
-		
-		for (PermissionAttachmentInfo permission : super.getEffectivePermissions()) {
-			permissions.add(permission);
-		}
-
-		return permissions;
-	}
-
-	/*
-	 * === ----- Operator handling ----- ===
-	 */
 
 	@Override
 	public boolean isOp() {
-		// PowerRanksVerbose.log("isOp()", "called");
+		PowerRanksVerbose.log("isOp()", "called");
 		return super.isOp();
 	}
 
 	@Override
 	public void setOp(boolean value) {
-		PowerRanksVerbose.log("setOp(" + value + ")", "called");
 		super.setOp(value);
 	}
 
-	/*
-	 * === ----- Is Permission Set ----- ===
-	 */
-
 	@Override
 	public boolean isPermissionSet(Permission perm) {
-		boolean value = isPermissionSet(perm.getName());
-		if (perm.getName().toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
-			PowerRanksVerbose.log("isPermissionSet(" + perm + ")", "called, returned: " + value);
+		if (perm == null) {
+			throw new IllegalArgumentException("Permission cannot be null");
 		}
-		return value;
+
+		return isPermissionSet(perm.getName());
 	}
 
 	@Override
-	public boolean isPermissionSet(String permission) {
-		PRPermission prPermission = null;
-		for (PRPermission perm : plugin.getEffectivePlayerPermissions(player)) {
-			if (perm.getName().equals(permission)) {
-				prPermission = perm;
-				break;
+	public boolean isPermissionSet(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("Permission name cannot be null");
+		}
+
+		PRPermission prPermission = getPRPermission(name);
+		if (prPermission == null) {
+			for (String wildCardPermissionName : Util.generateWildcardList(name)) {
+				prPermission = getPRPermission(wildCardPermissionName);
+				if (prPermission != null) {
+					break;
+				}
 			}
 		}
 
-		if (Objects.isNull(prPermission)) {
-			return false;
+		PowerRanksVerbose.log("isPermissionSet(String name)",
+				"called with name: " + name + " (" + super.isPermissionSet(name) + ") - prPermission value: "
+						+ (prPermission == null ? "null" : prPermission.getValue()));
+
+		if (prPermission != null) {
+			return prPermission.getValue();
 		}
 
-		// boolean value =
-		// plugin.getEffectivePlayerPermissions(player).contains(permission);
-		boolean value = prPermission.getValue();
-		if (permission.toLowerCase().contains(PowerRanksVerbose.getFilter().toLowerCase())) {
-			PowerRanksVerbose.log("isPermissionSet(" + permission + ")", "called, returned: " + value);
-		}
-		return value;
-	}
-
-	/*
-	 * === ----- Add Attachment ----- ===
-	 */
-
-	@Override
-	public PermissionAttachment addAttachment(Plugin plugin) {
-		return super.addAttachment(plugin);
+		return super.isPermissionSet(name);
 	}
 
 	@Override
-	public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
-		return super.addAttachment(plugin, ticks);
+	public boolean hasPermission(Permission perm) {
+		if (perm == null) {
+			throw new IllegalArgumentException("Permission cannot be null");
+		}
+
+		return hasPermission(perm.getName());
+	}
+
+	@Override
+	public boolean hasPermission(String inName) {
+		if (inName == null) {
+			throw new IllegalArgumentException("Permission name cannot be null");
+		}
+
+		PRPermission prPermission = getPRPermission(inName);
+		if (prPermission == null) {
+			for (String wildCardPermissionName : Util.generateWildcardList(inName)) {
+				prPermission = getPRPermission(wildCardPermissionName);
+				if (prPermission != null) {
+					break;
+				}
+			}
+		}
+
+		PowerRanksVerbose.log("hasPermission(String inName)",
+				"called with inName: " + inName + " (" + super.hasPermission(inName) + ") - prPermission value: "
+						+ (prPermission == null ? "null" : prPermission.getValue()));
+
+		if (prPermission != null) {
+			return prPermission.getValue();
+		}
+		return super.hasPermission(inName);
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+		PowerRanksVerbose.log("addAttachment(Plugin plugin)",
+				"called with plugin: " + plugin.getName() + ", name: " + name + ", value: " + value);
 		return super.addAttachment(plugin, name, value);
+	}
 
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin) {
+		PowerRanksVerbose.log("addAttachment(Plugin plugin)", "called with plugin: " + plugin.getName());
+		return super.addAttachment(plugin);
+	}
+
+	@Override
+	public void removeAttachment(PermissionAttachment attachment) {
+		PowerRanksVerbose.log("removeAttachment(PermissionAttachment attachment)",
+				"called with attachment permissions: ");
+		for (Entry<String, Boolean> permissionAttachmentInfo : attachment.getPermissions().entrySet()) {
+			PowerRanksVerbose.log("",
+					"    " + permissionAttachmentInfo.getKey() + ": " + permissionAttachmentInfo.getValue());
+		}
+		super.removeAttachment(attachment);
+	}
+
+	@Override
+	public void recalculatePermissions() {
+		PowerRanksVerbose.log("recalculatePermissions()", "called");
+		super.recalculatePermissions();
+	}
+
+	public synchronized void clearPermissions() {
+		PowerRanksVerbose.log("clearPermissions()", "called");
+		super.clearPermissions();
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+		PowerRanksVerbose.log("addAttachment(Plugin plugin, String name, boolean value, int ticks)",
+				"called with plugin: " + plugin.getName() + ", name: " + name + ", value: " + value + ", ticks: "
+						+ ticks);
 		return super.addAttachment(plugin, name, value, ticks);
 	}
 
-	/*
-	 * === ----- Remove Attachment ----- ===
-	 */
-
 	@Override
-	public void removeAttachment(PermissionAttachment attachment) {
-		super.removeAttachment(attachment);
+	public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+		PowerRanksVerbose.log("addAttachment(Plugin plugin, int ticks)",
+				"called with plugin: " + plugin.getName() + ", ticks: " + ticks);
+		return super.addAttachment(plugin, ticks);
 	}
 
-	/*
-	 * === ----- Clear Permissions ----- ===
-	 */
-
 	@Override
-	public synchronized void clearPermissions() {
-		super.clearPermissions();
+	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+		PowerRanksVerbose.log("getEffectivePermissions()", "called");
+		return super.getEffectivePermissions();
 	}
 
-	/*
-	 * === ----- Internal functions ----- ===
-	 */
+	private PRPermission getPRPermission(String name) {
+		PRPermission prPermission = null;
 
-	private ArrayList<String> getAllowedPermissions(ArrayList<PRPermission> permissions) {
-		ArrayList<String> output = new ArrayList<String>();
-		for (PRPermission permission : permissions) {
-			if (permission.getValue()) {
-				output.add(permission.getName());
+		boolean caseSensitive = PowerRanks.getConfigManager().getBool("general.case-sensitive-permissions", false);
+
+		for (PRPermission permission : this.plugin.getEffectivePlayerPermissions(this.player)) {
+			if ((caseSensitive && permission.getName().equals(name))
+					|| (!caseSensitive && permission.getName().equalsIgnoreCase(name))) {
+				prPermission = permission;
+				break;
 			}
 		}
-		return output;
-	}
 
-	private ArrayList<String> getAllPermissions(ArrayList<PRPermission> permissions) {
-		ArrayList<String> output = new ArrayList<String>();
-		for (PRPermission permission : permissions) {
-			output.add(permission.getName());
-		}
-		return output;
-	}
-
-	private ArrayList<String> getAllPermissionsFormatted(ArrayList<PRPermission> permissions) {
-		ArrayList<String> output = new ArrayList<String>();
-		for (PRPermission permission : permissions) {
-			output.add(permission.getName() + ":" + permission.getValue());
-		}
-		return output;
+		return prPermission;
 	}
 }
