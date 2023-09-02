@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.7</version>
+	<version>1.10.8B2</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -41,7 +41,7 @@
 					<artifactId>maven-shade-plugin</artifactId>
 					<version>3.1.0</version>
 					<configuration>
-						<minimizeJar>true</minimizeJar>
+						<!-- <minimizeJar>true</minimizeJar> -->
 						<createSourcesJar>false</createSourcesJar>
 						<shadeSourcesContent>false</shadeSourcesContent>
 						<createDependencyReducedPom>false</createDependencyReducedPom>
