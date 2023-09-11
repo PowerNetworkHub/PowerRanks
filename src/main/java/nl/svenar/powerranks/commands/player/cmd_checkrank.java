@@ -61,8 +61,7 @@ public class cmd_checkrank extends PowerCommand {
 			Player targetPlayer = Util.getPlayerByName(args[0]);
 			if (targetPlayer != null) {
 				List<String> playerRanks = new ArrayList<>();
-				for (PRPlayerRank rank : CacheManager.getPlayer(((Player) sender).getUniqueId().toString())
-						.getRanks()) {
+				for (PRPlayerRank rank : CacheManager.getPlayer((targetPlayer).getUniqueId().toString()).getRanks()) {
 					playerRanks.add(rank.getName());
 				}
 				if (playerRanks.size() > 0) {
