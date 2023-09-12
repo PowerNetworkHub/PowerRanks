@@ -131,7 +131,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
 	public Map<UUID, Long> playerPlayTimeCache = new HashMap<UUID, Long>();
-    // public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
+	// public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -144,7 +144,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		instance = this;
 
-        new PowerLogger(getLogger());
+		new PowerLogger(getLogger());
 
 		Instant startTime = Instant.now();
 
@@ -215,6 +215,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		this.tablistManager = new TablistManager();
 		this.tablistManager.start();
+
+		this.setupCheckRankTagsTask();
 
 		PowerRanks.log.info("");
 		PowerRanks.log
@@ -397,6 +399,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		if (autosave_interval > 0) {
 			new BukkitRunnable() {
+
 				@Override
 				public void run() {
 					PowerRanksVerbose.log("task", "Running task auto-save files");
@@ -440,25 +443,26 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}.runTaskTimer(this, update_check_interval, update_check_interval);
 
+		// new BukkitRunnable() {
+		// @Override
+		// public void run() {
+		// PowerRanksVerbose.log("task", "Running task check player name change");
 
-        // new BukkitRunnable() {
-        //     @Override
-        //     public void run() {
-        //         PowerRanksVerbose.log("task", "Running task check player name change");
+		// for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+		// if (!playerNameCache.containsKey(player.getUniqueId())) {
+		// playerNameCache.put(player.getUniqueId(), player.getName());
+		// }
 
-        //         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-        //             if (!playerNameCache.containsKey(player.getUniqueId())) {
-        //                 playerNameCache.put(player.getUniqueId(), player.getName());
-        //             }
-
-        //             if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
-        //                 log.info("Player name changed from '" + playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() + "'");
-        //                 playerNameCache.put(player.getUniqueId(), player.getName());
-        //                 CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
-        //             }
-        //         }
-        //     }
-        // }.runTaskTimer(this, TASK_TPS, TASK_TPS);
+		// if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
+		// log.info("Player name changed from '" +
+		// playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() +
+		// "'");
+		// playerNameCache.put(player.getUniqueId(), player.getName());
+		// CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
+		// }
+		// }
+		// }
+		// }.runTaskTimer(this, TASK_TPS, TASK_TPS);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -466,7 +470,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		// UUID---------- ===");
 		Player player = null;
 		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
-			if (uuid == online_player.getUniqueId()) {
+			if (uuid.equals(online_player.getUniqueId())) {
 				player = online_player;
 				break;
 			}
@@ -559,7 +563,93 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			}
-		}.runTaskTimer(this, 20, 20);
+		}.runTaskTimer(this, Util.TASK_TPS, Util.TASK_TPS);
+	}
+
+	private void setupCheckRankTagsTask() {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				for (PRPlayer prPlayer : CacheManager.getPlayers()) {
+
+					List<PRPlayerRank> ranksToRemove = new ArrayList<PRPlayerRank>();
+					for (PRPlayerRank rank : prPlayer.getRanks()) {
+						for (Entry<String, Object> entry : rank.getTags().entrySet()) {
+							if (entry.getKey().equalsIgnoreCase("expires")) {
+								long currentTimeMillis = System.currentTimeMillis();
+								long expires = (long) entry.getValue();
+								if (currentTimeMillis >= expires) {
+									ranksToRemove.add(rank);
+									break;
+								}
+							}
+						}
+					}
+
+					for (PRPlayerRank rank : ranksToRemove) {
+						prPlayer.removeRank(rank);
+						String prPlayername = prPlayer.getName();
+						if (prPlayername.length() == 0) {
+							prPlayername = Util.getNameFromAPI(prPlayer.getUUID().toString());
+						}
+
+						getServer().getConsoleSender().sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage("general.player-rank-expired-console"),
+								ImmutableMap.<String, String>builder()
+										.put("player", prPlayername)
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+
+						Player player = getPlayerFromUUID(prPlayer.getUUID());
+						if (player != null) {
+							PowerRanks.getInstance().updateTablistName(player);
+							PowerRanks.getInstance().getTablistManager().updateSorting(player);
+
+							player.sendMessage(Util.powerFormatter(
+									PowerRanks.getLanguageManager()
+											.getFormattedMessage("general.player-rank-has-expired"),
+									ImmutableMap.<String, String>builder()
+											.put("player", player.getName())
+											.put("rank", rank.getName())
+											.build(),
+									'[', ']'));
+						}
+					}
+
+					// prPlayer.checkTags();
+					// if (prPlayer.isUpdateRanksQueued()) {
+					// Player player = getPlayerFromUUID(prPlayer.getUUID());
+					// if (player != null) {
+					// PowerRanks.getInstance().updateTablistName(player);
+					// PowerRanks.getInstance().getTablistManager().updateSorting(player);
+
+					// for (String message : prPlayer.getMessageQueue()) {
+					// if (message.toLowerCase().startsWith("[format]")) {
+					// String messageRankname = "";
+					// for (String item : message.split(" ")) {
+					// if (item.toLowerCase().startsWith("rank:")) {
+					// messageRankname = item.split(":")[1];
+					// }
+					// }
+					// player.sendMessage(Util.powerFormatter(
+					// PowerRanks.getLanguageManager().getFormattedMessage(message.split(" ")[1]),
+					// ImmutableMap.<String, String>builder()
+					// .put("player", player.getName())
+					// .put("rank", messageRankname)
+					// .build(),
+					// '[', ']'));
+					// } else {
+					// player.sendMessage(message);
+					// }
+					// }
+					// }
+					// }
+				}
+			}
+
+		}.runTaskTimer(this, Util.TASK_TPS, Util.TASK_TPS * 10);
 	}
 
 	public TABHook getTABHook() {
@@ -574,7 +664,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (getConfigBool("updates.enable_update_checking", false)) {
 			PowerRanks.log.info("Checking for updates...");
 			Updater updater = new Updater(this, 79251, this.getFile(),
-					getConfigBool("updates.automatic_download_updates", false) ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD,
+					getConfigBool("updates.automatic_download_updates", false) ? UpdateType.DEFAULT
+							: UpdateType.NO_DOWNLOAD,
 					true);
 			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
 				if (!getConfigBool("updates.automatic_download_updates", false)) {
@@ -668,7 +759,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (configManager != null) {
 			return configManager.getBool(path, defaultValue);
 		}
-		
+
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
@@ -684,7 +775,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (configManager != null) {
 			return configManager.getString(path, defaultValue);
 		}
-		
+
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
@@ -694,14 +785,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		return configYaml.getString(path, defaultValue);
-		
+
 	}
 
 	public boolean configContainsKey(String path) {
 		if (configManager != null) {
 			return configManager.hasKey(path);
 		}
-		
+
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
@@ -1050,24 +1141,24 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
-        PRPlayer prPlayer = null;
+		PRPlayer prPlayer = null;
 
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 
-        if (player == null) {
-            return permissions;
-        }
+		if (player == null) {
+			return permissions;
+		}
 
-        try {
-            prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return permissions;
-        }
+		try {
+			prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return permissions;
+		}
 
-        if (prPlayer == null) {
-            return permissions;
-        }
+		if (prPlayer == null) {
+			return permissions;
+		}
 
 		for (PRPermission permission : prPlayer.getPermissions()) {
 			permissions.add(permission);

@@ -6,6 +6,8 @@ lang:
          rank-not-found: "&cRank '[rank]' not found!"
          player-not-found: "&cPlayer '[target]' not found!"
          console-is-no-player: "&cThe console is not a player and has no ranks!"
+         player-rank-has-expired: "&aYour rank [rank] has expired!"
+         player-rank-expired-console: "&cRemoved expired rank [rank] from [player]"
       messages:
          signs:
             created: "&aNew sign command created"
@@ -127,6 +129,7 @@ lang:
             description: "Add a rank to someone"
             success-executor: "&aAdded rank [rank] to [player]"
             failed-executor: "&cFailed to add the rank [rank] to [player]"
+            failed-already-has-rank: "&c[player] already has the rank [rank]"
             success-receiver: "&aYou have been granted the rank [rank]"
          addownrank:
             arguments: "<rank_name>"

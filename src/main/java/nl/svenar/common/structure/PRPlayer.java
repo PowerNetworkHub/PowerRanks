@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Map.Entry;
 
 /**
@@ -35,8 +38,10 @@ import java.util.Map.Entry;
  * 
  * @author svenar
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PRPlayer {
 
+    // Storage
     private UUID uuid;
     private String name;
     private ArrayList<PRPlayerRank> ranks;
@@ -136,6 +141,21 @@ public class PRPlayer {
         if (this.ranks.contains(rank)) {
             this.ranks.remove(rank);
         }
+    }
+
+    /**
+     * Check if this player has a specific rank
+     * 
+     * @param rank
+     * @return true if this player has that rank, false otherwise
+     */
+    public boolean hasRank(String rankName) {
+        for (PRPlayerRank rank : this.ranks) {
+            if (rank.getName().equalsIgnoreCase(rankName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -299,15 +319,15 @@ public class PRPlayer {
     @Override
     public String toString() {
         String output = "uuid:" + uuid.toString()
-        + ", name:" + name
-        + ", ranks:[<<RANKS>>]"
-        + ", permissions:[<<PERMISSIONS>>]"
-        + ", usertags:[<<USERTAGS>>]";
+                + ", name:" + name
+                + ", ranks:[<<RANKS>>]"
+                + ", permissions:[<<PERMISSIONS>>]"
+                + ", usertags:[<<USERTAGS>>]";
 
         String ranks = "";
         for (PRPlayerRank rank : getRanks()) {
             ranks += rank.getName() + " (";
-            for (Entry<String, String> entry : rank.getTags().entrySet()) {
+            for (Entry<String, Object> entry : rank.getTags().entrySet()) {
                 ranks += entry.getKey() + "=" + entry.getValue() + ",";
             }
             ranks = rank.getTags().size() > 0 ? ranks.substring(0, ranks.length() - 1) : "";

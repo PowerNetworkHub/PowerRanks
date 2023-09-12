@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,10 +16,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import nl.svenar.powerranks.PowerRanks;
 
 public class Util {
+
+	public static final long TASK_TPS = 20;
 
 	public static String getServerVersion(Server server) {
 		try {
@@ -278,5 +283,103 @@ public class Util {
 		}
 
 		return output;
+	}
+
+	/**
+	 * Convert a time string to seconds
+	 * 
+	 * @param time_input
+	 * @return
+	 */
+	public static int timeStringToSecondsConverter(String time_input) {
+		Matcher regex_int = Pattern.compile("^\\d+[^a-zA-Z]{0,1}$").matcher(time_input);
+
+		Matcher regex_seconds = Pattern.compile("\\d+[sS]").matcher(time_input);
+		Matcher regex_minutes = Pattern.compile("\\d+[mM]").matcher(time_input);
+		Matcher regex_hours = Pattern.compile("\\d+[hH]").matcher(time_input);
+		Matcher regex_days = Pattern.compile("\\d+[dD]").matcher(time_input);
+		Matcher regex_weeks = Pattern.compile("\\d+[wW]").matcher(time_input);
+		Matcher regex_years = Pattern.compile("\\d+[yY]").matcher(time_input);
+
+		int seconds = 0;
+
+		if (regex_int.find()) {
+			seconds = Integer.parseInt(time_input);
+		} else {
+			if (regex_seconds.find()) {
+				seconds += Integer.parseInt(time_input.substring(regex_seconds.start(), regex_seconds.end() - 1));
+			}
+
+			if (regex_minutes.find()) {
+				seconds += Integer.parseInt(time_input.substring(regex_minutes.start(), regex_minutes.end() - 1)) * 60;
+			}
+
+			if (regex_hours.find()) {
+				seconds += Integer.parseInt(time_input.substring(regex_hours.start(), regex_hours.end() - 1))
+						* (60 * 60);
+			}
+
+			if (regex_days.find()) {
+				seconds += Integer.parseInt(time_input.substring(regex_days.start(), regex_days.end() - 1))
+						* (60 * 60 * 24);
+			}
+
+			if (regex_weeks.find()) {
+				seconds += Integer.parseInt(time_input.substring(regex_weeks.start(), regex_weeks.end() - 1))
+						* (60 * 60 * 24 * 7);
+			}
+
+			if (regex_years.find()) {
+				seconds += Integer.parseInt(time_input.substring(regex_years.start(), regex_years.end() - 1))
+						* (60 * 60 * 24 * 365);
+			}
+		}
+
+		return seconds;
+	}
+
+	public static UUID getUUIDFromAPI(String playerName) {
+		try {
+			URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + playerName);
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			String UUIDJson = "";
+			String line;
+			while ((line = in.readLine()) != null) {
+				UUIDJson += line + "\n";
+			}
+			in.close();
+
+			JSONObject UUIDObject = (JSONObject) JSONValue.parseWithException(UUIDJson);
+			String uuid = UUIDObject.get("id").toString();
+			if (!uuid.contains("-")) {
+				uuid = uuid.replaceFirst(
+						"(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)",
+						"$1-$2-$3-$4-$5");
+			}
+			return UUID.fromString(uuid);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static String getNameFromAPI(String uuid) {
+		try {
+			URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.replaceAll("-", ""));
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+			String nameJson = "";
+			String line;
+			while ((line = in.readLine()) != null) {
+				nameJson += line + "\n";
+			}
+			in.close();
+			JSONObject nameObject = (JSONObject) JSONValue.parseWithException(nameJson);
+			return nameObject.get("name").toString();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

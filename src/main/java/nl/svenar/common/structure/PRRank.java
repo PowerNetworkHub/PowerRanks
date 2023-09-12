@@ -27,11 +27,14 @@ package nl.svenar.common.structure;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Structure to store rank data.
  * 
  * @author svenar
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PRRank {
 
     private String name;

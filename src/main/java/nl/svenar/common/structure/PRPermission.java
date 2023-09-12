@@ -24,11 +24,14 @@
 
 package nl.svenar.common.structure;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Structure to store permission data.
  * 
  * @author svenar
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PRPermission {
 
     private String name;
