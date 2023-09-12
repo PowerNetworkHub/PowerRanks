@@ -573,14 +573,52 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				for (PRPlayer prPlayer : CacheManager.getPlayers()) {
 
 					List<PRPlayerRank> ranksToRemove = new ArrayList<PRPlayerRank>();
+					List<PRPlayerRank> ranksToAdd = new ArrayList<PRPlayerRank>();
 					for (PRPlayerRank rank : prPlayer.getRanks()) {
 						for (Entry<String, Object> entry : rank.getTags().entrySet()) {
 							if (entry.getKey().equalsIgnoreCase("expires")) {
 								long currentTimeMillis = System.currentTimeMillis();
-								long expires = (long) entry.getValue();
+								long expires = Util.convertToLong(entry.getValue());
 								if (currentTimeMillis >= expires) {
 									ranksToRemove.add(rank);
-									break;
+								}
+							}
+
+							if (entry.getKey().equalsIgnoreCase("expiry-return-ranks")) {
+								try {
+									@SuppressWarnings("unchecked")
+									List<String> expiryReturnRanks = (List<String>) entry.getValue();
+
+									if (expiryReturnRanks.size() > 0) {
+										ranksToRemove = new ArrayList<PRPlayerRank>();
+										for (PRPlayerRank prPlayerRank : prPlayer.getRanks()) {
+											ranksToRemove.add(prPlayerRank);
+										}
+									}
+
+									for (String rankObject : expiryReturnRanks) {
+										String rankName = rankObject.contains(";") ? rankObject.split(";")[0]
+												: rankObject;
+										List<String> rankTags = rankObject.contains(";")
+												? new ArrayList<>(Arrays.asList(rankObject.split(";")))
+												: new ArrayList<String>();
+										if (!rankTags.isEmpty()) {
+											rankTags.remove(0);
+										}
+
+										PRRank prRank = CacheManager.getRank(rankName);
+										if (prRank != null) {
+											PRPlayerRank prPlayerRank = new PRPlayerRank(prRank.getName());
+											for (String rankTag : rankTags) {
+												prPlayerRank.addTagRaw(rankTag.split(":")[0],
+														Util.formatStringToType(rankTag.split(":")[1]));
+											}
+											ranksToAdd.add(prPlayerRank);
+										}
+									}
+								} catch (Exception e) {
+									PowerRanks.log.warning("Failed to parse expiry-return-ranks for rank "
+											+ rank.getName() + " for player " + prPlayer.getName());
 								}
 							}
 						}
@@ -618,34 +656,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						}
 					}
 
-					// prPlayer.checkTags();
-					// if (prPlayer.isUpdateRanksQueued()) {
-					// Player player = getPlayerFromUUID(prPlayer.getUUID());
-					// if (player != null) {
-					// PowerRanks.getInstance().updateTablistName(player);
-					// PowerRanks.getInstance().getTablistManager().updateSorting(player);
+					for (PRPlayerRank rank : ranksToAdd) {
+						if (!prPlayer.hasRank(rank.getName())) {
+							prPlayer.addRank(rank);
 
-					// for (String message : prPlayer.getMessageQueue()) {
-					// if (message.toLowerCase().startsWith("[format]")) {
-					// String messageRankname = "";
-					// for (String item : message.split(" ")) {
-					// if (item.toLowerCase().startsWith("rank:")) {
-					// messageRankname = item.split(":")[1];
-					// }
-					// }
-					// player.sendMessage(Util.powerFormatter(
-					// PowerRanks.getLanguageManager().getFormattedMessage(message.split(" ")[1]),
-					// ImmutableMap.<String, String>builder()
-					// .put("player", player.getName())
-					// .put("rank", messageRankname)
-					// .build(),
-					// '[', ']'));
-					// } else {
-					// player.sendMessage(message);
-					// }
-					// }
-					// }
-					// }
+							Player player = getPlayerFromUUID(prPlayer.getUUID());
+							if (player != null) {
+								PowerRanks.getInstance().updateTablistName(player);
+								PowerRanks.getInstance().getTablistManager().updateSorting(player);
+							}
+						}
+					}
 				}
 			}
 

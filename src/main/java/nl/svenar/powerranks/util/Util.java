@@ -382,4 +382,39 @@ public class Util {
 			return null;
 		}
 	}
+
+	public static Long convertToLong(Object value) {
+		if (value instanceof Integer) {
+			return Long.valueOf(((Integer) value).intValue());
+		} else if (value instanceof Long) {
+			return (Long) value;
+		} else {
+			throw new IllegalArgumentException("Value is not an Integer or Long");
+		}
+	}
+
+    public static Object formatStringToType(String input) {
+		Object output = input;
+
+		if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
+			output = Boolean.parseBoolean(input);
+		} else if (input.matches("^\\d+$")) {
+			try {
+				output = Integer.parseInt(input);
+			} catch (Exception e) {
+				output = Long.parseLong(input);
+			}
+		} else if (input.matches("^\\d+\\.\\d+$")) {
+			output = Double.parseDouble(input);
+		} else if (input.startsWith("[") && input.endsWith("]")) {
+			String[] inputSplit = input.substring(1, input.length() - 1).split(",");
+			ArrayList<Object> outputList = new ArrayList<Object>();
+			for (String inputSplitItem : inputSplit) {
+				outputList.add(inputSplitItem);
+			}
+			output = outputList;
+		}
+
+        return output;
+    }
 }

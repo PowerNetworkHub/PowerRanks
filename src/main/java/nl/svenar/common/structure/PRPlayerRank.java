@@ -69,4 +69,15 @@ public class PRPlayerRank {
 
         this.tags.put(tagName, tagValue);
     }
+
+    public void addTagRaw(String tagName, Object tagValue) {
+        if (tagName == null || tagValue == null) {
+            return;
+        }
+        if (tagName.length() == 0) {
+            return;
+        }
+
+        this.tags.put(tagName, tagValue);
+    }
 }

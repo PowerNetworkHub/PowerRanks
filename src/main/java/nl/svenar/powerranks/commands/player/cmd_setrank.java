@@ -1,6 +1,9 @@
 package nl.svenar.powerranks.commands.player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map.Entry;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -31,8 +34,9 @@ public class cmd_setrank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
-		if (args.length == 2) {
+		if (args.length >= 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
+			String[] tags = Arrays.copyOfRange(args, 2, args.length);
 
 			boolean commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase());
 			if (sender instanceof Player) {
@@ -51,6 +55,30 @@ public class cmd_setrank extends PowerCommand {
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 				if (rank != null && targetPlayer != null) {
 					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+
+					for (String tag : tags) {
+						if (tag.split(":").length == 2) {
+							String[] tagParts = tag.split(":");
+							String tagName = tagParts[0];
+							String tagValue = tagParts[1];
+
+							if (tagName.length() > 0 && tagValue.length() > 0) {
+								playerRank.addTag(tagName, tagValue);
+								if (tagName.equalsIgnoreCase("expires")) {
+									List<String> returnRanks = new ArrayList<String>();
+									for (PRPlayerRank prRank : targetPlayer.getRanks()) {
+										String prRankTags = "";
+										for (Entry<String, Object> prRankTagEntry : prRank.getTags().entrySet()) {
+											prRankTags += ";" + prRankTagEntry.getKey() + ":" + prRankTagEntry.getValue();
+										}
+										returnRanks.add(prRank.getName() + prRankTags);
+									}
+									playerRank.addTag("expiry-return-ranks", returnRanks);
+								}
+							}
+						}
+					}
+
 					targetPlayer.setRank(playerRank);
 
 					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
