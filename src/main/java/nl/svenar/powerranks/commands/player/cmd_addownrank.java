@@ -36,7 +36,8 @@ public class cmd_addownrank extends PowerCommand {
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
-				commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+				commandAllowed = sender
+						.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
 			} else {
 				commandAllowed = true;
 			}
@@ -48,11 +49,11 @@ public class cmd_addownrank extends PowerCommand {
 					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 					targetPlayer.addRank(playerRank);
 
-
-                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
-                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
-                    }
+					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+						PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+						PowerRanks.getInstance().getTablistManager()
+								.updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+					}
 
 					sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()
@@ -99,8 +100,13 @@ public class cmd_addownrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (PRRank rank : this.users.getGroups()) {
-				tabcomplete.add(rank.getName());
+			if (sender instanceof Player) {
+				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
+				for (PRRank rank : CacheManager.getRanks()) {
+					if (!targetPlayer.hasRank(rank.getName())) {
+						tabcomplete.add(rank.getName());
+					}
+				}
 			}
 		}
 

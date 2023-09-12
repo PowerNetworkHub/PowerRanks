@@ -132,14 +132,19 @@ public class cmd_addrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}
 
 		if (args.length == 2) {
-			for (PRRank rank : this.users.getGroups()) {
-				tabcomplete.add(rank.getName());
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
+			if (targetPlayer != null) {
+				for (PRRank rank : CacheManager.getRanks()) {
+					if (!targetPlayer.hasRank(rank.getName())) {
+						tabcomplete.add(rank.getName());
+					}
+				}
 			}
 		}
 

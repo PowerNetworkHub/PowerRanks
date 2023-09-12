@@ -32,18 +32,18 @@ public class cmd_setownrank extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
 		if (args.length == 1) {
-			String target_rank = users.getRankIgnoreCase(args[0]);
+			String targetRank = users.getRankIgnoreCase(args[0]);
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
 				commandAllowed = sender
-						.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+						.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + targetRank);
 			} else {
 				commandAllowed = true;
 			}
 
 			if (commandAllowed) {
-				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(target_rank));
+				PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(targetRank));
 				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
 				if (rank != null && targetPlayer != null) {
 					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
@@ -91,8 +91,13 @@ public class cmd_setownrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (PRRank rank : this.users.getGroups()) {
-				tabcomplete.add(rank.getName());
+			if (sender instanceof Player) {
+				PRPlayer targetPlayer = CacheManager.getPlayer(sender.getName());
+				for (PRRank rank : CacheManager.getRanks()) {
+					if (!targetPlayer.hasRank(rank.getName())) {
+						tabcomplete.add(rank.getName());
+					}
+				}
 			}
 		}
 

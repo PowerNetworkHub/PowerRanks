@@ -114,16 +114,16 @@ public class cmd_delrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}
 
 		if (args.length == 2) {
-			Player target_player = Util.getPlayerByName(args[0]);
-			if (target_player != null) {
+			Player targetPlayer = Util.getPlayerByName(args[0]);
+			if (targetPlayer != null) {
 				List<String> ranks = new ArrayList<>();
-				for (PRPlayerRank rank : CacheManager.getPlayer(target_player.getUniqueId().toString()).getRanks()) {
+				for (PRPlayerRank rank : CacheManager.getPlayer(targetPlayer.getUniqueId().toString()).getRanks()) {
 					ranks.add(rank.getName());
 				}
 				for (String rank : ranks) {

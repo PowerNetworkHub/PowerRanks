@@ -94,10 +94,11 @@ public class Messages {
 		}
 		sender.sendMessage(ChatColor.GREEN + "RGB colors: "
 				+ (hex_color_supported ? ChatColor.DARK_GREEN + "" : ChatColor.DARK_RED + "un") + "supported");
-        sender.sendMessage(ChatColor.GREEN + "Bungeecord: "
-                + (PowerRanks.getInstance().getBungeecordManager().isReady() ? ChatColor.DARK_GREEN + "enabled" : ChatColor.DARK_RED + "disabled"));
-        sender.sendMessage(ChatColor.GREEN + "- Connected servers: "
-                + ChatColor.DARK_GREEN + PowerRanks.getInstance().getBungeecordManager().getServerCount());
+		sender.sendMessage(ChatColor.GREEN + "Bungeecord: "
+				+ (PowerRanks.getInstance().getBungeecordManager().isReady() ? ChatColor.DARK_GREEN + "enabled"
+						: ChatColor.DARK_RED + "disabled"));
+		sender.sendMessage(ChatColor.GREEN + "- Connected servers: "
+				+ ChatColor.DARK_GREEN + PowerRanks.getInstance().getBungeecordManager().getServerCount());
 
 		sender.sendMessage(ChatColor.GREEN + "Plugin hooks:");
 		sender.sendMessage(ChatColor.GREEN + "- Vault Economy: "
@@ -311,11 +312,13 @@ public class Messages {
 				+ ChatColor.BLUE + "===");
 	}
 
-	public static void messagePlayerInfo(final CommandSender sender, final Player player, int page) {
+	public static void messagePlayerInfo(final CommandSender sender, final PRPlayer prPlayer, int page) {
+		Player player = Bukkit.getPlayer(prPlayer.getUUID());
+
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		long playerPlaytime = CacheManager.getPlayer(player.getUniqueId().toString()).getPlaytime();
+		long playerPlaytime = CacheManager.getPlayer(prPlayer.getUUID().toString()).getPlaytime();
 
 		final long days = TimeUnit.SECONDS.toDays(playerPlaytime);
 		final long hours = TimeUnit.SECONDS.toHours(playerPlaytime)
@@ -332,7 +335,7 @@ public class Messages {
 		String formatted_ranks = "";
 
 		List<String> ranknames = new ArrayList<>();
-		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+		for (PRPlayerRank playerRank : CacheManager.getPlayer(prPlayer.getUUID().toString()).getRanks()) {
 			ranknames.add(playerRank.getName());
 		}
 
@@ -346,72 +349,86 @@ public class Messages {
 		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 				+ Messages.powerRanks.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE
 				+ "===");
-		sender.sendMessage(ChatColor.GREEN + "UUID: " + ChatColor.DARK_GREEN + player.getUniqueId());
-		sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName()
-				+ (!player.getDisplayName().equals(player.getName())
-						? (ChatColor.DARK_GREEN + " aka " + player.getName())
-						: ""));
-		sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN
-				+ format.format(player.getFirstPlayed()));
-		sender.sendMessage(
-				ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN + format.format(player.getLastPlayed()));
-		sender.sendMessage(ChatColor.GREEN + "Playtime: " + ChatColor.DARK_GREEN + playerPlaytimeFormatted);
-		sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
-		sender.sendMessage(ChatColor.GREEN + "Rank(s): " + ChatColor.DARK_GREEN + formatted_ranks);
-		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
-
-		ArrayList<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
-		int lines_per_page = sender instanceof Player ? 5 : 10;
-		int last_page = playerPermissions.size() / lines_per_page;
-
-		if (!(sender instanceof Player)) {
-			page -= 1;
+		if (player == null) {
+			sender.sendMessage(ChatColor.GREEN + "Player not online, showing limited information.");
 		}
-
-		page = page < 0 ? 0 : page;
-		page = page > last_page ? last_page : page;
-
-		if (sender instanceof Player) {
-			String page_selector_tellraw = "tellraw " + sender.getName()
-					+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
-					+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
-					+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
-					+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
-					+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
-					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
-					+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
-					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
-					+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
-					+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
-					+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
-					+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
-					+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
-					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
-					+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%" + "\"}}]";
-
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
-					String.valueOf(last_page + 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", player.getName());
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
-
-			Messages.powerRanks.getServer().dispatchCommand(
-					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+		sender.sendMessage(ChatColor.GREEN + "UUID: " + ChatColor.DARK_GREEN + prPlayer.getUUID());
+		if (player != null) {
+			sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + player.getDisplayName()
+					+ (!player.getDisplayName().equals(player.getName())
+							? (ChatColor.DARK_GREEN + " aka " + player.getName())
+							: ""));
+			sender.sendMessage(ChatColor.GREEN + "First joined (UTC): " + ChatColor.DARK_GREEN
+					+ format.format(player.getFirstPlayed()));
+			sender.sendMessage(
+					ChatColor.GREEN + "Last joined (UTC): " + ChatColor.DARK_GREEN
+							+ format.format(player.getLastPlayed()));
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
-					+ ChatColor.BLUE + (last_page + 1));
-			sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " playerinfo "
-					+ player.getName() + " " + ChatColor.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+			sender.sendMessage(ChatColor.GREEN + "Player name: " + ChatColor.DARK_GREEN + prPlayer.getName());
 		}
+		sender.sendMessage(ChatColor.GREEN + "Playtime: " + ChatColor.DARK_GREEN + playerPlaytimeFormatted);
+		if (player != null) {
+			sender.sendMessage(ChatColor.GREEN + "Chat format: " + ChatColor.RESET + getSampleChatFormat(player));
+		}
+		sender.sendMessage(ChatColor.GREEN + "Rank(s): " + ChatColor.DARK_GREEN + formatted_ranks);
+		if (player != null) {
+			sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
-		int line_index = 0;
-		for (PRPermission permission : playerPermissions) {
-			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
-						+ (!permission.getValue() ? ChatColor.RED : ChatColor.GREEN) + permission.getName());
+			ArrayList<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
+			int lines_per_page = sender instanceof Player ? 5 : 10;
+			int last_page = playerPermissions.size() / lines_per_page;
+
+			if (!(sender instanceof Player)) {
+				page -= 1;
 			}
-			line_index += 1;
+
+			page = page < 0 ? 0 : page;
+			page = page > last_page ? last_page : page;
+
+			if (sender instanceof Player) {
+				String page_selector_tellraw = "tellraw " + sender.getName()
+						+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
+						+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
+						+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+						+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+						+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
+						+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+						+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
+						+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+						+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
+						+ "\"}},{\"text\":\" \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+						+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
+						+ "\"}},{\"text\":\">\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+						+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%"
+						+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
+						+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%" + "\"}}]";
+
+				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
+				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%",
+						String.valueOf(page - 1));
+				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
+						String.valueOf(last_page + 1));
+				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", player.getName());
+				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
+
+				Messages.powerRanks.getServer().dispatchCommand(
+						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+			} else {
+				sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
+						+ ChatColor.BLUE + (last_page + 1));
+				sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " playerinfo "
+						+ player.getName() + " " + ChatColor.BLUE
+						+ (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+			}
+
+			int line_index = 0;
+			for (PRPermission permission : playerPermissions) {
+				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
+					sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
+							+ (!permission.getValue() ? ChatColor.RED : ChatColor.GREEN) + permission.getName());
+				}
+				line_index += 1;
+			}
 		}
 
 		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"

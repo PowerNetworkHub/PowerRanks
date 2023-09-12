@@ -3,8 +3,10 @@ lang:
       general:
          prefix: "&0[&bPR&0]&r"
          no-permission: "&4You do not have permissions to execute this command!"
+         permission-not-found: "&cPermission node '[permission]' not found!"
          rank-not-found: "&cRank '[rank]' not found!"
          player-not-found: "&cPlayer '[target]' not found!"
+         player-not-online: "&cPlayer '[target]' is not online!"
          console-is-no-player: "&cThe console is not a player and has no ranks!"
          player-rank-has-expired: "&aYour rank [rank] has expired!"
          player-rank-expired-console: "&cRemoved expired rank [rank] from [player]"

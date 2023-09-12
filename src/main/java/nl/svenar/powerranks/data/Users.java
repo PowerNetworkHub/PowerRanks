@@ -698,25 +698,16 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean addPlayerPermission(String target_player_name, String permission, boolean allowed) {
+	public boolean addPlayerPermission(String targetPlayerName, String permission, boolean allowed) {
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
 		}
 
-		Player target_player = Bukkit.getServer().getPlayer(target_player_name);
+		PRPlayer targetPlayer = CacheManager.getPlayer(targetPlayerName);
 
-		if (target_player != null) {
+		if (targetPlayer != null) {
 			try {
-				if (CacheManager.getPlayer(target_player.getUniqueId().toString()) != null) {
-					List<PRPermission> list = CacheManager.getPlayer(target_player.getUniqueId().toString())
-							.getPermissions();
-					// if (!list.contains(permission)) {
-					// list.add(permission);
-					// CachedPlayers.set("players." + target_player.getUniqueId() + ".permissions",
-					// (Object) list,
-					// false);
-					// }
-					// this.m.setupPermissions(target_player);
+					List<PRPermission> list = targetPlayer.getPermissions();
 					PRPermission targetPermission = null;
 					for (PRPermission prPermission : list) {
 						if (prPermission.getName().equals(permission)) {
@@ -728,60 +719,9 @@ public class Users implements Listener {
 						PRPermission newPermission = new PRPermission();
 						newPermission.setName(permission);
 						newPermission.setValue(allowed);
-						CacheManager.getPlayer(target_player.getUniqueId().toString()).addPermission(newPermission);
-						// r.addPermission(newPermission);
-						// list.add(permission);
-						// CachedRanks.set("Groups." + r + ".permissions", (Object) list);
-						// this.m.updatePlayersWithRank(this, r.getName());
+						targetPlayer.addPermission(newPermission);
 					}
 					return true;
-				} else {
-					return false;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			String uuid = "";
-			try {
-				for (PRPlayer key : CacheManager.getPlayers()) {
-					if (key.getName().equalsIgnoreCase(target_player_name)) {
-						uuid = key.getUUID().toString();
-					}
-				}
-
-				if (uuid.length() > 0) {
-					if (CacheManager.getPlayer(uuid) != null) {
-						// List<String> list = (List<String>) CachedPlayers
-						// .getStringList("players." + uuid + ".permissions");
-						// if (!list.contains(permission)) {
-						// list.add(permission);
-						// CachedPlayers.set("players." + uuid + ".permissions", (Object) list, false);
-						// }
-						List<PRPermission> list = CacheManager.getPlayer(uuid).getPermissions();
-						PRPermission targetPermission = null;
-						for (PRPermission prPermission : list) {
-							if (prPermission.getName().equals(permission)) {
-								targetPermission = prPermission;
-								break;
-							}
-						}
-						if (targetPermission == null) {
-							PRPermission newPermission = new PRPermission();
-							newPermission.setName(permission);
-							newPermission.setValue(allowed);
-							CacheManager.getPlayer(uuid).addPermission(newPermission);
-							// r.addPermission(newPermission);
-							// list.add(permission);
-							// CachedRanks.set("Groups." + r + ".permissions", (Object) list);
-							// this.m.updatePlayersWithRank(this, r.getName());
-						}
-						return true;
-					} else {
-						return false;
-					}
-				} else
-					return false;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

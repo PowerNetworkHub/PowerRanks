@@ -53,10 +53,11 @@ public class cmd_setrank extends PowerCommand {
 					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 					targetPlayer.setRank(playerRank);
 
-                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
-                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
-                    }
+					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+						PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+						PowerRanks.getInstance().getTablistManager()
+								.updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+					}
 
 					boolean hasRank = false;
 					for (PRPlayerRank playerrank : targetPlayer.getRanks()) {
@@ -99,14 +100,14 @@ public class cmd_setrank extends PowerCommand {
 					}
 				} else {
 					sender.sendMessage(Util.powerFormatter(
-					PowerRanks.getLanguageManager()
-							.getFormattedMessage(
-									"commands." + commandName.toLowerCase() + ".failed-executor"),
-					ImmutableMap.<String, String>builder()
-							.put("player", targetPlayer == null ? args[0] : targetPlayer.getName())
-							.put("rank", rank == null ? args[1] : rank.getName())
-							.build(),
-					'[', ']'));
+							PowerRanks.getLanguageManager()
+									.getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".failed-executor"),
+							ImmutableMap.<String, String>builder()
+									.put("player", targetPlayer == null ? args[0] : targetPlayer.getName())
+									.put("rank", rank == null ? args[1] : rank.getName())
+									.build(),
+							'[', ']'));
 				}
 
 			} else {
@@ -115,9 +116,9 @@ public class cmd_setrank extends PowerCommand {
 		} else {
 			if (sender.hasPermission("powerranks.cmd." + commandName.toLowerCase())
 					|| sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + ".*")) {
-						sender.sendMessage(
-								PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-										"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
+				sender.sendMessage(
+						PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+								"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
 			} else {
 				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
 			}
@@ -130,14 +131,19 @@ public class cmd_setrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				tabcomplete.add(player.getName());
+			for (PRPlayer prPlayer : CacheManager.getPlayers()) {
+				tabcomplete.add(prPlayer.getName());
 			}
 		}
 
 		if (args.length == 2) {
-			for (PRRank rank : this.users.getGroups()) {
-				tabcomplete.add(rank.getName());
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
+			if (targetPlayer != null) {
+				for (PRRank rank : CacheManager.getRanks()) {
+					if (!targetPlayer.hasRank(rank.getName())) {
+						tabcomplete.add(rank.getName());
+					}
+				}
 			}
 		}
 
