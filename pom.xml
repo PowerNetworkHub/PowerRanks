@@ -131,13 +131,13 @@
 		</pluginManagement>
 	</build>
 
-	<distributionManagement>
+	<!-- <distributionManagement>
 		<repository>
 			<id>github</id>
-			<name>GitHub svenar-nl Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/svenar-nl/PowerRanks</url>
+			<name>GitHub PowerNetworkHub Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/PowerNetworkHub/PowerRanks</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement> -->
 
 	<repositories>
 		<repository>
