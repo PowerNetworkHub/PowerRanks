@@ -2,9 +2,10 @@ package nl.svenar.powerranks;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -983,8 +985,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}
 
-		ranks = PRUtil.sortRanksByWeight(ranks);
-		Collections.reverse(ranks);
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		String formatted_prefix = "";
 		String formatted_suffix = "";
@@ -1162,43 +1164,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
-		PRPlayer prPlayer = null;
-
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
-
-		if (player == null) {
-			return permissions;
-		}
-
-		try {
-			prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return permissions;
-		}
+		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
 		if (prPlayer == null) {
 			return permissions;
 		}
 
-		for (PRPermission permission : prPlayer.getPermissions()) {
-			permissions.add(permission);
-		}
+		permissions.addAll(prPlayer.getPermissions());
 
-		List<String> ranknames = new ArrayList<>();
-		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
-			ranknames.add(playerRank.getName());
-		}
-
-		List<PRRank> playerRanks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
+		List<PRRank> playerRanks = new ArrayList<>();
+		for (PRPlayerRank playerRank : prPlayer.getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				playerRanks.add(rank);
 			}
 		}
-
-		// playerRanks = PRUtil.sortRanksByWeight(playerRanks);
 
 		List<PRRank> effectiveRanks = new ArrayList<PRRank>();
 
@@ -1215,13 +1196,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}
 
-		effectiveRanks.removeAll(Collections.singleton(null));
-		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
-		effectiveRanks = PRUtil.sortRanksByWeight(effectiveRanks);
-
-		for (PRPermission permission : prPlayer.getPermissions()) {
-			permissions.add(permission);
-		}
+		effectiveRanks.removeIf(Objects::isNull);
+		PRUtil.sortRanksByWeight(effectiveRanks);
 
 		for (PRRank effectiveRank : effectiveRanks) {
 			if (Objects.nonNull(effectiveRank)) {
