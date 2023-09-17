@@ -74,7 +74,8 @@ public class cmd_addownrank extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					if (targetPlayer != null && rank != null) {
+						sender.sendMessage(Util.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".failed-executor"),
@@ -83,6 +84,7 @@ public class cmd_addownrank extends PowerCommand {
 									.put("rank", rank.getName())
 									.build(),
 							'[', ']'));
+					}
 				}
 			} else {
 				sender.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));

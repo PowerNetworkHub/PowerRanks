@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import nl.svenar.common.structure.PRPermission;
@@ -13,11 +12,9 @@ import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.commands.PowerCommand;
 import nl.svenar.powerranks.data.PowerPermissibleBase;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 
 public class cmd_test extends PowerCommand {
 

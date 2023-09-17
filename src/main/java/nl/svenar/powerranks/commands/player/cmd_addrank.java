@@ -103,15 +103,17 @@ public class cmd_addrank extends PowerCommand {
 								'[', ']'));
 					}
 				} else {
-					sender.sendMessage(Util.powerFormatter(
-							PowerRanks.getLanguageManager()
-									.getFormattedMessage(
-											"commands." + commandName.toLowerCase() + ".failed-executor"),
-							ImmutableMap.<String, String>builder()
-									.put("player", targetPlayer.getName())
-									.put("rank", rank.getName())
-									.build(),
-							'[', ']'));
+					if (targetPlayer != null && rank != null) {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".failed-executor"),
+								ImmutableMap.<String, String>builder()
+										.put("player", targetPlayer.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+					}
 				}
 				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
 				// target_rank, true);

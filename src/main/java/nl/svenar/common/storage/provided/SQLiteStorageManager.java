@@ -394,11 +394,13 @@ public class SQLiteStorageManager extends PowerStorageManager {
                 String serializedValue = gson.toJson(mapEntry.getValue());
 
                 try {
-                    stmt.clearParameters();
-                    stmt.setString(1, dbKey);
-                    stmt.setString(2, serializedValue);
-                    stmt.setString(3, serializedValue);
-                    stmt.addBatch();
+                    if (stmt != null) {
+                        stmt.clearParameters();
+                        stmt.setString(1, dbKey);
+                        stmt.setString(2, serializedValue);
+                        stmt.setString(3, serializedValue);
+                        stmt.addBatch();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -406,9 +408,11 @@ public class SQLiteStorageManager extends PowerStorageManager {
         }
 
         try {
-            stmt.executeBatch();
-            this.ranksSQLConnection.commit();
-            this.ranksSQLConnection.setAutoCommit(true);
+            if (stmt != null) {
+                stmt.executeBatch();
+                this.ranksSQLConnection.commit();
+                this.ranksSQLConnection.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -462,11 +466,13 @@ public class SQLiteStorageManager extends PowerStorageManager {
                 String serializedValue = gson.toJson(mapEntry.getValue());
 
                 try {
-                    stmt.clearParameters();
-                    stmt.setString(1, dbKey);
-                    stmt.setString(2, serializedValue);
-                    stmt.setString(3, serializedValue);
-                    stmt.addBatch();
+                    if (stmt != null) {
+                        stmt.clearParameters();
+                        stmt.setString(1, dbKey);
+                        stmt.setString(2, serializedValue);
+                        stmt.setString(3, serializedValue);
+                        stmt.addBatch();
+                    }
                     // String query = SQLInsertOrUpdateKV(this.ranksFile.getName().split("\\.")[0],
                     // dbKey,
                     // serializedValue);
@@ -479,9 +485,11 @@ public class SQLiteStorageManager extends PowerStorageManager {
         }
 
         try {
-            stmt.executeBatch();
-            this.playersSQLConnection.commit();
-            this.playersSQLConnection.setAutoCommit(true);
+            if (stmt != null) {
+                stmt.executeBatch();
+                this.playersSQLConnection.commit();
+                this.playersSQLConnection.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

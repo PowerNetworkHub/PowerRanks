@@ -728,6 +728,10 @@ public class Messages {
 			String tellrawCommand = "tellraw %player% ";
 
 			String formattedDescription = "";
+			if (addon == null) {
+				sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
+				return;
+			}
 			if (!addon.isInstalled()) {
 				formattedDescription += ",{\"text\":\"Description\",\"color\":\"green\"}";
 				formattedDescription += ",{\"text\":\":\\\\n\"}";
@@ -741,6 +745,11 @@ public class Messages {
 						prAddon = a.getValue();
 						break;
 					}
+				}
+
+				if (prAddon == null) {
+					sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
+					return;
 				}
 
 				formattedDescription += ",{\"text\":\"Registered Commands\",\"color\":\"green\"},{\"text\":\":\\\\n\"}";
@@ -803,6 +812,11 @@ public class Messages {
 						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), tellrawCommand);
 
 		} else {
+			if (addon == null) {
+				sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
+				return;
+			}
+			
 			ArrayList<String> lines = new ArrayList<String>();
 
 			lines.add(ChatColor.DARK_AQUA + "===-----" + ChatColor.AQUA + "PowerRanks AddonManager"
@@ -828,13 +842,16 @@ public class Messages {
 				}
 
 				lines.add(ChatColor.GREEN + "Registered commands" + ChatColor.RESET + ": ");
-				for (String command : prAddon.getRegisteredCommands()) {
-					lines.add("- /pr " + command);
-				}
+				
+				if (prAddon != null) {
+					for (String command : prAddon.getRegisteredCommands()) {
+						lines.add("- /pr " + command);
+					}
 
-				lines.add(ChatColor.GREEN + "Registered permissions" + ChatColor.RESET + ": ");
-				for (String permission : prAddon.getRegisteredPermissions()) {
-					lines.add("- " + permission);
+					lines.add(ChatColor.GREEN + "Registered permissions" + ChatColor.RESET + ": ");
+					for (String permission : prAddon.getRegisteredPermissions()) {
+						lines.add("- " + permission);
+					}
 				}
 			}
 

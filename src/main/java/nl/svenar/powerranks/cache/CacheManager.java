@@ -191,8 +191,10 @@ public class CacheManager {
                     PowerRanks.getInstance().getLogger().warning("Unknown storage method configured! Falling back to YAML");
                     storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
                 } else {
-                    PowerRanks.getInstance().getLogger()
-                            .info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
+                    if (usedStorageManagerAddon != null) {
+                        PowerRanks.getInstance().getLogger()
+                                .info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
+                    }
                 }
             }
         }

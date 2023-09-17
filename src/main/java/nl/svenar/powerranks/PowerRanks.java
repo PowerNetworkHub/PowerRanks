@@ -2,18 +2,13 @@ package nl.svenar.powerranks;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -1164,6 +1159,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
+		long start = System.nanoTime();
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
@@ -1218,6 +1214,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 		}
+
+		long end = System.nanoTime();
+		System.out.println("getEffectivePlayerPermissions took " + (end - start) + "ns");
 
 		return permissions;
 	}

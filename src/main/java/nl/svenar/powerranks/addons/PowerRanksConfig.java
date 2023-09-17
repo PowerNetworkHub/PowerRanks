@@ -66,7 +66,7 @@ public class PowerRanksConfig {
 	
 	public boolean isSet(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isSet(field) : null;
+		return config != null ? config.isSet(field) : false;
 	}
 	
 	public Object get(String field) {
@@ -81,17 +81,17 @@ public class PowerRanksConfig {
 	
 	public int getInt(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.getInt(field) : null;
+		return config != null ? config.getInt(field) : 0;
 	}
 	
 	public boolean getBoolean(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.getBoolean(field) : null;
+		return config != null ? config.getBoolean(field) : false;
 	}
 	
 	public double getDouble(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.getDouble(field) : null;
+		return config != null ? config.getDouble(field) : 0.0;
 	}
 	
 	public List<String> getStringList(String field) {
@@ -126,37 +126,37 @@ public class PowerRanksConfig {
 	
 	public boolean isString(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isString(field) : null;
+		return config != null ? config.isString(field) : false;
 	}
 	
 	public boolean isBoolean(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isBoolean(field) : null;
+		return config != null ? config.isBoolean(field) : false;
 	}
 	
 	public boolean isConfigurationSection(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isConfigurationSection(field) : null;
+		return config != null ? config.isConfigurationSection(field) : false;
 	}
 	
 	public boolean isColor(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isColor(field) : null;
+		return config != null ? config.isColor(field) : false;
 	}
 	
 	public boolean isDouble(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isDouble(field) : null;
+		return config != null ? config.isDouble(field) : false;
 	}
 	
 	public boolean isInt(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isInt(field) : null;
+		return config != null ? config.isInt(field) : false;
 	}
 	
 	public boolean isList(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isList(field) : null;
+		return config != null ? config.isList(field) : false;
 	}
 
 //	public boolean isLocation(String field) {
@@ -166,6 +166,6 @@ public class PowerRanksConfig {
 	
 	public boolean isLong(String field) {
 		YamlConfiguration config = loadConfigFile();
-		return config != null ? config.isLong(field) : null;
+		return config != null ? config.isLong(field) : false;
 	}
 }
