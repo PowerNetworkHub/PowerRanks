@@ -46,7 +46,8 @@ public class Users implements Listener {
 			}
 		}
 
-		playerRanks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
+		PRUtil.sortRanksByWeight(playerRanks);
+		PRUtil.reverseRanks(playerRanks);
 
 		return playerRanks.size() > 0 ? playerRanks.get(0).getName() : "";
 	}
@@ -484,7 +485,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		for (PRRank rank : ranks) {
 			prefix += rank.getPrefix() + " ";
@@ -523,7 +525,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		for (PRRank rank : ranks) {
 			suffix += rank.getSuffix() + " ";
@@ -563,7 +566,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		color = ranks.size() > 0 ? ranks.get(0).getChatcolor() : "&f";
 
@@ -585,7 +589,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		color = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 
@@ -707,21 +712,21 @@ public class Users implements Listener {
 
 		if (targetPlayer != null) {
 			try {
-					List<PRPermission> list = targetPlayer.getPermissions();
-					PRPermission targetPermission = null;
-					for (PRPermission prPermission : list) {
-						if (prPermission.getName().equals(permission)) {
-							targetPermission = prPermission;
-							break;
-						}
+				List<PRPermission> list = targetPlayer.getPermissions();
+				PRPermission targetPermission = null;
+				for (PRPermission prPermission : list) {
+					if (prPermission.getName().equals(permission)) {
+						targetPermission = prPermission;
+						break;
 					}
-					if (targetPermission == null) {
-						PRPermission newPermission = new PRPermission();
-						newPermission.setName(permission);
-						newPermission.setValue(allowed);
-						targetPlayer.addPermission(newPermission);
-					}
-					return true;
+				}
+				if (targetPermission == null) {
+					PRPermission newPermission = new PRPermission();
+					newPermission.setName(permission);
+					newPermission.setValue(allowed);
+					targetPlayer.addPermission(newPermission);
+				}
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

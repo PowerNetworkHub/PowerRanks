@@ -76,8 +76,9 @@ public class TablistManager {
 
                 boolean doUpdateRanks = false;
 
-                List<PRRank> sortedRanks = PRUtil.sortRanksByWeight(
-                        CacheManager.getRanks());
+
+                List<PRRank> sortedRanks = CacheManager.getRanks();
+                PRUtil.sortRanksByWeight(sortedRanks);
                 if (!PowerRanks.getTablistConfigManager().getBool("sorting.reverse", false)) {
                     Collections.reverse(sortedRanks);
                 }

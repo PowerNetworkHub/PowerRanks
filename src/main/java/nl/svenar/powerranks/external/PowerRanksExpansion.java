@@ -270,6 +270,9 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			}
 		}
 
-		return PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
+
+		PRUtil.sortRanksByWeight(playerRanks);
+		PRUtil.reverseRanks(playerRanks);
+		return playerRanks;
 	}
 }

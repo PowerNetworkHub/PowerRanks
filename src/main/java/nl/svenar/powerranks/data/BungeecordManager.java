@@ -3,6 +3,7 @@ package nl.svenar.powerranks.data;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -167,7 +168,9 @@ public class BungeecordManager {
         this.lastPlayersHashcode = this.playersHashcode;
 
         this.ranksHashcode = 17;
-        for (PRRank rank : PRUtil.sortRanksByWeight(CacheManager.getRanks())) {
+        List<PRRank> ranks = CacheManager.getRanks();
+        PRUtil.sortRanksByWeight(ranks);
+        for (PRRank rank : ranks) {
             ranksHashcode = 31 * ranksHashcode + (rank != null ? rank.hashCode() : 0);
         }
 

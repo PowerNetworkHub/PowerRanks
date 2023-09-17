@@ -374,7 +374,7 @@ public class Messages {
 		if (player != null) {
 			sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
-			ArrayList<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
+			List<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
 			int lines_per_page = sender instanceof Player ? 5 : 10;
 			int last_page = playerPermissions.size() / lines_per_page;
 
@@ -453,7 +453,8 @@ public class Messages {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		String formatted_prefix = "";
 		String formatted_suffix = "";

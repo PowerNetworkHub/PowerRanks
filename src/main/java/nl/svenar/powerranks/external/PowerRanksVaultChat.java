@@ -106,7 +106,8 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		return ranks.size() > 0 ? PowerRanks.chatColor(ranks.get(0).getPrefix(), true) : "";
 
@@ -126,7 +127,8 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		return ranks.size() > 0 ? PowerRanks.chatColor(ranks.get(0).getSuffix(), true) : "";
 		// return
@@ -203,7 +205,8 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		if (ranks.size() > 0) {
 			ranks.get(0).setPrefix(value);
@@ -222,7 +225,8 @@ public class PowerRanksVaultChat extends Chat {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		if (ranks.size() > 0) {
 			ranks.get(0).setSuffix(value);

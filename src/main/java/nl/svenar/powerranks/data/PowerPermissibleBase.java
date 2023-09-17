@@ -1,6 +1,8 @@
 package nl.svenar.powerranks.data;
 
 import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.entity.Player;
@@ -21,6 +23,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 	private PowerRanks plugin;
 	private Player player;
 	private PRPlayer prPlayer;
+
+	public static Map<String, Integer> permissionCallCount = new HashMap<String, Integer>();
 
 	public PowerPermissibleBase(Player player, PowerRanks plugin) {
 		super(player);
@@ -100,6 +104,12 @@ public class PowerPermissibleBase extends PermissibleBase {
 			throw new IllegalArgumentException("Permission name cannot be null");
 		}
 
+		if (permissionCallCount.get(inName) == null) {
+			permissionCallCount.put(inName, 0);
+		} else {
+			permissionCallCount.put(inName, permissionCallCount.get(inName) + 1);
+		}
+
 		PRPermission prPermission = getPRPermission(inName);
 		if (prPermission == null) {
 			for (String wildCardPermissionName : Util.generateWildcardList(inName)) {
@@ -141,7 +151,11 @@ public class PowerPermissibleBase extends PermissibleBase {
 			PowerRanksVerbose.log("",
 					"    " + permissionAttachmentInfo.getKey() + ": " + permissionAttachmentInfo.getValue());
 		}
-		super.removeAttachment(attachment);
+		try {
+			super.removeAttachment(attachment);
+		} catch (Exception e) {
+			PowerRanksVerbose.log("removeAttachment(PermissionAttachment attachment) failed", e.getMessage());
+		}
 	}
 
 	@Override
