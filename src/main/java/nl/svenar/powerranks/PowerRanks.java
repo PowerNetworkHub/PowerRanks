@@ -89,8 +89,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
-	public ArrayList<String> donation_urls = new ArrayList<String>(
-			Arrays.asList("https://ko-fi.com/svenar", "https://patreon.com/svenar"));
+	public ArrayList<String> donation_urls = new ArrayList<String>(Arrays.asList("https://ko-fi.com/svenar"));
 
 	public int TASK_TPS = 20;
 	private static PowerRanks instance;
@@ -233,8 +232,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		System.setProperty("POWERRANKSRUNNING", "TRUE");
 
-		PowerRanks.log
-				.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
+		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0));
 
 		if (handle_update_checking()) {
 			return;
@@ -967,16 +965,17 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (NoSuchMethodError e) {
 		}
 
-		List<String> ranknames = new ArrayList<>();
-		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
-			ranknames.add(playerRank.getName());
-		}
+		PRPlayer prPlayer = CacheManager.getPlayer(player);
+
+		List<PRPlayerRank> playerRanks = prPlayer.getRanks();
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
-			if (rank != null) {
-				ranks.add(rank);
+		for (PRPlayerRank playerRank : playerRanks) {
+			if (!playerRank.isDisabled()) {
+				PRRank rank = CacheManager.getRank(playerRank.getName());
+				if (rank != null) {
+					ranks.add(rank);
+				}
 			}
 		}
 
@@ -1011,9 +1010,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				formatted_suffix = "";
 			}
 
-			PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 			Map<?, ?> availableUsertags = getUsertagManager().getMap("usertags", new HashMap<String, String>());
-			ArrayList<String> playerUsertags = targetPlayer.getUsertags();
+			ArrayList<String> playerUsertags = prPlayer.getUsertags();
 
 			for (String playerUsertag : playerUsertags) {
 				String value = "";
@@ -1159,7 +1157,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
-		long start = System.nanoTime();
 		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
 		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
@@ -1171,9 +1168,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		List<PRRank> playerRanks = new ArrayList<>();
 		for (PRPlayerRank playerRank : prPlayer.getRanks()) {
-			PRRank rank = CacheManager.getRank(playerRank.getName());
-			if (rank != null) {
-				playerRanks.add(rank);
+			if (!playerRank.isDisabled()) {
+				PRRank rank = CacheManager.getRank(playerRank.getName());
+				if (rank != null) {
+					playerRanks.add(rank);
+				}
 			}
 		}
 
@@ -1214,9 +1213,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				}
 			}
 		}
-
-		long end = System.nanoTime();
-		System.out.println("getEffectivePlayerPermissions took " + (end - start) + "ns");
 
 		return permissions;
 	}

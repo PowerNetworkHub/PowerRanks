@@ -8,9 +8,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.addons.PowerRanksAddon;
 import nl.svenar.powerranks.addons.PowerRanksPlayer;
+import nl.svenar.powerranks.cache.CacheManager;
 
 public class OnWorldChange implements Listener {
 	PowerRanks powerRanks;
@@ -22,12 +24,15 @@ public class OnWorldChange implements Listener {
 	@EventHandler
 	public void onWorldChange(final PlayerChangedWorldEvent e) {
 		Player player = e.getPlayer();
+		PRPlayer prPlayer = CacheManager.getPlayer(player);
+		prPlayer.updateTags(player.getLocation().getWorld().getName());
 		this.powerRanks.updateTablistName(player);
+		this.powerRanks.getTablistManager().updateSorting(player);
 		// this.powerRanks.setupPermissions(player);
 
+		PowerRanksPlayer prAddonPlayer = new PowerRanksPlayer(this.powerRanks, player);
 		for (Entry<File, PowerRanksAddon> prAddon : this.powerRanks.addonsManager.addonClasses.entrySet()) {
-			PowerRanksPlayer prPlayer = new PowerRanksPlayer(this.powerRanks, player);
-			prAddon.getValue().onPlayerWorldChange(prPlayer, e.getFrom(), player.getWorld());
+			prAddon.getValue().onPlayerWorldChange(prAddonPlayer, e.getFrom(), player.getWorld());
 		}
 
 	}

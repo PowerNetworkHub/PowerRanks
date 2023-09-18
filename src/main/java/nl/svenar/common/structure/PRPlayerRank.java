@@ -24,19 +24,23 @@
 
 package nl.svenar.common.structure;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import nl.svenar.powerranks.util.Util;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties("disabled")
 public class PRPlayerRank {
-    
+
     private String name;
     private HashMap<String, Object> tags;
+    private boolean disabled;
 
     public PRPlayerRank() {
+        this.disabled = false;
         this.tags = new HashMap<>();
     }
 
@@ -67,6 +71,23 @@ public class PRPlayerRank {
             tagValue = currentTimeMillis + ((int) tagValue * 1000);
         }
 
+        if (tagName.equalsIgnoreCase("world")) {
+            tagName = "worlds";
+
+            List<String> worlds = new ArrayList<String>();
+
+            if (this.tags.containsKey(tagName)) {
+                for (Object world : (List<?>) this.tags.get(tagName)) {
+                    if (world instanceof String) {
+                        worlds.add((String) world);
+                    }
+                }
+            }
+
+            worlds.add((String) tagValue);
+            tagValue = worlds;
+        }
+
         this.tags.put(tagName, tagValue);
     }
 
@@ -79,5 +100,13 @@ public class PRPlayerRank {
         }
 
         this.tags.put(tagName, tagValue);
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

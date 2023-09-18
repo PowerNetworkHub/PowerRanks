@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.addons.PowerRanksAddon;
 import nl.svenar.powerranks.addons.PowerRanksPlayer;
@@ -29,7 +30,7 @@ public class OnJoin implements Listener {
 
 		handleJoin(this.plugin, player);
 
-        this.plugin.getTablistManager().onPlayerJoin(player);
+		this.plugin.getTablistManager().onPlayerJoin(player);
 
 		for (Entry<File, PowerRanksAddon> prAddon : plugin.addonsManager.addonClasses.entrySet()) {
 			PowerRanksPlayer prPlayer = new PowerRanksPlayer(plugin, player);
@@ -37,7 +38,7 @@ public class OnJoin implements Listener {
 			if (!prAddon.getValue().onPlayerJoinMessage(prPlayer)) {
 				e.setJoinMessage("");
 			}
-			
+
 		}
 	}
 
@@ -49,7 +50,7 @@ public class OnJoin implements Listener {
 
 		validatePlayerData(player);
 
-        this.plugin.getTablistManager().onPlayerLeave(player);
+		this.plugin.getTablistManager().onPlayerLeave(player);
 
 		this.plugin.playerPermissionAttachment.remove(player.getUniqueId());
 
@@ -72,10 +73,11 @@ public class OnJoin implements Listener {
 		validatePlayerData(player);
 
 		plugin.playerInjectPermissible(player);
-		// this.plugin.playerPermissionAttachment.put(player.getUniqueId(), player.addAttachment(this.plugin));
 
-		// this.plugin.setupPermissions(player);
+		PRPlayer prPlayer = CacheManager.getPlayer(player);
+		prPlayer.updateTags(player.getLocation().getWorld().getName());
 		plugin.updateTablistName(player);
+		plugin.getTablistManager().updateSorting(player);
 
 		long time = new Date().getTime();
 		plugin.playerPlayTimeCache.put(player.getUniqueId(), time);
@@ -88,9 +90,10 @@ public class OnJoin implements Listener {
 	}
 
 	private static void validatePlayerData(Player player) {
-        boolean exists = CacheManager.getPlayer(player.getUniqueId().toString()) != null;
-        PowerRanksVerbose.log("onJoin", "Player " + player.getName() + " (" + player.getUniqueId().toString() + " " + (exists ? "exists" : "does not exist"));
-        
+		boolean exists = CacheManager.getPlayer(player.getUniqueId().toString()) != null;
+		PowerRanksVerbose.log("onJoin", "Player " + player.getName() + " (" + player.getUniqueId().toString() + " "
+				+ (exists ? "exists" : "does not exist"));
+
 		if (!exists) {
 			CacheManager.createPlayer(player);
 		}

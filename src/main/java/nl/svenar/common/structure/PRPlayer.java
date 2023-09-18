@@ -360,4 +360,23 @@ public class PRPlayer {
         result = 31 * result + toString().hashCode();
         return result;
     }
+
+    public void updateTags(String worldName) {
+        for (PRPlayerRank prPlayerRank : this.getRanks()) {
+            if (prPlayerRank.getTags().containsKey("worlds")) {
+
+                boolean playerInWorld = false;
+                for (Object worldObject : (List<?>) prPlayerRank.getTags().get("worlds")) {
+                    if (worldObject instanceof String) {
+                        String world = (String) worldObject;
+                        if (world.equalsIgnoreCase(worldName)) {
+                            playerInWorld = true;
+                            break;
+                        }
+                    }
+                }
+                prPlayerRank.setDisabled(!playerInWorld);
+            }
+        }
+    }
 }

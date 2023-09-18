@@ -89,6 +89,10 @@ public class CacheManager {
         registeredPlayers.add(player);
     }
 
+    public static PRPlayer getPlayer(Player player) {
+        return getPlayer(player.getUniqueId().toString());
+    }
+
     public static PRPlayer getPlayer(String identifier) {
         try {
             if (Objects.isNull(registeredPlayers)) {

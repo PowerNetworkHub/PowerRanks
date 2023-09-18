@@ -336,7 +336,9 @@ public class Messages {
 
 		List<String> ranknames = new ArrayList<>();
 		for (PRPlayerRank playerRank : CacheManager.getPlayer(prPlayer.getUUID().toString()).getRanks()) {
-			ranknames.add(playerRank.getName());
+			if (!playerRank.isDisabled()) {
+				ranknames.add(playerRank.getName());
+			}
 		}
 
 		for (String rankname : ranknames) {
