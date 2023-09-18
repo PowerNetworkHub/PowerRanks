@@ -1,7 +1,6 @@
 package nl.svenar.powerranks.commands.player;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -122,14 +121,10 @@ public class cmd_delrank extends PowerCommand {
 		}
 
 		if (args.length == 2) {
-			Player targetPlayer = Util.getPlayerByName(args[0]);
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 			if (targetPlayer != null) {
-				List<String> ranks = new ArrayList<>();
-				for (PRPlayerRank rank : CacheManager.getPlayer(targetPlayer.getUniqueId().toString()).getRanks()) {
-					ranks.add(rank.getName());
-				}
-				for (String rank : ranks) {
-					tabcomplete.add(rank);
+				for (PRPlayerRank rank : targetPlayer.getRanks()) {
+					tabcomplete.add(rank.getName());
 				}
 			}
 		}
