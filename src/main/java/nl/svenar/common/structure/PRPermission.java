@@ -38,8 +38,12 @@ public class PRPermission {
     private boolean value;
 
     public PRPermission() {
-        name = "";
-        value = false;
+        this("", false);
+    }
+
+    public PRPermission(String name, boolean value) {
+        this.name = name;
+        this.value = value;
     }
 
     /**
