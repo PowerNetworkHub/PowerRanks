@@ -47,6 +47,7 @@ import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
+import nl.svenar.common.utils.PowerColor;
 import nl.svenar.powerranks.addons.AddonsManager;
 import nl.svenar.powerranks.api.PowerRanksAPI;
 import nl.svenar.powerranks.cache.CacheManager;
@@ -78,7 +79,7 @@ import nl.svenar.powerranks.update.ConfigFilesUpdater;
 import nl.svenar.powerranks.update.Updater;
 import nl.svenar.powerranks.update.Updater.UpdateResult;
 import nl.svenar.powerranks.update.Updater.UpdateType;
-import nl.svenar.powerranks.util.PowerColor;
+import nl.svenar.powerranks.util.BukkitPowerColor;
 import nl.svenar.powerranks.util.Util;
 
 import com.google.common.collect.ImmutableMap;
@@ -96,7 +97,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
 	private TablistManager tablistManager;
-	private static PowerColor powerColor;
+	private static BukkitPowerColor powerColor;
 	public String plp;
 	public static Logger log;
 	public static String fileLoc;
@@ -169,7 +170,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ------- LOADING CONFIGURATION ------ ===");
-		PowerRanks.powerColor = new PowerColor();
+		PowerRanks.powerColor = new BukkitPowerColor();
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
@@ -944,9 +945,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					prefix_format += nameColor;
 
 					prefix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, prefix_format, true,
-							true);
+							false, true);
 					suffix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, suffix_format, true,
-							true);
+							false, true);
 
 					INametagApi nteAPI = NametagEdit.getApi();
 					if (nteAPI != null) {
@@ -1086,15 +1087,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public static String chatColor(String textToTranslate, boolean custom_colors) {
-		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, true);
+		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false, true);
 	}
 
 	public static String chatColorAlt(final String textToTranslate, final boolean custom_colors) {
-		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false);
+		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false, false);
 	}
 
 	public static String applyMultiColorFlow(String rawColors, String text) {
-		String regexColors = "(&[a-fA-F0-9])|(#[a-fA-F0-9]{6})";
+		String regexColors = "(&[a-fA-F0-9])|(&?#[a-fA-F0-9]{6})";
 		String output = "";
 
 		Pattern p = Pattern.compile(regexColors);
@@ -1241,7 +1242,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return this.bungeecordManager;
 	}
 
-	public static PowerColor getPowerColor() {
+	public static BukkitPowerColor getPowerColor() {
 		return powerColor;
 	}
 
