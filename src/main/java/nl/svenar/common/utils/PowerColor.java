@@ -14,15 +14,6 @@ public class PowerColor {
     public static final char COLOR_CHAR = '\u00A7';
     private final String ALL_COLOR_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
 
-    // private final String regexRainbowSyntax = "(\\[[rR][aA][iI][nN][bB][oO][wW]\\])(.+)(\\[\\/[rR][aA][iI][nN][bB][oO][wW]\\])";
-    // private final String regexRainbowSyntaxOpen = "(\\[[rR][aA][iI][nN][bB][oO][wW]\\])";
-    // private final String regexRainbowSyntaxClose = "(\\[\\/[rR][aA][iI][nN][bB][oO][wW]\\])";
-
-    // private final String regexGradientSyntax = "(\\[[gG][rR][aA][dD][iI][eE][nN][tT]=(%s#|#)[a-fA-F0-9]{6},(%s#|#)[a-fA-F0-9]{6}\\])(.+)(\\[\\/[gG][rR][aA][dD][iI][eE][nN][tT]\\])";
-    // private final String regexGradientSyntaxOpen = "(\\[[gG][rR][aA][dD][iI][eE][nN][tT]=(%s#|#)[a-fA-F0-9]{6},(%s#|#)[a-fA-F0-9]{6}\\])";
-    // private final String regexGradientSyntaxClose = "(\\[\\/[gG][rR][aA][dD][iI][eE][nN][tT]\\])";
-    // private final String regexGradientHEXColors = "(%s#|#)[a-fA-F0-9]{6},(%s#|#)[a-fA-F0-9]{6}";
-
     private Map<String, String> hexToMCColors = new HashMap<String, String>(); // HEX, MC-Color
     private final String[] rainbowHEXColors = {
             "#E81416", // Red
@@ -91,37 +82,37 @@ public class PowerColor {
     }
 
     public String parseGradient(char altColorChar, String input) {
-            Pattern pattern = Pattern.compile("\\[gradient=([^,]+),([^\\]]+)\\]([^\\[]+)\\[/gradient\\]");
-            Matcher matcher = pattern.matcher(input);
-            StringBuffer result = new StringBuffer();
+        Pattern pattern = Pattern.compile("\\[gradient=([^,]+),([^\\]]+)\\]([^\\[]+)\\[/gradient\\]");
+        Matcher matcher = pattern.matcher(input);
+        StringBuffer result = new StringBuffer();
 
-            while (matcher.find()) {
-                    String startColor = matcher.group(1);
-                    String endColor = matcher.group(2);
-                    String content = matcher.group(3);
+        while (matcher.find()) {
+            String startColor = matcher.group(1);
+            String endColor = matcher.group(2);
+            String content = matcher.group(3);
 
-                    String gradient = generateGradient(startColor, endColor, content);
-                    matcher.appendReplacement(result, gradient);
-            }
-            matcher.appendTail(result);
+            String gradient = generateGradient(startColor, endColor, content);
+            matcher.appendReplacement(result, gradient);
+        }
+        matcher.appendTail(result);
 
-            return result.toString();
+        return result.toString();
     }
 
     public String parseRainbow(char altColorChar, String input) {
-            Pattern pattern = Pattern.compile("\\[rainbow\\]([^\\[]+)\\[/rainbow\\]");
-            Matcher matcher = pattern.matcher(input);
-            StringBuffer result = new StringBuffer();
+        Pattern pattern = Pattern.compile("\\[rainbow\\]([^\\[]+)\\[/rainbow\\]");
+        Matcher matcher = pattern.matcher(input);
+        StringBuffer result = new StringBuffer();
 
-            while (matcher.find()) {
-                    String content = matcher.group(1);
+        while (matcher.find()) {
+            String content = matcher.group(1);
 
-                    String rainbow = generateRainbow(content);
-                    matcher.appendReplacement(result, rainbow);
-            }
-            matcher.appendTail(result);
+            String rainbow = generateRainbow(content);
+            matcher.appendReplacement(result, rainbow);
+        }
+        matcher.appendTail(result);
 
-            return result.toString();
+        return result.toString();
     }
 
     private String generateGradient(String startColor, String endColor, String content) {
