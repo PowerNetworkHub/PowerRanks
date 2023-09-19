@@ -23,6 +23,7 @@ import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
+import nl.svenar.common.utils.PowerColor;
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.addons.AddonsManager;
 import nl.svenar.powerranks.addons.DownloadableAddon;
@@ -30,7 +31,6 @@ import nl.svenar.powerranks.addons.PowerRanksAddon;
 import nl.svenar.powerranks.addons.PowerRanksPlayer;
 import nl.svenar.powerranks.cache.CacheManager;
 import nl.svenar.powerranks.external.VaultHook;
-import nl.svenar.common.utils.PowerColor;
 import nl.svenar.powerranks.util.Util;
 
 import com.google.common.collect.ImmutableMap;
