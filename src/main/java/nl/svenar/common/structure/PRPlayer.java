@@ -31,6 +31,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import nl.svenar.common.utils.PRCache;
+import nl.svenar.common.utils.PRUtil;
+
 import java.util.Map.Entry;
 
 /**
@@ -100,6 +103,23 @@ public class PRPlayer {
      */
     public List<PRPlayerRank> getRanks() {
         return this.ranks;
+    }
+
+    /**
+     * Get the default ranks of this player
+     * @return List of PRRank instances
+     */
+    public List<PRRank> getDefaultRanks() {
+        List<PRRank> defaultRanks = new ArrayList<PRRank>();
+        for (PRPlayerRank rank : this.ranks) {
+            PRRank prRank = PRCache.getRank(rank.getName());
+            if (prRank != null) {
+                if (prRank.isDefault()) {
+                    defaultRanks.add(prRank);
+                }
+            }
+        }
+        return defaultRanks;
     }
 
     /**
@@ -182,7 +202,7 @@ public class PRPlayer {
      * @param permission
      */
     public void addPermission(PRPermission permission) {
-        if (Objects.isNull(this.permissions)) {
+        if (this.permissions == null) {
             this.permissions = new ArrayList<PRPermission>();
         }
 
@@ -210,7 +230,7 @@ public class PRPlayer {
      *         instance was found
      */
     public PRPermission getPermission(String name) {
-        if (Objects.isNull(this.permissions)) {
+        if (this.permissions == null) {
             this.permissions = new ArrayList<PRPermission>();
         }
 
@@ -220,6 +240,66 @@ public class PRPlayer {
             }
         }
         return null;
+    }
+
+    /**
+     * Get all effective permissions for this player
+     * @return List of PRPermission instances
+     */
+    public List<PRPermission> getEffectivePermissions() {
+        ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
+
+        permissions.addAll(this.getPermissions());
+
+        List<PRRank> playerRanks = new ArrayList<>();
+        for (PRPlayerRank playerRank : this.getRanks()) {
+            if (!playerRank.isDisabled()) {
+                PRRank rank = PRCache.getRank(playerRank.getName());
+                if (rank != null) {
+                    playerRanks.add(rank);
+                }
+            }
+        }
+
+        List<PRRank> effectiveRanks = new ArrayList<PRRank>();
+
+        if (Objects.nonNull(playerRanks)) {
+            effectiveRanks.addAll(playerRanks);
+
+            for (PRRank playerRank : playerRanks) {
+                for (String inheritance : playerRank.getInheritances()) {
+                    PRRank inheritanceRank = PRCache.getRank(inheritance);
+                    if (inheritanceRank != null) {
+                        effectiveRanks.add(inheritanceRank);
+                    }
+                }
+            }
+        }
+
+        effectiveRanks.removeIf(Objects::isNull);
+        PRUtil.sortRanksByWeight(effectiveRanks);
+
+        for (PRRank effectiveRank : effectiveRanks) {
+            if (Objects.nonNull(effectiveRank)) {
+                for (PRPermission permission : effectiveRank.getPermissions()) {
+
+                    PRPermission permissionToRemove = null;
+                    for (PRPermission existingPermission : permissions) {
+                        if (permission.getName().equals(existingPermission.getName())) {
+                            permissionToRemove = existingPermission;
+                            break;
+                        }
+                    }
+                    if (Objects.nonNull(permissionToRemove)) {
+                        permissions.remove(permissionToRemove);
+                    }
+
+                    permissions.add(permission);
+                }
+            }
+        }
+
+        return permissions;
     }
 
     /**

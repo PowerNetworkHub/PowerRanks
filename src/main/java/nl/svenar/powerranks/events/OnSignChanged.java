@@ -1,6 +1,6 @@
 package nl.svenar.powerranks.events;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
@@ -46,7 +46,7 @@ public class OnSignChanged implements Listener {
 									.build(),
 							'[', ']'));
 				} else if (sign_command.equalsIgnoreCase("setrank")) {
-					ArrayList<PRRank> ranks = s.getGroups();
+					List<PRRank> ranks = s.getGroups();
 					boolean rank_exists = false;
 					for (PRRank rank : ranks) {
 						if (rank.getName().equalsIgnoreCase(sign_argument)) {
@@ -107,7 +107,7 @@ public class OnSignChanged implements Listener {
 								'[', ']'));
 					}
 				} else if (sign_command.equalsIgnoreCase("rankup")) {
-					ArrayList<PRRank> ranks = s.getGroups();
+					List<PRRank> ranks = s.getGroups();
 					if (sign_argument.length() == 0) {
 						event.getPlayer().sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(

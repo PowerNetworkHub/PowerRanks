@@ -77,6 +77,7 @@ public class PowerColor {
         text += altColorChar + "r";
         text = parseRainbow(altColorChar, text);
         text += altColorChar + "r";
+        text = text.replaceAll(altColorChar + "r" + altColorChar + "r", altColorChar + "r");
 
         return text;
     }

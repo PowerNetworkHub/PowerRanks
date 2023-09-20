@@ -1157,65 +1157,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return placeholderapiExpansion;
 	}
 
-	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
-		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
+	public List<PRPermission> getEffectivePlayerPermissions(Player player) {
 		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
 		if (prPlayer == null) {
-			return permissions;
+			return new ArrayList<PRPermission>();
 		}
 
-		permissions.addAll(prPlayer.getPermissions());
-
-		List<PRRank> playerRanks = new ArrayList<>();
-		for (PRPlayerRank playerRank : prPlayer.getRanks()) {
-			if (!playerRank.isDisabled()) {
-				PRRank rank = CacheManager.getRank(playerRank.getName());
-				if (rank != null) {
-					playerRanks.add(rank);
-				}
-			}
-		}
-
-		List<PRRank> effectiveRanks = new ArrayList<PRRank>();
-
-		if (Objects.nonNull(playerRanks)) {
-			effectiveRanks.addAll(playerRanks);
-
-			for (PRRank playerRank : playerRanks) {
-				for (String inheritance : playerRank.getInheritances()) {
-					PRRank inheritanceRank = CacheManager.getRank(inheritance);
-					if (inheritanceRank != null) {
-						effectiveRanks.add(inheritanceRank);
-					}
-				}
-			}
-		}
-
-		effectiveRanks.removeIf(Objects::isNull);
-		PRUtil.sortRanksByWeight(effectiveRanks);
-
-		for (PRRank effectiveRank : effectiveRanks) {
-			if (Objects.nonNull(effectiveRank)) {
-				for (PRPermission permission : effectiveRank.getPermissions()) {
-
-					PRPermission permissionToRemove = null;
-					for (PRPermission existingPermission : permissions) {
-						if (permission.getName().equals(existingPermission.getName())) {
-							permissionToRemove = existingPermission;
-							break;
-						}
-					}
-					if (Objects.nonNull(permissionToRemove)) {
-						permissions.remove(permissionToRemove);
-					}
-
-					permissions.add(permission);
-				}
-			}
-		}
-
-		return permissions;
+		return prPlayer.getEffectivePermissions();
 	}
 
 	public TablistManager getTablistManager() {

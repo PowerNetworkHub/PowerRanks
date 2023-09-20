@@ -52,7 +52,7 @@ public class Users implements Listener {
 		return playerRanks.size() > 0 ? playerRanks.get(0).getName() : "";
 	}
 
-	public ArrayList<PRRank> getGroups() {
+	public List<PRRank> getGroups() {
 		return CacheManager.getRanks();
 	}
 
@@ -465,7 +465,7 @@ public class Users implements Listener {
 		return CacheManager.getRank(rankname).getInheritances();
 	}
 
-	public ArrayList<PRPlayer> getCachedPlayers() {
+	public List<PRPlayer> getCachedPlayers() {
 		return CacheManager.getPlayers();
 	}
 
@@ -1111,10 +1111,10 @@ public class Users implements Listener {
 	// // "");
 	// }
 
-	public ArrayList<String> getPlayerNames() {
-		ArrayList<String> player_names = new ArrayList<String>();
+	public List<String> getPlayerNames() {
+		List<String> player_names = new ArrayList<String>();
 
-		ArrayList<PRPlayer> players_section = CacheManager.getPlayers();
+		List<PRPlayer> players_section = CacheManager.getPlayers();
 		for (PRPlayer key : players_section) {
 			player_names.add(key.getName());
 		}
