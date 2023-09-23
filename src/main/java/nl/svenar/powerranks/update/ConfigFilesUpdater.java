@@ -26,6 +26,8 @@ import nl.svenar.powerranks.cache.CacheManager;
 
 public class ConfigFilesUpdater {
 
+	private final static String subPrefixSuffixRegex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}[\\[](subprefix|subsuffix)[\\]][ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}";
+	
 	private static File backupDir, backupRanks, backupConfig, backupLang, backupPlayers, oldRanksFile, newRanksFile,
 			oldPlayersFile, newPlayersFile, usertagsFile, configFile, langFile;
 
@@ -273,6 +275,12 @@ public class ConfigFilesUpdater {
 						}
 					}
 				}
+
+				yamlConf.set("chat.format", yamlConf.getString("chat.format").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+				yamlConf.set("tablist_modification.format", yamlConf.getString("tablist_modification.format").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+				yamlConf.set("nametagedit.prefix", yamlConf.getString("nametagedit.prefix").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+				yamlConf.set("nametagedit.suffix", yamlConf.getString("nametagedit.suffix").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+
 				yamlConf.set("version", PowerRanks.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
 			} catch (IOException | InvalidConfigurationException e) {
