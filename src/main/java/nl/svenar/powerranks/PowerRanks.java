@@ -324,25 +324,25 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		rankMember.setName("Member");
 		rankMember.setDefault(true);
 		rankMember.setWeight(0);
-		rankMember.setPrefix("#127e00M#1a8704E#239109M#2c9b0eB#35a513E#3eaf18R");
+		rankMember.setPrefix("[gradient=#127e00,#3eaf18]MEMBER[/gradient]");
 
 		PRRank rankModerator = new PRRank();
 		rankModerator.setName("Moderator");
 		rankModerator.setDefault(false);
 		rankModerator.setWeight(50);
-		rankModerator.setPrefix("#9d1dffM#a51eefO#ae1fdfD#b720d0E#bf21c0R#c822b0A#d123a1T#d92491O#e22581R");
+		rankMember.setPrefix("[gradient=#9d1dff,#e22581]MODERATOR[/gradient]");
 
 		PRRank rankAdmin = new PRRank();
 		rankAdmin.setName("Admin");
 		rankAdmin.setDefault(false);
 		rankAdmin.setWeight(75);
-		rankAdmin.setPrefix("#ffff00A#fbcc00D#f79900M#f36600I#ef3300N");
+		rankMember.setPrefix("[gradient=#ffff00,#ef3300]ADMIN[/gradient]");
 
 		PRRank rankOwner = new PRRank();
 		rankOwner.setName("Owner");
 		rankOwner.setDefault(false);
 		rankOwner.setWeight(100);
-		rankOwner.setPrefix("#ff00ffO#cc33ffW#9966ffN#6699ffE#33ccffR");
+		rankMember.setPrefix("[gradient=#ff00ff,#33ccff]OWNER[/gradient]");
 
 		CacheManager.addRank(rankMember);
 		CacheManager.addRank(rankModerator);
