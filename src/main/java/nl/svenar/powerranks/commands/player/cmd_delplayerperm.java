@@ -4,13 +4,14 @@ import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.powerranks.PowerRanks;
+import nl.svenar.powerranks.cache.CacheManager;
 import nl.svenar.powerranks.commands.PowerCommand;
 import nl.svenar.powerranks.data.Users;
 import nl.svenar.powerranks.util.Util;
@@ -66,43 +67,47 @@ public class cmd_delplayerperm extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}
 
 		if (args.length == 2) {
-			// for (Permission pai : Bukkit.getServer().getPermissions()) {
-			for (PRPermission perm : this.users.getPlayerPermissions(args[0])) {
-				// String perm = pai.getPermission();
-				String userInput = args[1];
-				String autocompletePermission = "";
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
+			if (targetPlayer != null) {
+				// for (Permission pai : Bukkit.getServer().getPermissions()) {
+				for (PRPermission perm : targetPlayer.getPermissions()) {
+					// String perm = pai.getPermission();
+					String userInput = args[1];
+					String autocompletePermission = "";
 
-				if (userInput.contains(".")) {
-					String[] permSplit = perm.getName().split("\\.");
-					for (int i = 0; i < permSplit.length; i++) {
-						String targetPerm = String.join(".", permSplit);
-						while (targetPerm.endsWith(".")) {
-							targetPerm = targetPerm.substring(0, targetPerm.length() - 1);
-						}
-						if (targetPerm.contains(userInput)) {
-							autocompletePermission = targetPerm;
-							permSplit[permSplit.length - 1 - i] = "";
+					if (userInput.contains(".")) {
+						String[] permSplit = perm.getName().split("\\.");
+						for (int i = 0; i < permSplit.length; i++) {
+							String targetPerm = String.join(".", permSplit);
+							while (targetPerm.endsWith(".")) {
+								targetPerm = targetPerm.substring(0, targetPerm.length() - 1);
+							}
+							if (targetPerm.contains(userInput)) {
+								autocompletePermission = targetPerm;
+								permSplit[permSplit.length - 1 - i] = "";
 
-						} else {
-							break;
+							} else {
+								break;
+							}
 						}
+					} else {
+						autocompletePermission = perm.getName().split("\\.")[0];
 					}
-				} else {
-					autocompletePermission = perm.getName().split("\\.")[0];
-				}
 
-				while (autocompletePermission.endsWith(".")) {
-					autocompletePermission = autocompletePermission.substring(0, autocompletePermission.length() - 1);
-				}
+					while (autocompletePermission.endsWith(".")) {
+						autocompletePermission = autocompletePermission.substring(0,
+								autocompletePermission.length() - 1);
+					}
 
-				if (!tabcomplete.contains(autocompletePermission)) {
-					tabcomplete.add(autocompletePermission);
+					if (!tabcomplete.contains(autocompletePermission)) {
+						tabcomplete.add(autocompletePermission);
+					}
 				}
 			}
 		}

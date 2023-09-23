@@ -36,7 +36,8 @@ public class cmd_listranks extends PowerCommand {
 		int index = 0;
 
 		ranks = new ArrayList<>(new HashSet<>(ranks));
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		ranks = PRUtil.reverseRanks(ranks);
 
 		for (PRRank rank : ranks) {
 			index++;

@@ -201,11 +201,13 @@ public abstract class PowerConfigManager {
                 if (currentKey instanceof HashMap) {
                     currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
                 } else {
-                    if (((HashMap<String, Object>)currentKey).containsKey(keySplit[i])) {
-                        throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key + "' is not a map and has no children to be set!");
-                    } else {
-                        ((HashMap<String, Object>)currentKey).put(keySplit[i], new HashMap<String, Object>());
-                        currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                    if (currentKey != null) {
+                        if (((HashMap<String, Object>)currentKey).containsKey(keySplit[i])) {
+                            throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key + "' is not a map and has no children to be set!");
+                        } else {
+                            ((HashMap<String, Object>)currentKey).put(keySplit[i], new HashMap<String, Object>());
+                            currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                        }
                     }
                 }
             } else {

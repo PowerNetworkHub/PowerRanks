@@ -1,7 +1,6 @@
 package nl.svenar.powerranks.commands.player;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -85,15 +84,17 @@ public class cmd_delrank extends PowerCommand {
 								'[', ']'));
 					}
 				} else {
-					sender.sendMessage(Util.powerFormatter(
-							PowerRanks.getLanguageManager()
-									.getFormattedMessage(
-											"commands." + commandName.toLowerCase() + ".failed-executor"),
-							ImmutableMap.<String, String>builder()
-									.put("player", targetPlayer.getName())
-									.put("rank", rank.getName())
-									.build(),
-							'[', ']'));
+					if (targetPlayer != null && rank != null) {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".failed-executor"),
+								ImmutableMap.<String, String>builder()
+										.put("player", targetPlayer.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+					}
 				}
 				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
 				// target_rank, true);
@@ -114,20 +115,16 @@ public class cmd_delrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}
 
 		if (args.length == 2) {
-			Player target_player = Util.getPlayerByName(args[0]);
-			if (target_player != null) {
-				List<String> ranks = new ArrayList<>();
-				for (PRPlayerRank rank : CacheManager.getPlayer(target_player.getUniqueId().toString()).getRanks()) {
-					ranks.add(rank.getName());
-				}
-				for (String rank : ranks) {
-					tabcomplete.add(rank);
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
+			if (targetPlayer != null) {
+				for (PRPlayerRank rank : targetPlayer.getRanks()) {
+					tabcomplete.add(rank.getName());
 				}
 			}
 		}

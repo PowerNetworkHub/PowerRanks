@@ -65,6 +65,7 @@ import nl.svenar.powerranks.commands.rank.cmd_setnamecolor;
 import nl.svenar.powerranks.commands.rank.cmd_setprefix;
 import nl.svenar.powerranks.commands.rank.cmd_setsuffix;
 import nl.svenar.powerranks.commands.rank.cmd_setweight;
+import nl.svenar.powerranks.commands.test.cmd_test;
 import nl.svenar.powerranks.commands.usertags.cmd_addusertag;
 import nl.svenar.powerranks.commands.usertags.cmd_clearusertag;
 import nl.svenar.powerranks.commands.usertags.cmd_createusertag;
@@ -149,6 +150,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_webeditor(plugin, "webeditor", COMMAND_EXECUTOR.ALL);
 		new cmd_webeditor(plugin, "we", COMMAND_EXECUTOR.ALL);
 
+		new cmd_test(plugin, "test", COMMAND_EXECUTOR.ALL);
 	}
 
 	private static boolean canExecuteCommand(CommandSender sender, PowerCommand command_handler) {

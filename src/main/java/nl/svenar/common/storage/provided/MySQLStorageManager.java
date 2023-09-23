@@ -384,11 +384,13 @@ public class MySQLStorageManager extends PowerStorageManager {
                 String serializedValue = gson.toJson(mapEntry.getValue());
 
                 try {
-                    stmt.clearParameters();
-                    stmt.setString(1, dbKey);
-                    stmt.setString(2, serializedValue);
-                    // stmt.setString(3, serializedValue);
-                    stmt.addBatch();
+                    if (stmt != null) {
+                        stmt.clearParameters();
+                        stmt.setString(1, dbKey);
+                        stmt.setString(2, serializedValue);
+                        // stmt.setString(3, serializedValue);
+                        stmt.addBatch();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -396,9 +398,11 @@ public class MySQLStorageManager extends PowerStorageManager {
         }
 
         try {
-            stmt.executeBatch();
-            this.connection.commit();
-            this.connection.setAutoCommit(true);
+            if (stmt != null) {
+                stmt.executeBatch();
+                this.connection.commit();
+                this.connection.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -456,11 +460,13 @@ public class MySQLStorageManager extends PowerStorageManager {
                 String serializedValue = gson.toJson(mapEntry.getValue());
 
                 try {
-                    stmt.clearParameters();
-                    stmt.setString(1, dbKey);
-                    stmt.setString(2, serializedValue);
-                    // stmt.setString(3, serializedValue);
-                    stmt.addBatch();
+                    if (stmt != null) {
+                        stmt.clearParameters();
+                        stmt.setString(1, dbKey);
+                        stmt.setString(2, serializedValue);
+                        // stmt.setString(3, serializedValue);
+                        stmt.addBatch();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -468,9 +474,11 @@ public class MySQLStorageManager extends PowerStorageManager {
         }
 
         try {
-            stmt.executeBatch();
-            this.connection.commit();
-            this.connection.setAutoCommit(true);
+            if (stmt != null) {
+                stmt.executeBatch();
+                this.connection.commit();
+                this.connection.setAutoCommit(true);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -555,14 +563,16 @@ public class MySQLStorageManager extends PowerStorageManager {
         }
 
         try {
-            stmt.clearParameters();
-            stmt.setString(1, key);
-            stmt.setString(2, value);
-            stmt.addBatch();
+            if (stmt != null) {
+                stmt.clearParameters();
+                stmt.setString(1, key);
+                stmt.setString(2, value);
+                stmt.addBatch();
 
-            stmt.executeBatch();
-            this.connection.commit();
-            this.connection.setAutoCommit(true);
+                stmt.executeBatch();
+                this.connection.commit();
+                this.connection.setAutoCommit(true);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -2,13 +2,10 @@ package nl.svenar.powerranks;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -50,6 +47,7 @@ import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
+import nl.svenar.common.utils.PowerColor;
 import nl.svenar.powerranks.addons.AddonsManager;
 import nl.svenar.powerranks.api.PowerRanksAPI;
 import nl.svenar.powerranks.cache.CacheManager;
@@ -81,7 +79,7 @@ import nl.svenar.powerranks.update.ConfigFilesUpdater;
 import nl.svenar.powerranks.update.Updater;
 import nl.svenar.powerranks.update.Updater.UpdateResult;
 import nl.svenar.powerranks.update.Updater.UpdateType;
-import nl.svenar.powerranks.util.PowerColor;
+import nl.svenar.powerranks.util.BukkitPowerColor;
 import nl.svenar.powerranks.util.Util;
 
 import com.google.common.collect.ImmutableMap;
@@ -92,15 +90,14 @@ import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PowerRanks extends JavaPlugin implements Listener {
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
-	public ArrayList<String> donation_urls = new ArrayList<String>(
-			Arrays.asList("https://ko-fi.com/svenar", "https://patreon.com/svenar"));
+	public ArrayList<String> donation_urls = new ArrayList<String>(Arrays.asList("https://ko-fi.com/svenar"));
 
 	public int TASK_TPS = 20;
 	private static PowerRanks instance;
 	public static PluginDescriptionFile pdf;
 	public AddonsManager addonsManager;
 	private TablistManager tablistManager;
-	private static PowerColor powerColor;
+	private static BukkitPowerColor powerColor;
 	public String plp;
 	public static Logger log;
 	public static String fileLoc;
@@ -131,7 +128,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
 	public Map<UUID, Long> playerPlayTimeCache = new HashMap<UUID, Long>();
-    // public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
+	// public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
@@ -144,7 +141,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void onEnable() {
 		instance = this;
 
-        new PowerLogger(getLogger());
+		new PowerLogger(getLogger());
 
 		Instant startTime = Instant.now();
 
@@ -173,7 +170,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ------- LOADING CONFIGURATION ------ ===");
-		PowerRanks.powerColor = new PowerColor();
+		PowerRanks.powerColor = new BukkitPowerColor();
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
@@ -216,6 +213,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.tablistManager = new TablistManager();
 		this.tablistManager.start();
 
+		this.setupCheckRankTagsTask();
+
 		PowerRanks.log.info("");
 		PowerRanks.log
 				.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
@@ -234,8 +233,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		System.setProperty("POWERRANKSRUNNING", "TRUE");
 
-		PowerRanks.log
-				.info("If you'd like to donate, please visit " + donation_urls.get(0) + " or " + donation_urls.get(1));
+		PowerRanks.log.info("If you'd like to donate, please visit " + donation_urls.get(0));
 
 		if (handle_update_checking()) {
 			return;
@@ -326,25 +324,25 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		rankMember.setName("Member");
 		rankMember.setDefault(true);
 		rankMember.setWeight(0);
-		rankMember.setPrefix("#127e00M#1a8704E#239109M#2c9b0eB#35a513E#3eaf18R");
+		rankMember.setPrefix("[gradient=#127e00,#3eaf18]MEMBER[/gradient]");
 
 		PRRank rankModerator = new PRRank();
 		rankModerator.setName("Moderator");
 		rankModerator.setDefault(false);
 		rankModerator.setWeight(50);
-		rankModerator.setPrefix("#9d1dffM#a51eefO#ae1fdfD#b720d0E#bf21c0R#c822b0A#d123a1T#d92491O#e22581R");
+		rankMember.setPrefix("[gradient=#9d1dff,#e22581]MODERATOR[/gradient]");
 
 		PRRank rankAdmin = new PRRank();
 		rankAdmin.setName("Admin");
 		rankAdmin.setDefault(false);
 		rankAdmin.setWeight(75);
-		rankAdmin.setPrefix("#ffff00A#fbcc00D#f79900M#f36600I#ef3300N");
+		rankMember.setPrefix("[gradient=#ffff00,#ef3300]ADMIN[/gradient]");
 
 		PRRank rankOwner = new PRRank();
 		rankOwner.setName("Owner");
 		rankOwner.setDefault(false);
 		rankOwner.setWeight(100);
-		rankOwner.setPrefix("#ff00ffO#cc33ffW#9966ffN#6699ffE#33ccffR");
+		rankMember.setPrefix("[gradient=#ff00ff,#33ccff]OWNER[/gradient]");
 
 		CacheManager.addRank(rankMember);
 		CacheManager.addRank(rankModerator);
@@ -397,6 +395,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		if (autosave_interval > 0) {
 			new BukkitRunnable() {
+
 				@Override
 				public void run() {
 					PowerRanksVerbose.log("task", "Running task auto-save files");
@@ -440,25 +439,26 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 		}.runTaskTimer(this, update_check_interval, update_check_interval);
 
+		// new BukkitRunnable() {
+		// @Override
+		// public void run() {
+		// PowerRanksVerbose.log("task", "Running task check player name change");
 
-        // new BukkitRunnable() {
-        //     @Override
-        //     public void run() {
-        //         PowerRanksVerbose.log("task", "Running task check player name change");
+		// for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+		// if (!playerNameCache.containsKey(player.getUniqueId())) {
+		// playerNameCache.put(player.getUniqueId(), player.getName());
+		// }
 
-        //         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-        //             if (!playerNameCache.containsKey(player.getUniqueId())) {
-        //                 playerNameCache.put(player.getUniqueId(), player.getName());
-        //             }
-
-        //             if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
-        //                 log.info("Player name changed from '" + playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() + "'");
-        //                 playerNameCache.put(player.getUniqueId(), player.getName());
-        //                 CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
-        //             }
-        //         }
-        //     }
-        // }.runTaskTimer(this, TASK_TPS, TASK_TPS);
+		// if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
+		// log.info("Player name changed from '" +
+		// playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() +
+		// "'");
+		// playerNameCache.put(player.getUniqueId(), player.getName());
+		// CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
+		// }
+		// }
+		// }
+		// }.runTaskTimer(this, TASK_TPS, TASK_TPS);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -466,7 +466,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		// UUID---------- ===");
 		Player player = null;
 		for (Player online_player : Bukkit.getServer().getOnlinePlayers()) {
-			if (uuid == online_player.getUniqueId()) {
+			if (uuid.equals(online_player.getUniqueId())) {
 				player = online_player;
 				break;
 			}
@@ -559,7 +559,114 @@ public class PowerRanks extends JavaPlugin implements Listener {
 					}
 				}
 			}
-		}.runTaskTimer(this, 20, 20);
+		}.runTaskTimer(this, Util.TASK_TPS, Util.TASK_TPS);
+	}
+
+	private void setupCheckRankTagsTask() {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				for (PRPlayer prPlayer : CacheManager.getPlayers()) {
+
+					List<PRPlayerRank> ranksToRemove = new ArrayList<PRPlayerRank>();
+					List<PRPlayerRank> ranksToAdd = new ArrayList<PRPlayerRank>();
+					for (PRPlayerRank rank : prPlayer.getRanks()) {
+						for (Entry<String, Object> entry : rank.getTags().entrySet()) {
+							if (entry.getKey().equalsIgnoreCase("expires")) {
+								long currentTimeMillis = System.currentTimeMillis();
+								long expires = Util.convertToLong(entry.getValue());
+								if (currentTimeMillis >= expires) {
+									ranksToRemove.add(rank);
+								}
+							}
+
+							if (entry.getKey().equalsIgnoreCase("expiry-return-ranks")) {
+								try {
+									@SuppressWarnings("unchecked")
+									List<String> expiryReturnRanks = (List<String>) entry.getValue();
+
+									if (expiryReturnRanks.size() > 0) {
+										ranksToRemove = new ArrayList<PRPlayerRank>();
+										for (PRPlayerRank prPlayerRank : prPlayer.getRanks()) {
+											ranksToRemove.add(prPlayerRank);
+										}
+									}
+
+									for (String rankObject : expiryReturnRanks) {
+										String rankName = rankObject.contains(";") ? rankObject.split(";")[0]
+												: rankObject;
+										List<String> rankTags = rankObject.contains(";")
+												? new ArrayList<>(Arrays.asList(rankObject.split(";")))
+												: new ArrayList<String>();
+										if (!rankTags.isEmpty()) {
+											rankTags.remove(0);
+										}
+
+										PRRank prRank = CacheManager.getRank(rankName);
+										if (prRank != null) {
+											PRPlayerRank prPlayerRank = new PRPlayerRank(prRank.getName());
+											for (String rankTag : rankTags) {
+												prPlayerRank.addTagRaw(rankTag.split(":")[0],
+														Util.formatStringToType(rankTag.split(":")[1]));
+											}
+											ranksToAdd.add(prPlayerRank);
+										}
+									}
+								} catch (Exception e) {
+									PowerRanks.log.warning("Failed to parse expiry-return-ranks for rank "
+											+ rank.getName() + " for player " + prPlayer.getName());
+								}
+							}
+						}
+					}
+
+					for (PRPlayerRank rank : ranksToRemove) {
+						prPlayer.removeRank(rank);
+						String prPlayername = prPlayer.getName();
+						if (prPlayername.length() == 0) {
+							prPlayername = Util.getNameFromAPI(prPlayer.getUUID().toString());
+						}
+
+						getServer().getConsoleSender().sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage("general.player-rank-expired-console"),
+								ImmutableMap.<String, String>builder()
+										.put("player", prPlayername)
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+
+						Player player = getPlayerFromUUID(prPlayer.getUUID());
+						if (player != null) {
+							PowerRanks.getInstance().updateTablistName(player);
+							PowerRanks.getInstance().getTablistManager().updateSorting(player);
+
+							player.sendMessage(Util.powerFormatter(
+									PowerRanks.getLanguageManager()
+											.getFormattedMessage("general.player-rank-has-expired"),
+									ImmutableMap.<String, String>builder()
+											.put("player", player.getName())
+											.put("rank", rank.getName())
+											.build(),
+									'[', ']'));
+						}
+					}
+
+					for (PRPlayerRank rank : ranksToAdd) {
+						if (!prPlayer.hasRank(rank.getName())) {
+							prPlayer.addRank(rank);
+
+							Player player = getPlayerFromUUID(prPlayer.getUUID());
+							if (player != null) {
+								PowerRanks.getInstance().updateTablistName(player);
+								PowerRanks.getInstance().getTablistManager().updateSorting(player);
+							}
+						}
+					}
+				}
+			}
+
+		}.runTaskTimer(this, Util.TASK_TPS, Util.TASK_TPS * 10);
 	}
 
 	public TABHook getTABHook() {
@@ -574,7 +681,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (getConfigBool("updates.enable_update_checking", false)) {
 			PowerRanks.log.info("Checking for updates...");
 			Updater updater = new Updater(this, 79251, this.getFile(),
-					getConfigBool("updates.automatic_download_updates", false) ? UpdateType.DEFAULT : UpdateType.NO_DOWNLOAD,
+					getConfigBool("updates.automatic_download_updates", false) ? UpdateType.DEFAULT
+							: UpdateType.NO_DOWNLOAD,
 					true);
 			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
 				if (!getConfigBool("updates.automatic_download_updates", false)) {
@@ -668,7 +776,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (configManager != null) {
 			return configManager.getBool(path, defaultValue);
 		}
-		
+
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
@@ -684,7 +792,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (configManager != null) {
 			return configManager.getString(path, defaultValue);
 		}
-		
+
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
@@ -694,14 +802,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 
 		return configYaml.getString(path, defaultValue);
-		
+
 	}
 
 	public boolean configContainsKey(String path) {
 		if (configManager != null) {
 			return configManager.hasKey(path);
 		}
-		
+
 		final File configFile = new File(this.getDataFolder() + File.separator + "config" + ".yml");
 		final YamlConfiguration configYaml = new YamlConfiguration();
 		try {
@@ -820,26 +928,33 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						return;
 					}
 
+					prefix_format = prefix.length() == 0 ? prefix_format.replaceAll("\\[prefix\\]( )?", "")
+							: prefix_format;
 					prefix_format = Util.powerFormatter(prefix_format,
-							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
+							ImmutableMap.<String, String>builder()
+									.put("prefix", prefix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
 											: getDeluxeTagsHook().getPlayerDisplayTag(player))
 									.build(),
 							'[', ']');
 
+					suffix_format = suffix.length() == 0 ? suffix_format.replaceAll("( )?\\[suffix\\]", "")
+							: suffix_format;
 					suffix_format = Util.powerFormatter(suffix_format,
-							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
-									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
-											: getDeluxeTagsHook().getPlayerDisplayTag(player))
+							ImmutableMap.<String, String>builder()
+									.put("suffix", suffix)
+									.put("usertag",
+											!PowerRanks.plugin_hook_deluxetags ? usertag
+													: getDeluxeTagsHook().getPlayerDisplayTag(player))
 									.build(),
 							'[', ']');
 
 					prefix_format += nameColor;
 
 					prefix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, prefix_format, true,
-							true);
+							false, true);
 					suffix_format = getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, suffix_format, true,
-							true);
+							false, true);
 
 					INametagApi nteAPI = NametagEdit.getApi();
 					if (nteAPI != null) {
@@ -858,21 +973,22 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		} catch (NoSuchMethodError e) {
 		}
 
-		List<String> ranknames = new ArrayList<>();
-		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
-			ranknames.add(playerRank.getName());
-		}
+		PRPlayer prPlayer = CacheManager.getPlayer(player);
+
+		List<PRPlayerRank> playerRanks = prPlayer.getRanks();
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
-			if (rank != null) {
-				ranks.add(rank);
+		for (PRPlayerRank playerRank : playerRanks) {
+			if (!playerRank.isDisabled()) {
+				PRRank rank = CacheManager.getRank(playerRank.getName());
+				if (rank != null) {
+					ranks.add(rank);
+				}
 			}
 		}
 
-		ranks = PRUtil.sortRanksByWeight(ranks);
-		Collections.reverse(ranks);
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		String formatted_prefix = "";
 		String formatted_suffix = "";
@@ -902,9 +1018,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				formatted_suffix = "";
 			}
 
-			PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 			Map<?, ?> availableUsertags = getUsertagManager().getMap("usertags", new HashMap<String, String>());
-			ArrayList<String> playerUsertags = targetPlayer.getUsertags();
+			ArrayList<String> playerUsertags = prPlayer.getUsertags();
 
 			for (String playerUsertag : playerUsertags) {
 				String value = "";
@@ -979,15 +1094,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public static String chatColor(String textToTranslate, boolean custom_colors) {
-		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, true);
+		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false, true);
 	}
 
 	public static String chatColorAlt(final String textToTranslate, final boolean custom_colors) {
-		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false);
+		return getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, textToTranslate, custom_colors, false, false);
 	}
 
 	public static String applyMultiColorFlow(String rawColors, String text) {
-		String regexColors = "(&[a-fA-F0-9])|(#[a-fA-F0-9]{6})";
+		String regexColors = "(&[a-fA-F0-9])|(&?#[a-fA-F0-9]{6})";
 		String output = "";
 
 		Pattern p = Pattern.compile(regexColors);
@@ -1049,89 +1164,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return placeholderapiExpansion;
 	}
 
-	public ArrayList<PRPermission> getEffectivePlayerPermissions(Player player) {
-        PRPlayer prPlayer = null;
+	public List<PRPermission> getEffectivePlayerPermissions(Player player) {
+		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
-		ArrayList<PRPermission> permissions = new ArrayList<PRPermission>();
-
-        if (player == null) {
-            return permissions;
-        }
-
-        try {
-            prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return permissions;
-        }
-
-        if (prPlayer == null) {
-            return permissions;
-        }
-
-		for (PRPermission permission : prPlayer.getPermissions()) {
-			permissions.add(permission);
+		if (prPlayer == null) {
+			return new ArrayList<PRPermission>();
 		}
 
-		List<String> ranknames = new ArrayList<>();
-		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
-			ranknames.add(playerRank.getName());
-		}
-
-		List<PRRank> playerRanks = new ArrayList<PRRank>();
-		for (String rankname : ranknames) {
-			PRRank rank = CacheManager.getRank(rankname);
-			if (rank != null) {
-				playerRanks.add(rank);
-			}
-		}
-
-		// playerRanks = PRUtil.sortRanksByWeight(playerRanks);
-
-		List<PRRank> effectiveRanks = new ArrayList<PRRank>();
-
-		if (Objects.nonNull(playerRanks)) {
-			effectiveRanks.addAll(playerRanks);
-
-			for (PRRank playerRank : playerRanks) {
-				for (String inheritance : playerRank.getInheritances()) {
-					PRRank inheritanceRank = CacheManager.getRank(inheritance);
-					if (inheritanceRank != null) {
-						effectiveRanks.add(inheritanceRank);
-					}
-				}
-			}
-		}
-
-		effectiveRanks.removeAll(Collections.singleton(null));
-		effectiveRanks = new ArrayList<>(new HashSet<>(effectiveRanks));
-		effectiveRanks = PRUtil.sortRanksByWeight(effectiveRanks);
-
-		for (PRPermission permission : prPlayer.getPermissions()) {
-			permissions.add(permission);
-		}
-
-		for (PRRank effectiveRank : effectiveRanks) {
-			if (Objects.nonNull(effectiveRank)) {
-				for (PRPermission permission : effectiveRank.getPermissions()) {
-
-					PRPermission permissionToRemove = null;
-					for (PRPermission existingPermission : permissions) {
-						if (permission.getName().equals(existingPermission.getName())) {
-							permissionToRemove = existingPermission;
-							break;
-						}
-					}
-					if (Objects.nonNull(permissionToRemove)) {
-						permissions.remove(permissionToRemove);
-					}
-
-					permissions.add(permission);
-				}
-			}
-		}
-
-		return permissions;
+		return prPlayer.getEffectivePermissions();
 	}
 
 	public TablistManager getTablistManager() {
@@ -1158,7 +1198,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return this.bungeecordManager;
 	}
 
-	public static PowerColor getPowerColor() {
+	public static BukkitPowerColor getPowerColor() {
 		return powerColor;
 	}
 

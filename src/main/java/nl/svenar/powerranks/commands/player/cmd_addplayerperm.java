@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableMap;
 
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.powerranks.PowerRanks;
+import nl.svenar.powerranks.cache.CacheManager;
 import nl.svenar.powerranks.commands.PowerCommand;
 import nl.svenar.powerranks.data.Users;
 import nl.svenar.powerranks.util.Util;
@@ -29,7 +31,7 @@ public class cmd_addplayerperm extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
 		if (args.length == 2) {
-			final String target_player = args[0];
+			final String targetPlayerName = args[0];
 			String permission = args[1];
 			boolean allowed = true;
 			// this.setValue(!name.startsWith("-"));
@@ -37,14 +39,14 @@ public class cmd_addplayerperm extends PowerCommand {
 				permission = permission.replaceFirst("-", "");
 				allowed = false;
 			}
-			final boolean result = this.users.addPlayerPermission(target_player, permission, allowed);
+			final boolean result = this.users.addPlayerPermission(targetPlayerName, permission, allowed);
 			if (result) {
 				sender.sendMessage(Util.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".success"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())
-								.put("target", target_player)
+								.put("target", targetPlayerName)
 								.put("permission", permission)
 								.build(),
 						'[', ']'));
@@ -54,7 +56,7 @@ public class cmd_addplayerperm extends PowerCommand {
 								"commands." + commandName.toLowerCase() + ".failed"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())
-								.put("target", target_player)
+								.put("target", targetPlayerName)
 								.put("permission", permission)
 								.build(),
 						'[', ']'));
@@ -72,7 +74,7 @@ public class cmd_addplayerperm extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}

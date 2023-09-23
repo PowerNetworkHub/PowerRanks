@@ -1,8 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.7</version>
+	<version>1.10.8</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -64,7 +66,6 @@
 						</filters>
 						<artifactSet>
 							<includes>
-								<!-- <include>org.mongodb:mongo-java-driver</include> -->
 								<include>com.squareup.okhttp3:okhttp</include>
 								<include>com.squareup.okio:okio</include>
 								<include>org.jetbrains.kotlin:kotlin-stdlib</include>
@@ -77,10 +78,6 @@
 							</includes>
 						</artifactSet>
 						<relocations>
-							<!-- <relocation>
-								<pattern>com.mongodb</pattern>
-								<shadedPattern>${shade.basepattern}.mongodb</shadedPattern>
-							</relocation> -->
 							<relocation>
 								<pattern>okhttp3</pattern>
 								<shadedPattern>${shade.basepattern}.okhttp3</shadedPattern>
@@ -127,6 +124,12 @@
 						<outputDirectory>${testserver.location}</outputDirectory>
 					</configuration>
 				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -144,10 +147,6 @@
 			<id>spigotmc-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<!-- <repository>
-			<id>extendedclip-repo</id>
-			<url>http://repo.extendedclip.com/content/repositories/public/</url>
-		</repository> -->
 		<repository>
 			<id>placeholderapi</id>
 			<url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
@@ -156,10 +155,6 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<!-- <repository>
-			<id>krypton</id>
-			<url>https://repo.kryptonmc.org/releases</url>
-		</repository> -->
 		<repository>
 			<id>svenar</id>
 			<url>https://svenar.nl/repo/</url>
@@ -167,12 +162,13 @@
 	</repositories>
 
 	<dependencies>
-		<!-- <dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>3.12.10</version>
-			<type>jar</type>
-		</dependency> -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>

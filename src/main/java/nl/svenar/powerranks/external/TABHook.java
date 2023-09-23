@@ -127,7 +127,10 @@ public class TABHook {
     }
 
     private List<PRRank> getSortedRanks() {
-        return PRUtil.reverseRanks(PRUtil.sortRanksByWeight(CacheManager.getRanks()));
+        List<PRRank> ranks = CacheManager.getRanks();
+        PRUtil.sortRanksByWeight(ranks);
+        PRUtil.reverseRanks(ranks);
+        return ranks;
     }
 
     static List<PRRank> getSortedRanks(PRPlayer prPlayer) {
@@ -138,6 +141,8 @@ public class TABHook {
             }
         }
 
-        return PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
+        PRUtil.sortRanksByWeight(playerRanks);
+        PRUtil.reverseRanks(playerRanks);
+        return playerRanks;
     }
 }

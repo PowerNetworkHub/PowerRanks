@@ -2,7 +2,6 @@ package nl.svenar.powerranks.cache;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,8 +20,8 @@ import nl.svenar.common.storage.provided.PSMStorageManager;
 import nl.svenar.common.storage.provided.SQLiteStorageManager;
 import nl.svenar.common.storage.provided.YAMLStorageManager;
 import nl.svenar.common.structure.PRPlayer;
-import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
+import nl.svenar.common.utils.PRCache;
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.addons.PowerRanksAddon;
 import nl.svenar.powerranks.events.OnJoin;
@@ -31,116 +30,54 @@ public class CacheManager {
 
     private static PowerStorageManager storageManager;
 
-    private static ArrayList<PRRank> registeredRanks = new ArrayList<PRRank>();
-    private static ArrayList<PRPlayer> registeredPlayers = new ArrayList<PRPlayer>();
-
     private static String tmpConvertDefaultRank = "";
 
-    public static ArrayList<PRRank> getRanks() {
-        return registeredRanks;
+    public static List<PRRank> getRanks() {
+        return PRCache.getRanks();
     }
 
     public static void setRanks(ArrayList<PRRank> ranks) {
-        registeredRanks = ranks;
+        PRCache.setRanks(ranks);
     }
 
     public static void addRank(PRRank rank) {
-        if (Objects.isNull(registeredRanks)) {
-            registeredRanks = new ArrayList<PRRank>();
-        }
-
-        registeredRanks.add(rank);
+        PRCache.addRank(rank);
     }
 
     public static void removeRank(PRRank rank) {
-        if (Objects.isNull(registeredRanks)) {
-            registeredRanks = new ArrayList<PRRank>();
-        }
-
-        registeredRanks.remove(rank);
+        PRCache.removeRank(rank);
     }
 
     public static PRRank getRank(String name) {
-        if (Objects.isNull(registeredRanks)) {
-            registeredRanks = new ArrayList<PRRank>();
-        }
-
-        for (PRRank rank : registeredRanks) {
-            if (rank.getName().equals(name)) {
-                return rank;
-            }
-        }
-        return null;
+        return PRCache.getRank(name);
     }
 
-    public static ArrayList<PRPlayer> getPlayers() {
-        return registeredPlayers;
+    public static List<PRPlayer> getPlayers() {
+        return PRCache.getPlayers();
     }
 
     public static void setPlayers(ArrayList<PRPlayer> players) {
-        registeredPlayers = players;
+        PRCache.setPlayers(players);
     }
 
     public static void addPlayer(PRPlayer player) {
-        if (Objects.isNull(registeredPlayers)) {
-            registeredPlayers = new ArrayList<PRPlayer>();
-        }
+        PRCache.addPlayer(player);
+    }
 
-        registeredPlayers.add(player);
+    public static PRPlayer getPlayer(Player player) {
+        return getPlayer(player.getUniqueId().toString());
     }
 
     public static PRPlayer getPlayer(String identifier) {
-        try {
-            if (Objects.isNull(registeredPlayers)) {
-                registeredPlayers = new ArrayList<PRPlayer>();
-            }
-
-            for (PRPlayer player : registeredPlayers) {
-                if (player.getName().equalsIgnoreCase(identifier) || player.getUUID().toString().replaceAll("-", "").equalsIgnoreCase(identifier.replaceAll("-", ""))) {
-                    return player;
-                }
-            }
-
-            Player player = null;
-
-            for (Player onlinePlayer : Bukkit.getServer().getOnlinePlayers()) {
-                if (onlinePlayer.getName().equals(identifier)
-                        || onlinePlayer.getUniqueId().toString().replaceAll("-", "").equalsIgnoreCase(identifier.replaceAll("-", ""))) {
-                    player = onlinePlayer;
-                    break;
-                }
-            }
-
-            if (Objects.isNull(player)) {
-                return null;
-            }
-
-            return createPlayer(player);
-        } catch (ConcurrentModificationException cme) {
-            return null;
-        }
+        return PRCache.getPlayer(identifier);
     }
 
     public static PRPlayer createPlayer(Player player) {
-        PRPlayer prPlayer = new PRPlayer();
-        prPlayer.setUUID(player.getUniqueId());
-        prPlayer.setName(player.getName());
-        for (PRRank rank : CacheManager.getDefaultRanks()) {
-            PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
-            prPlayer.addRank(playerRank);
-        }
-        CacheManager.addPlayer(prPlayer);
-        return prPlayer;
+        return PRCache.createPlayer(player.getName(), player.getUniqueId());
     }
 
     public static List<PRRank> getDefaultRanks() {
-        List<PRRank> defaultRanks = new ArrayList<PRRank>();
-        for (PRRank rank : getRanks()) {
-            if (rank.isDefault()) {
-                defaultRanks.add(rank);
-            }
-        }
-        return defaultRanks;
+        return PRCache.getDefaultRanks();
     }
 
     public static void load(String dataDirectory) {
@@ -191,16 +128,18 @@ public class CacheManager {
                     PowerRanks.getInstance().getLogger().warning("Unknown storage method configured! Falling back to YAML");
                     storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
                 } else {
-                    PowerRanks.getInstance().getLogger()
-                            .info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
+                    if (usedStorageManagerAddon != null) {
+                        PowerRanks.getInstance().getLogger()
+                                .info("Using storage engine from add-on: " + usedStorageManagerAddon.getIdentifier());
+                    }
                 }
             }
         }
 
         storageManager.loadAll();
 
-        registeredRanks = (ArrayList<PRRank>) storageManager.getRanks();
-        registeredPlayers = (ArrayList<PRPlayer>) storageManager.getPlayers();
+        PRCache.setRanks((ArrayList<PRRank>) storageManager.getRanks());
+        PRCache.setPlayers((ArrayList<PRPlayer>) storageManager.getPlayers());
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             OnJoin.handleJoin(PowerRanks.getInstance(), player);
@@ -212,8 +151,8 @@ public class CacheManager {
     }
 
     public static void save() {
-        storageManager.setRanks(registeredRanks);
-        storageManager.setPlayers(registeredPlayers);
+        storageManager.setRanks(PRCache.getRanks());
+        storageManager.setPlayers(PRCache.getPlayers());
 
         storageManager.saveAll();
     }

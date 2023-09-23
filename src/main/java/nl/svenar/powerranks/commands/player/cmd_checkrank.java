@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.cache.CacheManager;
@@ -58,11 +58,10 @@ public class cmd_checkrank extends PowerCommand {
 						PowerRanks.getLanguageManager().getFormattedMessage("general.console-is-no-player"));
 			}
 		} else if (args.length == 1) {
-			Player targetPlayer = Util.getPlayerByName(args[0]);
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 			if (targetPlayer != null) {
 				List<String> playerRanks = new ArrayList<>();
-				for (PRPlayerRank rank : CacheManager.getPlayer(((Player) sender).getUniqueId().toString())
-						.getRanks()) {
+				for (PRPlayerRank rank : CacheManager.getPlayer((targetPlayer).getUUID().toString()).getRanks()) {
 					playerRanks.add(rank.getName());
 				}
 				if (playerRanks.size() > 0) {
@@ -108,7 +107,7 @@ public class cmd_checkrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}

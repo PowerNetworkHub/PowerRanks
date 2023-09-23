@@ -73,6 +73,17 @@ public class cmd_addonmanager extends PowerCommand {
 					}
 				}
 
+				if (addon == null) {
+					sender.sendMessage(Util.powerFormatter(
+							PowerRanks.getLanguageManager().getFormattedMessage(
+									"commands." + commandName.toLowerCase() + ".download-not-available"),
+							ImmutableMap.<String, String>builder()
+									.put("player", sender.getName())
+									.build(),
+							'[', ']'));
+					return false;
+				}
+
 				if (addon.isDownloadable()) {
 					if (addon.isCompatible()) {
 						if (addon.download()) {

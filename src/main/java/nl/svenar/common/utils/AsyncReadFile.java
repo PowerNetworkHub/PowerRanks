@@ -29,7 +29,9 @@ public class AsyncReadFile {
         ByteBuffer buffer = ByteBuffer.allocate(1024);
 
         // start off the asynch read.
-        channel.read(buffer, 0, channel, new CallbackHandler(buffer, dataBuffer));
+        if (channel != null) {
+            channel.read(buffer, 0, channel, new CallbackHandler(buffer, dataBuffer));
+        }
     }
 
     public String getData() {

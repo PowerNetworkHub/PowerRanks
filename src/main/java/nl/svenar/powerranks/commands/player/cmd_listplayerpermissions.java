@@ -5,25 +5,22 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.common.structure.PRPermission;
+import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.powerranks.PowerRanks;
+import nl.svenar.powerranks.cache.CacheManager;
 import nl.svenar.powerranks.commands.PowerCommand;
-import nl.svenar.powerranks.data.Users;
 import nl.svenar.powerranks.util.Util;
 
 public class cmd_listplayerpermissions extends PowerCommand {
 
-	private Users users;
-
 	public cmd_listplayerpermissions(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
 		super(plugin, command_name, ce);
-		this.users = new Users(plugin);
 		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
 	}
 
@@ -31,7 +28,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
 		if (args.length == 1) {
-			Player targetPlayer = Util.getPlayerByName(args[0]);
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 			if (targetPlayer != null) {
 				displayList(sender, targetPlayer, commandLabel, 0);
 			} else {
@@ -45,7 +42,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 			}
 		} else if (args.length == 2) {
 			int page = Integer.parseInt(args[1].replaceAll("[a-zA-Z]", ""));
-			Player targetPlayer = Util.getPlayerByName(args[0]);
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 			if (targetPlayer != null) {
 				displayList(sender, targetPlayer, commandLabel, page);
 			} else {
@@ -66,13 +63,13 @@ public class cmd_listplayerpermissions extends PowerCommand {
 		return false;
 	}
 
-	private void displayList(CommandSender sender, Player player, String commandLabel, int page) {
+	private void displayList(CommandSender sender, PRPlayer prPlayer, String commandLabel, int page) {
 		ArrayList<String> output_messages = new ArrayList<String>();
 
 		output_messages.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 				+ plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 
-		List<PRPermission> playerPermissions = users.getPlayerPermissions(player.getName());
+		List<PRPermission> playerPermissions = prPlayer.getPermissions();
 
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = playerPermissions.size() / lines_per_page;
@@ -106,19 +103,19 @@ public class cmd_listplayerpermissions extends PowerCommand {
 			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
 			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
 					String.valueOf(last_page + 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", player.getName());
+			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", prPlayer.getName());
 			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", commandLabel);
 
 			output_messages.add(page_selector_tellraw);
 
-			output_messages.add(ChatColor.AQUA + player.getName() + "'s permissions:");
+			output_messages.add(ChatColor.AQUA + prPlayer.getName() + "'s permissions:");
 
 			// sender.sendMessage("[A] " + last_page + " " + lines_per_page);
 		} else {
 			output_messages.add(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
 					+ ChatColor.BLUE + (last_page + 1));
 			output_messages.add(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/" + commandLabel
-					+ " listplayerpermissions " + player.getName() + " " + ChatColor.BLUE
+					+ " listplayerpermissions " + prPlayer.getName() + " " + ChatColor.BLUE
 					+ (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
 		}
 
@@ -149,8 +146,8 @@ public class cmd_listplayerpermissions extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				tabcomplete.add(player.getName());
+			for (PRPlayer prPlayer : CacheManager.getPlayers()) {
+				tabcomplete.add(prPlayer.getName());
 			}
 		}
 

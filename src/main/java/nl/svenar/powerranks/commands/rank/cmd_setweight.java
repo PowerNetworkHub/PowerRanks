@@ -59,16 +59,18 @@ public class cmd_setweight extends PowerCommand {
 						'[', ']'));
 			}
 
-			rank.setWeight(weight);
-			sender.sendMessage(Util.powerFormatter(
-					PowerRanks.getLanguageManager().getFormattedMessage(
-							"commands." + commandName.toLowerCase() + ".success"),
-					ImmutableMap.<String, String>builder()
-							.put("player", sender.getName())
-							.put("rank", rankname)
-							.put("weight", String.valueOf(weight))
-							.build(),
-					'[', ']'));
+			if (rank != null) {
+				rank.setWeight(weight);
+				sender.sendMessage(Util.powerFormatter(
+						PowerRanks.getLanguageManager().getFormattedMessage(
+								"commands." + commandName.toLowerCase() + ".success"),
+						ImmutableMap.<String, String>builder()
+								.put("player", sender.getName())
+								.put("rank", rankname)
+								.put("weight", String.valueOf(weight))
+								.build(),
+						'[', ']'));
+			}
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,

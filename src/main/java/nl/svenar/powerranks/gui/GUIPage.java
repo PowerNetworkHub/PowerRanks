@@ -142,8 +142,8 @@ public class GUIPage {
 												CacheManager.getRank(rank).getPrefix().replaceAll("&r", "&r&f"), true),
 										"", ChatColor.WHITE + "Description:", PowerRanks.chatColor(description, true),
 										"", ChatColor.WHITE + "Cost: ", ChatColor.GREEN + String.valueOf(cost)));
-							} else {
-								PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
+							// } else {
+							// 	PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
 							}
 
 						} catch (Exception e) {
@@ -242,11 +242,12 @@ public class GUIPage {
 					String rank = (String) ranks[num_rank_on_page * current_page + i];
 					Material icon = Material.BARRIER;
 
-					if (icon != null)
+					if (icon != null) {
 						new_gui.setItem(i, createGuiItem(icon, rank,
 								ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
-					else
-						PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
+					// } else {
+					// 	PowerRanks.log.warning("Rank '" + rank + "' has a invalid icon!");
+					}
 
 				}
 			}
@@ -271,12 +272,13 @@ public class GUIPage {
 					if (!rank.equalsIgnoreCase(getData(player.getName() + ":rankname"))) {
 						Material icon = Material.BARRIER;
 
-						if (icon != null)
+						if (icon != null) {
 							new_gui.setItem(i, createGuiItem(icon, rank,
 									ChatColor.RESET
 											+ PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
-						else
-							PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+						// } else {
+						// 	PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+						}
 
 					}
 				}
@@ -300,11 +302,12 @@ public class GUIPage {
 					String rank = (String) ranks[num_rank_on_page * current_page + i];
 					Material icon = Material.BARRIER;
 
-					if (icon != null)
+					if (icon != null) {
 						new_gui.setItem(i, createGuiItem(icon, rank,
 								ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
-					else
-						PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+					// } else {
+					// 	PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+					}
 				}
 			}
 		}
@@ -326,11 +329,12 @@ public class GUIPage {
 					String rank = (String) ranks[num_rank_on_page * current_page + i];
 					Material icon = Material.BARRIER;
 
-					if (icon != null)
+					if (icon != null) {
 						new_gui.setItem(i, createGuiItem(icon, rank,
 								ChatColor.RESET + PowerRanks.chatColor(CacheManager.getRank(rank).getPrefix(), true)));
-					else
-						PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+					// } else {
+					// 	PowerRanks.log.warning("Rank '" + rank + "' has a invallid icon!");
+					}
 
 				}
 			}

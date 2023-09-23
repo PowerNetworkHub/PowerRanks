@@ -46,12 +46,13 @@ public class Users implements Listener {
 			}
 		}
 
-		playerRanks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(playerRanks));
+		PRUtil.sortRanksByWeight(playerRanks);
+		PRUtil.reverseRanks(playerRanks);
 
 		return playerRanks.size() > 0 ? playerRanks.get(0).getName() : "";
 	}
 
-	public ArrayList<PRRank> getGroups() {
+	public List<PRRank> getGroups() {
 		return CacheManager.getRanks();
 	}
 
@@ -464,7 +465,7 @@ public class Users implements Listener {
 		return CacheManager.getRank(rankname).getInheritances();
 	}
 
-	public ArrayList<PRPlayer> getCachedPlayers() {
+	public List<PRPlayer> getCachedPlayers() {
 		return CacheManager.getPlayers();
 	}
 
@@ -484,7 +485,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		for (PRRank rank : ranks) {
 			prefix += rank.getPrefix() + " ";
@@ -523,7 +525,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		for (PRRank rank : ranks) {
 			suffix += rank.getSuffix() + " ";
@@ -563,7 +566,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		color = ranks.size() > 0 ? ranks.get(0).getChatcolor() : "&f";
 
@@ -585,7 +589,8 @@ public class Users implements Listener {
 			}
 		}
 
-		ranks = PRUtil.reverseRanks(PRUtil.sortRanksByWeight(ranks));
+		PRUtil.sortRanksByWeight(ranks);
+		PRUtil.reverseRanks(ranks);
 
 		color = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 
@@ -698,90 +703,30 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public boolean addPlayerPermission(String target_player_name, String permission, boolean allowed) {
+	public boolean addPlayerPermission(String targetPlayerName, String permission, boolean allowed) {
 		if (permission.contains("/") || permission.contains(":")) {
 			return false;
 		}
 
-		Player target_player = Bukkit.getServer().getPlayer(target_player_name);
+		PRPlayer targetPlayer = CacheManager.getPlayer(targetPlayerName);
 
-		if (target_player != null) {
+		if (targetPlayer != null) {
 			try {
-				if (CacheManager.getPlayer(target_player.getUniqueId().toString()) != null) {
-					List<PRPermission> list = CacheManager.getPlayer(target_player.getUniqueId().toString())
-							.getPermissions();
-					// if (!list.contains(permission)) {
-					// list.add(permission);
-					// CachedPlayers.set("players." + target_player.getUniqueId() + ".permissions",
-					// (Object) list,
-					// false);
-					// }
-					// this.m.setupPermissions(target_player);
-					PRPermission targetPermission = null;
-					for (PRPermission prPermission : list) {
-						if (prPermission.getName().equals(permission)) {
-							targetPermission = prPermission;
-							break;
-						}
-					}
-					if (targetPermission == null) {
-						PRPermission newPermission = new PRPermission();
-						newPermission.setName(permission);
-						newPermission.setValue(allowed);
-						CacheManager.getPlayer(target_player.getUniqueId().toString()).addPermission(newPermission);
-						// r.addPermission(newPermission);
-						// list.add(permission);
-						// CachedRanks.set("Groups." + r + ".permissions", (Object) list);
-						// this.m.updatePlayersWithRank(this, r.getName());
-					}
-					return true;
-				} else {
-					return false;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			String uuid = "";
-			try {
-				for (PRPlayer key : CacheManager.getPlayers()) {
-					if (key.getName().equalsIgnoreCase(target_player_name)) {
-						uuid = key.getUUID().toString();
+				List<PRPermission> list = targetPlayer.getPermissions();
+				PRPermission targetPermission = null;
+				for (PRPermission prPermission : list) {
+					if (prPermission.getName().equals(permission)) {
+						targetPermission = prPermission;
+						break;
 					}
 				}
-
-				if (uuid.length() > 0) {
-					if (CacheManager.getPlayer(uuid) != null) {
-						// List<String> list = (List<String>) CachedPlayers
-						// .getStringList("players." + uuid + ".permissions");
-						// if (!list.contains(permission)) {
-						// list.add(permission);
-						// CachedPlayers.set("players." + uuid + ".permissions", (Object) list, false);
-						// }
-						List<PRPermission> list = CacheManager.getPlayer(uuid).getPermissions();
-						PRPermission targetPermission = null;
-						for (PRPermission prPermission : list) {
-							if (prPermission.getName().equals(permission)) {
-								targetPermission = prPermission;
-								break;
-							}
-						}
-						if (targetPermission == null) {
-							PRPermission newPermission = new PRPermission();
-							newPermission.setName(permission);
-							newPermission.setValue(allowed);
-							CacheManager.getPlayer(uuid).addPermission(newPermission);
-							// r.addPermission(newPermission);
-							// list.add(permission);
-							// CachedRanks.set("Groups." + r + ".permissions", (Object) list);
-							// this.m.updatePlayersWithRank(this, r.getName());
-						}
-						return true;
-					} else {
-						return false;
-					}
-				} else
-					return false;
+				if (targetPermission == null) {
+					PRPermission newPermission = new PRPermission();
+					newPermission.setName(permission);
+					newPermission.setValue(allowed);
+					targetPlayer.addPermission(newPermission);
+				}
+				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1166,10 +1111,10 @@ public class Users implements Listener {
 	// // "");
 	// }
 
-	public ArrayList<String> getPlayerNames() {
-		ArrayList<String> player_names = new ArrayList<String>();
+	public List<String> getPlayerNames() {
+		List<String> player_names = new ArrayList<String>();
 
-		ArrayList<PRPlayer> players_section = CacheManager.getPlayers();
+		List<PRPlayer> players_section = CacheManager.getPlayers();
 		for (PRPlayer key : players_section) {
 			player_names.add(key.getName());
 		}

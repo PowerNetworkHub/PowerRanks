@@ -58,7 +58,7 @@ public class cmd_buyrank extends PowerCommand {
 
 								sender.sendMessage(Util.powerFormatter(
 										PowerRanks.getLanguageManager().getFormattedMessage(
-												"commands." + commandName.toLowerCase() + ".succes-buy"),
+												"commands." + commandName.toLowerCase() + ".success-buy"),
 										ImmutableMap.<String, String>builder()
 												.put("player", sender.getName())
 												.put("rank", rank.getName())

@@ -3,9 +3,13 @@ lang:
       general:
          prefix: "&0[&bPR&0]&r"
          no-permission: "&4You do not have permissions to execute this command!"
+         permission-not-found: "&cPermission node '[permission]' not found!"
          rank-not-found: "&cRank '[rank]' not found!"
          player-not-found: "&cPlayer '[target]' not found!"
+         player-not-online: "&cPlayer '[target]' is not online!"
          console-is-no-player: "&cThe console is not a player and has no ranks!"
+         player-rank-has-expired: "&aYour rank [rank] has expired!"
+         player-rank-expired-console: "&cRemoved expired rank [rank] from [player]"
       messages:
          signs:
             created: "&aNew sign command created"
@@ -45,7 +49,7 @@ lang:
             arguments: "[rank_name] [confirm]"
             description: "Buy a rank"
             buy-not-available: "&cBuying ranks is not available on this server."
-            succes-buy: "&aYou have bought the rank [rank]"
+            success-buy: "&aYou have bought the rank [rank]"
             failed-buy-not-enough-money: "&cInsufficient funds to buy the rank [rank]"
          rankup:
             arguments: ""
@@ -73,7 +77,7 @@ lang:
             state-changed: "&eChanged [config_target] from &c[old_state] &eto &a[new_state]"
             numbers-only: "&cOnly numbers are allowed!"
          tablist:
-            arguments: "<removeworldtag / (enable/disable tablist_sorting/reverse_tablist_sorting) / set (sorting_update_interval <seconds> / header_footer_update_interval <ticks>) / animation ...>"
+            arguments: "<(enable/disable tablist_sorting/reverse_tablist_sorting) / set (sorting_update_interval <seconds> / header_footer_update_interval <ticks>) / animation ...>"
             description: "Edit fields in the tablist configuration file"
             state-changed: "&eChanged [config_target] from &c[old_state] &eto &a[new_state]"
             numbers-only: "&cOnly numbers are allowed!"
@@ -127,6 +131,7 @@ lang:
             description: "Add a rank to someone"
             success-executor: "&aAdded rank [rank] to [player]"
             failed-executor: "&cFailed to add the rank [rank] to [player]"
+            failed-already-has-rank: "&c[player] already has the rank [rank]"
             success-receiver: "&aYou have been granted the rank [rank]"
          addownrank:
             arguments: "<rank_name>"
@@ -248,7 +253,7 @@ lang:
             arguments: "<rank_name> <new ... suffix>"
             description: "Change the suffix of a rank"
             success: "&aChanged suffix to '[suffix]' on rank: [rank]"
-            succes-clear: "&aCleared the suffix on rank: [rank]"
+            success-clear: "&aCleared the suffix on rank: [rank]"
          setweight:
             arguments: "<rank_name> <number>"
             description: "Change the weight of the rank for permission handeling. Higher weight equals more priority."

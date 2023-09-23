@@ -105,7 +105,7 @@ public class PluginReloader {
             }
         }
 
-        if (commandMap != null) {
+        if (commandMap != null && commands != null) {
             for (Iterator<Map.Entry<String, Command>> it = commands.entrySet().iterator(); it.hasNext();) {
                 Map.Entry<String, Command> entry = it.next();
                 if (entry.getValue() instanceof PluginCommand) {

@@ -15,9 +15,9 @@ import nl.svenar.common.structure.PRPlayer;
 import nl.svenar.common.structure.PRPlayerRank;
 import nl.svenar.common.structure.PRRank;
 import nl.svenar.common.utils.PRUtil;
+import nl.svenar.common.utils.PowerColor;
 import nl.svenar.powerranks.PowerRanks;
 import nl.svenar.powerranks.cache.CacheManager;
-import nl.svenar.powerranks.util.PowerColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -76,8 +76,9 @@ public class TablistManager {
 
                 boolean doUpdateRanks = false;
 
-                List<PRRank> sortedRanks = PRUtil.sortRanksByWeight(
-                        CacheManager.getRanks());
+
+                List<PRRank> sortedRanks = CacheManager.getRanks();
+                PRUtil.sortRanksByWeight(sortedRanks);
                 if (!PowerRanks.getTablistConfigManager().getBool("sorting.reverse", false)) {
                     Collections.reverse(sortedRanks);
                 }
@@ -306,9 +307,11 @@ public class TablistManager {
 
             for (String rankname : ranknames) {
                 PRRank rank = CacheManager.getRank(rankname);
-                if (rank.getWeight() > playerHighestRankWeight) {
-                    playerHighestRankWeight = rank.getWeight();
-                    playerHighestRank = rank;
+                if (rank != null) {
+                    if (rank.getWeight() > playerHighestRankWeight) {
+                        playerHighestRankWeight = rank.getWeight();
+                        playerHighestRank = rank;
+                    }
                 }
             }
 

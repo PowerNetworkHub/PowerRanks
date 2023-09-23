@@ -2,6 +2,7 @@ package nl.svenar.powerranks.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ import nl.svenar.powerranks.data.Users;
 
 public class PowerRanksAPI {
 
-	private String API_VERSION = "1.3";
+	private String API_VERSION = "1.4";
 
 	public static PowerRanks plugin;
 	private Users users;
@@ -91,9 +92,26 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean setPlayerRank(Player player, String rankname) {
+		return setPlayerRank(player, rankname, null);
+	}
+
+	/**
+	 * Overwrite all ranks of a player and set it to a single one
+	 * 
+	 * @param player
+	 * @param rankname
+	 * @param tags
+	 * @return true if success, false otherwise
+	 */
+	public boolean setPlayerRank(Player player, String rankname, Map<String, Object> tags) {
 		PRRank rank = CacheManager.getRank(rankname);
 		if (rank != null) {
 			PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+			if (tags != null) {
+				for (String tag : tags.keySet()) {
+					playerRank.addTag(tag, tags.get(tag));
+				}
+			}
 			CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 		}
 		return rank != null;
@@ -107,9 +125,26 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean addPlayerRank(Player player, String rankname) {
+		return addPlayerRank(player, rankname, null);
+	}
+
+	/**
+	 * Add a rankname to the player's current ranks
+	 * 
+	 * @param player
+	 * @param rankname
+	 * @param tags
+	 * @return true if success, false otherwise
+	 */
+	public boolean addPlayerRank(Player player, String rankname, Map<String, Object> tags) {
 		PRRank rank = CacheManager.getRank(rankname);
 		if (rank != null) {
 			PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+			if (tags != null) {
+				for (String tag : tags.keySet()) {
+					playerRank.addTag(tag, tags.get(tag));
+				}
+			}
 			CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 		}
 		return rank != null;
@@ -158,6 +193,22 @@ public class PowerRanksAPI {
 	}
 
 	/**
+	 * Get all allowed permissions of a player
+	 * 
+	 * @param player
+	 * @return list of allowed permissions that a player has
+	 */
+	public List<String> getAllowedPlayerPermissions(Player player) {
+		List<String> permissions = new ArrayList<String>();
+		for (PRPermission permission : CacheManager.getPlayer(player).getPermissions()) {
+			if (permission.getValue()) {
+				permissions.add(permission.getName());
+			}
+		}
+		return permissions;
+	}
+
+	/**
 	 * Get all denied permissions of a rank
 	 * 
 	 * @param rank
@@ -174,6 +225,22 @@ public class PowerRanksAPI {
 	}
 
 	/**
+	 * Get all denied permissions of a player
+	 * 
+	 * @param player
+	 * @return list of denied permissions that a player has
+	 */
+	public List<String> getDeniedPlayerPermissions(Player player) {
+		List<String> permissions = new ArrayList<String>();
+		for (PRPermission permission : CacheManager.getPlayer(player).getPermissions()) {
+			if (!permission.getValue()) {
+				permissions.add(permission.getName());
+			}
+		}
+		return permissions;
+	}
+
+	/**
 	 * Add a permission to a rank
 	 * 
 	 * @param rank
@@ -182,7 +249,7 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean addPermission(String rank, String permission, boolean allowed) {
-		return users.addPermission(users.getRankIgnoreCase(rank), permission, allowed);
+		return this.users.addPermission(users.getRankIgnoreCase(rank), permission, allowed);
 	}
 
 	/**
@@ -193,7 +260,7 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean removePermission(String rank, String permission) {
-		return users.removePermission(users.getRankIgnoreCase(rank), permission);
+		return this.users.removePermission(users.getRankIgnoreCase(rank), permission);
 	}
 
 	/**
@@ -203,7 +270,7 @@ public class PowerRanksAPI {
 	 * @return List of inherited rank names
 	 */
 	public List<String> getInheritances(String rank) {
-		return users.getInheritances(users.getRankIgnoreCase(rank));
+		return this.users.getInheritances(users.getRankIgnoreCase(rank));
 	}
 
 	/**
@@ -214,7 +281,7 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean addInheritance(String rank, String inheritance) {
-		return users.addInheritance(users.getRankIgnoreCase(rank), inheritance);
+		return this.users.addInheritance(users.getRankIgnoreCase(rank), inheritance);
 	}
 
 	/**
@@ -225,40 +292,40 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean removeInheritance(String rank, String inheritance) {
-		return users.removeInheritance(users.getRankIgnoreCase(rank), inheritance);
+		return this.users.removeInheritance(users.getRankIgnoreCase(rank), inheritance);
 	}
 
-    /**
-     * Should the rank be given to the players when they join for the first time?
-     * 
-     * @param rank
-     * @param isDefault
-     * @return true if rank exists, false otherwise
-     */
-    public boolean setDefault(String rank, boolean isDefault) {
-        PRRank targetRank = CacheManager.getRank(rank);
-        if (targetRank != null) {
-            targetRank.setDefault(isDefault);
-        }
-        return targetRank != null;
-    }
+	/**
+	 * Should the rank be given to the players when they join for the first time?
+	 * 
+	 * @param rank
+	 * @param isDefault
+	 * @return true if rank exists, false otherwise
+	 */
+	public boolean setDefault(String rank, boolean isDefault) {
+		PRRank targetRank = CacheManager.getRank(rank);
+		if (targetRank != null) {
+			targetRank.setDefault(isDefault);
+		}
+		return targetRank != null;
+	}
 
-    /**
-     * Get the list of default ranks that are given to new players
-     * 
-     * @return List of default ranks
-     */
-    public List<String> getDefaultRanks() {
-        List<String> defaultRanks = new ArrayList<String>();
+	/**
+	 * Get the list of default ranks that are given to new players
+	 * 
+	 * @return List of default ranks
+	 */
+	public List<String> getDefaultRanks() {
+		List<String> defaultRanks = new ArrayList<String>();
 
-        for (PRRank rank : CacheManager.getRanks()) {
-            if (rank.isDefault()) {
-                defaultRanks.add(rank.getName());
-            }
-        }
+		for (PRRank rank : CacheManager.getRanks()) {
+			if (rank.isDefault()) {
+				defaultRanks.add(rank.getName());
+			}
+		}
 
-        return defaultRanks;
-    }
+		return defaultRanks;
+	}
 
 	/**
 	 * Get all available ranknames
@@ -454,7 +521,7 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean setRankBuyCost(String rank, int cost) {
-		return users.setBuyCost(rank, String.valueOf(cost));
+		return this.users.setBuyCost(rank, String.valueOf(cost));
 	}
 
 	/**
@@ -465,7 +532,7 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean addPermission(Player player, String permission, boolean allowed) {
-		return users.addPlayerPermission(player.getName(), permission, allowed);
+		return this.users.addPlayerPermission(player.getName(), permission, allowed);
 	}
 
 	/**
@@ -476,73 +543,73 @@ public class PowerRanksAPI {
 	 * @return true if success, false otherwise
 	 */
 	public boolean removePermission(Player player, String permission) {
-		return users.delPlayerPermission(player.getName(), permission);
+		return this.users.delPlayerPermission(player.getName(), permission);
 	}
 
-    /**
-     * Create a usertag on the server
-     * 
-     * @param usertag
-     * @param value
-     * @return true if successful, false otherwise
-     */
-    public boolean createUsertag(String usertag, String value) {
-        return this.createUsertag(usertag, value);
-    }
+	/**
+	 * Create a usertag on the server
+	 * 
+	 * @param usertag
+	 * @param value
+	 * @return true if successful, false otherwise
+	 */
+	public boolean createUsertag(String usertag, String value) {
+		return this.users.createUserTag(usertag, value);
+	}
 
-    /**
-     * Change a usertag on the server
-     * 
-     * @param usertag
-     * @param value
-     * @return true if successful, false otherwise
-     */
-    public boolean editUsertag(String usertag, String value) {
-        return this.editUsertag(usertag, value);
-    }
+	/**
+	 * Change a usertag on the server
+	 * 
+	 * @param usertag
+	 * @param value
+	 * @return true if successful, false otherwise
+	 */
+	public boolean editUsertag(String usertag, String value) {
+		return this.users.editUserTag(usertag, value);
+	}
 
-    /**
-     * Delete a usertag from the server
-     * 
-     * @param usertag
-     * @return true if successful, false otherwise
-     */
-    public boolean removeUsertag(String usertag) {
-        return this.users.removeUserTag(usertag);
-    }
+	/**
+	 * Delete a usertag from the server
+	 * 
+	 * @param usertag
+	 * @return true if successful, false otherwise
+	 */
+	public boolean removeUsertag(String usertag) {
+		return this.users.removeUserTag(usertag);
+	}
 
-    /**
-     * Assign a usertag to an player
-     * 
-     * @param player
-     * @param usertag
-     * @return true if successful, false otherwise
-     */
-    public boolean setUsertag(Player player, String usertag) {
-        return this.users.setUserTag(player.getName(), usertag);
-    }
+	/**
+	 * Assign a usertag to an player
+	 * 
+	 * @param player
+	 * @param usertag
+	 * @return true if successful, false otherwise
+	 */
+	public boolean setUsertag(Player player, String usertag) {
+		return this.users.setUserTag(player.getName(), usertag);
+	}
 
-    /**
-     * Add a usertag to an player
-     * 
-     * @param player
-     * @param usertag
-     * @return true if successful, false otherwise
-     */
-    public boolean addUsertag(Player player, String usertag) {
-        return this.users.addUserTag(player.getName(), usertag);
-    }
+	/**
+	 * Add a usertag to an player
+	 * 
+	 * @param player
+	 * @param usertag
+	 * @return true if successful, false otherwise
+	 */
+	public boolean addUsertag(Player player, String usertag) {
+		return this.users.addUserTag(player.getName(), usertag);
+	}
 
-    /**
-     * Remove an usertag from a player
-     * 
-     * @param player
-     * @param usertag
-     * @return true if successful, false otherwise
-     */
-    public boolean delUsertag(Player player, String usertag) {
-        return this.users.delUserTag(player.getName(), usertag);
-    }
+	/**
+	 * Remove an usertag from a player
+	 * 
+	 * @param player
+	 * @param usertag
+	 * @return true if successful, false otherwise
+	 */
+	public boolean delUsertag(Player player, String usertag) {
+		return this.users.delUserTag(player.getName(), usertag);
+	}
 
 	/**
 	 * Deprecated | replaced by {@link #getPrimaryRank(Player)}
@@ -559,8 +626,8 @@ public class PowerRanksAPI {
 	}
 
 	/**
-	 * Deprecated | replaced by {@link #getAllowedPermissions(Player, String)} &
-	 * {@link #getDeniedPermissions(Player, String)}
+	 * Deprecated | replaced by {@link #getAllowedPermissions(String)} &
+	 * {@link #getDeniedPermissions(String)}
 	 * 
 	 * Get a list of permissions of a rank
 	 * 
@@ -588,7 +655,7 @@ public class PowerRanksAPI {
 	 */
 	@Deprecated
 	public boolean addPermission(String rank, String permission) {
-		return users.addPermission(users.getRankIgnoreCase(rank),
+		return this.users.addPermission(users.getRankIgnoreCase(rank),
 				permission.startsWith("-") ? permission.replaceFirst("-", "") : permission,
 				!permission.startsWith("-"));
 	}
@@ -605,7 +672,7 @@ public class PowerRanksAPI {
 	 */
 	@Deprecated
 	public boolean addPermission(Player player, String permission) {
-		return users.addPlayerPermission(player.getName(),
+		return this.users.addPlayerPermission(player.getName(),
 				permission.startsWith("-") ? permission.replaceFirst("-", "") : permission,
 				!permission.startsWith("-"));
 	}

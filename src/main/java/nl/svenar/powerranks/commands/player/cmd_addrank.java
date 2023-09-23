@@ -1,6 +1,7 @@
 package nl.svenar.powerranks.commands.player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -31,12 +32,14 @@ public class cmd_addrank extends PowerCommand {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String commandName,
 			String[] args) {
-		if (args.length == 2) {
+		if (args.length >= 2) {
 			String target_rank = users.getRankIgnoreCase(args[1]);
+			String[] tags = Arrays.copyOfRange(args, 2, args.length);
 
 			boolean commandAllowed = false;
 			if (sender instanceof Player) {
-				commandAllowed = sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
+				commandAllowed = sender
+						.hasPermission("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank);
 			} else {
 				commandAllowed = true;
 			}
@@ -46,42 +49,71 @@ public class cmd_addrank extends PowerCommand {
 				PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 				if (rank != null && targetPlayer != null) {
 					PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
-					targetPlayer.addRank(playerRank);
+					boolean alreadyHasRank = targetPlayer.hasRank(rank.getName());
+					if (!alreadyHasRank) {
 
-                    if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-                        PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
-                        PowerRanks.getInstance().getTablistManager().updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
-                    }
+						for (String tag : tags) {
+							if (tag.split(":").length == 2) {
+								String[] tagParts = tag.split(":");
+								String tagName = tagParts[0];
+								String tagValue = tagParts[1];
 
-					sender.sendMessage(Util.powerFormatter(
-							PowerRanks.getLanguageManager()
-									.getFormattedMessage(
-											"commands." + commandName.toLowerCase() + ".success-executor"),
-							ImmutableMap.<String, String>builder()
-									.put("player", targetPlayer.getName())
-									.put("rank", rank.getName())
-									.build(),
-							'[', ']'));
-					if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
-						Bukkit.getPlayer(targetPlayer.getUUID()).sendMessage(Util.powerFormatter(
-								PowerRanks.getLanguageManager().getFormattedMessage(
-										"commands." + commandName.toLowerCase() + ".success-receiver"),
+								if (tagName.length() > 0 && tagValue.length() > 0) {
+									playerRank.addTag(tagName, tagValue);
+								}
+							}
+						}
+
+						targetPlayer.addRank(playerRank);
+
+						if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+							PowerRanks.getInstance().updateTablistName(Bukkit.getPlayer(targetPlayer.getUUID()));
+							PowerRanks.getInstance().getTablistManager()
+									.updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
+						}
+
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".success-executor"),
 								ImmutableMap.<String, String>builder()
-										.put("player", sender.getName())
+										.put("player", targetPlayer.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+						if (Bukkit.getPlayer(targetPlayer.getUUID()) != null) {
+							Bukkit.getPlayer(targetPlayer.getUUID()).sendMessage(Util.powerFormatter(
+									PowerRanks.getLanguageManager().getFormattedMessage(
+											"commands." + commandName.toLowerCase() + ".success-receiver"),
+									ImmutableMap.<String, String>builder()
+											.put("player", sender.getName())
+											.put("rank", rank.getName())
+											.build(),
+									'[', ']'));
+						}
+					} else {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".failed-already-has-rank"),
+								ImmutableMap.<String, String>builder()
+										.put("player", targetPlayer.getName())
 										.put("rank", rank.getName())
 										.build(),
 								'[', ']'));
 					}
 				} else {
-					sender.sendMessage(Util.powerFormatter(
-							PowerRanks.getLanguageManager()
-									.getFormattedMessage(
-											"commands." + commandName.toLowerCase() + ".failed-executor"),
-							ImmutableMap.<String, String>builder()
-									.put("player", targetPlayer.getName())
-									.put("rank", rank.getName())
-									.build(),
-							'[', ']'));
+					if (targetPlayer != null && rank != null) {
+						sender.sendMessage(Util.powerFormatter(
+								PowerRanks.getLanguageManager()
+										.getFormattedMessage(
+												"commands." + commandName.toLowerCase() + ".failed-executor"),
+								ImmutableMap.<String, String>builder()
+										.put("player", targetPlayer.getName())
+										.put("rank", rank.getName())
+										.build(),
+								'[', ']'));
+					}
 				}
 				// users.setGroup(sender instanceof Player ? (Player) sender : null, args[0],
 				// target_rank, true);
@@ -102,14 +134,19 @@ public class cmd_addrank extends PowerCommand {
 		ArrayList<String> tabcomplete = new ArrayList<String>();
 
 		if (args.length == 1) {
-			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+			for (PRPlayer player : CacheManager.getPlayers()) {
 				tabcomplete.add(player.getName());
 			}
 		}
 
 		if (args.length == 2) {
-			for (PRRank rank : this.users.getGroups()) {
-				tabcomplete.add(rank.getName());
+			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
+			if (targetPlayer != null) {
+				for (PRRank rank : CacheManager.getRanks()) {
+					if (!targetPlayer.hasRank(rank.getName())) {
+						tabcomplete.add(rank.getName());
+					}
+				}
 			}
 		}
 
