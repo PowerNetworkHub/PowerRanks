@@ -41,7 +41,7 @@ import java.util.Map.Entry;
  * 
  * @author svenar
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({"defaultRanks", "effectivePermissions"})
 public class PRPlayer {
 
     // Storage
