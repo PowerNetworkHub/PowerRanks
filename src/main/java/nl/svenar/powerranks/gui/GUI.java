@@ -114,7 +114,7 @@ public class GUI {
 						}
 						player.sendMessage(Util.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
-										"commands.buyrank.succes-buy"),
+										"commands.buyrank.success-buy"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
 										.put("rank", rankname)

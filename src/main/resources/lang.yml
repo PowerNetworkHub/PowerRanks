@@ -49,7 +49,7 @@ lang:
             arguments: "[rank_name] [confirm]"
             description: "Buy a rank"
             buy-not-available: "&cBuying ranks is not available on this server."
-            succes-buy: "&aYou have bought the rank [rank]"
+            success-buy: "&aYou have bought the rank [rank]"
             failed-buy-not-enough-money: "&cInsufficient funds to buy the rank [rank]"
          rankup:
             arguments: ""
@@ -253,7 +253,7 @@ lang:
             arguments: "<rank_name> <new ... suffix>"
             description: "Change the suffix of a rank"
             success: "&aChanged suffix to '[suffix]' on rank: [rank]"
-            succes-clear: "&aCleared the suffix on rank: [rank]"
+            success-clear: "&aCleared the suffix on rank: [rank]"
          setweight:
             arguments: "<rank_name> <number>"
             description: "Change the weight of the rank for permission handeling. Higher weight equals more priority."

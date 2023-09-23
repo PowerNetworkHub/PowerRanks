@@ -217,7 +217,7 @@ public class OnInteract implements Listener {
 									// users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
 									player.sendMessage(Util.powerFormatter(
 											PowerRanks.getLanguageManager().getFormattedMessage(
-													"commands.buyrank.succes-buy"),
+													"commands.buyrank.success-buy"),
 											ImmutableMap.<String, String>builder()
 													.put("player", player.getName())
 													.put("rank", sign_argument)

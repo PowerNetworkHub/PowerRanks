@@ -928,17 +928,24 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						return;
 					}
 
+					prefix_format = prefix.length() == 0 ? prefix_format.replaceAll("\\[prefix\\]( )?", "")
+							: prefix_format;
 					prefix_format = Util.powerFormatter(prefix_format,
-							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
+							ImmutableMap.<String, String>builder()
+									.put("prefix", prefix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
 											: getDeluxeTagsHook().getPlayerDisplayTag(player))
 									.build(),
 							'[', ']');
 
+					suffix_format = suffix.length() == 0 ? suffix_format.replaceAll("( )?\\[suffix\\]", "")
+							: suffix_format;
 					suffix_format = Util.powerFormatter(suffix_format,
-							ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
-									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
-											: getDeluxeTagsHook().getPlayerDisplayTag(player))
+							ImmutableMap.<String, String>builder()
+									.put("suffix", suffix)
+									.put("usertag",
+											!PowerRanks.plugin_hook_deluxetags ? usertag
+													: getDeluxeTagsHook().getPlayerDisplayTag(player))
 									.build(),
 							'[', ']');
 
