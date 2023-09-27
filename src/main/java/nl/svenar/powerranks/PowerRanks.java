@@ -330,19 +330,19 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		rankModerator.setName("Moderator");
 		rankModerator.setDefault(false);
 		rankModerator.setWeight(50);
-		rankMember.setPrefix("[gradient=#9d1dff,#e22581]MODERATOR[/gradient]");
+		rankModerator.setPrefix("[gradient=#9d1dff,#e22581]MODERATOR[/gradient]");
 
 		PRRank rankAdmin = new PRRank();
 		rankAdmin.setName("Admin");
 		rankAdmin.setDefault(false);
 		rankAdmin.setWeight(75);
-		rankMember.setPrefix("[gradient=#ffff00,#ef3300]ADMIN[/gradient]");
+		rankAdmin.setPrefix("[gradient=#ffff00,#ef3300]ADMIN[/gradient]");
 
 		PRRank rankOwner = new PRRank();
 		rankOwner.setName("Owner");
 		rankOwner.setDefault(false);
 		rankOwner.setWeight(100);
-		rankMember.setPrefix("[gradient=#ff00ff,#33ccff]OWNER[/gradient]");
+		rankOwner.setPrefix("[gradient=#ff00ff,#33ccff]OWNER[/gradient]");
 
 		CacheManager.addRank(rankMember);
 		CacheManager.addRank(rankModerator);
