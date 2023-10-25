@@ -274,6 +274,8 @@ public class Util {
 		ArrayList<String> output = new ArrayList<String>();
 		String[] permission_split = permission.split("\\.");
 
+		output.add("*");
+
 		permission_split = Util.array_pop(permission_split);
 		for (int i = 0; i < permission_split.length + 1; i++) {
 			if (permission_split.length == 0)
