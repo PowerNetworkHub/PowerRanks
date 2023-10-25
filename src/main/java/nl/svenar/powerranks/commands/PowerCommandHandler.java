@@ -45,6 +45,7 @@ import nl.svenar.powerranks.commands.player.cmd_delplayerperm;
 import nl.svenar.powerranks.commands.player.cmd_delrank;
 import nl.svenar.powerranks.commands.player.cmd_haspermission;
 import nl.svenar.powerranks.commands.player.cmd_listplayerpermissions;
+import nl.svenar.powerranks.commands.player.cmd_nick;
 import nl.svenar.powerranks.commands.player.cmd_playerinfo;
 import nl.svenar.powerranks.commands.player.cmd_setownrank;
 import nl.svenar.powerranks.commands.player.cmd_setrank;
@@ -112,6 +113,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_listusertags(plugin, "listusertags", COMMAND_EXECUTOR.ALL);
 
 		new cmd_checkrank(plugin, "checkrank", COMMAND_EXECUTOR.ALL);
+		new cmd_nick(plugin, "nick", COMMAND_EXECUTOR.ALL);
 
 		new cmd_createrank(plugin, "createrank", COMMAND_EXECUTOR.ALL);
 		new cmd_deleterank(plugin, "deleterank", COMMAND_EXECUTOR.ALL);
