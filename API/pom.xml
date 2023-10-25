@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nl.svenar</groupId>
+	<artifactId>powerranks.api</artifactId>
+	<version>${revision}</version>
+	<name>PowerRanks API</name>
+	<description>An amazing permission plugin!</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<src.dir>src/main/java</src.dir>
+		<rsc.dir>src/main/resources</rsc.dir>
+	</properties>
+
+	<parent>
+		<groupId>nl.svenar</groupId>
+		<artifactId>powerranks</artifactId>
+		<version>${revision}</version>
+	</parent>
+
+	<build>
+		<defaultGoal>clean compile package</defaultGoal>
+		<finalName>${project.name}</finalName>
+		<sourceDirectory>${src.dir}</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>${rsc.dir}</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+		<repository>
+			<id>svenar</id>
+			<url>https://svenar.nl/repo/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>nl.svenar</groupId>
+			<artifactId>powerranks.core</artifactId>
+			<version>${revision}</version>
+		</dependency>
+	</dependencies>
+</project>
