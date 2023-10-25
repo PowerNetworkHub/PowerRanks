@@ -47,6 +47,7 @@ public class PRPlayer {
     // Storage
     private UUID uuid;
     private String name;
+    private String nickname;
     private ArrayList<PRPlayerRank> ranks;
     private ArrayList<PRPermission> permissions;
     private ArrayList<String> usertags;
@@ -54,6 +55,7 @@ public class PRPlayer {
 
     public PRPlayer() {
         this.name = "";
+        this.nickname = "";
         this.ranks = new ArrayList<PRPlayerRank>();
         this.permissions = new ArrayList<PRPermission>();
         this.usertags = new ArrayList<String>();
@@ -94,6 +96,24 @@ public class PRPlayer {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Get the nickname of this player
+     * 
+     * @return String nickname of the player
+     */
+    public String getNickname() {
+        return this.nickname;
+    }
+
+    /**
+     * Set the nickname of this player
+     * 
+     * @param nickname
+     */
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     /**
