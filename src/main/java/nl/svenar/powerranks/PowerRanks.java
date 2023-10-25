@@ -249,8 +249,12 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
-		this.tablistManager.stop();
-		this.bungeecordManager.stop();
+		if (this.tablistManager != null) {
+			this.tablistManager.stop();
+		}
+		if (this.bungeecordManager != null) {
+			this.bungeecordManager.stop();
+		}
 
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 
@@ -1044,6 +1048,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void updateTablistName(Player player, String prefix, String suffix,
 			String usertag, String nameColor, boolean updateNTE) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
+		
+		PRPlayer prPlayer = CacheManager.getPlayer(player);
+		if (prPlayer.getNickname().length() > 0) {
+			player.setDisplayName(prPlayer.getNickname().length() > 0 ? prPlayer.getNickname() : player.getName());
+		}
 
 		String player_formatted_name = (nameColor.length() == 0 ? "&r" : "")
 				+ applyMultiColorFlow(nameColor, player.getDisplayName());

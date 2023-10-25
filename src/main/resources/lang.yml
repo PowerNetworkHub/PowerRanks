@@ -179,6 +179,14 @@ lang:
          playerinfo:
             arguments: "<player_name>"
             description: "Show information about a player"
+         nick:
+            arguments: "[player_name] <nickname>"
+            setown:
+               success: "&aYour nickname has been set to: [nickname]"
+               failed: "&cFailed to set your nickname to: [nickname]"
+            setother:
+               success: "&a[target]'s nickname has been set to: [nickname]"
+               failed: "&cFailed to set [target]'s nickname to: [nickname]"
          haspermission:
             arguments: "<player_name> <permission.node>"
             description: "Check if a player has a certain permission"
