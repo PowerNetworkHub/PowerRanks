@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.svenar</groupId>
 	<artifactId>powerranks</artifactId>
-	<version>1.10.9B1</version>
+	<version>1.10.9B2</version>
 	<name>PowerRanks</name>
 	<description>An amazing permission plugin!</description>
 
@@ -14,7 +14,7 @@
 		<src.dir>src/main/java</src.dir>
 		<rsc.dir>src/main/resources</rsc.dir>
 		<shade.basepattern>nl.svenar.lib</shade.basepattern>
-		<testserver.location>../../servers/latest/plugins/</testserver.location>
+		<testserver.location>../../servers/bukkit/latest/plugins/</testserver.location>
 	</properties>
 
 	<build>
