@@ -2,6 +2,8 @@ package nl.svenar.powerranks.test.tests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Instant;
+
 import org.junit.Test;
 
 import nl.svenar.common.utils.PowerColor;
@@ -202,4 +204,24 @@ public class TestPowerColor {
 
         TestDebugger.log(this, "[testSpecialColorFormat] Done!");
     }
+
+    @Test
+    public void testPerformance() {
+        TestDebugger.log(this, "");
+        TestDebugger.log(this, "[testPerformance] Start");
+
+        PowerColor powerColor = new PowerColor();
+
+        String inputString = "[gradient=#000000,#FFFFFF]This is a test message[/gradient]";
+
+        Instant start = Instant.now();
+        for (int i = 0; i < 100000; i++) {
+            powerColor.formatSpecial(PowerColor.UNFORMATTED_COLOR_CHAR, inputString);
+        }
+        Instant end = Instant.now();
+        TestDebugger.log(this, "[testPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms");
+
+        TestDebugger.log(this, "[testPerformance] Done!");
+    }
+
 }
