@@ -120,14 +120,22 @@ public class PowerPermissibleBase extends PermissibleBase {
 			}
 		}
 
+		boolean defaultHasPermission = false;
+		try {
+			defaultHasPermission = super.hasPermission(inName);
+		} catch (NullPointerException e) {
+			PowerRanksVerbose.log("hasPermission(String inName) failed", e.getMessage());
+			super.recalculatePermissions();
+		}
+
 		PowerRanksVerbose.log("hasPermission(String inName)",
-				"called with inName: " + inName + " (" + super.hasPermission(inName) + ") - prPermission value: "
+				"called with inName: " + inName + " (" + defaultHasPermission + ") - prPermission value: "
 						+ (prPermission == null ? "null" : prPermission.getValue()));
 
 		if (prPermission != null) {
 			return prPermission.getValue();
 		}
-		return super.hasPermission(inName);
+		return defaultHasPermission;
 	}
 
 	@Override
