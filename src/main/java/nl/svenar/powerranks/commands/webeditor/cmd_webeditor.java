@@ -102,6 +102,9 @@ public class cmd_webeditor extends PowerCommand {
 		outputJSON += ",";
 		outputJSON += "\"usertags\":";
 		outputJSON += PowerRanks.getUsertagManager().toJSON("usertags", false);
+		outputJSON += ",";
+		outputJSON += "\"tablist\":";
+		outputJSON += PowerRanks.getTablistConfigManager().toJSON(null, false);
 		outputJSON += "}";
 
 		jsonmanager.removeAllData();
@@ -232,6 +235,7 @@ public class cmd_webeditor extends PowerCommand {
 		LinkedTreeMap<?, ?> rankData = (LinkedTreeMap<?, ?>) jsonData.get("rankdata");
 		LinkedTreeMap<?, ?> playerData = (LinkedTreeMap<?, ?>) jsonData.get("playerdata");
 		LinkedTreeMap<?, ?> usertags = (LinkedTreeMap<?, ?>) jsonData.get("usertags");
+		LinkedTreeMap<?, ?> tablist = (LinkedTreeMap<?, ?>) jsonData.get("tablist");
 
 		JSONStorageManager jsonmanager = new JSONStorageManager(PowerRanks.fileLoc, "dummyRanks.json",
 				"dummyPlayers.json");
@@ -251,6 +255,7 @@ public class cmd_webeditor extends PowerCommand {
 		jsonmanager.removeAllData();
 
 		PowerRanks.getUsertagManager().fromJSON("usertags", usertags);
+		PowerRanks.getTablistConfigManager().fromJSON(null, tablist);
 
 		sender.sendMessage(
 				PowerRanks.getLanguageManager().getFormattedMessage(
