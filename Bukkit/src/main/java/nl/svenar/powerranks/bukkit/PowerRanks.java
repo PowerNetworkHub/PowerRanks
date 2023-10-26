@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -41,6 +42,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import nl.svenar.powerranks.common.PowerLogger;
+import nl.svenar.powerranks.common.storage.PermissionRegistry;
 import nl.svenar.powerranks.common.storage.PowerConfigManager;
 import nl.svenar.powerranks.common.storage.provided.YAMLConfigManager;
 import nl.svenar.powerranks.common.structure.PRPermission;
@@ -113,6 +115,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	private static PowerConfigManager tablistConfigManager;
 
 	private BungeecordManager bungeecordManager;
+	private PermissionRegistry permissionRegistry;
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
@@ -191,6 +194,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("=== ---------- LOADING ADDONS ---------- ===");
 		addonsManager = new AddonsManager(this);
 		addonsManager.setup();
+
+		permissionRegistry = new PermissionRegistry();
+		for (PermissionAttachmentInfo pai : Bukkit.getConsoleSender().getEffectivePermissions()) {
+			permissionRegistry.queuePermission(pai.getPermission());
+		}
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ----------- LOADING DATA ----------- ===");
@@ -443,6 +451,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				handle_update_checking();
 			}
 		}.runTaskTimer(this, update_check_interval, update_check_interval);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				permissionRegistry.tick();
+			}
+		}.runTaskTimer(this, 1, 1);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -1213,4 +1228,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			return false;
 		}
 	}
+
+    public PermissionRegistry getPermissionRegistry() {
+        return permissionRegistry;
+    }
 }

@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import nl.svenar.powerranks.common.structure.PRRank;
 import nl.svenar.powerranks.bukkit.PowerRanks;
@@ -92,8 +90,7 @@ public class cmd_addperm extends PowerCommand {
 
 		if (args.length == 2) {
 			// for (Permission pai : Bukkit.getServer().getPermissions()) {
-			for (PermissionAttachmentInfo pai : Bukkit.getServer().getConsoleSender().getEffectivePermissions()) {
-				String perm = pai.getPermission();
+			for (String perm : plugin.getPermissionRegistry().getPermissions()) {
 				String userInput = args[1];
 				String autocompletePermission = "";
 

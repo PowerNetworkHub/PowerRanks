@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import nl.svenar.powerranks.common.http.DatabinClient;
@@ -288,8 +287,8 @@ public class cmd_webeditor extends PowerCommand {
 
 		List<String> server_permissions = new ArrayList<String>();
 
-		for (PermissionAttachmentInfo permission : Bukkit.getServer().getConsoleSender().getEffectivePermissions()) {
-			server_permissions.add("\"" + permission.getPermission() + "\"");
+		for (String perm : plugin.getPermissionRegistry().getPermissions()) {
+			server_permissions.add("\"" + perm + "\"");
 		}
 
 		output += "{";

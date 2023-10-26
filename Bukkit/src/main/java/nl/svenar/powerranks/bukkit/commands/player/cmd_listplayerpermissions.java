@@ -1,7 +1,7 @@
 package nl.svenar.powerranks.bukkit.commands.player;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -69,7 +69,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 		output_messages.add(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
 				+ plugin.getDescription().getName() + ChatColor.DARK_AQUA + "----------" + ChatColor.BLUE + "===");
 
-		List<PRPermission> playerPermissions = prPlayer.getPermissions();
+		Set<PRPermission> playerPermissions = prPlayer.getPermissions();
 
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = playerPermissions.size() / lines_per_page;

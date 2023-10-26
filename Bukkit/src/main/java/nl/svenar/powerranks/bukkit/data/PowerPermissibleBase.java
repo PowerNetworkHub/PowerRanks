@@ -12,6 +12,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import nl.svenar.powerranks.common.storage.PermissionRegistry;
 import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.bukkit.PowerRanks;
@@ -22,6 +23,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 	private PowerRanks plugin;
 	private Player player;
+	private PermissionRegistry permissionRegistry;
 	private PRPlayer prPlayer;
 
 	public static Map<String, Integer> permissionCallCount = new HashMap<String, Integer>();
@@ -30,6 +32,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 		super(player);
 		this.player = player;
 		this.plugin = plugin;
+		this.permissionRegistry = plugin.getPermissionRegistry();
 		this.prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 		if (prPlayer == null) {
 			CacheManager.createPlayer(player);
@@ -68,6 +71,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 			throw new IllegalArgumentException("Permission name cannot be null");
 		}
 
+		permissionRegistry.queuePermission(name);
+
 		PRPermission prPermission = getPRPermission(name);
 		if (prPermission == null) {
 			for (String wildCardPermissionName : Util.generateWildcardList(name)) {
@@ -103,6 +108,8 @@ public class PowerPermissibleBase extends PermissibleBase {
 		if (inName == null) {
 			throw new IllegalArgumentException("Permission name cannot be null");
 		}
+
+		permissionRegistry.queuePermission(inName);
 
 		if (permissionCallCount.get(inName) == null) {
 			permissionCallCount.put(inName, 0);
