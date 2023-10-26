@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -442,27 +443,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				handle_update_checking();
 			}
 		}.runTaskTimer(this, update_check_interval, update_check_interval);
-
-		// new BukkitRunnable() {
-		// @Override
-		// public void run() {
-		// PowerRanksVerbose.log("task", "Running task check player name change");
-
-		// for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-		// if (!playerNameCache.containsKey(player.getUniqueId())) {
-		// playerNameCache.put(player.getUniqueId(), player.getName());
-		// }
-
-		// if (!playerNameCache.get(player.getUniqueId()).equals(player.getName())) {
-		// log.info("Player name changed from '" +
-		// playerNameCache.get(player.getUniqueId()) + "' to '" + player.getName() +
-		// "'");
-		// playerNameCache.put(player.getUniqueId(), player.getName());
-		// CacheManager.getPlayer(player.getUniqueId().toString()).setName(player.getName());
-		// }
-		// }
-		// }
-		// }.runTaskTimer(this, TASK_TPS, TASK_TPS);
 	}
 
 	private Player getPlayerFromUUID(UUID uuid) {
@@ -900,11 +880,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void playerInjectPermissible(Player player) {
+		if (isMockBukkitLoaded()) {
+			return;
+		}
 		try {
 			Field f = Util.obcClass("entity.CraftHumanEntity").getDeclaredField("perm");
 			f.setAccessible(true);
 			f.set(player, new PowerPermissibleBase(player, this));
 			f.setAccessible(false);
+			// } catch (ClassNotFoundException e) {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -972,14 +956,16 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	}
 
 	public void updateTablistName(Player player) {
-		try {
-			player.updateCommands(); // TODO find a better place for this
-		} catch (NoSuchMethodError e) {
+		if (!isMockBukkitLoaded()) {
+			try {
+				player.updateCommands(); // TODO find a better place for this
+			} catch (NoSuchMethodError e) {
+			}
 		}
 
 		PRPlayer prPlayer = CacheManager.getPlayer(player);
 
-		List<PRPlayerRank> playerRanks = prPlayer.getRanks();
+		Set<PRPlayerRank> playerRanks = prPlayer.getRanks();
 
 		List<PRRank> ranks = new ArrayList<PRRank>();
 		for (PRPlayerRank playerRank : playerRanks) {
@@ -1023,7 +1009,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			Map<?, ?> availableUsertags = getUsertagManager().getMap("usertags", new HashMap<String, String>());
-			ArrayList<String> playerUsertags = prPlayer.getUsertags();
+			Set<String> playerUsertags = prPlayer.getUsertags();
 
 			for (String playerUsertag : playerUsertags) {
 				String value = "";
@@ -1048,7 +1034,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void updateTablistName(Player player, String prefix, String suffix,
 			String usertag, String nameColor, boolean updateNTE) {
 		PowerRanksVerbose.log("updateTablistName", "Updating " + player.getName() + "'s tablist format");
-		
+
 		PRPlayer prPlayer = CacheManager.getPlayer(player);
 		if (prPlayer.getNickname().length() > 0) {
 			player.setDisplayName(prPlayer.getNickname().length() > 0 ? prPlayer.getNickname() : player.getName());
@@ -1217,5 +1203,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public static String getVersion() {
 		return instance.getDescription().getVersion();
+	}
+
+	private boolean isMockBukkitLoaded() {
+		try {
+			Class.forName("be.seeseemelk.mockbukkit.MockBukkit");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 }

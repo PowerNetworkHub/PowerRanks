@@ -6,7 +6,7 @@
 	<artifactId>powerranks.bukkit</artifactId>
 	<version>${revision}</version>
 	<name>PowerRanks Bukkit</name>
-	<description>An amazing permission plugin!</description>
+	<description>Rank-based permission manager</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -14,6 +14,7 @@
 		<src.dir>src/main/java</src.dir>
 		<rsc.dir>src/main/resources</rsc.dir>
 		<shade.basepattern>nl.svenar.lib</shade.basepattern>
+		<skipBukkitTests>false</skipBukkitTests>
 	</properties>
 
 	<parent>
@@ -132,7 +133,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.0</version>
+				<version>3.2.1</version>
+				<configuration>
+					<skipTests>${skipBukkitTests}</skipTests>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -154,6 +158,10 @@
 			<id>svenar</id>
 			<url>https://svenar.nl/repo/</url>
 		</repository>
+		<repository>
+			<id>papermc</id>
+			<url>https://repo.papermc.io/repository/maven-public/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -166,6 +174,13 @@
 			<groupId>nl.svenar</groupId>
 			<artifactId>powerranks.api</artifactId>
 			<version>${revision}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.seeseemelk</groupId>
+			<artifactId>MockBukkit-v1.20</artifactId>
+			<version>3.39.0</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
