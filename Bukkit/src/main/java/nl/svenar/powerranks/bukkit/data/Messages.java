@@ -6,8 +6,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.TimeZone;
@@ -479,7 +481,7 @@ public class Messages {
 
 		PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 		Map<?, ?> availableUsertags = PowerRanks.getUsertagManager().getMap("usertags", new HashMap<String, String>());
-		ArrayList<String> playerUsertags = targetPlayer.getUsertags();
+		Set<String> playerUsertags = targetPlayer.getUsertags();
 
 		for (String playerUsertag : playerUsertags) {
 			String value = "";
@@ -927,7 +929,7 @@ public class Messages {
 	}
 
 	public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
-		List<PRPermission> lines = users.getPlayerPermissions(target_player);
+		Set<PRPermission> lines = users.getPlayerPermissions(target_player);
 		int lines_per_page = 10;
 
 		if (page < 0)
@@ -957,9 +959,13 @@ public class Messages {
 			Messages.powerRanks.getServer().dispatchCommand(
 					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
 
+		Iterator<PRPermission> permissionIterator = lines.iterator();
 		for (int i = 0; i < lines_per_page; i++) {
 			if (lines_per_page * page + i < lines.size()) {
-				PRPermission permission = lines.get(lines_per_page * page + i);
+				if (!permissionIterator.hasNext()) {
+					break;
+				}
+				PRPermission permission = permissionIterator.next();
 				if (permission.getName().length() > 0)
 					sender.sendMessage(
 							(permission.getValue() ? ChatColor.GREEN : ChatColor.RED) + permission.getName());

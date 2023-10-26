@@ -712,7 +712,7 @@ public class Users implements Listener {
 
 		if (targetPlayer != null) {
 			try {
-				List<PRPermission> list = targetPlayer.getPermissions();
+				Set<PRPermission> list = targetPlayer.getPermissions();
 				PRPermission targetPermission = null;
 				for (PRPermission prPermission : list) {
 					if (prPermission.getName().equals(permission)) {
@@ -744,7 +744,7 @@ public class Users implements Listener {
 		if (target_player != null) {
 			try {
 				if (CacheManager.getPlayer(target_player.getUniqueId().toString()) != null) {
-					List<PRPermission> list = CacheManager.getPlayer(target_player.getUniqueId().toString())
+					Set<PRPermission> list = CacheManager.getPlayer(target_player.getUniqueId().toString())
 							.getPermissions();
 					PRPermission targetPermission = null;
 					for (PRPermission prPermission : list) {
@@ -775,7 +775,7 @@ public class Users implements Listener {
 
 				if (uuid.length() > 0) {
 					if (CacheManager.getPlayer(uuid) != null) {
-						List<PRPermission> list = CacheManager.getPlayer(uuid).getPermissions();
+						Set<PRPermission> list = CacheManager.getPlayer(uuid).getPermissions();
 						PRPermission targetPermission = null;
 						for (PRPermission prPermission : list) {
 							if (prPermission.getName().equals(permission)) {
@@ -810,8 +810,8 @@ public class Users implements Listener {
 		return false;
 	}
 
-	public List<PRPermission> getPlayerPermissions(String playername) {
-		List<PRPermission> list = new ArrayList<PRPermission>();
+	public Set<PRPermission> getPlayerPermissions(String playername) {
+		Set<PRPermission> list = new HashSet<PRPermission>();
 
 		Player player = Bukkit.getServer().getPlayer(playername);
 		if (player == null)
@@ -1041,7 +1041,7 @@ public class Users implements Listener {
 			return "";
 		}
 
-		String usertag = targetPlayer.getUsertags().get(0);
+		String usertag = targetPlayer.getUsertags().iterator().next();
 		if (usertag.length() > 0) {
 			return getUserTagValue(usertag);
 		}
@@ -1058,7 +1058,7 @@ public class Users implements Listener {
 			return false;
 		}
 
-		targetPlayer.setUsertags(new ArrayList<String>());
+		targetPlayer.setUsertags(new HashSet<String>());
 
 		return true;
 	}

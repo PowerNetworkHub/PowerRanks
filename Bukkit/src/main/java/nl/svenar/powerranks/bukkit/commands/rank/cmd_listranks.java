@@ -1,7 +1,6 @@
 package nl.svenar.powerranks.bukkit.commands.rank;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -35,11 +34,11 @@ public class cmd_listranks extends PowerCommand {
 		sender.sendMessage(ChatColor.AQUA + "Ranks (" + ranks.size() + "):");
 		int index = 0;
 
-		ranks = new ArrayList<>(new HashSet<>(ranks));
-		PRUtil.sortRanksByWeight(ranks);
-		ranks = PRUtil.reverseRanks(ranks);
+		List<PRRank> sortedRanks = new ArrayList<>(ranks);
+		PRUtil.sortRanksByWeight(sortedRanks);
+		PRUtil.reverseRanks(sortedRanks);
 
-		for (PRRank rank : ranks) {
+		for (PRRank rank : sortedRanks) {
 			index++;
 			sender.sendMessage(ChatColor.DARK_GREEN + "#" + index + ". " + ChatColor.GRAY + "(" + rank.getWeight()
 					+ ") " + ChatColor.GREEN + rank.getName() + ChatColor.RESET + " "

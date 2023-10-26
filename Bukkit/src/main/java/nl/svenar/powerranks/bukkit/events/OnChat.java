@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -92,7 +93,7 @@ public class OnChat implements Listener {
 				PRPlayer targetPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 				Map<?, ?> availableUsertags = PowerRanks.getUsertagManager().getMap("usertags",
 						new HashMap<String, String>());
-				ArrayList<String> playerUsertags = targetPlayer.getUsertags();
+				Set<String> playerUsertags = targetPlayer.getUsertags();
 
 				for (String playerUsertag : playerUsertags) {
 					String value = "";
