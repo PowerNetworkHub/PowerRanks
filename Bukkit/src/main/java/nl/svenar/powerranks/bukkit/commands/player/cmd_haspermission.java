@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
@@ -73,7 +74,7 @@ public class cmd_haspermission extends PowerCommand {
 					}
 				}
 
-				ArrayList<String> wildcardPermissions = Util.generateWildcardList(permissionNode);
+				ArrayList<String> wildcardPermissions = PRUtil.generateWildcardList(permissionNode);
 				for (PRPermission perm : playerPermissions) {
 
 					if (wildcardPermissions.contains(perm.getName())) {

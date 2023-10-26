@@ -9,17 +9,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.bukkit.entity.Player;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.UnimplementedOperationException;
-import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.common.structure.PRPlayer;
+import nl.svenar.powerranks.test.util.Mock;
 import nl.svenar.powerranks.test.util.TestDebugger;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -32,15 +29,15 @@ public class TestRanks {
 
     @BeforeAll
     public void setUp() {
-        server = MockBukkit.mock();
-        MockBukkit.load(PowerRanks.class);
+        Mock.init();
+        server = Mock.getServerMock();
 
         server.setPlayers(numPlayers);
     }
 
     @AfterAll
     public void tearDown() {
-        MockBukkit.unmock();
+        Mock.unmock();
     }
 
     @Test
@@ -48,7 +45,7 @@ public class TestRanks {
         TestDebugger.log(this, "");
         TestDebugger.log(this, "[A_testCreateRank] Start");
 
-        Player player = getPlayer(0);
+        Player player = Mock.getPlayer(0);
 
         player.setOp(true);
 
@@ -65,8 +62,8 @@ public class TestRanks {
         TestDebugger.log(this, "");
         TestDebugger.log(this, "[B_testSetrank] Start");
 
-        Player player1 = getPlayer(0);
-        Player player2 = getPlayer(1);
+        Player player1 = Mock.getPlayer(0);
+        Player player2 = Mock.getPlayer(1);
         PRPlayer prPlayer2 = CacheManager.getPlayer(player2.getUniqueId().toString());
 
         player1.setOp(true);
@@ -85,8 +82,8 @@ public class TestRanks {
         TestDebugger.log(this, "");
         TestDebugger.log(this, "[C_testDelrank] Start");
 
-        Player player1 = getPlayer(0);
-        Player player2 = getPlayer(1);
+        Player player1 = Mock.getPlayer(0);
+        Player player2 = Mock.getPlayer(1);
         PRPlayer prPlayer2 = CacheManager.getPlayer(player2.getUniqueId().toString());
 
         player1.setOp(true);
@@ -104,8 +101,8 @@ public class TestRanks {
         TestDebugger.log(this, "");
         TestDebugger.log(this, "[D_testDeleteRankUpdatePlayer] Start");
 
-        Player player1 = getPlayer(0);
-        Player player2 = getPlayer(1);
+        Player player1 = Mock.getPlayer(0);
+        Player player2 = Mock.getPlayer(1);
         PRPlayer prPlayer2 = CacheManager.getPlayer(player2.getUniqueId().toString());
 
         player1.setOp(true);
@@ -120,16 +117,5 @@ public class TestRanks {
 
         TestDebugger.log(this, "[D_testDeleteRankUpdatePlayer] OK");
 
-    }
-
-    private Player getPlayer(int num) {
-        Player player = null;
-        try {
-            player = server.getPlayer(num);
-        } catch (UnimplementedOperationException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(player);
-        return player;
     }
 }

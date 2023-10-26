@@ -201,17 +201,6 @@ public class Util {
 		return output;
 	}
 
-	public static <T> T[] array_push(T[] arr, T item) {
-		T[] tmp = Arrays.copyOf(arr, arr.length + 1);
-		tmp[tmp.length - 1] = item;
-		return tmp;
-	}
-
-	public static <T> T[] array_pop(T[] arr) {
-		T[] tmp = Arrays.copyOf(arr, arr.length - 1);
-		return tmp;
-	}
-
 	public static Player getPlayerByName(String target_player_name) {
 		Player target_player = null;
 		for (Player online_player : Bukkit.getOnlinePlayers()) {
@@ -266,23 +255,6 @@ public class Util {
 			output += line + "\n";
 		}
 		bufferedReader.close();
-
-		return output;
-	}
-
-	public static ArrayList<String> generateWildcardList(String permission) {
-		ArrayList<String> output = new ArrayList<String>();
-		String[] permission_split = permission.split("\\.");
-
-		output.add("*");
-
-		permission_split = Util.array_pop(permission_split);
-		for (int i = 0; i < permission_split.length + 1; i++) {
-			if (permission_split.length == 0)
-				break;
-			output.add(String.join(".", permission_split) + ".*");
-			permission_split = Util.array_pop(permission_split);
-		}
 
 		return output;
 	}

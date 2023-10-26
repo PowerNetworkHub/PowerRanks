@@ -249,6 +249,73 @@ public class PRPlayer {
     }
 
     /**
+     * Update the permissions of this player from the ranks it has
+     */
+    public void updatePermissionsFromRanks() {
+        if (this.permissions == null) {
+            this.permissions = new HashSet<PRPermission>();
+        } else {
+            this.permissions.clear();
+        }
+
+        List<PRRank> playerRanks = new ArrayList<>();
+        for (PRPlayerRank playerRank : this.getRanks()) {
+            if (!playerRank.isDisabled()) {
+                PRRank rank = PRCache.getRank(playerRank.getName());
+                if (rank != null) {
+                    playerRanks.add(rank);
+                }
+            }
+        }
+
+        PRUtil.sortRanksByWeight(playerRanks);
+        for (PRRank playerRank : playerRanks) {
+            if (Objects.nonNull(playerRank)) {
+                for (PRPermission permission : playerRank.getPermissions()) {
+                    for (PRPermission existingPermission : this.permissions) {
+                        if (permission.getName().equals(existingPermission.getName())) {
+                            this.permissions.remove(existingPermission);
+                            break;
+                        }
+                    }
+                    this.permissions.add(permission);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Check if this player has a specific permission
+     * 
+     * @param name
+     * @param wildcard
+     * @return true if this player has that permission, false otherwise
+     */
+    public boolean hasPermission(String name, boolean wildcard) {
+        PRPermission permission = getPermission(name, wildcard);
+        if (permission != null) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a specific permission is allowed for this player
+     * 
+     * @param name
+     * @param wildcard
+     * @return true if this permission is allowed, false otherwise
+     */
+    public boolean isPermissionAllowed(String name, boolean wildcard) {
+        PRPermission permission = getPermission(name, wildcard);
+        if (permission != null) {
+            return permission.getValue();
+        }
+        return false;
+    }
+
+    /**
      * Get a permission by a String permission node (Eg. permission.node.123)
      * 
      * @param name
@@ -256,6 +323,17 @@ public class PRPlayer {
      *         instance was found
      */
     public PRPermission getPermission(String name) {
+        return getPermission(name, false);
+    }
+
+    /**
+     * Get a permission by a String permission node (Eg. permission.node.123)
+     * 
+     * @param name
+     * @return PRPermission instance for the provided node, null if no PRPermission
+     *         instance was found
+     */
+    public PRPermission getPermission(String name, boolean wildcard) {
         if (this.permissions == null) {
             this.permissions = new HashSet<PRPermission>();
         }
@@ -263,6 +341,15 @@ public class PRPlayer {
         for (PRPermission permission : this.permissions) {
             if (permission.getName().equals(name)) {
                 return permission;
+            }
+        }
+
+        if (wildcard) {
+            List<String> wildcardPermissions = PRUtil.generateWildcardList(name);
+            for (PRPermission permission : this.permissions) {
+                if (wildcardPermissions.contains(permission.getName())) {
+                    return permission;
+                }
             }
         }
         return null;

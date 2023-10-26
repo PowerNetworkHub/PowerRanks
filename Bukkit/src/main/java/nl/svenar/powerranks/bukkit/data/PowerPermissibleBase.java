@@ -15,9 +15,9 @@ import org.bukkit.plugin.Plugin;
 import nl.svenar.powerranks.common.storage.PermissionRegistry;
 import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class PowerPermissibleBase extends PermissibleBase {
 
@@ -75,7 +75,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		PRPermission prPermission = getPRPermission(name);
 		if (prPermission == null) {
-			for (String wildCardPermissionName : Util.generateWildcardList(name)) {
+			for (String wildCardPermissionName : PRUtil.generateWildcardList(name)) {
 				prPermission = getPRPermission(wildCardPermissionName);
 				if (prPermission != null) {
 					break;
@@ -119,7 +119,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		PRPermission prPermission = getPRPermission(inName);
 		if (prPermission == null) {
-			for (String wildCardPermissionName : Util.generateWildcardList(inName)) {
+			for (String wildCardPermissionName : PRUtil.generateWildcardList(inName)) {
 				prPermission = getPRPermission(wildCardPermissionName);
 				if (prPermission != null) {
 					break;
