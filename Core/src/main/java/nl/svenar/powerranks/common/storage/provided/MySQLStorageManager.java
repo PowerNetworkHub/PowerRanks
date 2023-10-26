@@ -126,6 +126,18 @@ public class MySQLStorageManager extends PowerStorageManager {
     }
 
     /**
+     * Close the connection to the database
+     */
+    public void close() {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            if (!this.hideErrors)
+                e.printStackTrace();
+        }
+    }
+
+    /**
      * Create the database
      */
     private void setupDatabase() {
@@ -144,12 +156,12 @@ public class MySQLStorageManager extends PowerStorageManager {
     private void setupTables() {
 
         try {
-            String query = SQLCreateDatabase(this.sqlConfig.getDatabase());
-            int result = this.connection.createStatement().executeUpdate(query);
-            checkSQLResult(result, query);
+            // String query = SQLCreateDatabase(this.sqlConfig.getDatabase());
+            // int result = this.connection.createStatement().executeUpdate(query);
+            // checkSQLResult(result, query);
 
-            query = SQLCreateTable(this.sqlConfig.getDatabase(), this.sqlConfig.getTableRanks());
-            result = this.connection.createStatement().executeUpdate(query);
+            String query = SQLCreateTable(this.sqlConfig.getDatabase(), this.sqlConfig.getTableRanks());
+            int result = this.connection.createStatement().executeUpdate(query);
             checkSQLResult(result, query);
 
             query = SQLCreateTable(this.sqlConfig.getDatabase(), this.sqlConfig.getTablePlayers());

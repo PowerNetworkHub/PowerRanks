@@ -1,10 +1,13 @@
 package nl.svenar.powerranks.common.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
@@ -12,9 +15,17 @@ import nl.svenar.powerranks.common.structure.PRRank;
 
 public class PRCache {
 
-    private static Map<String, PRRank> registeredRanks = new HashMap<String, PRRank>();
-    private static Map<String, PRPlayer> registeredPlayersByName = new HashMap<String, PRPlayer>();
-    private static Map<UUID, PRPlayer> registeredPlayersByUUID = new HashMap<UUID, PRPlayer>();
+    private static Map<String, PRRank> registeredRanks = new TreeMap<String, PRRank>();
+    private static Map<String, PRPlayer> registeredPlayersByName = new TreeMap<String, PRPlayer>();
+    private static Map<UUID, PRPlayer> registeredPlayersByUUID = new TreeMap<UUID, PRPlayer>();
+    private static Set<PRRank> defaultRanks = new HashSet<PRRank>();
+
+    public static void reset() {
+        registeredRanks.clear();
+        registeredPlayersByName.clear();
+        registeredPlayersByUUID.clear();
+        defaultRanks.clear();
+    }
 
     public static List<PRRank> getRanks() {
         return new ArrayList<>(registeredRanks.values());
@@ -26,8 +37,12 @@ public class PRCache {
         }
 
         registeredRanks.clear();
+        defaultRanks.clear();
         for (PRRank rank : ranks) {
             registeredRanks.put(rank.getName(), rank);
+            if (rank.isDefault()) {
+                defaultRanks.add(rank);
+            }
         }
     }
 
@@ -37,6 +52,10 @@ public class PRCache {
         }
 
         registeredRanks.put(rank.getName(), rank);
+        if (rank.isDefault()) {
+            defaultRanks.add(rank);
+        }
+
     }
 
     public static void removeRank(PRRank rank) {
@@ -44,20 +63,25 @@ public class PRCache {
             throw new NullPointerException("rank is null");
         }
 
-        registeredRanks.remove(rank.getName());
+        String rankName = rank.getName();
+
+        registeredRanks.remove(rankName);
+        defaultRanks.remove(rank);
+
+        for (PRPlayer prPlayer : registeredPlayersByName.values()) {
+            if (prPlayer.hasRank(rankName)) {
+                prPlayer.getRanks()
+                        .removeIf(prPlayerRank -> prPlayerRank.getName().equalsIgnoreCase(rankName));
+
+            }
+        }
     }
 
     public static PRRank getRank(String name) {
         return registeredRanks.get(name);
     }
 
-    public static List<PRRank> getDefaultRanks() {
-        List<PRRank> defaultRanks = new ArrayList<PRRank>();
-        for (PRRank rank : getRanks()) {
-            if (rank.isDefault()) {
-                defaultRanks.add(rank);
-            }
-        }
+    public static Set<PRRank> getDefaultRanks() {
         return defaultRanks;
     }
 
@@ -93,7 +117,7 @@ public class PRCache {
         }
 
         for (PRPlayer prPlayer : registeredPlayersByName.values()) {
-            if (prPlayer.getName().equals(player.getName()) && prPlayer.getUUID().equals(player.getUUID())) {
+            if (prPlayer.equals(player)) {
                 registeredPlayersByName.remove(prPlayer.getName());
                 registeredPlayersByUUID.remove(prPlayer.getUUID());
                 break;
@@ -118,12 +142,38 @@ public class PRCache {
         PRPlayer prPlayer = new PRPlayer();
         prPlayer.setUUID(uniqueID);
         prPlayer.setName(name);
-        for (PRRank rank : getDefaultRanks()) {
-            PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
-            prPlayer.addRank(playerRank);
-        }
+
+        Set<PRPlayerRank> playerRanks = getDefaultRanks().stream()
+                .map(PRPlayerRank::new)
+                .collect(Collectors.toSet());
+
+        prPlayer.setRanks(playerRanks);
+
         addPlayer(prPlayer);
         return prPlayer;
+    }
+
+    public static PRRank createRank(String name) {
+        return createRank(name, "&r[&7" + name + "&r]", "", 0, false);
+    }
+
+    public static PRRank createRank(String name, int weight) {
+        return createRank(name, "&r[&7" + name + "&r]", "", weight, false);
+    }
+
+    public static PRRank createRank(String name, String prefix, String suffix, int weight) {
+        return createRank(name, prefix, suffix, weight, false);
+    }
+
+    public static PRRank createRank(String name, String prefix, String suffix, int weight, boolean isDefault) {
+        PRRank rank = new PRRank();
+        rank.setName(name);
+        rank.setPrefix(prefix);
+        rank.setSuffix(suffix);
+        rank.setWeight(weight);
+        rank.setDefault(isDefault);
+        addRank(rank);
+        return rank;
     }
 
 }

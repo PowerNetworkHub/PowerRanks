@@ -49,6 +49,10 @@ public class PRPlayerRank {
         this.name = name;
     }
 
+    public PRPlayerRank(PRRank rank) {
+        this(rank.getName());
+    }
+
     public String getName() {
         return this.name;
     }

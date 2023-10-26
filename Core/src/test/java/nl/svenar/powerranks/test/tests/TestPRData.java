@@ -176,4 +176,26 @@ public class TestPRData {
 
         TestDebugger.log(this, "[D_testPRRankPermissionOrder] Rank weight permission overriding OK");
     }
+
+    @Test
+    public void E_testPRRankRemoveFromPlayer() {
+        TestDebugger.log(this, "[E_testPRRankRemoveFromPlayer] Setup...");
+        PRCache.reset();
+
+        PRRank rank1 = PRCache.createRank("testRank1");
+        PRRank rank2 = PRCache.createRank("testRank2");
+        PRRank rank3 = PRCache.createRank("testRank3");
+
+        PRPlayer testPlayer = PRCache.createPlayer("TestPlayer", UUID.randomUUID());
+
+        testPlayer.addRank(rank1);
+        testPlayer.addRank(rank2);
+        testPlayer.addRank(rank3);
+
+        assertEquals(3, testPlayer.getRanks().size());
+        PRCache.removeRank(rank1);
+        assertEquals(2, testPlayer.getRanks().size());
+
+        TestDebugger.log(this, "[E_testPRRankRemoveFromPlayer] Remove rank updates player OK");
+    }
 }

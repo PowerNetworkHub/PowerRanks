@@ -119,7 +119,26 @@ public class SQLiteStorageManager extends PowerStorageManager {
      * @return true if connected, false otherwise
      */
     public boolean isConnected() {
-        return true;
+        try {
+            if (Objects.isNull(this.ranksSQLConnection) || Objects.isNull(this.ranksSQLConnection)) {
+                return false;
+            }
+            return !this.ranksSQLConnection.isClosed() && !this.playersSQLConnection.isClosed();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Close the connection to the database
+     */
+    public void close() {
+        try {
+            this.ranksSQLConnection.close();
+            this.playersSQLConnection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

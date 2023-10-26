@@ -25,16 +25,18 @@
 package nl.svenar.powerranks.common.structure;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import nl.svenar.powerranks.common.utils.PRCache;
 import nl.svenar.powerranks.common.utils.PRUtil;
 
 import java.util.Map.Entry;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Structure to store player data.
@@ -46,20 +48,14 @@ public class PRPlayer {
 
     // Storage
     private UUID uuid;
-    private String name;
-    private String nickname;
-    private ArrayList<PRPlayerRank> ranks;
-    private ArrayList<PRPermission> permissions;
-    private ArrayList<String> usertags;
-    private long playtime;
+    private String name = "";
+    private String nickname = "";
+    private Set<PRPlayerRank> ranks = new HashSet<PRPlayerRank>();
+    private Set<PRPermission> permissions = new HashSet<PRPermission>();
+    private Set<String> usertags = new HashSet<String>();
+    private long playtime = 0L;
 
     public PRPlayer() {
-        this.name = "";
-        this.nickname = "";
-        this.ranks = new ArrayList<PRPlayerRank>();
-        this.permissions = new ArrayList<PRPermission>();
-        this.usertags = new ArrayList<String>();
-        this.playtime = 0L;
     }
 
     /**
@@ -121,7 +117,7 @@ public class PRPlayer {
      * 
      * @return String rank of the player
      */
-    public List<PRPlayerRank> getRanks() {
+    public Set<PRPlayerRank> getRanks() {
         return this.ranks;
     }
 
@@ -147,7 +143,7 @@ public class PRPlayer {
      * 
      * @param ranks
      */
-    public void setRanks(ArrayList<PRPlayerRank> ranks) {
+    public void setRanks(Set<PRPlayerRank> ranks) {
         this.ranks = ranks;
     }
 
@@ -170,6 +166,16 @@ public class PRPlayer {
         if (!this.ranks.contains(rank)) {
             this.ranks.add(rank);
         }
+    }
+
+
+    /**
+     * Add a rank on this player
+     * 
+     * @param rank
+     */
+    public void addRank(PRRank rank) {
+        addRank(new PRPlayerRank(rank.getName()));
     }
 
     /**
@@ -203,7 +209,7 @@ public class PRPlayer {
      * 
      * @return Java ArrayList with all PRPermission instances
      */
-    public ArrayList<PRPermission> getPermissions() {
+    public Set<PRPermission> getPermissions() {
         return this.permissions;
     }
 
@@ -212,7 +218,7 @@ public class PRPlayer {
      * 
      * @param permissions
      */
-    public void setPermissions(ArrayList<PRPermission> permissions) {
+    public void setPermissions(HashSet<PRPermission> permissions) {
         this.permissions = permissions;
     }
 
@@ -223,7 +229,7 @@ public class PRPlayer {
      */
     public void addPermission(PRPermission permission) {
         if (this.permissions == null) {
-            this.permissions = new ArrayList<PRPermission>();
+            this.permissions = new HashSet<PRPermission>();
         }
 
         this.permissions.add(permission);
@@ -251,7 +257,7 @@ public class PRPlayer {
      */
     public PRPermission getPermission(String name) {
         if (this.permissions == null) {
-            this.permissions = new ArrayList<PRPermission>();
+            this.permissions = new HashSet<PRPermission>();
         }
 
         for (PRPermission permission : this.permissions) {
@@ -345,7 +351,7 @@ public class PRPlayer {
      * 
      * @return Java ArrayList with all stored usertag
      */
-    public ArrayList<String> getUsertags() {
+    public Set<String> getUsertags() {
         return this.usertags;
     }
 
@@ -354,7 +360,7 @@ public class PRPlayer {
      * 
      * @param usertags
      */
-    public void setUsertags(ArrayList<String> usertags) {
+    public void setUsertags(Set<String> usertags) {
         this.usertags = usertags;
     }
 
@@ -364,7 +370,7 @@ public class PRPlayer {
      * @param usertag
      */
     public void setUsertag(String usertag) {
-        this.usertags = new ArrayList<String>();
+        this.usertags = new HashSet<String>();
 
         this.usertags.add(usertag);
     }
@@ -376,7 +382,7 @@ public class PRPlayer {
      */
     public void addUsertag(String usertag) {
         if (Objects.isNull(this.usertags)) {
-            this.usertags = new ArrayList<String>();
+            this.usertags = new HashSet<String>();
         }
 
         if (!this.usertags.contains(usertag)) {
@@ -405,7 +411,7 @@ public class PRPlayer {
      */
     public boolean hasUsertag(String usertag) {
         if (Objects.isNull(this.usertags)) {
-            this.usertags = new ArrayList<String>();
+            this.usertags = new HashSet<String>();
         }
 
         for (String tag : this.usertags) {
@@ -478,5 +484,16 @@ public class PRPlayer {
                 prPlayerRank.setDisabled(!playerInWorld);
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof PRPlayer)) {
+            return false;
+        }
+
+        PRPlayer prPlayer = (PRPlayer) obj;
+
+        return this.getUUID().equals(prPlayer.getUUID());
     }
 }

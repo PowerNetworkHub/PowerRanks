@@ -1,6 +1,7 @@
 package nl.svenar.powerranks.test.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 
@@ -207,6 +208,8 @@ public class TestPowerColor {
 
     @Test
     public void testPerformance() {
+        int numItems = 10000;
+        float maxDurationEachItem = 0.05f;
         TestDebugger.log(this, "");
         TestDebugger.log(this, "[testPerformance] Start");
 
@@ -215,11 +218,12 @@ public class TestPowerColor {
         String inputString = "[gradient=#000000,#FFFFFF]This is a test message[/gradient]";
 
         Instant start = Instant.now();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < numItems; i++) {
             powerColor.formatSpecial(PowerColor.UNFORMATTED_COLOR_CHAR, inputString);
         }
         Instant end = Instant.now();
-        TestDebugger.log(this, "[testPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms");
+        assertTrue(end.toEpochMilli() - start.toEpochMilli() < maxDurationEachItem * numItems);
+        TestDebugger.log(this, "[testPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms (max: " + Math.round(maxDurationEachItem * numItems) + "ms)");
 
         TestDebugger.log(this, "[testPerformance] Done!");
     }

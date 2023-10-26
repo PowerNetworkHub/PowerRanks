@@ -17,9 +17,8 @@ public class PRUtil {
         ranks.sort(Comparator.comparingInt(PRRank::getWeight));
     }
 
-    public static List<PRRank> reverseRanks(List<PRRank> ranks) {
+    public static void reverseRanks(List<PRRank> ranks) {
         Collections.reverse(ranks);
-        return ranks;
     }
 
     public static boolean containsIgnoreCase(List<String> objects, String object) {
