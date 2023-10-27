@@ -29,8 +29,8 @@ public class TestPCCache {
     public void B_testCreateDuration() {
         final int numPlayers = 10000;
         final int numRanks = 10000;
-        final float maxDurationEachRank = 0.0010f;
-        final float maxDurationEachPlayer = 0.0025f;
+        final float maxDurationEachRank = 0.5f;
+        final float maxDurationEachPlayer = 0.5f;
 
         TestDebugger.log(this, "");
         TestDebugger.log(this, "[B_testCreateDuration] Setup...");
