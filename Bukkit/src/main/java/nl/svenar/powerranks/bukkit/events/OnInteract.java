@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,12 +47,31 @@ public class OnInteract implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void handlePowerRanksSign(Sign sign, Player player) {
 		final Users users = new Users(this.plugin);
-		String sign_command = sign.getLine(1);
-		String sign_argument = sign.getLine(2);
-		String sign_argument2 = sign.getLine(3);
-		boolean sign_error = sign.getLine(3).toLowerCase().contains("error");
+		String sign_command;
+		String sign_argument;
+		String sign_argument2;
+		boolean sign_error;
+
+		try {
+			Class.forName("org.bukkit.block.sign.Side");
+			Side signSide = Side.FRONT;
+			sign_command = sign.getSide(signSide).getLine(1);
+			if (sign_command.length() == 0) {
+				signSide = Side.BACK;
+				sign_command = sign.getSide(signSide).getLine(1);
+			}
+			sign_argument = sign.getSide(signSide).getLine(2);
+			sign_argument2 = sign.getSide(signSide).getLine(3);
+			sign_error = sign.getSide(signSide).getLine(3).toLowerCase().contains("error");
+		} catch (ClassNotFoundException e) {
+			sign_command = sign.getLine(1);
+			sign_argument = sign.getLine(2);
+			sign_argument2 = sign.getLine(3);
+			sign_error = sign.getLine(3).toLowerCase().contains("error");
+		}
 
 		if (!sign_error) {
 			// if (sign_command.equalsIgnoreCase("promote")) {

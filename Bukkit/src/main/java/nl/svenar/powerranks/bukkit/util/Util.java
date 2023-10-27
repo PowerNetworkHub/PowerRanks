@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -81,8 +82,18 @@ public class Util {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isPowerRanksSign(PowerRanks main, Sign sign) {
-		String sign_header = sign.getLine(0);
+		String sign_header;
+		try {
+			Class.forName("org.bukkit.block.sign.Side");
+			sign_header = sign.getSide(Side.FRONT).getLine(0);
+			if (sign_header.length() == 0) {
+				sign_header = sign.getSide(Side.BACK).getLine(0);
+			}
+		} catch (ClassNotFoundException e) {
+			sign_header = sign.getLine(0);
+		}
 		return isPowerRanksSign(main, sign_header);
 	}
 
@@ -259,7 +270,7 @@ public class Util {
 		}
 	}
 
-    public static Object formatStringToType(String input) {
+	public static Object formatStringToType(String input) {
 		Object output = input;
 
 		if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
@@ -281,6 +292,6 @@ public class Util {
 			output = outputList;
 		}
 
-        return output;
-    }
+		return output;
+	}
 }
