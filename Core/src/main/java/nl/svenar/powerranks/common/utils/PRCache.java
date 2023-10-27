@@ -152,6 +152,12 @@ public class PRCache {
     }
 
     public static PRPlayer createPlayer(String name, UUID uniqueID) {
+        for (PRPlayer prPlayer : getPlayers()) {
+            if (prPlayer.getUUID().toString().equalsIgnoreCase(uniqueID.toString())) {
+                return null;
+            }
+        }
+
         PRPlayer prPlayer = new PRPlayer();
         prPlayer.setUUID(uniqueID);
         prPlayer.setName(name);
@@ -179,6 +185,12 @@ public class PRCache {
     }
 
     public static PRRank createRank(String name, String prefix, String suffix, int weight, boolean isDefault) {
+        for (PRRank prRank : getRanks()) {
+            if (prRank.getName().equalsIgnoreCase(name)) {
+                return null;
+            }
+        }
+
         PRRank rank = new PRRank();
         rank.setName(name);
         rank.setPrefix(prefix);
