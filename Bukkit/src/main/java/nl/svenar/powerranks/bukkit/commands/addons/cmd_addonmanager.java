@@ -8,7 +8,7 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.addons.DownloadableAddon;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Messages;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -31,7 +31,7 @@ public class cmd_addonmanager extends PowerCommand {
 			String addonmanagerCommand = args[0].toLowerCase();
 			if (addonmanagerCommand.equals("acceptterms")) {
 				PowerRanks.getConfigManager().setBool("addon_manager.accepted_terms", true);
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".terms-accepted"),
 						ImmutableMap.<String, String>builder()
@@ -43,7 +43,7 @@ public class cmd_addonmanager extends PowerCommand {
 
 			if (addonmanagerCommand.equals("declineterms")) {
 				PowerRanks.getConfigManager().setBool("addon_manager.accepted_terms", false);
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".terms-declined"),
 						ImmutableMap.<String, String>builder()
@@ -74,7 +74,7 @@ public class cmd_addonmanager extends PowerCommand {
 				}
 
 				if (addon == null) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".download-not-available"),
 							ImmutableMap.<String, String>builder()
@@ -88,7 +88,7 @@ public class cmd_addonmanager extends PowerCommand {
 					if (addon.isCompatible()) {
 						if (addon.download()) {
 
-							sender.sendMessage(Util.powerFormatter(
+							sender.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".download-complete"),
 									ImmutableMap.<String, String>builder()
@@ -97,7 +97,7 @@ public class cmd_addonmanager extends PowerCommand {
 											.build(),
 									'[', ']'));
 						} else {
-							sender.sendMessage(Util.powerFormatter(
+							sender.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".download-failed"),
 									ImmutableMap.<String, String>builder()
@@ -107,7 +107,7 @@ public class cmd_addonmanager extends PowerCommand {
 									'[', ']'));
 						}
 					} else {
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".download-incompatible"),
 								ImmutableMap.<String, String>builder()
@@ -116,7 +116,7 @@ public class cmd_addonmanager extends PowerCommand {
 								'[', ']'));
 					}
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".download-not-available"),
 							ImmutableMap.<String, String>builder()
@@ -140,7 +140,7 @@ public class cmd_addonmanager extends PowerCommand {
 
 				if (addon != null) {
 					addon.uninstall();
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".uninstall-complete"),
 							ImmutableMap.<String, String>builder()
@@ -149,7 +149,7 @@ public class cmd_addonmanager extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".failed-addon-not-found"),
 							ImmutableMap.<String, String>builder()

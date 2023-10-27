@@ -21,11 +21,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import nl.svenar.powerranks.common.http.DatabinClient;
 import nl.svenar.powerranks.common.storage.PowerStorageManager;
 import nl.svenar.powerranks.common.storage.provided.JSONStorageManager;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.PowerRanksVerbose;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_webeditor extends PowerCommand {
 
@@ -219,7 +219,7 @@ public class cmd_webeditor extends PowerCommand {
 		}
 
 		if (!((String) serverData.get("powerranksVersion")).equals(PowerRanks.getVersion())) {
-			sender.sendMessage(Util.powerFormatter(
+			sender.sendMessage(PRUtil.powerFormatter(
 					PowerRanks.getLanguageManager().getFormattedMessage(
 							"commands." + commandName.toLowerCase() + ".incompatible-version"),
 					ImmutableMap.<String, String>builder()
@@ -260,7 +260,7 @@ public class cmd_webeditor extends PowerCommand {
 				PowerRanks.getLanguageManager().getFormattedMessage(
 						"commands." + commandName.toLowerCase() + ".success-downloaded"));
 
-		sender.sendMessage(Util.powerFormatter(
+		sender.sendMessage(PRUtil.powerFormatter(
 				PowerRanks.getLanguageManager().getFormattedMessage(
 						"commands." + commandName.toLowerCase() + ".download-stats"),
 				ImmutableMap.<String, String>builder()

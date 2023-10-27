@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_addownrank extends PowerCommand {
 
@@ -55,7 +55,7 @@ public class cmd_addownrank extends PowerCommand {
 								.updateSorting(Bukkit.getPlayer(targetPlayer.getUUID()));
 					}
 
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".success-executor"),
@@ -65,7 +65,7 @@ public class cmd_addownrank extends PowerCommand {
 									.build(),
 							'[', ']'));
 
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success-receiver"),
 							ImmutableMap.<String, String>builder()
@@ -75,7 +75,7 @@ public class cmd_addownrank extends PowerCommand {
 							'[', ']'));
 				} else {
 					if (targetPlayer != null && rank != null) {
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".failed-executor"),

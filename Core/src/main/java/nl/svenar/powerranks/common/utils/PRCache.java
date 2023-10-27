@@ -81,6 +81,19 @@ public class PRCache {
         return registeredRanks.get(name);
     }
 
+    public static PRRank getRankIgnoreCase(String name) {
+        PRRank rank = getRank(name);
+        if (rank != null) {
+            return rank;
+        }
+        for (PRRank prRank : registeredRanks.values()) {
+            if (prRank.getName().equalsIgnoreCase(name)) {
+                return prRank;
+            }
+        }
+        return null;
+    }
+
     public static Set<PRRank> getDefaultRanks() {
         return defaultRanks;
     }

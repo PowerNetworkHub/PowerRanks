@@ -24,7 +24,6 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.addons.PowerRanksAddon;
 import nl.svenar.powerranks.bukkit.addons.PowerRanksPlayer;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -133,7 +132,7 @@ public class OnChat implements Listener {
 							"" + PowerColor.UNFORMATTED_COLOR_CHAR);
 				}
 
-				format = Util.powerFormatter(
+				format = PRUtil.powerFormatter(
 						format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 								.put("suffix", formatted_suffix)
 								.put("usertag",

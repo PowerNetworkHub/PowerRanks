@@ -10,11 +10,11 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_delplayerperm extends PowerCommand {
 
@@ -34,7 +34,7 @@ public class cmd_delplayerperm extends PowerCommand {
 			final String permission = args[1];
 			final boolean result = this.users.delPlayerPermission(target_player, permission);
 			if (result) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".success"),
 						ImmutableMap.<String, String>builder()
@@ -44,7 +44,7 @@ public class cmd_delplayerperm extends PowerCommand {
 								.build(),
 						'[', ']'));
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".failed"),
 						ImmutableMap.<String, String>builder()

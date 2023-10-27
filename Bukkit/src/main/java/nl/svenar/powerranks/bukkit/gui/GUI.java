@@ -10,12 +10,12 @@ import org.bukkit.inventory.Inventory;
 
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.data.Users;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
 import nl.svenar.powerranks.bukkit.gui.GUIPage.GUI_PAGE_ID;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class GUI {
 
@@ -91,7 +91,7 @@ public class GUI {
 						if (rank != null) {
 							PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 							CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
-							player.sendMessage(Util.powerFormatter(
+							player.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands.setrank.success-receiver"),
 									ImmutableMap.<String, String>builder()
@@ -112,7 +112,7 @@ public class GUI {
 												.replaceAll("%rankname%", rankname));
 							}
 						}
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands.buyrank.success-buy"),
 								ImmutableMap.<String, String>builder()
@@ -121,7 +121,7 @@ public class GUI {
 										.build(),
 								'[', ']'));
 					} else {
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands.buyrank.failed-buy-not-enough-money"),
 								ImmutableMap.<String, String>builder()

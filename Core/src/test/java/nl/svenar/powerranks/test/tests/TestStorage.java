@@ -238,8 +238,9 @@ public class TestStorage {
                 false,
                 "ranks",
                 "players",
-                "messages");
-        MySQLStorageManager storageManager = new MySQLStorageManager(configuration, false);
+                "messages",
+                true);
+        MySQLStorageManager storageManager = new MySQLStorageManager(configuration);
 
         if (!storageManager.isConnected()) {
             TestDebugger.log(this, "[E_TestMySQL] Skipping test, not connected to MySQL");
@@ -250,7 +251,7 @@ public class TestStorage {
         storageManager.removeAllData();
         storageManager.close();
 
-        storageManager = new MySQLStorageManager(configuration, true);
+        storageManager = new MySQLStorageManager(configuration);
         assertTrue(storageManager.isConnected());
 
         TestDebugger.log(this, "[E_TestMySQL] Saving data...");
@@ -264,7 +265,7 @@ public class TestStorage {
         storageSpeed.speedSave = (int) (saveEndTimestamp.toEpochMilli() - saveStartTimestamp.toEpochMilli());
         storageManager.close();
 
-        storageManager = new MySQLStorageManager(configuration, true);
+        storageManager = new MySQLStorageManager(configuration);
         assertTrue(storageManager.isConnected());
 
         TestDebugger.log(this, "[E_TestMySQL] Loading data...");

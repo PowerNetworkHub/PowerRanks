@@ -9,11 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_setdefault extends PowerCommand {
 
@@ -36,7 +36,7 @@ public class cmd_setdefault extends PowerCommand {
 				rank.setDefault(isDefault);
 
 				if (isDefault) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success-added"),
 							ImmutableMap.<String, String>builder()
@@ -45,7 +45,7 @@ public class cmd_setdefault extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success-removed"),
 							ImmutableMap.<String, String>builder()
@@ -55,7 +55,7 @@ public class cmd_setdefault extends PowerCommand {
 							'[', ']'));
 				}
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"general.rank-not-found"),
 						ImmutableMap.<String, String>builder()

@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,7 +32,7 @@ public class cmd_editusertag extends PowerCommand {
 				final String text = args[1];
 				final boolean result = this.users.editUserTag(tag, text);
 				if (result) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success"),
 							ImmutableMap.<String, String>builder()
@@ -42,7 +42,7 @@ public class cmd_editusertag extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".failed"),
 							ImmutableMap.<String, String>builder()

@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Messages;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,7 +34,7 @@ public class cmd_pluginhook extends PowerCommand {
 					&& PowerRanks.getConfigManager().getMap("plugin_hook", new HashMap<String, String>()).keySet()
 							.contains(pluginname.toLowerCase())) {
 
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".state-changed"),
 						ImmutableMap.<String, String>builder()

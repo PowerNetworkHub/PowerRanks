@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
@@ -42,7 +43,7 @@ public class cmd_listpermissions extends PowerCommand {
 				// Messages.listRankPermissions(sender, s, rankName, 0);
 				displayRankPermissions(sender, rankName, commandLabel, 0);
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"general.rank-not-found"),
 						ImmutableMap.<String, String>builder()
@@ -58,7 +59,7 @@ public class cmd_listpermissions extends PowerCommand {
 				// Messages.listRankPermissions(sender, s, rankName, page);
 				displayRankPermissions(sender, rankName, commandLabel, page);
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"general.rank-not-found"),
 						ImmutableMap.<String, String>builder()

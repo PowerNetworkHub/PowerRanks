@@ -9,10 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_setbuycommand extends PowerCommand {
 
@@ -36,7 +36,7 @@ public class cmd_setbuycommand extends PowerCommand {
 			buycommand = buycommand.substring(0, buycommand.length() - 1);
 			final boolean success = this.users.setBuyCommand(rankname, buycommand);
 			if (success) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".success-set"),
 						ImmutableMap.<String, String>builder()
@@ -46,7 +46,7 @@ public class cmd_setbuycommand extends PowerCommand {
 								.build(),
 						'[', ']'));
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".failed-set"),
 						ImmutableMap.<String, String>builder()

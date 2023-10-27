@@ -9,11 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_addbuyablerank extends PowerCommand {
 
@@ -34,7 +34,7 @@ public class cmd_addbuyablerank extends PowerCommand {
 			final boolean success = this.users.addBuyableRank(rankname, rankname2);
 			if (CacheManager.getRank(rankname) != null && CacheManager.getRank(rankname2) != null) {
 				if (success) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success-add"),
 							ImmutableMap.<String, String>builder()
@@ -44,7 +44,7 @@ public class cmd_addbuyablerank extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".failed-add"),
 							ImmutableMap.<String, String>builder()
@@ -55,7 +55,7 @@ public class cmd_addbuyablerank extends PowerCommand {
 							'[', ']'));
 				}
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.rank-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())

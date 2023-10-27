@@ -97,8 +97,8 @@ public class CacheManager {
                 PowerSQLConfiguration configuration = new PowerSQLConfiguration(pcm.getString("storage.mysql.host", "127.0.0.1"),
                         pcm.getInt("storage.mysql.port", 3306), pcm.getString("storage.mysql.database", "powerranks"),
                         pcm.getString("storage.mysql.username", "username"), pcm.getString("storage.mysql.password", "password"),
-                        pcm.getBool("storage.mysql.ssl", false), "ranks", "players", "messages");
-                storageManager = new MySQLStorageManager(configuration, pcm.getBool("storage.mysql.verbose", false));
+                        pcm.getBool("storage.mysql.ssl", false), "ranks", "players", "messages", pcm.getBool("storage.mysql.verbose", false));
+                storageManager = new MySQLStorageManager(configuration);
             } else { // Default to yaml
 
                 PowerRanksAddon usedStorageManagerAddon = null;

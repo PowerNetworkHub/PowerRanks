@@ -504,7 +504,7 @@ public class Messages {
 		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 				+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
-		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
+		format = PRUtil.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 				.put("suffix", formatted_suffix)
 				.put("usertag",
 						!PowerRanks.plugin_hook_deluxetags ? usertag
@@ -546,7 +546,7 @@ public class Messages {
 		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
 				+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
-		format = Util.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
+		format = PRUtil.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
 				.put("suffix", formatted_suffix)
 				.put("usertag",
 						!PowerRanks.plugin_hook_deluxetags ? usertag

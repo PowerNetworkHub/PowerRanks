@@ -17,7 +17,6 @@ import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_haspermission extends PowerCommand {
 
@@ -37,7 +36,7 @@ public class cmd_haspermission extends PowerCommand {
 			permissionNode = args[1];
 
 			if (prPlayer == null) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())
@@ -47,7 +46,7 @@ public class cmd_haspermission extends PowerCommand {
 			}
 
 			if (permissionNode == null || permissionNode.length() == 0) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.permission-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("permission", args[1])
@@ -106,7 +105,7 @@ public class cmd_haspermission extends PowerCommand {
 				sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
 						+ ChatColor.BLUE + "===");
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-online"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())

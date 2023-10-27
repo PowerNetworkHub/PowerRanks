@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import com.google.common.collect.ImmutableMap;
 
 import nl.svenar.powerranks.common.structure.PRPlayer;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Messages;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -31,7 +31,7 @@ public class cmd_playerinfo extends PowerCommand {
 			if (targetPlayer != null) {
 				Messages.messagePlayerInfo(sender, targetPlayer, 0);
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())
@@ -46,7 +46,7 @@ public class cmd_playerinfo extends PowerCommand {
 			if (targetPlayer != null) {
 				Messages.messagePlayerInfo(sender, targetPlayer, page);
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())

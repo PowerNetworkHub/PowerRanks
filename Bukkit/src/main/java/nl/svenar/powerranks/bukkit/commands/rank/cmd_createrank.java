@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -33,7 +33,7 @@ public class cmd_createrank extends PowerCommand {
 			String[] forbiddenCharacters = { "`", "~", "!", "@", "$", "%", "^", "*", "(", ")", "{", "}", "[", "]", ":",
 					";", "\"", "'", "|", "\\", "?", "/", ">", "<", ",", ".", "+", "=" };
 			if (success) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".success"),
 						ImmutableMap.<String, String>builder()
@@ -41,8 +41,8 @@ public class cmd_createrank extends PowerCommand {
 								.put("rank", rankname)
 								.build(),
 						'[', ']'));
-				if (Util.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
-					sender.sendMessage(Util.powerFormatter(
+				if (PRUtil.stringContainsItemFromList(rankname, forbiddenColorCharacters)) {
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".warning-color"),
 							ImmutableMap.<String, String>builder()
@@ -52,8 +52,8 @@ public class cmd_createrank extends PowerCommand {
 							'[', ']'));
 				}
 
-				if (Util.stringContainsItemFromList(rankname, forbiddenCharacters)) {
-					sender.sendMessage(Util.powerFormatter(
+				if (PRUtil.stringContainsItemFromList(rankname, forbiddenCharacters)) {
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".warning-character"),
 							ImmutableMap.<String, String>builder()
@@ -63,7 +63,7 @@ public class cmd_createrank extends PowerCommand {
 							'[', ']'));
 				}
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".failed"),
 						ImmutableMap.<String, String>builder()

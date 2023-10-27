@@ -56,7 +56,6 @@ public class MySQLStorageManager extends PowerStorageManager {
 
     private Connection connection;
     private PowerSQLConfiguration sqlConfig;
-    private boolean hideErrors;
 
     /**
      * Initialize this storage method by connecting to the external database
@@ -64,17 +63,16 @@ public class MySQLStorageManager extends PowerStorageManager {
      * @param sqlConfig
      * @param hideErrors
      */
-    public MySQLStorageManager(PowerSQLConfiguration sqlConfig, boolean hideErrors) {
+    public MySQLStorageManager(PowerSQLConfiguration sqlConfig) {
         this.sqlConfig = sqlConfig;
-        this.hideErrors = hideErrors;
-
+        
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
             } catch (ClassNotFoundException ex) {
-                if (!hideErrors)
+                if (!sqlConfig.silentErrors())
                     ex.printStackTrace();
             }
         }
@@ -95,7 +93,7 @@ public class MySQLStorageManager extends PowerStorageManager {
                     sqlConfig.getUsername(), sqlConfig.getPassword());
 
         } catch (SQLException e) {
-            if (!this.hideErrors)
+            if (!this.sqlConfig.silentErrors())
                 e.printStackTrace();
         }
     }
@@ -132,7 +130,7 @@ public class MySQLStorageManager extends PowerStorageManager {
         try {
             this.connection.close();
         } catch (SQLException e) {
-            if (!this.hideErrors)
+            if (!this.sqlConfig.silentErrors())
                 e.printStackTrace();
         }
     }

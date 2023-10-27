@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.data.Users;
@@ -78,7 +79,7 @@ public class OnInteract implements Listener {
 					if (rank != null) {
 						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 						CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands.setrank.success-receiver"),
 								ImmutableMap.<String, String>builder()
@@ -99,7 +100,7 @@ public class OnInteract implements Listener {
 						CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 
 						// Messages.messageSetRankSuccessSender(player, t, rank);
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands.setrank.success-receiver"),
 								ImmutableMap.<String, String>builder()
@@ -120,7 +121,7 @@ public class OnInteract implements Listener {
 						playerRanks.add(rank.getName());
 					}
 					if (playerRanks.size() > 0) {
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage("commands.checkrank.success-self"),
 								ImmutableMap.<String, String>builder()
@@ -129,7 +130,7 @@ public class OnInteract implements Listener {
 										.build(),
 								'[', ']'));
 					} else {
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
 												"commands.checkrank.success-self-none"),
@@ -153,7 +154,7 @@ public class OnInteract implements Listener {
 				if (player.hasPermission("powerranks.signs.usertag")) {
 					if (users.setUserTag(player, sign_argument)) {
 						if (sign_argument.length() > 0) {
-							player.sendMessage(Util.powerFormatter(
+							player.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands.setusertag.success"),
 									ImmutableMap.<String, String>builder()
@@ -162,7 +163,7 @@ public class OnInteract implements Listener {
 											.build(),
 									'[', ']'));
 						} else {
-							player.sendMessage(Util.powerFormatter(
+							player.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"commands.clearusertag.success"),
 									ImmutableMap.<String, String>builder()
@@ -172,7 +173,7 @@ public class OnInteract implements Listener {
 									'[', ']'));
 						}
 					} else {
-						player.sendMessage(Util.powerFormatter(
+						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands.setusertag.failed"),
 								ImmutableMap.<String, String>builder()
@@ -204,7 +205,7 @@ public class OnInteract implements Listener {
 											PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 											CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 
-											player.sendMessage(Util.powerFormatter(
+											player.sendMessage(PRUtil.powerFormatter(
 													PowerRanks.getLanguageManager().getFormattedMessage(
 															"commands.setrank.success-receiver"),
 													ImmutableMap.<String, String>builder()
@@ -215,7 +216,7 @@ public class OnInteract implements Listener {
 										}
 									}
 									// users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
-									player.sendMessage(Util.powerFormatter(
+									player.sendMessage(PRUtil.powerFormatter(
 											PowerRanks.getLanguageManager().getFormattedMessage(
 													"commands.buyrank.success-buy"),
 											ImmutableMap.<String, String>builder()
@@ -224,7 +225,7 @@ public class OnInteract implements Listener {
 													.build(),
 											'[', ']'));
 								} else {
-									player.sendMessage(Util.powerFormatter(
+									player.sendMessage(PRUtil.powerFormatter(
 											PowerRanks.getLanguageManager().getFormattedMessage(
 													"commands.buyrank.failed-buy-not-enough-money"),
 											ImmutableMap.<String, String>builder()
@@ -234,7 +235,7 @@ public class OnInteract implements Listener {
 											'[', ']'));
 								}
 							} else {
-								player.sendMessage(Util.powerFormatter(
+								player.sendMessage(PRUtil.powerFormatter(
 										PowerRanks.getLanguageManager().getFormattedMessage(
 												"commands.buyrank.failed-buy-not-enough-money"),
 										ImmutableMap.<String, String>builder()

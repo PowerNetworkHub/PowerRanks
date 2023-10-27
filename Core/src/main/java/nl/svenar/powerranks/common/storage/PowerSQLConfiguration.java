@@ -39,6 +39,7 @@ public class PowerSQLConfiguration {
     private String tableRanks;
     private String tablePlayers;
     private String tableMessages;
+    private boolean silentErrors;
 
     /**
      * Constructor to initialize SQL connection data
@@ -55,7 +56,7 @@ public class PowerSQLConfiguration {
      */
     public PowerSQLConfiguration(String host, int port, String database, String username, String password,
             boolean useSSL,
-            String tableRanks, String tablePlayers, String tableMessages) {
+            String tableRanks, String tablePlayers, String tableMessages, boolean silentErrors) {
         this.host = host;
         this.port = port;
         this.database = database;
@@ -65,6 +66,7 @@ public class PowerSQLConfiguration {
         this.tableRanks = tableRanks;
         this.tablePlayers = tablePlayers;
         this.tableMessages = tableMessages;
+        this.silentErrors = silentErrors;
     }
 
     /**
@@ -140,5 +142,9 @@ public class PowerSQLConfiguration {
      */
     public String getTableMessages() {
         return this.tableMessages;
+    }
+
+    public boolean silentErrors() {
+        return this.silentErrors;
     }
 }

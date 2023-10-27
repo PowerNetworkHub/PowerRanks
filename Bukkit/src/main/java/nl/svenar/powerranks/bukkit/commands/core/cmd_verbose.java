@@ -8,7 +8,7 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Messages;
 import nl.svenar.powerranks.bukkit.data.PowerRanksVerbose;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -59,7 +59,7 @@ public class cmd_verbose extends PowerCommand {
 			} else if (verboseType.equals("stop")) {
 				if (PowerRanksVerbose.USE_VERBOSE) {
 					PowerRanksVerbose.stop();
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".stopped"),
 							ImmutableMap.<String, String>builder()

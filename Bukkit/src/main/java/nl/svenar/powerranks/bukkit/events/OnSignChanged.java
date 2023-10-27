@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.data.Users;
 import nl.svenar.powerranks.bukkit.util.Util;
@@ -38,7 +39,7 @@ public class OnSignChanged implements Listener {
 
 				if (sign_command.equalsIgnoreCase("promote") || sign_command.equalsIgnoreCase("demote")
 						|| sign_command.equalsIgnoreCase("checkrank") || sign_command.equalsIgnoreCase("gui")) {
-					event.getPlayer().sendMessage(Util.powerFormatter(
+					event.getPlayer().sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"messages.signs.created"),
 							ImmutableMap.<String, String>builder()
@@ -56,7 +57,7 @@ public class OnSignChanged implements Listener {
 					}
 					if (!rank_exists) {
 
-						event.getPlayer().sendMessage(Util.powerFormatter(
+						event.getPlayer().sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"general.rank-not-found"),
 								ImmutableMap.<String, String>builder()
@@ -66,7 +67,7 @@ public class OnSignChanged implements Listener {
 								'[', ']'));
 						event.setLine(3, PowerRanks.chatColor("&4Error", true));
 					} else {
-						event.getPlayer().sendMessage(Util.powerFormatter(
+						event.getPlayer().sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"messages.signs.created"),
 								ImmutableMap.<String, String>builder()
@@ -88,7 +89,7 @@ public class OnSignChanged implements Listener {
 						usertag_exists = true;
 					}
 					if (!usertag_exists) {
-						event.getPlayer().sendMessage(Util.powerFormatter(
+						event.getPlayer().sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"messages.usertags.not-found"),
 								ImmutableMap.<String, String>builder()
@@ -98,7 +99,7 @@ public class OnSignChanged implements Listener {
 								'[', ']'));
 						event.setLine(3, PowerRanks.chatColor("&4Error", true));
 					} else {
-						event.getPlayer().sendMessage(Util.powerFormatter(
+						event.getPlayer().sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"messages.signs.created"),
 								ImmutableMap.<String, String>builder()
@@ -109,7 +110,7 @@ public class OnSignChanged implements Listener {
 				} else if (sign_command.equalsIgnoreCase("rankup")) {
 					List<PRRank> ranks = s.getGroups();
 					if (sign_argument.length() == 0) {
-						event.getPlayer().sendMessage(Util.powerFormatter(
+						event.getPlayer().sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"messages.signs.created"),
 								ImmutableMap.<String, String>builder()
@@ -125,7 +126,7 @@ public class OnSignChanged implements Listener {
 							}
 						}
 						if (!rank_exists) {
-							event.getPlayer().sendMessage(Util.powerFormatter(
+							event.getPlayer().sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager().getFormattedMessage(
 											"general.rank-not-found"),
 									ImmutableMap.<String, String>builder()
@@ -137,7 +138,7 @@ public class OnSignChanged implements Listener {
 						} else {
 							if (sign_argument2.length() > 0) {
 								if (!sign_argument2.chars().anyMatch(Character::isLetter)) {
-									event.getPlayer().sendMessage(Util.powerFormatter(
+									event.getPlayer().sendMessage(PRUtil.powerFormatter(
 											PowerRanks.getLanguageManager().getFormattedMessage(
 													"messages.signs.created"),
 											ImmutableMap.<String, String>builder()
@@ -145,7 +146,7 @@ public class OnSignChanged implements Listener {
 													.build(),
 											'[', ']'));
 								} else {
-									event.getPlayer().sendMessage(Util.powerFormatter(
+									event.getPlayer().sendMessage(PRUtil.powerFormatter(
 											PowerRanks.getLanguageManager().getFormattedMessage(
 													"messages.signs.unknown-command"),
 											ImmutableMap.<String, String>builder()
@@ -156,7 +157,7 @@ public class OnSignChanged implements Listener {
 								}
 							} else {
 								event.setLine(3, String.valueOf(s.getRankCost(s.getRankIgnoreCase(sign_argument))));
-								event.getPlayer().sendMessage(Util.powerFormatter(
+								event.getPlayer().sendMessage(PRUtil.powerFormatter(
 										PowerRanks.getLanguageManager().getFormattedMessage(
 												"messages.signs.created"),
 										ImmutableMap.<String, String>builder()
@@ -168,7 +169,7 @@ public class OnSignChanged implements Listener {
 						}
 					}
 				} else {
-					event.getPlayer().sendMessage(Util.powerFormatter(
+					event.getPlayer().sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"messages.signs.unknown-command"),
 							ImmutableMap.<String, String>builder()

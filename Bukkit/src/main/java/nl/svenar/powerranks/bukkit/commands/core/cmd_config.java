@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableMap;
 
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -55,7 +55,7 @@ public class cmd_config extends PowerCommand {
 
 				this.plugin.updateAllPlayersTABlist();
 
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".removed-world-tag"),
 						ImmutableMap.<String, String>builder()
@@ -72,7 +72,7 @@ public class cmd_config extends PowerCommand {
 				boolean enable = args[0].equalsIgnoreCase("enable");
 				if (args[1].equalsIgnoreCase("chat_formatting")) {
 
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -87,7 +87,7 @@ public class cmd_config extends PowerCommand {
 					PowerRanks.getConfigManager().setBool("chat.enabled", enable);
 
 				} else if (args[1].equalsIgnoreCase("tablist_formatting")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -103,7 +103,7 @@ public class cmd_config extends PowerCommand {
 					PowerRanks.getConfigManager().setBool("tablist_modification.enabled", enable);
 
 				} else if (args[1].equalsIgnoreCase("casesensitive_permissions")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -119,7 +119,7 @@ public class cmd_config extends PowerCommand {
 					PowerRanks.getConfigManager().setBool("general.case-sensitive-permissions", enable);
 
 				} else if (args[1].equalsIgnoreCase("op")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -135,7 +135,7 @@ public class cmd_config extends PowerCommand {
 					PowerRanks.getConfigManager().setBool("general.disable-op", !enable);
 
 				} else if (args[1].equalsIgnoreCase("bungeecord")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -167,7 +167,7 @@ public class cmd_config extends PowerCommand {
 					try {
 						int time = Integer.parseInt(args[2]);
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".state-changed"),
 								ImmutableMap.<String, String>builder()
@@ -189,7 +189,7 @@ public class cmd_config extends PowerCommand {
 				}
 
 			} else if (args[1].equalsIgnoreCase("language")) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".state-changed"),
 						ImmutableMap.<String, String>builder()
@@ -205,7 +205,7 @@ public class cmd_config extends PowerCommand {
 				PowerRanks.getConfigManager().setString("general.language", args[2]);
 
 			} else if (args[1].equalsIgnoreCase("bungeecord_server_name")) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".state-changed"),
 						ImmutableMap.<String, String>builder()
@@ -224,7 +224,7 @@ public class cmd_config extends PowerCommand {
 				try {
 					int time = Integer.parseInt(args[2]);
 
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()

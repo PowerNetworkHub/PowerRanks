@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
@@ -31,7 +32,7 @@ public class cmd_nick extends PowerCommand {
 				if (sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + ".setown")) {
 					if (updateNickname(targetPlayer, nickname)) {
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
 												"commands." + commandName.toLowerCase() + ".setown.success"),
@@ -42,7 +43,7 @@ public class cmd_nick extends PowerCommand {
 								'[', ']'));
 					} else {
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
 												"commands." + commandName.toLowerCase() + ".setown.failed"),
@@ -65,7 +66,7 @@ public class cmd_nick extends PowerCommand {
 				if (sender.hasPermission("powerranks.cmd." + commandName.toLowerCase() + ".setother")) {
 					if (updateNickname(targetPlayer, nickname)) {
 
-						targetPlayer.sendMessage(Util.powerFormatter(
+						targetPlayer.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
 												"commands." + commandName.toLowerCase() + ".setown.success"),
@@ -75,7 +76,7 @@ public class cmd_nick extends PowerCommand {
 										.build(),
 								'[', ']'));
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
 												"commands." + commandName.toLowerCase() + ".setother.success"),
@@ -86,7 +87,7 @@ public class cmd_nick extends PowerCommand {
 								'[', ']'));
 
 					} else {
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage(
 												"commands." + commandName.toLowerCase() + ".setother.failed"),

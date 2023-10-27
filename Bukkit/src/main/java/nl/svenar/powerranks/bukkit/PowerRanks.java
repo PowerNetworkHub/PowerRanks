@@ -178,7 +178,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		new Messages(this);
 		new PowerRanksVerbose(this);
 
-		this.createDir(PowerRanks.fileLoc);
+		PRUtil.createDir(PowerRanks.fileLoc);
 
 		PowerRanks.log.info("Loading config file");
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
@@ -626,7 +626,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							prPlayername = Util.getNameFromAPI(prPlayer.getUUID().toString());
 						}
 
-						getServer().getConsoleSender().sendMessage(Util.powerFormatter(
+						getServer().getConsoleSender().sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager()
 										.getFormattedMessage("general.player-rank-expired-console"),
 								ImmutableMap.<String, String>builder()
@@ -640,7 +640,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							PowerRanks.getInstance().updateTablistName(player);
 							PowerRanks.getInstance().getTablistManager().updateSorting(player);
 
-							player.sendMessage(Util.powerFormatter(
+							player.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getLanguageManager()
 											.getFormattedMessage("general.player-rank-has-expired"),
 									ImmutableMap.<String, String>builder()
@@ -820,30 +820,13 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return configYaml.isSet(path);
 	}
 
-	public void createDir(final String path) {
-		final File file = new File(path);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-	}
-
-	private boolean deleteDir(File directoryToBeDeleted) {
-		File[] allContents = directoryToBeDeleted.listFiles();
-		if (allContents != null) {
-			for (File file : allContents) {
-				this.deleteDir(file);
-			}
-		}
-		return directoryToBeDeleted.delete();
-	}
-
 	public void factoryReset(CommandSender sender) {
 
 		CacheManager.setRanks(new ArrayList<PRRank>());
 		CacheManager.setPlayers(new ArrayList<PRPlayer>());
 
-		this.deleteDir(new File(PowerRanks.fileLoc));
-		this.createDir(PowerRanks.fileLoc);
+		PRUtil.deleteDir(new File(PowerRanks.fileLoc));
+		PRUtil.createDir(PowerRanks.fileLoc);
 
 		configManager = new YAMLConfigManager(PowerRanks.fileLoc, "config.yml", "config.yml");
 		languageManager = new LanguageManager();
@@ -933,7 +916,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					prefix_format = prefix.length() == 0 ? prefix_format.replaceAll("\\[prefix\\]( )?", "")
 							: prefix_format;
-					prefix_format = Util.powerFormatter(prefix_format,
+					prefix_format = PRUtil.powerFormatter(prefix_format,
 							ImmutableMap.<String, String>builder()
 									.put("prefix", prefix)
 									.put("usertag", !PowerRanks.plugin_hook_deluxetags ? usertag
@@ -943,7 +926,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 					suffix_format = suffix.length() == 0 ? suffix_format.replaceAll("( )?\\[suffix\\]", "")
 							: suffix_format;
-					suffix_format = Util.powerFormatter(suffix_format,
+					suffix_format = PRUtil.powerFormatter(suffix_format,
 							ImmutableMap.<String, String>builder()
 									.put("suffix", suffix)
 									.put("usertag",
@@ -1079,7 +1062,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				format = tmp_format;
 			}
 
-			format = Util.powerFormatter(format,
+			format = PRUtil.powerFormatter(format,
 					ImmutableMap.<String, String>builder().put("prefix", prefix).put("suffix", suffix)
 							.put("usertag", usertag)
 							.put("player", player_formatted_name).put("world", player.getWorld().getName()).build(),

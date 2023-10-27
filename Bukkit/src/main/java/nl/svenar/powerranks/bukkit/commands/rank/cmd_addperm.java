@@ -9,10 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_addperm extends PowerCommand {
 
@@ -39,7 +39,7 @@ public class cmd_addperm extends PowerCommand {
 			final boolean result = this.users.addPermission(rankname, permission, allowed);
 			if (result) {
 				if (rankname.equals("*")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success-all"),
 							ImmutableMap.<String, String>builder()
@@ -49,7 +49,7 @@ public class cmd_addperm extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success"),
 							ImmutableMap.<String, String>builder()
@@ -60,7 +60,7 @@ public class cmd_addperm extends PowerCommand {
 							'[', ']'));
 				}
 			} else { // Rank not found
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".failed"),
 						ImmutableMap.<String, String>builder()

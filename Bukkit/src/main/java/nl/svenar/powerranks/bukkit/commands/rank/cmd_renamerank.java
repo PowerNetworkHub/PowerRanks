@@ -9,10 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_renamerank extends PowerCommand {
 
@@ -32,7 +32,7 @@ public class cmd_renamerank extends PowerCommand {
 			final String to = args[1];
 			final boolean result = this.users.renameRank(from, to);
 			if (result) {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".success"),
 						ImmutableMap.<String, String>builder()
@@ -42,7 +42,7 @@ public class cmd_renamerank extends PowerCommand {
 								.build(),
 						'[', ']'));
 			} else { // Rank not found or target name already exists
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".failed"),
 						ImmutableMap.<String, String>builder()

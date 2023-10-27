@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -33,7 +33,7 @@ public class cmd_clearusertag extends PowerCommand {
 				final String playername = sender.getName();
 				final boolean result = this.users.clearUserTag(playername);
 				if (result) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".success"),
 							ImmutableMap.<String, String>builder()
@@ -42,7 +42,7 @@ public class cmd_clearusertag extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".failed"),
 							ImmutableMap.<String, String>builder()
@@ -64,7 +64,7 @@ public class cmd_clearusertag extends PowerCommand {
 					final String playername = args[0];
 					final boolean result = this.users.clearUserTag(playername);
 					if (result) {
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".success"),
 								ImmutableMap.<String, String>builder()
@@ -73,7 +73,7 @@ public class cmd_clearusertag extends PowerCommand {
 										.build(),
 								'[', ']'));
 					} else {
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".failed"),
 								ImmutableMap.<String, String>builder()

@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.addons.PowerRanksAddon;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
-import nl.svenar.powerranks.bukkit.util.Util;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -52,7 +52,7 @@ public class cmd_addoninfo extends PowerCommand {
 				sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
 						+ ChatColor.BLUE + "===");
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage(
 								"commands." + commandName.toLowerCase() + ".failed-addon-not-found"),
 						ImmutableMap.<String, String>builder()

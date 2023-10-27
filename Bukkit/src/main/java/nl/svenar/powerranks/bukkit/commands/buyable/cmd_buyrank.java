@@ -10,13 +10,13 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
 import nl.svenar.powerranks.bukkit.data.Messages;
 import nl.svenar.powerranks.bukkit.data.Users;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_buyrank extends PowerCommand {
 
@@ -56,7 +56,7 @@ public class cmd_buyrank extends PowerCommand {
 								PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 								CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 
-								sender.sendMessage(Util.powerFormatter(
+								sender.sendMessage(PRUtil.powerFormatter(
 										PowerRanks.getLanguageManager().getFormattedMessage(
 												"commands." + commandName.toLowerCase() + ".success-buy"),
 										ImmutableMap.<String, String>builder()
@@ -78,7 +78,7 @@ public class cmd_buyrank extends PowerCommand {
 							}
 						}
 					} else {
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".failed-buy-not-enough-money"),
 								ImmutableMap.<String, String>builder()

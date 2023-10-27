@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
+import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_checkrank extends PowerCommand {
 
@@ -35,7 +35,7 @@ public class cmd_checkrank extends PowerCommand {
 					playerRanks.add(rank.getName());
 				}
 				if (playerRanks.size() > 0) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage("commands." + commandName.toLowerCase() + ".success-self"),
 							ImmutableMap.<String, String>builder()
@@ -44,7 +44,7 @@ public class cmd_checkrank extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".success-self-none"),
@@ -65,7 +65,7 @@ public class cmd_checkrank extends PowerCommand {
 					playerRanks.add(rank.getName());
 				}
 				if (playerRanks.size() > 0) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage("commands." + commandName.toLowerCase() + ".success-target"),
 							ImmutableMap.<String, String>builder()
@@ -75,7 +75,7 @@ public class cmd_checkrank extends PowerCommand {
 									.build(),
 							'[', ']'));
 				} else {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager()
 									.getFormattedMessage(
 											"commands." + commandName.toLowerCase() + ".success-target-none"),
@@ -86,7 +86,7 @@ public class cmd_checkrank extends PowerCommand {
 							'[', ']'));
 				}
 			} else {
-				sender.sendMessage(Util.powerFormatter(
+				sender.sendMessage(PRUtil.powerFormatter(
 						PowerRanks.getLanguageManager().getFormattedMessage("general.player-not-found"),
 						ImmutableMap.<String, String>builder()
 								.put("player", sender.getName())

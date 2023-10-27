@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerCommand;
-import nl.svenar.powerranks.bukkit.util.Util;
 
 public class cmd_tablist extends PowerCommand {
 
@@ -39,7 +38,7 @@ public class cmd_tablist extends PowerCommand {
 				boolean enable = args[0].equalsIgnoreCase("enable");
 
 				if (args[1].equalsIgnoreCase("tablist_sorting")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -58,7 +57,7 @@ public class cmd_tablist extends PowerCommand {
 					PowerRanks.getInstance().getTablistManager().start();
 
 				} else if (args[1].equalsIgnoreCase("reverse_tablist_sorting")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -77,7 +76,7 @@ public class cmd_tablist extends PowerCommand {
 					PowerRanks.getInstance().getTablistManager().start();
 
 				} else if (args[1].equalsIgnoreCase("header_footer")) {
-					sender.sendMessage(Util.powerFormatter(
+					sender.sendMessage(PRUtil.powerFormatter(
 							PowerRanks.getLanguageManager().getFormattedMessage(
 									"commands." + commandName.toLowerCase() + ".state-changed"),
 							ImmutableMap.<String, String>builder()
@@ -112,7 +111,7 @@ public class cmd_tablist extends PowerCommand {
 					try {
 						int time = Integer.parseInt(args[2]);
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".state-changed"),
 								ImmutableMap.<String, String>builder()
@@ -138,7 +137,7 @@ public class cmd_tablist extends PowerCommand {
 					try {
 						int time = Integer.parseInt(args[2]);
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".state-changed"),
 								ImmutableMap.<String, String>builder()
@@ -249,7 +248,7 @@ public class cmd_tablist extends PowerCommand {
 						}
 						int time = Integer.parseInt(args[2]);
 
-						sender.sendMessage(Util.powerFormatter(
+						sender.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getLanguageManager().getFormattedMessage(
 										"commands." + commandName.toLowerCase() + ".state-changed"),
 								ImmutableMap.<String, String>builder()
