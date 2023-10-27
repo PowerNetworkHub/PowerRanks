@@ -377,27 +377,47 @@ public class RanksAPI {
      * @return true if the inheritance was added, false if the rank does not exists or the inheritance already exists
      */
     public boolean addInheritance(String name, String inherit) {
-        return addInheritance(get(name), inherit);
+        return addInheritance(get(name), get(inherit));
     }
 
     /**
      * Add a rank as inheritance to a rank
-     * @param name
+     * @param PRRank
      * @param inherit
-     * @return true if the inheritance was added, false if the rank does not exists or the inheritance already exists
+     * @return
      */
     public boolean addInheritance(PRRank rank, String inherit) {
-        if (rank == null) {
+        return addInheritance(rank, get(inherit));
+    }
+
+    /**
+     * Add a rank as inheritance to a rank
+     * @param rank
+     * @param inheritRank
+     * @return
+     */
+    public boolean addInheritance(String name, PRRank inheritRank) {
+        return addInheritance(get(name), inheritRank);
+    }
+
+    /**
+     * Add a rank as inheritance to a rank
+     * @param PRRank
+     * @param PRRank
+     * @return true if the inheritance was added, false if the rank does not exists or the inheritance already exists
+     */
+    public boolean addInheritance(PRRank rank, PRRank inheritRank) {
+        if (rank == null || inheritRank == null) {
             return false;
         }
 
-        for (String prPermission : rank.getInheritances()) {
-            if (prPermission.equalsIgnoreCase(inherit)) {
+        for (String inheritance : rank.getInheritances()) {
+            if (inheritance.equalsIgnoreCase(inheritRank.getName())) {
                 return false;
             }
         }
 
-        rank.getInheritances().add(inherit);
+        rank.getInheritances().add(inheritRank.getName());
 
         return true;
     }
@@ -409,23 +429,43 @@ public class RanksAPI {
      * @return true if the inheritance was removed, false if the rank does not exists or the inheritance does not exists
      */
     public boolean removeInheritance(String name, String inherit) {
-        return removeInheritance(get(name), inherit);
+        return removeInheritance(get(name), get(inherit));
+    }
+
+    /**
+     * Remove a rank as inheritance from a rank
+     * @param PRRank
+     * @param inherit
+     * @return true if the inheritance was removed, false if the rank does not exists or the inheritance does not exists
+     */
+    public boolean removeInheritance(PRRank rank, String inherit) {
+        return removeInheritance(rank, get(inherit));
     }
 
     /**
      * Remove a rank as inheritance from a rank
      * @param name
-     * @param inherit
+     * @param inheritRank
      * @return true if the inheritance was removed, false if the rank does not exists or the inheritance does not exists
      */
-    public boolean removeInheritance(PRRank rank, String inherit) {
+    public boolean removeInheritance(String name, PRRank inheritRank) {
+        return removeInheritance(get(name), inheritRank);
+    }
+
+    /**
+     * Remove a rank as inheritance from a rank
+     * @param PRRank
+     * @param PRRank
+     * @return true if the inheritance was removed, false if the rank does not exists or the inheritance does not exists
+     */
+    public boolean removeInheritance(PRRank rank, PRRank inheritRank) {
         if (rank == null) {
             return false;
         }
 
         boolean found = false;
-        for (String prPermission : rank.getInheritances()) {
-            if (prPermission.equalsIgnoreCase(inherit)) {
+        for (String inheritance : rank.getInheritances()) {
+            if (inheritance.equalsIgnoreCase(inheritRank.getName())) {
                 found = true;
                 break;
             }
@@ -435,7 +475,7 @@ public class RanksAPI {
             return false;
         }
 
-        rank.getInheritances().remove(inherit);
+        rank.getInheritances().remove(inheritRank.getName());
 
         return true;
     }
