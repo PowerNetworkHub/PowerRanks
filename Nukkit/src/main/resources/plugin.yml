@@ -1,0 +1,11 @@
+name: ${output.name}
+version: ${project.version}
+main: nl.svenar.powerranks.nukkit.PowerRanks
+api: ["1.0.14"]
+author: svenar_nl
+load: STARTUP
+website: 'https://powerranks.nl'
+commands:
+  powerranks:
+    aliases: [pr]
+    description: Main Command
