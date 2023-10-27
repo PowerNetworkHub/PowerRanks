@@ -1,0 +1,19 @@
+general:
+  language: en
+  autosave-files-interval: 600
+  playtime-update-interval: 60
+  case-sensitive-permissions: false
+  disable-op: false
+storage:
+  type: YAML
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: powerranks
+    username: username
+    password: password
+    ssl: false
+    verbose: false
+chat:
+  enabled: true
+  format: '&a[world]&r [usertag] [prefix] [player] [suffix]&r: [msg]'
