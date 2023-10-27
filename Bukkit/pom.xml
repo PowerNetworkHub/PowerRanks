@@ -184,11 +184,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>me.neznamy</groupId>
-			<artifactId>tab-api</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
 			<groupId>me.clip.deluxetags</groupId>
 			<artifactId>deluxetags</artifactId>
 			<version>1.8.2</version>

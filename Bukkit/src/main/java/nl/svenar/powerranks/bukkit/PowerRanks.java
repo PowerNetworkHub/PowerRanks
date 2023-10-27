@@ -73,7 +73,6 @@ import nl.svenar.powerranks.bukkit.events.OnSignChanged;
 import nl.svenar.powerranks.bukkit.events.OnWorldChange;
 import nl.svenar.powerranks.bukkit.external.DeluxeTagsHook;
 import nl.svenar.powerranks.bukkit.external.PowerRanksExpansion;
-import nl.svenar.powerranks.bukkit.external.TABHook;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
 import nl.svenar.powerranks.bukkit.gui.GUI;
 import nl.svenar.powerranks.bukkit.metrics.Metrics;
@@ -124,7 +123,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public static boolean vaultEconomyEnabled = false;
 	public static boolean vaultPermissionsEnabled = false;
 	public static PowerRanksExpansion placeholderapiExpansion;
-	public static TABHook plugin_hook_tab;
 	public static boolean plugin_hook_deluxetags = false;
 	public static boolean plugin_hook_nametagedit = false;
 	// Soft Dependencies
@@ -666,10 +664,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 		}.runTaskTimer(this, Util.TASK_TPS, Util.TASK_TPS * 10);
-	}
-
-	public TABHook getTABHook() {
-		return plugin_hook_tab;
 	}
 
 	public DeluxeTagsHook getDeluxeTagsHook() {
