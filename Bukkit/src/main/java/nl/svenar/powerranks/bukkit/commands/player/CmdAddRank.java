@@ -30,28 +30,38 @@ public class CmdAddRank extends PowerBaseCommand {
     @Subcommand("addrank")
     @CommandPermission("powerranks.cmd.addrank")
     @Syntax("<player> <rank> [tags]")
-    @CommandCompletion("@players @ranks expires:|expires:1h|expires:30d|expires:1y|world:|world:world|world:world_nether|world:world_the_end")
+    @CommandCompletion("@prplayers @prranks expires:|expires:1h|expires:30d|expires:1y|world:|world:world|world:world_nether|world:world_the_end")
     public void onAddrank(CommandSender sender, String targetName, String rankname, @Optional String... tags) {
         PRPlayer prplayer = getPRPlayer(targetName);
         PRRank prrank = getPRRank(rankname);
 
         if (prplayer == null) {
-            sendMessage(sender, "general.player-not-found", ImmutableMap.of( //
+            sendMessage(sender, "player-not-found", ImmutableMap.of( //
                     "target", targetName //
             ));
             return;
         }
 
         if (prrank == null) {
-            sendMessage(sender, "general.rank-not-found", ImmutableMap.of( //
+            sendMessage(sender, "rank-not-found", ImmutableMap.of( //
                     "rank", rankname //
             ));
             return;
         }
 
+        if (numTagsStartsWith(tags, "expires") > 1) {
+            sendMessage(sender, "player-rank-tag-failed-multiple-expires");
+            return;
+        }
+
+        if (numTagsEndsWith(tags, ":") > 0) {
+            sendMessage(sender, "player-rank-tag-failed-no-value");
+            return;
+        }
+
         for (PRPlayerRank prplayerrank : prplayer.getRanks()) {
             if (prplayerrank.getName().equalsIgnoreCase(prrank.getName())) {
-                sendMessage(sender, "commands.addrank.failed-already-has-rank", ImmutableMap.of( //
+                sendMessage(sender, "player-rank-add-failed-already-has-rank", ImmutableMap.of( //
                         "player", targetName,
                         "rank", prrank.getName() //
                 ));
@@ -62,14 +72,14 @@ public class CmdAddRank extends PowerBaseCommand {
 
         prplayer.getRanks().add(new PRPlayerRank(prrank, tags));
 
-        sendMessage(sender, "commands.addrank.success-executor", ImmutableMap.of( //
+        sendMessage(sender, "player-rank-add-success-sender", ImmutableMap.of( //
                 "player", targetName,
                 "rank", prrank.getName() //
         ));
 
         Player target = Util.getPlayerByName(targetName);
         if (target != null) {
-            sendMessage(target, "commands.addrank.success-receiver", ImmutableMap.of( //
+            sendMessage(target, "player-rank-add-success-receiver", ImmutableMap.of( //
                 "player", sender.getName(),
                 "rank", prrank.getName() //
         ));

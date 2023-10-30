@@ -29,20 +29,20 @@ public class CmdDelRank extends PowerBaseCommand {
     @Subcommand("delrank")
     @CommandPermission("powerranks.cmd.delrank")
     @Syntax("<player> <rank> [tags]")
-    @CommandCompletion("@players @ranks")
+    @CommandCompletion("@prplayers @prranks")
     public void onDelrank(CommandSender sender, String targetName, String rankname) {
         PRPlayer prplayer = getPRPlayer(targetName);
         PRRank prrank = getPRRank(rankname);
 
         if (prplayer == null) {
-            sendMessage(sender, "general.player-not-found", ImmutableMap.of( //
+            sendMessage(sender, "player-not-found", ImmutableMap.of( //
                     "target", targetName //
             ));
             return;
         }
 
         if (prrank == null) {
-            sendMessage(sender, "general.rank-not-found", ImmutableMap.of( //
+            sendMessage(sender, "rank-not-found", ImmutableMap.of( //
                     "rank", rankname //
             ));
             return;
@@ -58,20 +58,20 @@ public class CmdDelRank extends PowerBaseCommand {
         }
 
         if (hasRank) {
-            sendMessage(sender, "commands.delrank.success-executor", ImmutableMap.of( //
+            sendMessage(sender, "player-rank-remove-success-sender", ImmutableMap.of( //
                     "player", targetName,
                     "rank", prrank.getName() //
             ));
 
             Player target = Util.getPlayerByName(targetName);
             if (target != null) {
-                sendMessage(target, "commands.delrank.success-receiver", ImmutableMap.of( //
+                sendMessage(target, "player-rank-remove-success-receiver", ImmutableMap.of( //
                         "player", sender.getName(),
                         "rank", prrank.getName() //
                 ));
             }
         } else {
-            sendMessage(sender, "commands.delrank.failed-does-not-have-rank", ImmutableMap.of( //
+            sendMessage(sender, "player-does-not-have-rank", ImmutableMap.of( //
                     "player", targetName,
                     "rank", prrank.getName() //
             ));

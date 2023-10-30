@@ -55,7 +55,6 @@ public class LanguageManager {
         path = "lang." + this.language + "." + path;
         String output = this.languageManager.getString(path);
         output = output == null ? path : output;
-        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + output;
         return output;
     }
 
@@ -87,7 +86,7 @@ public class LanguageManager {
         path = "lang." + this.language + "." + path;
         String output = this.languageManager.getString(path);
         output = output == null ? path : output;
-        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
+        output = (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
         return output;
     }
 

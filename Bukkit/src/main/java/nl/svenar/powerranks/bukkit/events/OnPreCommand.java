@@ -1,6 +1,7 @@
 package nl.svenar.powerranks.bukkit.events;
 
-import org.bukkit.ChatColor;
+import java.util.HashMap;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -8,6 +9,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
 import nl.svenar.powerranks.bukkit.PowerRanks;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 public class OnPreCommand implements Listener {
 
@@ -20,7 +22,10 @@ public class OnPreCommand implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onServerCommand(ServerCommandEvent event) {
         if (this.handleCommand(event.getCommand())) {
-            event.getSender().sendMessage(plugin.plp + ChatColor.RED + "This command is disabled");
+            String langPrefix = plugin.getLanguageManager().getFormattedMessage("command-disabled");
+            String langLine = plugin.getLanguageManager().getFormattedMessage("command-disabled");
+            String output = PRUtil.powerFormatter(langPrefix + " " + langLine, new HashMap<>(), '[', ']');
+            event.getSender().sendMessage(output);
             event.setCancelled(true);
         }
     }
@@ -28,7 +33,10 @@ public class OnPreCommand implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         if (this.handleCommand(removeDash(event.getMessage()))) {
-            event.getPlayer().sendMessage(plugin.plp + ChatColor.RED + "This command is disabled");
+            String langPrefix = plugin.getLanguageManager().getFormattedMessage("command-disabled");
+            String langLine = plugin.getLanguageManager().getFormattedMessage("command-disabled");
+            String output = PRUtil.powerFormatter(langPrefix + " " + langLine, new HashMap<>(), '[', ']');
+            event.getPlayer().sendMessage(output);
             event.setCancelled(true);
         }
     }

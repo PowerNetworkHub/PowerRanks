@@ -108,7 +108,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public AddonsManager addonsManager;
 	private TablistManager tablistManager;
 	private static BukkitPowerColor powerColor;
-	public String plp;
 	public static Logger log;
 	public static String fileLoc;
 	public static String factoryresetid = null;
@@ -143,8 +142,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	public PowerRanks() {
 		PowerRanks.pdf = this.getDescription();
-		this.plp = ChatColor.BLACK + "[" + ChatColor.AQUA + PowerRanks.pdf.getName() + ChatColor.BLACK + "]"
-				+ ChatColor.RESET + " ";
 		PowerRanks.fileLoc = this.getDataFolder() + File.separator;
 		this.updatemsg = "";
 	}
@@ -314,7 +311,9 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		this.acfManager.getCommandReplacements().addReplacement("powerrankscommand", "powerranks|pr");
 
-		this.acfManager.getCommandCompletions().registerAsyncCompletion("ranks",
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("prplayers",
+				c -> PRCache.getPlayers().stream().map(PRPlayer::getName).collect(Collectors.toList()));
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("prranks",
 				c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
 
 		this.acfManager.registerCommand(new MainCommand(this));
@@ -660,8 +659,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						}
 
 						getServer().getConsoleSender().sendMessage(PRUtil.powerFormatter(
-								getLanguageManager()
-										.getFormattedMessage("general.player-rank-expired-console"),
+								getLanguageManager().getFormattedMessage("prefix") + " " +
+										getLanguageManager().getFormattedMessage("player-rank-expired-console"),
 								ImmutableMap.<String, String>builder()
 										.put("player", prPlayername)
 										.put("rank", rank.getName())
@@ -674,8 +673,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 							getTablistManager().updateSorting(player);
 
 							player.sendMessage(PRUtil.powerFormatter(
-									getLanguageManager()
-											.getFormattedMessage("general.player-rank-has-expired"),
+									getLanguageManager().getFormattedMessage("prefix") + " " +
+											getLanguageManager().getFormattedMessage("player-rank-has-expired"),
 									ImmutableMap.<String, String>builder()
 											.put("player", player.getName())
 											.put("rank", rank.getName())

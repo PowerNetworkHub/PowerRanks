@@ -30,36 +30,46 @@ public class CmdSetRank extends PowerBaseCommand {
     @Subcommand("setrank")
     @CommandPermission("powerranks.cmd.setrank")
     @Syntax("<player> <rank> [tags]")
-    @CommandCompletion("@players @ranks expires:|expires:1h|expires:30d|expires:1y|world:|world:world|world:world_nether|world:world_the_end")
+    @CommandCompletion("@prplayers @prranks expires:|expires:1h|expires:30d|expires:1y|world:|world:world|world:world_nether|world:world_the_end")
     public void onSetrank(CommandSender sender, String targetName, String rankname, @Optional String... tags) {
         PRPlayer prplayer = getPRPlayer(targetName);
         PRRank prrank = getPRRank(rankname);
 
         if (prplayer == null) {
-            sendMessage(sender, "general.player-not-found", ImmutableMap.of( //
+            sendMessage(sender, "player-not-found", ImmutableMap.of( //
                     "target", targetName //
             ));
             return;
         }
 
         if (prrank == null) {
-            sendMessage(sender, "general.rank-not-found", ImmutableMap.of( //
+            sendMessage(sender, "rank-not-found", ImmutableMap.of( //
                     "rank", rankname //
             ));
+            return;
+        }
+
+        if (numTagsStartsWith(tags, "expires") > 1) {
+            sendMessage(sender, "player-rank-tag-failed-multiple-expires");
+            return;
+        }
+
+        if (numTagsEndsWith(tags, ":") > 0) {
+            sendMessage(sender, "player-rank-tag-failed-no-value");
             return;
         }
 
         prplayer.getRanks().clear();
         prplayer.getRanks().add(new PRPlayerRank(prrank, tags));
 
-        sendMessage(sender, "commands.setrank.success-executor", ImmutableMap.of( //
+        sendMessage(sender, "player-rank-set-success-sender", ImmutableMap.of( //
                 "player", targetName,
                 "rank", prrank.getName() //
         ));
 
         Player target = Util.getPlayerByName(targetName);
         if (target != null) {
-            sendMessage(target, "commands.setrank.success-receiver", ImmutableMap.of( //
+            sendMessage(target, "player-rank-set-success-receiver", ImmutableMap.of( //
                 "player", sender.getName(),
                 "rank", prrank.getName() //
         ));

@@ -56,7 +56,7 @@ public class CmdConfig extends PowerBaseCommand {
 
         this.plugin.updateAllPlayersTABlist();
 
-        sendMessage(sender, "commands.config.removed-world-tag", ImmutableMap.of( //
+        sendMessage(sender, "config-removed-world-tag", ImmutableMap.of( //
                 "player", sender.getName() //
         ));
     }
@@ -68,7 +68,7 @@ public class CmdConfig extends PowerBaseCommand {
 
         switch (targetOption.toLowerCase()) {
             case "chat_formatting":
-                sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+                sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                         "player", sender.getName(), //
                         "config_target", "Chat formatting", //
                         "old_state", String.valueOf(PowerRanks.getConfigManager().getBool("chat.enabled", true)), //
@@ -77,7 +77,7 @@ public class CmdConfig extends PowerBaseCommand {
                 PowerRanks.getConfigManager().setBool("chat.enabled", enable);
                 break;
             case "tablist_formatting":
-                sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+                sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                         "player", sender.getName(), //
                         "config_target", "Tablist formatting", //
                         "old_state",
@@ -87,7 +87,7 @@ public class CmdConfig extends PowerBaseCommand {
                 PowerRanks.getConfigManager().setBool("tablist_modification.enabled", enable);
                 break;
             case "casesensitive_permissions":
-                sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+                sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                         "player", sender.getName(), //
                         "config_target", "Case Sensitive Permissions", //
                         "old_state",
@@ -98,7 +98,7 @@ public class CmdConfig extends PowerBaseCommand {
                 PowerRanks.getConfigManager().setBool("general.case-sensitive-permissions", enable);
                 break;
             case "op":
-                sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+                sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                         "player", sender.getName(), //
                         "config_target", "Bungeecord Integration", //
                         "old_state", String.valueOf(!PowerRanks.getConfigManager().getBool("general.disable-op", true)), //
@@ -107,7 +107,7 @@ public class CmdConfig extends PowerBaseCommand {
                 PowerRanks.getConfigManager().setBool("general.disable-op", !enable);
                 break;
             case "bungeecord":
-                sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+                sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                         "player", sender.getName(), //
                         "config_target", "Chat formatting", //
                         "old_state", String.valueOf(PowerRanks.getConfigManager().getBool("bungeecord.enabled", true)), //
@@ -123,7 +123,7 @@ public class CmdConfig extends PowerBaseCommand {
     @Syntax("<interval>")
     @CommandCompletion("1|5|10|30|60")
     public void onConfigSetPlaytimeUpdateInterval(CommandSender sender, int interval) {
-        sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+        sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                 "player", sender.getName(), //
                 "config_target", "Player playtime update interval", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getInt("general.playtime-update-interval", 60)), //
@@ -138,7 +138,7 @@ public class CmdConfig extends PowerBaseCommand {
     @Syntax("<interval>")
     @CommandCompletion("60|300|600|1200|1800|3600")
     public void onConfigSetAutosaveDataInterval(CommandSender sender, int interval) {
-        sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+        sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                 "player", sender.getName(), //
                 "config_target", "Data autosave interval", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getInt("general.autosave-files-interval", 600)), //
@@ -153,7 +153,7 @@ public class CmdConfig extends PowerBaseCommand {
     @Syntax("<language>")
     @CommandCompletion("en")
     public void onConfigSetLanguage(CommandSender sender, String language) {
-        sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+        sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                 "player", sender.getName(), //
                 "config_target", "PowerRanks language (lang.yml)", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getString("general.language", "en")), //
@@ -168,7 +168,7 @@ public class CmdConfig extends PowerBaseCommand {
     @Syntax("<servername>")
     @CommandCompletion("Global")
     public void onConfigSetBungeeServerName(CommandSender sender, String servername) {
-        sendMessage(sender, "commands.config.state-changed", ImmutableMap.of( //
+        sendMessage(sender, "config-state-changed", ImmutableMap.of( //
                 "player", sender.getName(), //
                 "config_target", "PowerRanks Bungeecord server name", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getString("bungeecors.server-name", "Global")), //

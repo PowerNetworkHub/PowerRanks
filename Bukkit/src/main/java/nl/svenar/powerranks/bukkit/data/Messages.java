@@ -733,7 +733,8 @@ public class Messages {
 
 			String formattedDescription = "";
 			if (addon == null) {
-				sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
+				// TODO
+				// sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
 				return;
 			}
 			if (!addon.isInstalled()) {
@@ -752,7 +753,8 @@ public class Messages {
 				}
 
 				if (prAddon == null) {
-					sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
+					// TODO
+					// sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
 					return;
 				}
 
@@ -817,7 +819,8 @@ public class Messages {
 
 		} else {
 			if (addon == null) {
-				sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
+				// TODO
+				// sender.sendMessage(PowerRanks.getInstance().plp + ChatColor.DARK_RED + "Add-on not found.");
 				return;
 			}
 			
