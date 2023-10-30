@@ -14,6 +14,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerBaseCommand;
+import nl.svenar.powerranks.bukkit.events.prevents.RankChangeEvent;
 import nl.svenar.powerranks.bukkit.util.Util;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
@@ -67,7 +68,12 @@ public class CmdAddRank extends PowerBaseCommand {
                 ));
                 return;
             }
+        }
 
+        RankChangeEvent event = new RankChangeEvent(prplayer, prrank, tags);
+        plugin.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            sendMessage(sender, "cancelled-by-event");
         }
 
         prplayer.getRanks().add(new PRPlayerRank(prrank, tags));

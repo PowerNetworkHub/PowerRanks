@@ -11,6 +11,7 @@ lang:
       player-rank-has-expired: "&aYour rank [rank] has expired!"
       player-rank-expired-console: "&cRemoved expired rank [rank] from [player]"
       command-disabled: "&cThis command is disabled!"
+      cancelled-by-event: "&cThis command has been cancelled by an event!"
       config-state-changed: "&e[config_target] changed from &c[old_state] &eto &a[new_state]"
       config-removed-world-tag: "&aThe worldtag has been removed"
       player-rank-set-success-sender: "&aSuccessfully set [player]'s rank to [rank]"

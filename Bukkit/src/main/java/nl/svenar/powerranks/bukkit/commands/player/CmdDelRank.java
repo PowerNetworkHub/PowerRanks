@@ -13,6 +13,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerBaseCommand;
+import nl.svenar.powerranks.bukkit.events.prevents.RankChangeEvent;
 import nl.svenar.powerranks.bukkit.util.Util;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
@@ -48,31 +49,38 @@ public class CmdDelRank extends PowerBaseCommand {
             return;
         }
 
-        boolean hasRank = false;
+        PRPlayerRank targetRank = null;
         for (PRPlayerRank prplayerrank : prplayer.getRanks()) {
             if (prplayerrank.getName().equalsIgnoreCase(prrank.getName())) {
-                hasRank = true;
-                prplayer.getRanks().remove(prplayerrank);
+                targetRank = prplayerrank;
                 break;
             }
         }
 
-        if (hasRank) {
-            sendMessage(sender, "player-rank-remove-success-sender", ImmutableMap.of( //
+        if (targetRank == null) {
+            sendMessage(sender, "player-does-not-have-rank", ImmutableMap.of( //
                     "player", targetName,
                     "rank", prrank.getName() //
             ));
+        }
 
-            Player target = Util.getPlayerByName(targetName);
-            if (target != null) {
-                sendMessage(target, "player-rank-remove-success-receiver", ImmutableMap.of( //
-                        "player", sender.getName(),
-                        "rank", prrank.getName() //
-                ));
-            }
-        } else {
-            sendMessage(sender, "player-does-not-have-rank", ImmutableMap.of( //
-                    "player", targetName,
+        RankChangeEvent event = new RankChangeEvent(prplayer, prrank, null);
+        plugin.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            sendMessage(sender, "cancelled-by-event");
+        }
+
+        prplayer.getRanks().remove(targetRank);
+
+        sendMessage(sender, "player-rank-remove-success-sender", ImmutableMap.of( //
+                "player", targetName,
+                "rank", prrank.getName() //
+        ));
+
+        Player target = Util.getPlayerByName(targetName);
+        if (target != null) {
+            sendMessage(target, "player-rank-remove-success-receiver", ImmutableMap.of( //
+                    "player", sender.getName(),
                     "rank", prrank.getName() //
             ));
         }

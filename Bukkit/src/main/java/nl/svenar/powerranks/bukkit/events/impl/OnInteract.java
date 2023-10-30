@@ -1,4 +1,4 @@
-package nl.svenar.powerranks.bukkit.events;
+package nl.svenar.powerranks.bukkit.events.impl;
 
 import java.util.ArrayList;
 import java.util.List;

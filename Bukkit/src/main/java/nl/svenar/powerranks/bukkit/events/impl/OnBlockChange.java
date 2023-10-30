@@ -1,4 +1,4 @@
-package nl.svenar.powerranks.bukkit.events;
+package nl.svenar.powerranks.bukkit.events.impl;
 
 import java.io.File;
 import java.util.Map.Entry;

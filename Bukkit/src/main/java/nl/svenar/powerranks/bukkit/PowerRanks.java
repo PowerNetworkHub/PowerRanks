@@ -33,7 +33,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.Bukkit;
 import java.io.File;
 import java.util.logging.Logger;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.event.Listener;
@@ -68,15 +67,15 @@ import nl.svenar.powerranks.bukkit.data.PowerPermissibleBase;
 import nl.svenar.powerranks.bukkit.data.PowerRanksVerbose;
 import nl.svenar.powerranks.bukkit.data.TablistManager;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.events.OnBlockChange;
-import nl.svenar.powerranks.bukkit.events.OnChat;
-import nl.svenar.powerranks.bukkit.events.OnInteract;
-import nl.svenar.powerranks.bukkit.events.OnInventory;
-import nl.svenar.powerranks.bukkit.events.OnJoin;
-import nl.svenar.powerranks.bukkit.events.OnMove;
-import nl.svenar.powerranks.bukkit.events.OnPreCommand;
-import nl.svenar.powerranks.bukkit.events.OnSignChanged;
-import nl.svenar.powerranks.bukkit.events.OnWorldChange;
+import nl.svenar.powerranks.bukkit.events.impl.OnBlockChange;
+import nl.svenar.powerranks.bukkit.events.impl.OnChat;
+import nl.svenar.powerranks.bukkit.events.impl.OnInteract;
+import nl.svenar.powerranks.bukkit.events.impl.OnInventory;
+import nl.svenar.powerranks.bukkit.events.impl.OnJoin;
+import nl.svenar.powerranks.bukkit.events.impl.OnMove;
+import nl.svenar.powerranks.bukkit.events.impl.OnPreCommand;
+import nl.svenar.powerranks.bukkit.events.impl.OnSignChanged;
+import nl.svenar.powerranks.bukkit.events.impl.OnWorldChange;
 import nl.svenar.powerranks.bukkit.external.DeluxeTagsHook;
 import nl.svenar.powerranks.bukkit.external.PowerRanksExpansion;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
@@ -231,15 +230,15 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log
-				.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
-		PowerRanks.log.info(ChatColor.AQUA + "  ██   ██ ██   ██" + ChatColor.GREEN + "  Running on "
+				.info(PowerColor.ChatColor.AQUA + "  ██████  ██████ " + PowerColor.ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
+		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██   ██ ██   ██" + PowerColor.ChatColor.GREEN + "  Running on "
 				+ Util.getServerType(getServer()) + " v" + Util.getServerVersion(getServer()));
-		PowerRanks.log.info(ChatColor.AQUA + "  ██████  ██████ " + ChatColor.GREEN + "  Startup time: "
+		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██████  ██████ " + PowerColor.ChatColor.GREEN + "  Startup time: "
 				+ Duration.between(startTime, Instant.now()).toMillis() + "ms");
-		PowerRanks.log.info(ChatColor.AQUA + "  ██      ██   ██" + ChatColor.GREEN + "  Loaded "
+		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██      ██   ██" + PowerColor.ChatColor.GREEN + "  Loaded "
 				+ CacheManager.getRanks().size() + " ranks and " + CacheManager.getPlayers().size() + " players ("
 				+ getConfigManager().getString("storage.type", "yaml").toUpperCase() + ") " + update_available);
-		PowerRanks.log.info(ChatColor.AQUA + "  ██      ██   ██" + ChatColor.RED + "  "
+		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██      ██   ██" + PowerColor.ChatColor.RED + "  "
 				+ (System.getProperty("POWERRANKSRUNNING", "").equals("TRUE")
 						? "Reload detected, why do you hate yourself :C"
 						: ""));
@@ -1101,7 +1100,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			}
 
 			if (PowerRanks.placeholderapiExpansion != null) {
-				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + ChatColor.COLOR_CHAR,
+				format = PlaceholderAPI.setPlaceholders(player, format).replaceAll("" + PowerColor.COLOR_CHAR,
 						"" + PowerColor.UNFORMATTED_COLOR_CHAR);
 			}
 			format = PowerRanks.chatColor(format, true);

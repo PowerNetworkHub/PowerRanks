@@ -25,7 +25,7 @@ import nl.svenar.powerranks.common.structure.PRRank;
 import nl.svenar.powerranks.common.utils.PRCache;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.addons.PowerRanksAddon;
-import nl.svenar.powerranks.bukkit.events.OnJoin;
+import nl.svenar.powerranks.bukkit.events.impl.OnJoin;
 
 public class CacheManager {
 

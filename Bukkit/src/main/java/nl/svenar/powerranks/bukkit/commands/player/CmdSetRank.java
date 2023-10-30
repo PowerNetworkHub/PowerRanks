@@ -14,6 +14,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerBaseCommand;
+import nl.svenar.powerranks.bukkit.events.prevents.RankChangeEvent;
 import nl.svenar.powerranks.bukkit.util.Util;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
@@ -59,6 +60,12 @@ public class CmdSetRank extends PowerBaseCommand {
             return;
         }
 
+        RankChangeEvent event = new RankChangeEvent(prplayer, prrank, tags);
+        plugin.getServer().getPluginManager().callEvent(event);
+        if (!event.isCancelled()) {
+            sendMessage(sender, "cancelled-by-event");
+        }
+
         prplayer.getRanks().clear();
         prplayer.getRanks().add(new PRPlayerRank(prrank, tags));
 
@@ -70,9 +77,9 @@ public class CmdSetRank extends PowerBaseCommand {
         Player target = Util.getPlayerByName(targetName);
         if (target != null) {
             sendMessage(target, "player-rank-set-success-receiver", ImmutableMap.of( //
-                "player", sender.getName(),
-                "rank", prrank.getName() //
-        ));
+                    "player", sender.getName(),
+                    "rank", prrank.getName() //
+            ));
         }
     }
 }
