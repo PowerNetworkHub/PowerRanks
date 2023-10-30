@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <revision>1.10.9</revision>
+        <revision>2.0.0B1</revision>
         <output.name>PowerRanks</output.name>
     </properties>
 

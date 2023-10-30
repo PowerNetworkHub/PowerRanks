@@ -40,6 +40,9 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 
@@ -82,7 +85,7 @@
 							<include>com.fasterxml.jackson.core:jackson-annotations</include>
 							<include>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</include>
 							<include>com.googlecode.json-simple:json-simple</include>
-							<include>com.googlecode.json-simple:json-simple</include>
+							<include>co.aikar:acf-paper</include>
 						</includes>
 					</artifactSet>
 					<relocations>
@@ -110,6 +113,18 @@
 							<pattern>org.json</pattern>
 							<shadedPattern>${shade.basepattern}.json</shadedPattern>
 						</relocation>
+						<relocation>
+							<pattern>co.aikar.commands</pattern>
+							<shadedPattern>${shade.basepattern}.acf</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>co.aikar.locales</pattern>
+							<shadedPattern>${shade.basepattern}.locales</shadedPattern>
+						</relocation>
+						<!-- <relocation>
+							<pattern>acf-</pattern>
+							<shadedPattern>${shade.basepattern}.locales/acf-</shadedPattern>
+						</relocation> -->
 					</relocations>
 					<dependencyReducedPomLocation>target/reduced-pom.xml</dependencyReducedPomLocation>
 				</configuration>
@@ -161,6 +176,10 @@
 		<repository>
 			<id>papermc</id>
 			<url>https://repo.papermc.io/repository/maven-public/</url>
+		</repository>
+		<repository>
+			<id>aikar</id>
+			<url>https://repo.aikar.co/content/groups/aikar/</url>
 		</repository>
 	</repositories>
 
@@ -217,6 +236,11 @@
 			<groupId>com.nametagedit</groupId>
 			<artifactId>nametagedit</artifactId>
 			<version>4.5.20</version>
+		</dependency>
+		<dependency>
+			<groupId>co.aikar</groupId>
+			<artifactId>acf-paper</artifactId>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

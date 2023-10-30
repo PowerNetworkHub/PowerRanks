@@ -53,6 +53,21 @@ public class PRPlayerRank {
         this(rank.getName());
     }
 
+    public PRPlayerRank(String name, String[] tags) {
+        this();
+        this.name = name;
+        for (String tag : tags) {
+            String[] tagParts = tag.split(":", 2);
+            if (tagParts.length == 2) {
+                addTag(tagParts[0], tagParts[1]);
+            }
+        }
+    }
+
+    public PRPlayerRank(PRRank rank, String[] tags) {
+        this(rank.getName(), tags);
+    }
+
     public String getName() {
         return this.name;
     }

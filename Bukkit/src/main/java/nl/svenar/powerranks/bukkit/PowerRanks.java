@@ -2,6 +2,7 @@ package nl.svenar.powerranks.bukkit;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -25,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.bukkit.entity.Player;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -49,19 +49,25 @@ import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRCache;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.common.utils.PowerColor;
 import nl.svenar.powerranks.bukkit.addons.AddonsManager;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.cache.LanguageManager;
-import nl.svenar.powerranks.bukkit.commands.PowerCommandHandler;
+import nl.svenar.powerranks.bukkit.commands.MainCommand;
+import nl.svenar.powerranks.bukkit.commands.base.CmdConfig;
+import nl.svenar.powerranks.bukkit.commands.base.CmdHelp;
+import nl.svenar.powerranks.bukkit.commands.base.CmdStats;
+import nl.svenar.powerranks.bukkit.commands.player.CmdAddRank;
+import nl.svenar.powerranks.bukkit.commands.player.CmdDelRank;
+import nl.svenar.powerranks.bukkit.commands.player.CmdSetRank;
 import nl.svenar.powerranks.bukkit.data.BungeecordManager;
 import nl.svenar.powerranks.bukkit.data.Messages;
 import nl.svenar.powerranks.bukkit.data.PowerPermissibleBase;
 import nl.svenar.powerranks.bukkit.data.PowerRanksVerbose;
 import nl.svenar.powerranks.bukkit.data.TablistManager;
 import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.events.ChatTabExecutor;
 import nl.svenar.powerranks.bukkit.events.OnBlockChange;
 import nl.svenar.powerranks.bukkit.events.OnChat;
 import nl.svenar.powerranks.bukkit.events.OnInteract;
@@ -89,6 +95,7 @@ import com.google.common.collect.ImmutableMap;
 import com.nametagedit.plugin.NametagEdit;
 import com.nametagedit.plugin.api.INametagApi;
 
+import co.aikar.commands.PaperCommandManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PowerRanks extends JavaPlugin implements Listener {
@@ -115,6 +122,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	private BungeecordManager bungeecordManager;
 	private PermissionRegistry permissionRegistry;
+	private PaperCommandManager acfManager;
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
@@ -166,9 +174,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBlockChange(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnPreCommand(this), (Plugin) this);
 
-		Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor) new PowerCommandHandler(this));
-
-		Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new ChatTabExecutor(this));
+		// Bukkit.getServer().getPluginCommand("powerranks").setExecutor((CommandExecutor)
+		// new PowerCommandHandler(this));
+		// Bukkit.getServer().getPluginCommand("powerranks").setTabCompleter(new
+		// ChatTabExecutor(this));
+		setupCommands();
 
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ------- LOADING CONFIGURATION ------ ===");
@@ -289,6 +299,31 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		if (PowerRanks.log != null && PowerRanks.pdf != null) {
 			PowerRanks.log.info("Disabled " + PowerRanks.pdf.getName() + " v" + PowerRanks.pdf.getVersion());
 		}
+	}
+
+	private void setupCommands() {
+		if (this.acfManager != null) {
+			this.acfManager.getCommandCompletions().registerAsyncCompletion("ranks",
+					c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
+			return;
+		}
+
+		this.acfManager = new PaperCommandManager(this);
+		this.acfManager.enableUnstableAPI("brigadier");
+		// this.acfManager.enableUnstableAPI("help");
+
+		this.acfManager.getCommandReplacements().addReplacement("powerrankscommand", "powerranks|pr");
+
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("ranks",
+				c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
+
+		this.acfManager.registerCommand(new MainCommand(this));
+		this.acfManager.registerCommand(new CmdHelp(this));
+		this.acfManager.registerCommand(new CmdStats(this));
+		this.acfManager.registerCommand(new CmdConfig(this));
+		this.acfManager.registerCommand(new CmdSetRank(this));
+		this.acfManager.registerCommand(new CmdAddRank(this));
+		this.acfManager.registerCommand(new CmdDelRank(this));
 	}
 
 	private void saveConfigurationFiles() {
@@ -423,10 +458,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 			public void run() {
 				if (Objects.nonNull(vaultHook)) {
 					if (Objects.isNull(VaultHook.getVaultEconomy())) {
-						boolean has_vault_economy = PowerRanks.getInstance().getServer().getPluginManager()
+						boolean has_vault_economy = getServer().getPluginManager()
 								.getPlugin("Vault") != null && getConfigBool("plugin_hook.vault_economy", false);
 
-						vaultHook.hook(PowerRanks.getInstance(), false, false, has_vault_economy);
+						vaultHook.hook(instance, false, false, has_vault_economy);
 					} else {
 						this.cancel();
 					}
@@ -625,7 +660,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 						}
 
 						getServer().getConsoleSender().sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager()
+								getLanguageManager()
 										.getFormattedMessage("general.player-rank-expired-console"),
 								ImmutableMap.<String, String>builder()
 										.put("player", prPlayername)
@@ -635,11 +670,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 						Player player = getPlayerFromUUID(prPlayer.getUUID());
 						if (player != null) {
-							PowerRanks.getInstance().updateTablistName(player);
-							PowerRanks.getInstance().getTablistManager().updateSorting(player);
+							updateTablistName(player);
+							getTablistManager().updateSorting(player);
 
 							player.sendMessage(PRUtil.powerFormatter(
-									PowerRanks.getLanguageManager()
+									getLanguageManager()
 											.getFormattedMessage("general.player-rank-has-expired"),
 									ImmutableMap.<String, String>builder()
 											.put("player", player.getName())
@@ -655,8 +690,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 							Player player = getPlayerFromUUID(prPlayer.getUUID());
 							if (player != null) {
-								PowerRanks.getInstance().updateTablistName(player);
-								PowerRanks.getInstance().getTablistManager().updateSorting(player);
+								updateTablistName(player);
+								getTablistManager().updateSorting(player);
 							}
 						}
 					}
@@ -1165,7 +1200,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return configManager;
 	}
 
-	public static LanguageManager getLanguageManager() {
+	public LanguageManager getLanguageManager() {
 		return languageManager;
 	}
 
@@ -1189,6 +1224,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return new PowerRanksAPI();
 	}
 
+	public PaperCommandManager getAcfManager() {
+		return acfManager;
+	}
+
 	public static PowerRanks getInstance() {
 		return instance;
 	}
@@ -1206,7 +1245,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		}
 	}
 
-    public PermissionRegistry getPermissionRegistry() {
-        return permissionRegistry;
-    }
+	public PermissionRegistry getPermissionRegistry() {
+		return permissionRegistry;
+	}
 }

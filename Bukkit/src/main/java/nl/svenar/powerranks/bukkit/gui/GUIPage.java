@@ -122,7 +122,7 @@ public class GUIPage {
 						VaultHook.getVaultEconomy().format(VaultHook.getVaultEconomy().getBalance(player))));
 			} catch (Exception e) {
 				player.sendMessage(
-						PowerRanks.getLanguageManager().getFormattedMessage(
+						PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 								"commands.buyrank.buy-not-available"));
 				return null;
 			}

@@ -81,7 +81,7 @@ public class OnInteract implements Listener {
 			// else
 			// Messages.messageCommandPromoteError(player, player.getName());
 			// } else {
-			// player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			// player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 			// }
 			// } else if (sign_command.equalsIgnoreCase("demote")) {
 			// if (player.hasPermission("powerranks.signs.demote")) {
@@ -90,7 +90,7 @@ public class OnInteract implements Listener {
 			// else
 			// Messages.messageCommandDemoteError(player, player.getName());
 			// } else {
-			// player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+			// player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 			// }
 			// } else
 			if (sign_command.equalsIgnoreCase("setrank")) {
@@ -100,7 +100,7 @@ public class OnInteract implements Listener {
 						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 						CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager().getFormattedMessage(
+								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 										"commands.setrank.success-receiver"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
@@ -110,7 +110,7 @@ public class OnInteract implements Listener {
 					}
 					// s.setGroup(player, s.getRankIgnoreCase(sign_argument), true);
 				} else {
-					player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (sign_command.equalsIgnoreCase("addrank")) {
 				if (player.hasPermission("powerranks.signs.setrank")) {
@@ -121,7 +121,7 @@ public class OnInteract implements Listener {
 
 						// Messages.messageSetRankSuccessSender(player, t, rank);
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager().getFormattedMessage(
+								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 										"commands.setrank.success-receiver"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
@@ -131,7 +131,7 @@ public class OnInteract implements Listener {
 					}
 					// s.setGroup(player, s.getRankIgnoreCase(sign_argument), true);
 				} else {
-					player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (sign_command.equalsIgnoreCase("checkrank")) {
 				if (player.hasPermission("powerranks.signs.checkrank")) {
@@ -142,7 +142,7 @@ public class OnInteract implements Listener {
 					}
 					if (playerRanks.size() > 0) {
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager()
+								PowerRanks.getInstance().getLanguageManager()
 										.getFormattedMessage("commands.checkrank.success-self"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
@@ -151,7 +151,7 @@ public class OnInteract implements Listener {
 								'[', ']'));
 					} else {
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager()
+								PowerRanks.getInstance().getLanguageManager()
 										.getFormattedMessage(
 												"commands.checkrank.success-self-none"),
 								ImmutableMap.<String, String>builder()
@@ -162,20 +162,20 @@ public class OnInteract implements Listener {
 
 					// s.getGroup(player.getName(), player.getName());
 				} else {
-					player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 				// } else if (sign_command.equalsIgnoreCase("gui")) {
 				// if (player.hasPermission("powerranks.signs.gui")) {
 				// GUI.openGUI(player, GUI_PAGE_ID.MAIN);
 				// } else {
-				// player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+				// player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				// }
 			} else if (sign_command.equalsIgnoreCase("usertag")) {
 				if (player.hasPermission("powerranks.signs.usertag")) {
 					if (users.setUserTag(player, sign_argument)) {
 						if (sign_argument.length() > 0) {
 							player.sendMessage(PRUtil.powerFormatter(
-									PowerRanks.getLanguageManager().getFormattedMessage(
+									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 											"commands.setusertag.success"),
 									ImmutableMap.<String, String>builder()
 											.put("player", player.getName())
@@ -184,7 +184,7 @@ public class OnInteract implements Listener {
 									'[', ']'));
 						} else {
 							player.sendMessage(PRUtil.powerFormatter(
-									PowerRanks.getLanguageManager().getFormattedMessage(
+									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 											"commands.clearusertag.success"),
 									ImmutableMap.<String, String>builder()
 											.put("player", player.getName())
@@ -194,7 +194,7 @@ public class OnInteract implements Listener {
 						}
 					} else {
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager().getFormattedMessage(
+								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 										"commands.setusertag.failed"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
@@ -203,7 +203,7 @@ public class OnInteract implements Listener {
 								'[', ']'));
 					}
 				} else {
-					player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
@@ -226,7 +226,7 @@ public class OnInteract implements Listener {
 											CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 
 											player.sendMessage(PRUtil.powerFormatter(
-													PowerRanks.getLanguageManager().getFormattedMessage(
+													PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 															"commands.setrank.success-receiver"),
 													ImmutableMap.<String, String>builder()
 															.put("player", player.getName())
@@ -237,7 +237,7 @@ public class OnInteract implements Listener {
 									}
 									// users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
 									player.sendMessage(PRUtil.powerFormatter(
-											PowerRanks.getLanguageManager().getFormattedMessage(
+											PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 													"commands.buyrank.success-buy"),
 											ImmutableMap.<String, String>builder()
 													.put("player", player.getName())
@@ -246,7 +246,7 @@ public class OnInteract implements Listener {
 											'[', ']'));
 								} else {
 									player.sendMessage(PRUtil.powerFormatter(
-											PowerRanks.getLanguageManager().getFormattedMessage(
+											PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 													"commands.buyrank.failed-buy-not-enough-money"),
 											ImmutableMap.<String, String>builder()
 													.put("player", player.getName())
@@ -256,7 +256,7 @@ public class OnInteract implements Listener {
 								}
 							} else {
 								player.sendMessage(PRUtil.powerFormatter(
-										PowerRanks.getLanguageManager().getFormattedMessage(
+										PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 												"commands.buyrank.failed-buy-not-enough-money"),
 										ImmutableMap.<String, String>builder()
 												.put("player", player.getName())
@@ -266,17 +266,17 @@ public class OnInteract implements Listener {
 							}
 						} else {
 							player.sendMessage(
-									PowerRanks.getLanguageManager().getFormattedMessage(
+									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 											"commands.buyrank.buy-not-available"));
 						}
 					}
 				} else {
-					player.sendMessage(PowerRanks.getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else {
 				if (player.hasPermission("powerranks.signs.admin")) {
 					player.sendMessage(
-							PowerRanks.getLanguageManager().getFormattedMessage("messages.signs.unknown-command"));
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("messages.signs.unknown-command"));
 				}
 			}
 		}

@@ -92,7 +92,7 @@ public class GUI {
 							PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 							CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 							player.sendMessage(PRUtil.powerFormatter(
-									PowerRanks.getLanguageManager().getFormattedMessage(
+									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 											"commands.setrank.success-receiver"),
 									ImmutableMap.<String, String>builder()
 											.put("player", player.getName())
@@ -113,7 +113,7 @@ public class GUI {
 							}
 						}
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager().getFormattedMessage(
+								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 										"commands.buyrank.success-buy"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
@@ -122,7 +122,7 @@ public class GUI {
 								'[', ']'));
 					} else {
 						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getLanguageManager().getFormattedMessage(
+								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
 										"commands.buyrank.failed-buy-not-enough-money"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())

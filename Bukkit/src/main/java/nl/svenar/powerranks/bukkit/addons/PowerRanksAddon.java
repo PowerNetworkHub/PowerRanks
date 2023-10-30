@@ -9,7 +9,6 @@ import org.bukkit.block.Block;
 
 import nl.svenar.powerranks.common.storage.PowerStorageManager;
 import nl.svenar.powerranks.bukkit.PowerRanks;
-import nl.svenar.powerranks.bukkit.events.ChatTabExecutor;
 
 public abstract class PowerRanksAddon {
 
@@ -53,7 +52,7 @@ public abstract class PowerRanksAddon {
 	// Register custom commands for auto complete in the chat
 	// Used for chat auto-complete and /pr addoninfo <addon_name>
 	public final void registerCommandAutocomplete(String command) {
-		ChatTabExecutor.addAddonCommand(command);
+		// ChatTabExecutor.addAddonCommand(command);
 		if (!registeredCommands.contains(command.toLowerCase()))
 			registeredCommands.add(command.toLowerCase());
 	}

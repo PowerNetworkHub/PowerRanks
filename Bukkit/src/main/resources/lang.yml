@@ -155,6 +155,7 @@ lang:
             arguments: "<player_name> <rank_name>"
             success-executor: "&aRemoved the rank [rank] from [player]"
             failed-executor: "&cFailed to remove the rank [rank] from [player]"
+            failed-does-not-have-rank: "&cFailed to remove the rank [rank] from [player]"
             success-receiver: "&aThe rank [rank] has been revoked from you"
          checkrank:
             arguments: "<player_name>"
