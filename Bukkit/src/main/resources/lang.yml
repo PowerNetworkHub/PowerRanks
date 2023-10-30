@@ -1,6 +1,8 @@
 lang:
    en:
       prefix: "&0[&bPR&0]&r"
+      list-header: "&1===&b----------&1PowerRanks&b----------&1==="
+      list-footer: "&1===&b------------------------------&1==="
       no-permission: "&4You do not have permissions to execute this command!"
       permission-not-found: "&cPermission node '[permission]' not found!"
       rank-not-found: "&cRank '[rank]' not found!"
