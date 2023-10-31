@@ -60,6 +60,7 @@ import nl.svenar.powerranks.bukkit.commands.base.CmdHelp;
 import nl.svenar.powerranks.bukkit.commands.base.CmdStats;
 import nl.svenar.powerranks.bukkit.commands.player.CmdAddRank;
 import nl.svenar.powerranks.bukkit.commands.player.CmdDelRank;
+import nl.svenar.powerranks.bukkit.commands.player.CmdListRanks;
 import nl.svenar.powerranks.bukkit.commands.player.CmdSetRank;
 import nl.svenar.powerranks.bukkit.data.BungeecordManager;
 import nl.svenar.powerranks.bukkit.data.Messages;
@@ -322,6 +323,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		this.acfManager.registerCommand(new CmdSetRank(this));
 		this.acfManager.registerCommand(new CmdAddRank(this));
 		this.acfManager.registerCommand(new CmdDelRank(this));
+		this.acfManager.registerCommand(new CmdListRanks(this));
 	}
 
 	private void saveConfigurationFiles() {

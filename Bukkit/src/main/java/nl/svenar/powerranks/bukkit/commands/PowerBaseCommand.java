@@ -1,7 +1,5 @@
 package nl.svenar.powerranks.bukkit.commands;
 
-import java.util.HashMap;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -60,19 +58,27 @@ public class PowerBaseCommand extends BaseCommand {
     protected PRRank getPRRank(String identifier) {
         return PRCache.getRank(identifier);
     }
-
-    protected void sendMessage(CommandSender sender, String langArg) {
-        String langPrefix = plugin.getLanguageManager().getFormattedMessage("prefix");
-        String langLine = plugin.getLanguageManager().getFormattedMessage(langArg);
-        String output = PRUtil.powerFormatter(langPrefix + " " + langLine, new HashMap<>(), '[', ']');
-        sender.sendMessage(output);
+    
+    protected String prepareMessage(String langArg, boolean addPluginPrefix) {
+        return prepareMessage(langArg, ImmutableMap.of(), addPluginPrefix);
     }
 
-    protected void sendMessage(CommandSender sender, String langArg, ImmutableMap<String, @NotNull String> data) {
-        String langPrefix = plugin.getLanguageManager().getFormattedMessage("prefix");
+    protected String prepareMessage(String langArg, ImmutableMap<String, @NotNull String> data, boolean addPluginPrefix) {
         String langLine = plugin.getLanguageManager().getFormattedMessage(langArg);
-        String output = PRUtil.powerFormatter(langPrefix + " " + langLine, data, '[', ']');
-        sender.sendMessage(output);
+        if (addPluginPrefix) {
+            String langPrefix = plugin.getLanguageManager().getFormattedMessage("prefix");
+            return PRUtil.powerFormatter(langPrefix + " " + langLine, data, '[', ']');
+        } else {
+            return PRUtil.powerFormatter(langLine, data, '[', ']');
+        }
+    }
+
+    protected void sendMessage(CommandSender sender, String langArg, boolean addPluginPrefix) {
+        sendMessage(sender, langArg, ImmutableMap.of(), addPluginPrefix);
+    }
+
+    protected void sendMessage(CommandSender sender, String langArg, ImmutableMap<String, @NotNull String> data, boolean addPluginPrefix) {
+        sender.sendMessage(prepareMessage(langArg, data, addPluginPrefix));
     }
 
     protected int numTagsStartsWith(String[] tags, String search) {

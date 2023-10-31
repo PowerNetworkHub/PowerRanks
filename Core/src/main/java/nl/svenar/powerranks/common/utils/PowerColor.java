@@ -356,4 +356,36 @@ public class PowerColor {
 
         return interpolatedColorArray;
     }
+
+    public String removeFormatSpecial(char altColorChar, String text) {
+        text = text.replaceAll("\\[gradient=([^,]+),([^\\]]+)\\]", "");
+        text = text.replaceAll("\\[/gradient\\]", "");
+        text = text.replaceAll("\\[rainbow\\]", "");
+        text = text.replaceAll("\\[/rainbow\\]", "");
+        return text;
+    }
+
+    public String removeFormatHEX(char altColorChar, String text) {
+        text = text.replaceAll("\\&?#[a-fA-F0-9]{6}", "");
+        return text;
+    }
+
+    public String removeFormatColor(char altColorChar, String text) {
+        // return text.replaceAll("\\" + altColorChar + "[0-9a-fA-F]", "");
+        StringBuilder result = new StringBuilder();
+        char[] b = text.toCharArray();
+        boolean skipNext = false;
+
+        for (char c : b) {
+            if (c == altColorChar) {
+                skipNext = true;
+            } else if (!skipNext) {
+                result.append(c);
+            } else {
+                skipNext = false;
+            }
+        }
+
+        return result.toString();
+    }
 }

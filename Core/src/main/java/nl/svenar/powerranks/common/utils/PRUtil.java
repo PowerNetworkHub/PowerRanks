@@ -36,7 +36,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
 
 public class PRUtil {
@@ -64,6 +66,18 @@ public class PRUtil {
     }
 
     /**
+     * Convert a list of PRPlayerRanks to a list of PRRanks
+     * @param playerRanks
+     * @return List<PRRank>
+     */
+    public static List<PRRank> playerRanksToRanks(List<PRPlayerRank> playerRanks) {
+        return playerRanks.stream()
+                .map(PRPlayerRank::getName)
+                .map(name -> PRCache.getRank(name))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Check if a list of strings contains a string (case insensitive)
      * 
      * @param objects
@@ -87,8 +101,8 @@ public class PRUtil {
      * @return boolean
      */
     public static boolean stringContainsItemFromList(String inputStr, String[] items) {
-		return Arrays.stream(items).anyMatch(inputStr::contains);
-	}
+        return Arrays.stream(items).anyMatch(inputStr::contains);
+    }
 
     /**
      * Convert a time string to seconds
@@ -145,15 +159,16 @@ public class PRUtil {
 
     /**
      * Push an item to the end of an array
+     * 
      * @param arr
      * @param item
      * @return T[] array
      */
-	public static <T> T[] array_push(T[] arr, T item) {
-		T[] tmp = Arrays.copyOf(arr, arr.length + 1);
-		tmp[tmp.length - 1] = item;
-		return tmp;
-	}
+    public static <T> T[] array_push(T[] arr, T item) {
+        T[] tmp = Arrays.copyOf(arr, arr.length + 1);
+        tmp[tmp.length - 1] = item;
+        return tmp;
+    }
 
     /**
      * Remove the last item from an array
@@ -161,10 +176,10 @@ public class PRUtil {
      * @param arr
      * @return T[] array
      */
-	public static <T> T[] array_pop(T[] arr) {
-		T[] tmp = Arrays.copyOf(arr, arr.length - 1);
-		return tmp;
-	}
+    public static <T> T[] array_pop(T[] arr) {
+        T[] tmp = Arrays.copyOf(arr, arr.length - 1);
+        return tmp;
+    }
 
     /**
      * Generate a list of wildcard permissions
@@ -172,39 +187,39 @@ public class PRUtil {
      * @param permission
      * @return ArrayList<String> wildcard permissions
      */
-	public static ArrayList<String> generateWildcardList(String permission) {
-		ArrayList<String> output = new ArrayList<String>();
-		String[] permission_split = permission.split("\\.");
+    public static ArrayList<String> generateWildcardList(String permission) {
+        ArrayList<String> output = new ArrayList<String>();
+        String[] permission_split = permission.split("\\.");
 
-		output.add("*");
+        output.add("*");
 
-		permission_split = array_pop(permission_split);
-		for (int i = 0; i < permission_split.length + 1; i++) {
-			if (permission_split.length == 0)
-				break;
-			output.add(String.join(".", permission_split) + ".*");
-			permission_split = array_pop(permission_split);
-		}
+        permission_split = array_pop(permission_split);
+        for (int i = 0; i < permission_split.length + 1; i++) {
+            if (permission_split.length == 0)
+                break;
+            output.add(String.join(".", permission_split) + ".*");
+            permission_split = array_pop(permission_split);
+        }
 
-		return output;
-	}
+        return output;
+    }
 
     public static void createDir(final String path) {
-		final File file = new File(path);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-	}
+        final File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+    }
 
     public static boolean deleteDir(File directoryToBeDeleted) {
-		File[] allContents = directoryToBeDeleted.listFiles();
-		if (allContents != null) {
-			for (File file : allContents) {
-				deleteDir(file);
-			}
-		}
-		return directoryToBeDeleted.delete();
-	}
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDir(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
 
     public static void addPlayerPlaytimeCache(UUID playerUUID, long time) {
         playerPlayTimeCache.put(playerUUID, time);
@@ -215,51 +230,51 @@ public class PRUtil {
     }
 
     public static String powerFormatter(String text, Map<String, String> values, char openChar, char closeChar) {
-		StringBuilder result = new StringBuilder();
-		int textIdx = 0;
+        StringBuilder result = new StringBuilder();
+        int textIdx = 0;
 
-		for (int startIdx; (startIdx = text.indexOf(openChar, textIdx)) != -1;) {
-			int endIdx = text.indexOf(closeChar, startIdx + 1);
+        for (int startIdx; (startIdx = text.indexOf(openChar, textIdx)) != -1;) {
+            int endIdx = text.indexOf(closeChar, startIdx + 1);
 
-			if (endIdx == -1)
-				break;
+            if (endIdx == -1)
+                break;
 
-			if (startIdx < 2 || text.charAt(startIdx - 1) != '\\') {
-				result.append(text.substring(textIdx, startIdx));
-				textIdx = endIdx + 1;
-				String value = values.get(text.substring(startIdx + 1, endIdx));
+            if (startIdx < 2 || text.charAt(startIdx - 1) != '\\') {
+                result.append(text.substring(textIdx, startIdx));
+                textIdx = endIdx + 1;
+                String value = values.get(text.substring(startIdx + 1, endIdx));
 
-				if (value != null && !value.isEmpty()) {
-					result.append(value); // Replace placeholder with non-empty value
+                if (value != null && !value.isEmpty()) {
+                    result.append(value); // Replace placeholder with non-empty value
 
-				} else if (result.length() != 0 && result.charAt(result.length() - 1) == ' ') {
-					result.setLength(result.length() - 1); // Remove space before placeholder
+                } else if (result.length() != 0 && result.charAt(result.length() - 1) == ' ') {
+                    result.setLength(result.length() - 1); // Remove space before placeholder
 
-				} else if (textIdx < text.length() && text.charAt(textIdx) == ' ') {
-					textIdx++; // Skip space after placeholder
-				} else {
-					result.append(openChar + text.substring(startIdx + 1, endIdx) + closeChar); // Add back the original
-																								// placeholder when an
-																								// replacement isn't
-																								// found
-				}
-			} else {
-				String unformatted = text.substring(textIdx, endIdx + 1).replaceFirst("\\\\", "");
-				if (unformatted.length() > 1) {
-					String replaceText = text.substring(startIdx, endIdx + 1);
-					String baseText = text.substring(startIdx, startIdx + 1);
-					String endText = text.substring(endIdx + 1, endIdx + 1);
-					String formattedReplacement = baseText
-							+ powerFormatter(text.substring(startIdx + 1, endIdx + 1), values, openChar, closeChar)
-							+ endText;
+                } else if (textIdx < text.length() && text.charAt(textIdx) == ' ') {
+                    textIdx++; // Skip space after placeholder
+                } else {
+                    result.append(openChar + text.substring(startIdx + 1, endIdx) + closeChar); // Add back the original
+                                                                                                // placeholder when an
+                                                                                                // replacement isn't
+                                                                                                // found
+                }
+            } else {
+                String unformatted = text.substring(textIdx, endIdx + 1).replaceFirst("\\\\", "");
+                if (unformatted.length() > 1) {
+                    String replaceText = text.substring(startIdx, endIdx + 1);
+                    String baseText = text.substring(startIdx, startIdx + 1);
+                    String endText = text.substring(endIdx + 1, endIdx + 1);
+                    String formattedReplacement = baseText
+                            + powerFormatter(text.substring(startIdx + 1, endIdx + 1), values, openChar, closeChar)
+                            + endText;
 
-					unformatted = unformatted.replace(replaceText, formattedReplacement);
-				}
-				result.append(unformatted);
-				textIdx = endIdx + 1;
-			}
-		}
-		result.append(text.substring(textIdx));
-		return result.toString();
-	}
+                    unformatted = unformatted.replace(replaceText, formattedReplacement);
+                }
+                result.append(unformatted);
+                textIdx = endIdx + 1;
+            }
+        }
+        result.append(text.substring(textIdx));
+        return result.toString();
+    }
 }

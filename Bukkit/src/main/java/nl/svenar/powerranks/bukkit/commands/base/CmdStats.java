@@ -46,7 +46,7 @@ public class CmdStats extends PowerBaseCommand {
         }
         Instant current_time = Instant.now();
 
-        sendMessage(sender, "list-header");
+        sendMessage(sender, "list-header", false);
         sender.sendMessage(PowerColor.ChatColor.GREEN + "Server version: " + PowerColor.ChatColor.DARK_GREEN
                 + Bukkit.getVersion() + " | "
                 + Bukkit.getServer().getBukkitVersion());
@@ -112,6 +112,6 @@ public class CmdStats extends PowerBaseCommand {
         sender.sendMessage(PowerColor.ChatColor.GREEN + "Plugins (" + plugins.length + "): "
                 + PowerColor.ChatColor.DARK_GREEN + pluginNames);
 
-        sendMessage(sender, "list-footer");
+        sendMessage(sender, "list-footer", false);
     }
 }

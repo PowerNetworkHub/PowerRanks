@@ -58,7 +58,7 @@ public class CmdConfig extends PowerBaseCommand {
 
         sendMessage(sender, "config-removed-world-tag", ImmutableMap.of( //
                 "player", sender.getName() //
-        ));
+        ), true);
     }
 
     @Subcommand("config enable|disable chat_formatting|tablist_formatting|casesensitive_permissions|op|bungeecord")
@@ -73,7 +73,7 @@ public class CmdConfig extends PowerBaseCommand {
                         "config_target", "Chat formatting", //
                         "old_state", String.valueOf(PowerRanks.getConfigManager().getBool("chat.enabled", true)), //
                         "new_state", String.valueOf(enable) //
-                ));
+                ), true);
                 PowerRanks.getConfigManager().setBool("chat.enabled", enable);
                 break;
             case "tablist_formatting":
@@ -83,7 +83,7 @@ public class CmdConfig extends PowerBaseCommand {
                         "old_state",
                         String.valueOf(PowerRanks.getConfigManager().getBool("tablist_modification.enabled", true)), //
                         "new_state", String.valueOf(enable) //
-                ));
+                ), true);
                 PowerRanks.getConfigManager().setBool("tablist_modification.enabled", enable);
                 break;
             case "casesensitive_permissions":
@@ -94,7 +94,7 @@ public class CmdConfig extends PowerBaseCommand {
                         String.valueOf(
                                 PowerRanks.getConfigManager().getBool("general.case-sensitive-permissions", true)), //
                         "new_state", String.valueOf(enable) //
-                ));
+                ), true);
                 PowerRanks.getConfigManager().setBool("general.case-sensitive-permissions", enable);
                 break;
             case "op":
@@ -103,7 +103,7 @@ public class CmdConfig extends PowerBaseCommand {
                         "config_target", "Bungeecord Integration", //
                         "old_state", String.valueOf(!PowerRanks.getConfigManager().getBool("general.disable-op", true)), //
                         "new_state", String.valueOf(enable) //
-                ));
+                ), true);
                 PowerRanks.getConfigManager().setBool("general.disable-op", !enable);
                 break;
             case "bungeecord":
@@ -112,7 +112,7 @@ public class CmdConfig extends PowerBaseCommand {
                         "config_target", "Chat formatting", //
                         "old_state", String.valueOf(PowerRanks.getConfigManager().getBool("bungeecord.enabled", true)), //
                         "new_state", String.valueOf(enable) //
-                ));
+                ), true);
                 PowerRanks.getConfigManager().setBool("bungeecord.enabled", enable);
                 break;
         }
@@ -128,7 +128,7 @@ public class CmdConfig extends PowerBaseCommand {
                 "config_target", "Player playtime update interval", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getInt("general.playtime-update-interval", 60)), //
                 "new_state", String.valueOf(interval) //
-        ));
+        ), true);
 
         PowerRanks.getConfigManager().setInt("general.playtime-update-interval", interval);
     }
@@ -143,7 +143,7 @@ public class CmdConfig extends PowerBaseCommand {
                 "config_target", "Data autosave interval", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getInt("general.autosave-files-interval", 600)), //
                 "new_state", String.valueOf(interval) //
-        ));
+        ), true);
 
         PowerRanks.getConfigManager().setInt("general.autosave-files-interval", interval);
     }
@@ -158,7 +158,7 @@ public class CmdConfig extends PowerBaseCommand {
                 "config_target", "PowerRanks language (lang.yml)", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getString("general.language", "en")), //
                 "new_state", language //
-        ));
+        ), true);
 
         PowerRanks.getConfigManager().setString("general.language", language);
     }
@@ -173,7 +173,7 @@ public class CmdConfig extends PowerBaseCommand {
                 "config_target", "PowerRanks Bungeecord server name", //
                 "old_state", String.valueOf(PowerRanks.getConfigManager().getString("bungeecors.server-name", "Global")), //
                 "new_state", servername //
-        ));
+        ), true);
 
         PowerRanks.getConfigManager().setString("bungeecors.server-name", servername);
     }

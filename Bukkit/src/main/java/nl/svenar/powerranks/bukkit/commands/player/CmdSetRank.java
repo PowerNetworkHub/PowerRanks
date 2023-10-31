@@ -38,32 +38,33 @@ public class CmdSetRank extends PowerBaseCommand {
 
         if (prplayer == null) {
             sendMessage(sender, "player-not-found", ImmutableMap.of( //
-                    "target", targetName //
-            ));
+                    "player", targetName //
+            ), true);
             return;
         }
 
         if (prrank == null) {
             sendMessage(sender, "rank-not-found", ImmutableMap.of( //
                     "rank", rankname //
-            ));
+            ), true);
             return;
         }
 
         if (numTagsStartsWith(tags, "expires") > 1) {
-            sendMessage(sender, "player-rank-tag-failed-multiple-expires");
+            sendMessage(sender, "player-rank-tag-failed-multiple-expires", true);
             return;
         }
 
         if (numTagsEndsWith(tags, ":") > 0) {
-            sendMessage(sender, "player-rank-tag-failed-no-value");
+            sendMessage(sender, "player-rank-tag-failed-no-value", true);
             return;
         }
 
         RankChangeEvent event = new RankChangeEvent(prplayer, prrank, tags);
         plugin.getServer().getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            sendMessage(sender, "cancelled-by-event");
+        if (event.isCancelled()) {
+            sendMessage(sender, "cancelled-by-event", true);
+            return;
         }
 
         prplayer.getRanks().clear();
@@ -72,14 +73,14 @@ public class CmdSetRank extends PowerBaseCommand {
         sendMessage(sender, "player-rank-set-success-sender", ImmutableMap.of( //
                 "player", targetName,
                 "rank", prrank.getName() //
-        ));
+        ), true);
 
         Player target = Util.getPlayerByName(targetName);
         if (target != null) {
             sendMessage(target, "player-rank-set-success-receiver", ImmutableMap.of( //
                     "player", sender.getName(),
                     "rank", prrank.getName() //
-            ));
+            ), true);
         }
     }
 }

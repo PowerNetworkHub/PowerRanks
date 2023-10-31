@@ -139,6 +139,9 @@ public class PRCache {
     }
 
     public static PRPlayer getPlayer(String identifier) {
+        if (identifier == null) {
+            return null;
+        }
         PRPlayer prPlayer = registeredPlayersByName.get(identifier);
         if (prPlayer != null) {
             return prPlayer;
