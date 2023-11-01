@@ -21,6 +21,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerBaseCommand;
@@ -68,8 +69,10 @@ public class CmdListRanks extends PowerBaseCommand {
             for (Object line : pageNavigationManager.getPage(page).generate()) {
                 if (line instanceof String) {
                     sender.sendMessage((String)line);
-                } else {
+                } else if (line instanceof TextComponent) {
                     sender.spigot().sendMessage((TextComponent)line);
+                } else {
+                    sender.spigot().sendMessage((BaseComponent[])line);
                 }
             }
         } else {
@@ -91,8 +94,10 @@ public class CmdListRanks extends PowerBaseCommand {
             for (Object line : pageNavigationManager.getPage(page).generate()) {
                 if (line instanceof String) {
                     sender.sendMessage((String)line);
-                } else {
+                } else if (line instanceof TextComponent) {
                     sender.spigot().sendMessage((TextComponent)line);
+                } else {
+                    sender.spigot().sendMessage((BaseComponent[])line);
                 }
             }
         }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -121,10 +123,15 @@ public class Page {
         int titleWidth = isMonospace ? unformattedTitle.length() : DefaultFontInfo.getStringLength(unformattedTitle);
 
         Object pageInfo = "";
+        String baseText = "";
         if (!fancyPageControls) {
             pageInfo = "#7E63DE│ [gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
                     + "[/gradient] #f50be5│";
         } else {
+            baseText = "#7E63DE│ &r◀[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
+            + "[/gradient]&r▶ #f50be5│";
+
+            pageInfo = new ComponentBuilder();
 
             TextComponent leftArrow = new TextComponent("◀");
             TextComponent rightArrow = new TextComponent("▶");
@@ -136,18 +143,19 @@ public class Page {
                     new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + baseCommand + " " + previousPage));
             rightArrow.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + baseCommand + " " + nextPage));
 
-            pageInfo = new TextComponent();
-            ((TextComponent) pageInfo).addExtra(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, "#7E63DE│ ", true, false, false));
-            ((TextComponent) pageInfo).addExtra(leftArrow);
-            ((TextComponent) pageInfo).addExtra(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, "[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
+            ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, "#7E63DE│ ", true, false, false));
+            ((ComponentBuilder) pageInfo).append(leftArrow);
+            ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, "[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
                     + "[/gradient]", true, false, false));
-            ((TextComponent) pageInfo).addExtra(rightArrow);
-            ((TextComponent) pageInfo).addExtra(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, " #f50be5│", true, false, false));
+            ((ComponentBuilder) pageInfo).append(rightArrow);
+            ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, " #f50be5│", true, false, false));
+
+            pageInfo = ((ComponentBuilder) pageInfo).create();
         }
         String unformattedPageInfo = PowerRanks.getPowerColor().removeFormat(PowerColor.UNFORMATTED_COLOR_CHAR,
                 PowerRanks.getPowerColor().removeFormat(PowerColor.COLOR_CHAR, pageInfo instanceof String
                         ? (String) pageInfo
-                        : ((TextComponent) pageInfo).toLegacyText()));
+                        : baseText));
         String pageInfoOffset = "";
 
         while ((isMonospace ? (unformattedTitle + pageInfoOffset + unformattedPageInfo).length()
@@ -195,11 +203,11 @@ public class Page {
         if (pageInfo instanceof String) {
             generatedList.add(title + pageInfoOffset + pageInfo);
         } else {
-            TextComponent titleComponent = new TextComponent();
-            titleComponent.addExtra(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, title, true, false, false));
-            titleComponent.addExtra(pageInfoOffset);
-            titleComponent.addExtra((TextComponent) pageInfo);
-            generatedList.add(titleComponent);
+            ComponentBuilder titleComponent = new ComponentBuilder();
+            titleComponent.appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, title, true, false, false));
+            titleComponent.append(pageInfoOffset);
+            titleComponent.append((BaseComponent[]) pageInfo);
+            generatedList.add(titleComponent.create());
         }
         generatedList.add("[gradient=#01b0fb,#f50be5]" + bottom + "[/gradient]");
         return generatedList;
