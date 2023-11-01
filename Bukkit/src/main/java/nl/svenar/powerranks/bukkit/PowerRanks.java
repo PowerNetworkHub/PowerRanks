@@ -231,11 +231,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		PowerRanks.log.info("");
 		PowerRanks.log
-				.info(PowerColor.ChatColor.AQUA + "  ██████  ██████ " + PowerColor.ChatColor.GREEN + "  PowerRanks v" + pdf.getVersion());
-		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██   ██ ██   ██" + PowerColor.ChatColor.GREEN + "  Running on "
-				+ Util.getServerType(getServer()) + " v" + Util.getServerVersion(getServer()));
-		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██████  ██████ " + PowerColor.ChatColor.GREEN + "  Startup time: "
-				+ Duration.between(startTime, Instant.now()).toMillis() + "ms");
+				.info(PowerColor.ChatColor.AQUA + "  ██████  ██████ " + PowerColor.ChatColor.GREEN + "  PowerRanks v"
+						+ pdf.getVersion());
+		PowerRanks.log
+				.info(PowerColor.ChatColor.AQUA + "  ██   ██ ██   ██" + PowerColor.ChatColor.GREEN + "  Running on "
+						+ Util.getServerType(getServer()) + " v" + Util.getServerVersion(getServer()));
+		PowerRanks.log
+				.info(PowerColor.ChatColor.AQUA + "  ██████  ██████ " + PowerColor.ChatColor.GREEN + "  Startup time: "
+						+ Duration.between(startTime, Instant.now()).toMillis() + "ms");
 		PowerRanks.log.info(PowerColor.ChatColor.AQUA + "  ██      ██   ██" + PowerColor.ChatColor.GREEN + "  Loaded "
 				+ CacheManager.getRanks().size() + " ranks and " + CacheManager.getPlayers().size() + " players ("
 				+ getConfigManager().getString("storage.type", "yaml").toUpperCase() + ") " + update_available);
@@ -311,10 +314,8 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		this.acfManager.getCommandReplacements().addReplacement("powerrankscommand", "powerranks|pr");
 
-		this.acfManager.getCommandCompletions().registerAsyncCompletion("prplayers",
-				c -> PRCache.getPlayers().stream().map(PRPlayer::getName).collect(Collectors.toList()));
-		this.acfManager.getCommandCompletions().registerAsyncCompletion("prranks",
-				c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("prplayers", c -> PRCache.getPlayers().stream().map(PRPlayer::getName).collect(Collectors.toList()));
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("prranks", c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
 
 		this.acfManager.registerCommand(new MainCommand(this));
 		this.acfManager.registerCommand(new CmdHelp(this));

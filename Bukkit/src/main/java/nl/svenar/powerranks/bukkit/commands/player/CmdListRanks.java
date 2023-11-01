@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -19,6 +21,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import net.md_5.bungee.api.chat.TextComponent;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.commands.PowerBaseCommand;
 import nl.svenar.powerranks.bukkit.textcomponents.DefaultFontInfo;
@@ -56,45 +59,18 @@ public class CmdListRanks extends PowerBaseCommand {
             }
         }
         if (targetName == null) {
-            // handleServerListRanks(sender);
-
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "[gradient=#01b0fb,#f50be5]┌────────────┐┌───────────┐[/gradient]", true,
-            // false, false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "#01b0fb│ [gradient=#ffff00,#ef3300]PowerRanks[/gradient] #7E63DE││
-            // [gradient=#70D92C,#227200]◀ 01/10 ▶[/gradient] #f50be5│",
-            // true, false, false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "[gradient=#01b0fb,#f50be5]├────────────┴┴───────────┤[/gradient]", true,
-            // false, false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "#01b0fb│&7 0 &rMember [gradient=#127e00,#3eaf18]MEMBER[/gradient] #f50be5│",
-            // true, false,
-            // false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "#01b0fb│&7 50 &rModerator [gradient=#9d1dff,#e22581]MODERATOR[/gradient]
-            // #f50be5│", true, false,
-            // false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "#01b0fb│&7 75 &rAdmin [gradient=#ffff00,#ef3300]ADMIN[/gradient] #f50be5│",
-            // true, false,
-            // false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "#01b0fb│&7 100 &rOwner [gradient=#ff00ff,#33ccff]OWNER[/gradient] #f50be5│",
-            // true, false,
-            // false));
-            // sender.sendMessage(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            // "[gradient=#01b0fb,#f50be5]└─────────────────────────┘[/gradient]", true,
-            // false, false));
-
             PageNavigationManager pageNavigationManager = new PageNavigationManager();
-            // pageNavigationManager.setItemsPerPage(2);
-            pageNavigationManager.setMonospace(true);
-            pageNavigationManager.setItems(formatRankList(PRCache.getRanks()));
-            for (String line : pageNavigationManager.getPage(page).generate()) {
-                sender.sendMessage(line);
-
+            pageNavigationManager.setItemsPerPage(sender instanceof Player ? 5 : 10);
+            pageNavigationManager.setMonospace(sender instanceof ConsoleCommandSender);
+            pageNavigationManager.setFancyPageControls(sender instanceof Player);
+            pageNavigationManager.setBaseCommand("pr listranks");
+            pageNavigationManager.setItems(formatRankList(PRCache.getRanks(), sender instanceof ConsoleCommandSender));
+            for (Object line : pageNavigationManager.getPage(page).generate()) {
+                if (line instanceof String) {
+                    sender.sendMessage((String)line);
+                } else {
+                    sender.spigot().sendMessage((TextComponent)line);
+                }
             }
         } else {
             PRPlayer prplayer = getPRPlayer(targetName);
@@ -106,117 +82,181 @@ public class CmdListRanks extends PowerBaseCommand {
             }
 
             PageNavigationManager pageNavigationManager = new PageNavigationManager();
-            // pageNavigationManager.setItemsPerPage(2);
-            pageNavigationManager.setMonospace(false);
-            pageNavigationManager.setItems(formatPlayerRankList(prplayer.getRanks()));
-            for (String line : pageNavigationManager.getPage(page).generate()) {
-                sender.sendMessage(line);
-
+            pageNavigationManager.setItemsPerPage(sender instanceof Player ? 5 : 10);
+            pageNavigationManager.setMonospace(sender instanceof ConsoleCommandSender);
+            pageNavigationManager.setFancyPageControls(sender instanceof Player);
+            pageNavigationManager.setBaseCommand("pr listranks");
+            pageNavigationManager
+                    .setItems(formatPlayerRankList(prplayer.getRanks(), sender instanceof ConsoleCommandSender));
+            for (Object line : pageNavigationManager.getPage(page).generate()) {
+                if (line instanceof String) {
+                    sender.sendMessage((String)line);
+                } else {
+                    sender.spigot().sendMessage((TextComponent)line);
+                }
             }
-
-            // handlePlayerListRanks(sender, prplayer);
         }
 
     }
 
-    // private void handleServerListRanks(CommandSender sender) {
-    // sendMessage(sender, "list-header", false);
-    // sendMessage(sender, "list-server-ranks", ImmutableMap.of( //
-    // "amount", String.valueOf(PRCache.getRanks().size()) //
-    // ), false);
-    // for (String line : formatRankList(PRCache.getRanks())) {
-    // sender.sendMessage(line);
-
-    // }
-    // sendMessage(sender, "list-footer", false);
-    // }
-
-    // private void handlePlayerListRanks(CommandSender sender, PRPlayer prplayer) {
-    // sendMessage(sender, "list-header", false);
-    // sendMessage(sender, "list-player-ranks", ImmutableMap.of( //
-    // "player", prplayer.getName(), //
-    // "amount", String.valueOf(prplayer.getRanks().size()) //
-    // ), false);
-    // for (String line : formatPlayerRankList(prplayer.getRanks())) {
-    // sender.sendMessage(line);
-
-    // }
-    // sendMessage(sender, "list-footer", false);
-    // }
-
-    private List<String> formatPlayerRankList(Set<PRPlayerRank> playerRanksList) {
+    private List<String> formatPlayerRankList(Set<PRPlayerRank> playerRanksList, boolean hasMonospaceFont) {
         List<PRPlayerRank> playerRanks = playerRanksList.stream().collect(Collectors.toList());
         List<PRRank> ranks = PRUtil.playerRanksToRanks(playerRanks);
-        return formatRankList(ranks);
+        return formatRankList(ranks, hasMonospaceFont);
     }
 
     // │ ┤ ┐ └ ┴ ┬ ├ ─ ┼ ┘ ┌
 
-    private List<String> formatRankList(List<PRRank> ranks) {
+    private List<String> formatRankList(List<PRRank> ranks, boolean hasMonospaceFont) {
         List<String> list = new ArrayList<String>();
         PRUtil.sortRanksByWeight(ranks);
 
         Map<String, String> nameBuffer = new HashMap<>();
         Map<String, String> weightBuffer = new HashMap<>();
         Map<String, String> prefixBuffer = new HashMap<>();
+        Map<String, String> unformattedPrefixBuffer = new HashMap<>();
         Map<String, String> suffixBuffer = new HashMap<>();
+        Map<String, String> unformattedSuffixBuffer = new HashMap<>();
 
         for (PRRank prrank : ranks) {
             nameBuffer.put(prrank.getName(), prrank.getName());
             weightBuffer.put(prrank.getName(), String.valueOf(prrank.getWeight()));
-            prefixBuffer.put(prrank.getName(), PowerRanks.getPowerColor().removeFormat(PowerColor.UNFORMATTED_COLOR_CHAR, prrank.getPrefix()));
-            suffixBuffer.put(prrank.getName(), PowerRanks.getPowerColor().removeFormat(PowerColor.UNFORMATTED_COLOR_CHAR, prrank.getSuffix()));
+
+            prefixBuffer.put(prrank.getName(), prrank.getPrefix());
+            unformattedPrefixBuffer.put(prrank.getName(),
+                    PowerRanks.getPowerColor().removeFormat(PowerColor.UNFORMATTED_COLOR_CHAR, prrank.getPrefix()));
+
+            suffixBuffer.put(prrank.getName(), prrank.getSuffix());
+            unformattedSuffixBuffer.put(prrank.getName(),
+                    PowerRanks.getPowerColor().removeFormat(PowerColor.UNFORMATTED_COLOR_CHAR, prrank.getSuffix()));
         }
 
-        int longestName = nameBuffer.values().stream().mapToInt(name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max().orElse(0);
-        int longestWeight = weightBuffer.values().stream().mapToInt(name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max().orElse(0);
-        int longestPrefix  = prefixBuffer.values().stream().mapToInt(name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max().orElse(0);
-        int longestSuffix = suffixBuffer.values().stream().mapToInt(name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max().orElse(0);
+        if (!hasMonospaceFont) {
+            int longestName = nameBuffer.values().stream().mapToInt(
+                    name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max()
+                    .orElse(0);
+            int longestWeight = weightBuffer.values().stream().mapToInt(
+                    name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max()
+                    .orElse(0);
+            int longestPrefix = unformattedPrefixBuffer.values().stream().mapToInt(
+                    name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max()
+                    .orElse(0);
+            int longestSuffix = unformattedSuffixBuffer.values().stream().mapToInt(
+                    name -> name.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum()).max()
+                    .orElse(0);
 
-        for (Entry<String, String> entry : nameBuffer.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            while (currentLength < longestName) {
-                value += " ";
-                currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
+            for (Entry<String, String> entry : nameBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                        .sum();
+                while (currentLength < longestName) {
+                    value += " ";
+                    currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                            .sum();
+                }
+                nameBuffer.put(key, value);
             }
-            nameBuffer.put(key, value);
+
+            for (Entry<String, String> entry : weightBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                        .sum();
+                while (currentLength < longestWeight) {
+                    value = " " + value;
+                    currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                            .sum();
+                }
+                weightBuffer.put(key, value);
+            }
+
+            for (Entry<String, String> entry : unformattedPrefixBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                String targetValue = prefixBuffer.get(key);
+                int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                        .sum();
+                while (currentLength < longestPrefix) {
+                    value += " ";
+                    targetValue += " ";
+                    currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                            .sum();
+                }
+                prefixBuffer.put(key, targetValue);
+            }
+
+            for (Entry<String, String> entry : unformattedSuffixBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                String targetValue = suffixBuffer.get(key);
+                int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                        .sum();
+                while (currentLength < longestSuffix) {
+                    value += " ";
+                    targetValue += " ";
+                    currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength())
+                            .sum();
+                }
+                suffixBuffer.put(key, targetValue);
+            }
+        } else {
+            int longestName = nameBuffer.values().stream().mapToInt(name -> name.length()).max().orElse(0);
+            int longestWeight = weightBuffer.values().stream().mapToInt(name -> name.length()).max().orElse(0);
+            int longestPrefix = unformattedPrefixBuffer.values().stream().mapToInt(name -> name.length()).max()
+                    .orElse(0);
+            int longestSuffix = unformattedSuffixBuffer.values().stream().mapToInt(name -> name.length()).max()
+                    .orElse(0);
+
+            for (Entry<String, String> entry : nameBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                int currentLength = value.length();
+                while (currentLength < longestName) {
+                    value += " ";
+                    currentLength = value.length();
+                }
+                nameBuffer.put(key, value);
+            }
+
+            for (Entry<String, String> entry : weightBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                int currentLength = value.length();
+                while (currentLength < longestWeight) {
+                    value = " " + value;
+                    currentLength = value.length();
+                }
+                weightBuffer.put(key, value);
+            }
+
+            for (Entry<String, String> entry : unformattedPrefixBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                int currentLength = value.length();
+                String targetValue = prefixBuffer.get(key);
+                while (currentLength < longestPrefix) {
+                    value += " ";
+                    targetValue += " ";
+                    currentLength = value.length();
+                }
+                prefixBuffer.put(key, targetValue);
+            }
+
+            for (Entry<String, String> entry : unformattedSuffixBuffer.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                int currentLength = value.length();
+                String targetValue = suffixBuffer.get(key);
+                while (currentLength < longestSuffix) {
+                    value += " ";
+                    targetValue += " ";
+                    currentLength = value.length();
+                }
+                suffixBuffer.put(key, targetValue);
+            }
         }
 
-        for (Entry<String, String> entry : weightBuffer.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            while (currentLength < longestWeight) {
-                value = " " + value;
-                currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            }
-            weightBuffer.put(key, value);
-        }
-
-        for (Entry<String, String> entry : prefixBuffer.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            while (currentLength < longestPrefix) {
-                value += " ";
-                currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            }
-            prefixBuffer.put(key, value);
-        }
-
-        for (Entry<String, String> entry : suffixBuffer.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            int currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            while (currentLength < longestSuffix) {
-                value += " ";
-                currentLength = value.chars().map(c -> DefaultFontInfo.getDefaultFontInfo((char) c).getLength()).sum();
-            }
-            suffixBuffer.put(key, value);
-        }
-        
         for (PRRank prrank : ranks) {
             String line = prepareMessage("list-rank-item", ImmutableMap.of( //
                     "rank", nameBuffer.get(prrank.getName()), //
@@ -224,6 +264,10 @@ public class CmdListRanks extends PowerBaseCommand {
                     "suffix", suffixBuffer.get(prrank.getName()), //
                     "weight", weightBuffer.get(prrank.getName()) //
             ), false);
+            while (line.endsWith(" ") || line.toLowerCase().endsWith(PowerColor.COLOR_CHAR + "")
+                    || line.toLowerCase().endsWith(PowerColor.COLOR_CHAR + "r")) {
+                line = line.substring(0, line.length() - 1);
+            }
             list.add(line);
         }
         return list;

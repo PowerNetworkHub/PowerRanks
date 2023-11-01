@@ -1,7 +1,7 @@
 package nl.svenar.powerranks.bukkit.textcomponents;
 
 public enum DefaultFontInfo {
-
+    DEFAULT('a', 4),
     A('A', 5),
     a('a', 5),
     B('B', 5),
@@ -18,7 +18,7 @@ public enum DefaultFontInfo {
     g('g', 5),
     H('H', 5),
     h('h', 5),
-    I('I', 3),
+    I('I', 2),
     i('i', 1),
     J('J', 5),
     j('j', 5),
@@ -78,8 +78,8 @@ public enum DefaultFontInfo {
     UNDERSCORE('_', 5),
     PLUS_SIGN('+', 5),
     EQUALS_SIGN('=', 5),
-    LEFT_CURL_BRACE('{', 4),
-    RIGHT_CURL_BRACE('}', 4),
+    LEFT_CURL_BRACE('{', 3),
+    RIGHT_CURL_BRACE('}', 3),
     LEFT_BRACKET('[', 3),
     RIGHT_BRACKET(']', 3),
     COLON(':', 1),
@@ -97,7 +97,17 @@ public enum DefaultFontInfo {
     PERIOD('.', 1),
     COMMA(',', 1),
     SPACE(' ', 3),
-    DEFAULT('a', 4);
+    BOX_DRAWING_LIGHT_UP('│', 5),
+    BOX_DRAWING_LIGHT_UP_AND_RIGHT('└', 7),
+    BOX_DRAWING_LIGHT_UP_AND_LEFT('┘', 5),
+    BOX_DRAWING_DOWN_UP_AND_RIGHT('┌', 7),
+    BOX_DRAWING_DOWN_UP_AND_LEFT('┐', 5),
+    BOX_DRAWING_LIGHT_HORIZONTAL('─', 7),
+    BOX_DRAWING_LIGHT_VERTICAL_RIGHT('├', 7),
+    BOX_DRAWING_LIGHT_VERTICAL_LEFT('┤', 5),
+    BOX_DRAWING_LIGHT_UP_HORIZONTAL('┴', 7),
+    LEFT_POINTING_TRIANGLE('◀', 6),
+    RIGHT_POINTING_TRIANGLE('▶', 6);
 
     private char character;
     private int length;
@@ -127,5 +137,19 @@ public enum DefaultFontInfo {
                 return dFI;
         }
         return DefaultFontInfo.DEFAULT;
+    }
+
+    public static int getStringLength(String input) {
+        return getStringLength(input, false);
+    }
+
+    public static int getStringLength(String input, boolean isBold) {
+        int length = 0;
+        for (char c : input.toCharArray()) {
+            DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
+            length += isBold ? dFI.getBoldLength() : dFI.getLength();
+            length++;
+        }
+        return length;
     }
 }
