@@ -117,7 +117,7 @@ public class CacheManager {
                         List<String> addonStorageManager = prAddon.getValue().getStorageManagerNames();
                         if (Objects.nonNull(addonStorageManager)) {
                             for (String storageName : addonStorageManager) {
-                                if (storageType.equals(storageName.toUpperCase())) {
+                                if (storageType.equalsIgnoreCase(storageName)) {
                                     usedStorageManagerAddon = prAddon.getValue();
                                     usedStorageManagerAddon.setupStorageManager(storageName);
                                     storageManager = usedStorageManagerAddon.getStorageManager(storageName);
