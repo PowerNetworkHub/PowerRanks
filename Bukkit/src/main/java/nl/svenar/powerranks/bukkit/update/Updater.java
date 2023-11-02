@@ -491,15 +491,15 @@ public class Updater {
 			conn.setInstanceFollowRedirects(false);
 			conn.setRequestProperty("User-Agent", "Mozilla/5.0...");
 
-			switch (conn.getResponseCode()) {
-				case HttpURLConnection.HTTP_MOVED_PERM:
-				case HttpURLConnection.HTTP_MOVED_TEMP:
-					redLoc = conn.getHeaderField("Location");
-					base = new URL(location);
-					next = new URL(base, redLoc); // Deal with relative URLs
-					location = next.toExternalForm();
-					continue;
+			if (conn.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
+					|| conn.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
+				redLoc = conn.getHeaderField("Location");
+				base = new URL(location);
+				next = new URL(base, redLoc); // Deal with relative URLs
+				location = next.toExternalForm();
+				continue;
 			}
+
 			break;
 		}
 		return conn.getURL();
