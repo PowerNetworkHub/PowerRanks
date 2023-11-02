@@ -50,43 +50,43 @@ public class TestRanksAPI {
     }
 
     @Test
-    public void A_TestGetRank() {
-        TestDebugger.log(this, "[A_TestGetRank] Setup...");
+    public void aTestGetRank() {
+        TestDebugger.log(this, "[aTestGetRank] Setup...");
 
         assertEquals(rank1, api.getRanksAPI().get("rank1"));
         assertEquals(rank2, api.getRanksAPI().get("rank2"));
         assertEquals(rank3, api.getRanksAPI().get("rank3"));
 
-        TestDebugger.log(this, "[A_TestGetRank] OK");
+        TestDebugger.log(this, "[aTestGetRank] OK");
     }
 
     @Test
-    public void B_TestPrefix() {
-        TestDebugger.log(this, "[B_TestPrefix] Setup...");
+    public void bTestPrefix() {
+        TestDebugger.log(this, "[bTestPrefix] Setup...");
 
         assertEquals(rank1.getPrefix(), api.getRanksAPI().getPrefix(rank1));
 
         api.getRanksAPI().setPrefix(rank1, "newprefix1");
         assertEquals("newprefix1", api.getRanksAPI().getPrefix(rank1));
 
-        TestDebugger.log(this, "[B_TestPrefix] OK");
+        TestDebugger.log(this, "[bTestPrefix] OK");
     }
 
     @Test
-    public void C_TestSuffix() {
-        TestDebugger.log(this, "[C_TestSuffix] Setup...");
+    public void cTestSuffix() {
+        TestDebugger.log(this, "[cTestSuffix] Setup...");
 
         assertEquals(rank1.getSuffix(), api.getRanksAPI().getSuffix(rank1));
 
         api.getRanksAPI().setSuffix(rank1, "newprefix1");
         assertEquals("newprefix1", api.getRanksAPI().getSuffix(rank1));
 
-        TestDebugger.log(this, "[C_TestSuffix] OK");
+        TestDebugger.log(this, "[cTestSuffix] OK");
     }
 
     @Test
-    public void D_TestPermissions() {
-        TestDebugger.log(this, "[D_TestPermissions] Setup...");
+    public void dTestPermissions() {
+        TestDebugger.log(this, "[dTestPermissions] Setup...");
 
         assertEquals(0, api.getRanksAPI().getPermissions(rank1).size());
 
@@ -99,36 +99,36 @@ public class TestRanksAPI {
         api.getRanksAPI().removePermission(rank1, permission1.getName());
         assertEquals(1, api.getRanksAPI().getPermissions(rank1).size());
 
-        TestDebugger.log(this, "[D_TestPermissions] OK");
+        TestDebugger.log(this, "[dTestPermissions] OK");
     }
 
     @Test
-    public void E_NameColor() {
-        TestDebugger.log(this, "[E_NameColor] Setup...");
+    public void eNameColor() {
+        TestDebugger.log(this, "[eNameColor] Setup...");
 
         assertEquals(rank1.getNamecolor(), api.getRanksAPI().getNameColor(rank1));
 
         api.getRanksAPI().setNameColor(rank1, "&a");
         assertEquals("&a", api.getRanksAPI().getNameColor(rank1));
 
-        TestDebugger.log(this, "[E_NameColor] OK");
+        TestDebugger.log(this, "[eNameColor] OK");
     }
 
     @Test
-    public void F_ChatColor() {
-        TestDebugger.log(this, "[F_ChatColor] Setup...");
+    public void fChatColor() {
+        TestDebugger.log(this, "[fChatColor] Setup...");
 
         assertEquals(rank1.getNamecolor(), api.getRanksAPI().getChatColor(rank1));
 
         api.getRanksAPI().setChatColor(rank1, "&a");
         assertEquals("&a", api.getRanksAPI().getChatColor(rank1));
 
-        TestDebugger.log(this, "[F_ChatColor] OK");
+        TestDebugger.log(this, "[fChatColor] OK");
     }
 
     @Test
-    public void G_Inheritances() {
-        TestDebugger.log(this, "[G_Inheritances] Setup...");
+    public void gInheritances() {
+        TestDebugger.log(this, "[gInheritances] Setup...");
 
         assertEquals(0, api.getRanksAPI().getInheritances(rank1).size());
 
@@ -139,7 +139,7 @@ public class TestRanksAPI {
         api.getRanksAPI().removeInheritance(rank1, rank2);
         assertEquals(1, api.getRanksAPI().getInheritances(rank1).size());
 
-        TestDebugger.log(this, "[G_Inheritances] OK");
+        TestDebugger.log(this, "[gInheritances] OK");
 
     }
 }

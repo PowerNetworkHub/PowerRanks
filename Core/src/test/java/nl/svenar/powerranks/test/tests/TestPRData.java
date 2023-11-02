@@ -22,9 +22,9 @@ import nl.svenar.powerranks.test.util.TestDebugger;
 public class TestPRData {
 
     @Test
-    public void A_testPRCacheHandler() {
+    public void aTestPRCacheHandler() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[A_testPRCacheHandler] Setup...");
+        TestDebugger.log(this, "[aTestPRCacheHandler] Setup...");
 
         final int numPlayers = 10000;
         final int numRanks = 1000;
@@ -60,7 +60,7 @@ public class TestPRData {
 
         TestDebugger
                 .log(this,
-                        "[A_testPRCacheHandler] created " + numRanks + " ranks in "
+                        "[aTestPRCacheHandler] created " + numRanks + " ranks in "
                                 + ((int) ((float) rankCreationTimeNS / 1000000.0) < 100
                                         ? (int) ((float) rankCreationTimeNS / 1000.0) + "us ("
                                                 + (double) Math
@@ -70,7 +70,7 @@ public class TestPRData {
                                         : (int) ((float) rankCreationTimeNS / 1000000.0) + "ms"));
         TestDebugger
                 .log(this,
-                        "[A_testPRCacheHandler] created " + numPlayers + " players in "
+                        "[aTestPRCacheHandler] created " + numPlayers + " players in "
                                 + ((int) ((float) playerCreationTimeNS / 1000000.0) < 100
                                         ? (int) ((float) playerCreationTimeNS / 1000.0) + "us ("
                                                 + (double) Math
@@ -79,20 +79,20 @@ public class TestPRData {
                                                 + "ms)"
                                         : (int) ((float) playerCreationTimeNS / 1000000.0) + "ms"));
 
-        TestDebugger.log(this, "[A_testPRCacheHandler] Checking number of ranks...");
+        TestDebugger.log(this, "[aTestPRCacheHandler] Checking number of ranks...");
         assertEquals(PRCache.getRanks().size(), numRanks);
-        TestDebugger.log(this, "[A_testPRCacheHandler] Number of ranks OK");
+        TestDebugger.log(this, "[aTestPRCacheHandler] Number of ranks OK");
 
-        TestDebugger.log(this, "[A_testPRCacheHandler] Checking number of players...");
+        TestDebugger.log(this, "[aTestPRCacheHandler] Checking number of players...");
         assertEquals(PRCache.getPlayers().size(), numPlayers);
-        TestDebugger.log(this, "[A_testPRCacheHandler] Number of players OK");
+        TestDebugger.log(this, "[aTestPRCacheHandler] Number of players OK");
 
-        TestDebugger.log(this, "[A_testPRCacheHandler] Setup OK");
+        TestDebugger.log(this, "[aTestPRCacheHandler] Setup OK");
     }
 
     @Test
-    public void B_testPRPlayerDefaultRanks() {
-        TestDebugger.log(this, "[B_testPRPlayerDefaultRanks] Checking number of default ranks in players...");
+    public void bTestPRPlayerDefaultRanks() {
+        TestDebugger.log(this, "[bTestPRPlayerDefaultRanks] Checking number of default ranks in players...");
 
         int numDefaultRanks = 0;
 
@@ -107,12 +107,12 @@ public class TestPRData {
             assertEquals(prPlayer.getDefaultRanks().size(), numDefaultRanks);
         }
 
-        TestDebugger.log(this, "[B_testPRPlayerDefaultRanks] Number of default ranks OK");
+        TestDebugger.log(this, "[bTestPRPlayerDefaultRanks] Number of default ranks OK");
     }
 
     @Test
-    public void C_testPRPlayerPermissions() {
-        TestDebugger.log(this, "[C_testPRPlayerPermissions] Checking playerpermissions in players...");
+    public void cTestPRPlayerPermissions() {
+        TestDebugger.log(this, "[cTestPRPlayerPermissions] Checking playerpermissions in players...");
         for (int i = 0; i < PRCache.getPlayers().size(); i += PRCache.getPlayers().size() / 100) {
             PRPlayer prPlayer = PRCache.getPlayer("player" + i);
             List<PRPermission> permissions = prPlayer.getEffectivePermissions();
@@ -128,12 +128,12 @@ public class TestPRData {
             assertTrue(hasTestPermission);
             assertEquals(testPermissionValue, i % 2 == 0);
         }
-        TestDebugger.log(this, "[C_testPRPlayerPermissions] Playerpermissions OK");
+        TestDebugger.log(this, "[cTestPRPlayerPermissions] Playerpermissions OK");
     }
 
     @Test
-    public void D_testPRRankPermissionOrder() {
-        TestDebugger.log(this, "[D_testPRRankPermissionOrder] Checking rank weight permission overriding...");
+    public void dTestPRRankPermissionOrder() {
+        TestDebugger.log(this, "[dTestPRRankPermissionOrder] Checking rank weight permission overriding...");
 
         PRRank newRank = new PRRank();
         PRPermission testPermission = new PRPermission("test.rank.permission", false);
@@ -174,12 +174,12 @@ public class TestPRData {
         }
         assertTrue(permissionAllowed);
 
-        TestDebugger.log(this, "[D_testPRRankPermissionOrder] Rank weight permission overriding OK");
+        TestDebugger.log(this, "[dTestPRRankPermissionOrder] Rank weight permission overriding OK");
     }
 
     @Test
-    public void E_testPRRankRemoveFromPlayer() {
-        TestDebugger.log(this, "[E_testPRRankRemoveFromPlayer] Setup...");
+    public void eTestPRRankRemoveFromPlayer() {
+        TestDebugger.log(this, "[eTestPRRankRemoveFromPlayer] Setup...");
         PRCache.reset();
 
         PRRank rank1 = PRCache.createRank("testRank1");
@@ -196,6 +196,6 @@ public class TestPRData {
         PRCache.removeRank(rank1);
         assertEquals(2, testPlayer.getRanks().size());
 
-        TestDebugger.log(this, "[E_testPRRankRemoveFromPlayer] Remove rank updates player OK");
+        TestDebugger.log(this, "[eTestPRRankRemoveFromPlayer] Remove rank updates player OK");
     }
 }

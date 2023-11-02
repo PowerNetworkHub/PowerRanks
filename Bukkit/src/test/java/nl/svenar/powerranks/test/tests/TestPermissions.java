@@ -42,9 +42,9 @@ public class TestPermissions {
     }
 
     @Test
-    public void A_testRankAddPermission() {
+    public void aTestRankAddPermission() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[A_testRankAddPermissionA_testRankAddPermission] Start");
+        TestDebugger.log(this, "[aTestRankAddPermissionaTestRankAddPermission] Start");
 
         Player player1 = Mock.getPlayer(0);
         Player player2 = Mock.getPlayer(1);
@@ -66,13 +66,13 @@ public class TestPermissions {
 
         assertTrue(!prPlayer2.hasPermission("test.permission.node.1", true));
 
-        TestDebugger.log(this, "[A_testRankAddPermissionA_testRankAddPermission] OK");
+        TestDebugger.log(this, "[aTestRankAddPermissionaTestRankAddPermission] OK");
     }
 
     @Test
-    public void B_testRankPermissionWeightOverride() {
+    public void bTestRankPermissionWeightOverride() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[B_testRankPermissionWeightOverride] Start");
+        TestDebugger.log(this, "[bTestRankPermissionWeightOverride] Start");
 
         Player player1 = Mock.getPlayer(0);
         Player player2 = Mock.getPlayer(1);
@@ -100,13 +100,13 @@ public class TestPermissions {
         server.execute("pr", player1, "deleterank", "TestPermissions1");
         server.execute("pr", player1, "deleterank", "TestPermissions2");
 
-        TestDebugger.log(this, "[B_testRankPermissionWeightOverride] OK");
+        TestDebugger.log(this, "[bTestRankPermissionWeightOverride] OK");
     }
 
     @Test
-    public void C_testPermissionWildcard() {
+    public void cTestPermissionWildcard() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[C_testPermissionWildcard] Start");
+        TestDebugger.log(this, "[cTestPermissionWildcard] Start");
 
         Player player1 = Mock.getPlayer(0);
         Player player2 = Mock.getPlayer(1);
@@ -127,7 +127,7 @@ public class TestPermissions {
         assertEquals("test.permission.node3.*", prPlayer2.getPermission("test.permission.node3.ghi", true).getName());
         assertNull(prPlayer2.getPermission("test.permission.node1.abc", false));
 
-        TestDebugger.log(this, "[C_testPermissionWildcard] OK");
+        TestDebugger.log(this, "[cTestPermissionWildcard] OK");
     }
     
 }

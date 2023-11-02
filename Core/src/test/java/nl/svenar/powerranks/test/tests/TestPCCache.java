@@ -21,19 +21,19 @@ import nl.svenar.powerranks.test.util.TestDebugger;
 public class TestPCCache {
 
     @Test
-    public void A_Setup() {
+    public void aSetup() {
         PRCache.reset();
     }
     
     @Test
-    public void B_testCreateDuration() {
+    public void bTestCreateDuration() {
         final int numPlayers = 10000;
         final int numRanks = 10000;
         final float maxDurationEachRank = 0.5f;
         final float maxDurationEachPlayer = 0.5f;
 
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[B_testCreateDuration] Setup...");
+        TestDebugger.log(this, "[bTestCreateDuration] Setup...");
 
         Instant rankCreationStartTimestamp = Instant.now();
         for (int i = 0; i < numRanks; i++) {
@@ -57,12 +57,12 @@ public class TestPCCache {
         assertEquals(numPlayers, PRCache.getPlayers().size());
 
 
-        TestDebugger.log(this, "[B_testCreateDuration] Done!");
+        TestDebugger.log(this, "[bTestCreateDuration] Done!");
     }
 
 
     @Test
-    public void C_testRemoveDuration() {
+    public void cTestRemoveDuration() {
         final int numPlayers = PRCache.getPlayers().size();
         final int numRanks = PRCache.getRanks().size();
         final float maxDurationEachPlayer = 0.0020f;

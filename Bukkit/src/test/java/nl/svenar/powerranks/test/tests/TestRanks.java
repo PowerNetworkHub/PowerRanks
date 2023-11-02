@@ -41,9 +41,9 @@ public class TestRanks {
     }
 
     @Test
-    public void A_testCreateRank() {
+    public void aTestCreateRank() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[A_testCreateRank] Start");
+        TestDebugger.log(this, "[aTestCreateRank] Start");
 
         Player player = Mock.getPlayer(0);
 
@@ -54,13 +54,13 @@ public class TestRanks {
         server.execute("pr", player, "createrank", "Test1");
         assertEquals(numRanks + 1, CacheManager.getRanks().size());
 
-        TestDebugger.log(this, "[A_testCreateRank] OK");
+        TestDebugger.log(this, "[aTestCreateRank] OK");
     }
 
     @Test
-    public void B_testSetrank() {
+    public void bTestSetrank() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[B_testSetrank] Start");
+        TestDebugger.log(this, "[bTestSetrank] Start");
 
         Player player1 = Mock.getPlayer(0);
         Player player2 = Mock.getPlayer(1);
@@ -74,13 +74,13 @@ public class TestRanks {
 
         assertTrue(prPlayer2.getRanks().stream().anyMatch(rank -> rank.getName().equals("testSetDelrank")));
 
-        TestDebugger.log(this, "[B_testSetrank] OK");
+        TestDebugger.log(this, "[bTestSetrank] OK");
     }
 
     @Test
-    public void C_testDelrank() {
+    public void cTestDelrank() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[C_testDelrank] Start");
+        TestDebugger.log(this, "[cTestDelrank] Start");
 
         Player player1 = Mock.getPlayer(0);
         Player player2 = Mock.getPlayer(1);
@@ -93,13 +93,13 @@ public class TestRanks {
 
         assertTrue(!prPlayer2.getRanks().stream().anyMatch(rank -> rank.getName().equals("testSetDelrank")));
 
-        TestDebugger.log(this, "[C_testDelrank] OK");
+        TestDebugger.log(this, "[cTestDelrank] OK");
     }
 
     @Test
-    public void D_testDeleteRankUpdatePlayer() {
+    public void dTestDeleteRankUpdatePlayer() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[D_testDeleteRankUpdatePlayer] Start");
+        TestDebugger.log(this, "[dTestDeleteRankUpdatePlayer] Start");
 
         Player player1 = Mock.getPlayer(0);
         Player player2 = Mock.getPlayer(1);
@@ -115,7 +115,7 @@ public class TestRanks {
         CacheManager.removeRank(CacheManager.getRank("testDeleteRankUpdatePlayer"));
         assertTrue(!prPlayer2.getRanks().stream().anyMatch(rank -> rank.getName().equals("testDeleteRankUpdatePlayer")));
 
-        TestDebugger.log(this, "[D_testDeleteRankUpdatePlayer] OK");
+        TestDebugger.log(this, "[dTestDeleteRankUpdatePlayer] OK");
 
     }
 }

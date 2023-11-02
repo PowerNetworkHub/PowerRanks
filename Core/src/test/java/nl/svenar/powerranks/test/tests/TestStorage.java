@@ -50,15 +50,15 @@ public class TestStorage {
     }
 
     @Test
-    public void A_TestYAML() {
+    public void ATestYAML() {
         setupCache();
         StorageSpeed storageSpeed = new StorageSpeed();
         storageSpeed.name = "YAML";
-        TestDebugger.log(this, "[A_TestYAML] Setup...");
+        TestDebugger.log(this, "[ATestYAML] Setup...");
 
         PowerStorageManager storageManager = new YAMLStorageManager(storageDirectory, "ranks.yml", "players.yml");
 
-        TestDebugger.log(this, "[A_TestYAML] Saving data...");
+        TestDebugger.log(this, "[ATestYAML] Saving data...");
         storageManager.setRanks(PRCache.getRanks());
         storageManager.setPlayers(PRCache.getPlayers());
 
@@ -70,7 +70,7 @@ public class TestStorage {
 
         storageManager = new YAMLStorageManager(storageDirectory, "ranks.yml", "players.yml");
 
-        TestDebugger.log(this, "[A_TestYAML] Loading data...");
+        TestDebugger.log(this, "[ATestYAML] Loading data...");
         Instant loadStartTimestamp = Instant.now();
         storageManager.loadAll();
         Instant loadEndTimestamp = Instant.now();
@@ -80,24 +80,24 @@ public class TestStorage {
         PRCache.setRanks(storageManager.getRanks());
         PRCache.setPlayers(storageManager.getPlayers());
 
-        TestDebugger.log(this, "[A_TestYAML] Checking data...");
+        TestDebugger.log(this, "[ATestYAML] Checking data...");
         assertEquals(numRanks, PRCache.getRanks().size());
         assertEquals(numPlayers, PRCache.getPlayers().size());
 
         storageSpeeds.add(storageSpeed);
-        TestDebugger.log(this, "[A_TestYAML] OK");
+        TestDebugger.log(this, "[ATestYAML] OK");
     }
 
     @Test
-    public void B_TestJSON() {
+    public void BTestJSON() {
         setupCache();
         StorageSpeed storageSpeed = new StorageSpeed();
         storageSpeed.name = "JSON";
-        TestDebugger.log(this, "[B_TestJSON] Setup...");
+        TestDebugger.log(this, "[BTestJSON] Setup...");
 
         PowerStorageManager storageManager = new JSONStorageManager(storageDirectory, "ranks.json", "players.json");
 
-        TestDebugger.log(this, "[B_TestJSON] Saving data...");
+        TestDebugger.log(this, "[BTestJSON] Saving data...");
         storageManager.setRanks(PRCache.getRanks());
         storageManager.setPlayers(PRCache.getPlayers());
 
@@ -109,7 +109,7 @@ public class TestStorage {
 
         storageManager = new JSONStorageManager(storageDirectory, "ranks.json", "players.json");
 
-        TestDebugger.log(this, "[B_TestJSON] Loading data...");
+        TestDebugger.log(this, "[BTestJSON] Loading data...");
         Instant loadStartTimestamp = Instant.now();
         storageManager.loadAll();
         Instant loadEndTimestamp = Instant.now();
@@ -119,24 +119,24 @@ public class TestStorage {
         PRCache.setRanks(storageManager.getRanks());
         PRCache.setPlayers(storageManager.getPlayers());
 
-        TestDebugger.log(this, "[B_TestJSON] Checking data...");
+        TestDebugger.log(this, "[BTestJSON] Checking data...");
         assertEquals(numRanks, PRCache.getRanks().size());
         assertEquals(numPlayers, PRCache.getPlayers().size());
 
         storageSpeeds.add(storageSpeed);
-        TestDebugger.log(this, "[B_TestJSON] OK");
+        TestDebugger.log(this, "[BTestJSON] OK");
     }
 
     @Test
-    public void C_TestPSM() {
+    public void CTestPSM() {
         setupCache();
         StorageSpeed storageSpeed = new StorageSpeed();
         storageSpeed.name = "PSM";
-        TestDebugger.log(this, "[C_TestPSM] Setup...");
+        TestDebugger.log(this, "[CTestPSM] Setup...");
 
         PowerStorageManager storageManager = new PSMStorageManager(storageDirectory, "ranks.psm", "players.psm");
 
-        TestDebugger.log(this, "[C_TestPSM] Saving data...");
+        TestDebugger.log(this, "[CTestPSM] Saving data...");
         storageManager.setRanks(PRCache.getRanks());
         storageManager.setPlayers(PRCache.getPlayers());
 
@@ -148,7 +148,7 @@ public class TestStorage {
 
         storageManager = new PSMStorageManager(storageDirectory, "ranks.psm", "players.psm");
 
-        TestDebugger.log(this, "[C_TestPSM] Loading data...");
+        TestDebugger.log(this, "[CTestPSM] Loading data...");
         Instant loadStartTimestamp = Instant.now();
         storageManager.loadAll();
         Instant loadEndTimestamp = Instant.now();
@@ -158,36 +158,36 @@ public class TestStorage {
         PRCache.setRanks(storageManager.getRanks());
         PRCache.setPlayers(storageManager.getPlayers());
 
-        TestDebugger.log(this, "[C_TestPSM] Checking data...");
+        TestDebugger.log(this, "[CTestPSM] Checking data...");
         assertEquals(numRanks, PRCache.getRanks().size());
         assertEquals(numPlayers, PRCache.getPlayers().size());
 
         storageSpeeds.add(storageSpeed);
-        TestDebugger.log(this, "[C_TestPSM] OK");
+        TestDebugger.log(this, "[CTestPSM] OK");
     }
 
     @Test
-    public void D_TestSQLite() {
+    public void DTestSQLite() {
         setupCache();
         StorageSpeed storageSpeed = new StorageSpeed();
         storageSpeed.name = "SQLite";
-        TestDebugger.log(this, "[D_TestSQLite] Setup...");
+        TestDebugger.log(this, "[DTestSQLite] Setup...");
 
         SQLiteStorageManager storageManager = new SQLiteStorageManager(storageDirectory, "ranks.db", "players.db");
 
         if (!storageManager.isConnected()) {
-            TestDebugger.log(this, "[D_TestSQLite] Skipping test, not connected to MySQL");
+            TestDebugger.log(this, "[DTestSQLite] Skipping test, not connected to MySQL");
             return;
         }
 
-        TestDebugger.log(this, "[D_TestSQLite] Clearing database...");
+        TestDebugger.log(this, "[DTestSQLite] Clearing database...");
         storageManager.removeAllData();
         storageManager.close();
 
         storageManager = new SQLiteStorageManager(storageDirectory, "ranks.db", "players.db");
         assertTrue(storageManager.isConnected());
 
-        TestDebugger.log(this, "[D_TestSQLite] Saving data...");
+        TestDebugger.log(this, "[DTestSQLite] Saving data...");
         storageManager.setRanks(PRCache.getRanks());
         storageManager.setPlayers(PRCache.getPlayers());
 
@@ -201,7 +201,7 @@ public class TestStorage {
         storageManager = new SQLiteStorageManager(storageDirectory, "ranks.db", "players.db");
         assertTrue(storageManager.isConnected());
 
-        TestDebugger.log(this, "[D_TestSQLite] Loading data...");
+        TestDebugger.log(this, "[DTestSQLite] Loading data...");
         Instant loadStartTimestamp = Instant.now();
         storageManager.loadAll();
         Instant loadEndTimestamp = Instant.now();
@@ -213,21 +213,21 @@ public class TestStorage {
 
         storageManager.close();
 
-        TestDebugger.log(this, "[D_TestSQLite] Checking data...");
+        TestDebugger.log(this, "[DTestSQLite] Checking data...");
         assertEquals(numRanks, PRCache.getRanks().size());
         assertEquals(numPlayers, PRCache.getPlayers().size());
 
         storageSpeeds.add(storageSpeed);
-        TestDebugger.log(this, "[D_TestSQLite] OK");
+        TestDebugger.log(this, "[DTestSQLite] OK");
     }
 
     @Test
-    public void E_TestMySQL() {
+    public void ETestMySQL() {
         setupCache();
         StorageSpeed storageSpeed = new StorageSpeed();
         storageSpeed.name = "MySQL";
 
-        TestDebugger.log(this, "[E_TestMySQL] Setup...");
+        TestDebugger.log(this, "[ETestMySQL] Setup...");
 
         PowerSQLConfiguration configuration = new PowerSQLConfiguration(
                 "0.0.0.0",
@@ -243,18 +243,18 @@ public class TestStorage {
         MySQLStorageManager storageManager = new MySQLStorageManager(configuration);
 
         if (!storageManager.isConnected()) {
-            TestDebugger.log(this, "[E_TestMySQL] Skipping test, not connected to MySQL");
+            TestDebugger.log(this, "[ETestMySQL] Skipping test, not connected to MySQL");
             return;
         }
 
-        TestDebugger.log(this, "[E_TestMySQL] Clearing database...");
+        TestDebugger.log(this, "[ETestMySQL] Clearing database...");
         storageManager.removeAllData();
         storageManager.close();
 
         storageManager = new MySQLStorageManager(configuration);
         assertTrue(storageManager.isConnected());
 
-        TestDebugger.log(this, "[E_TestMySQL] Saving data...");
+        TestDebugger.log(this, "[ETestMySQL] Saving data...");
         storageManager.setRanks(PRCache.getRanks());
         storageManager.setPlayers(PRCache.getPlayers());
 
@@ -268,7 +268,7 @@ public class TestStorage {
         storageManager = new MySQLStorageManager(configuration);
         assertTrue(storageManager.isConnected());
 
-        TestDebugger.log(this, "[E_TestMySQL] Loading data...");
+        TestDebugger.log(this, "[ETestMySQL] Loading data...");
         Instant loadStartTimestamp = Instant.now();
         storageManager.loadAll();
         Instant loadEndTimestamp = Instant.now();
@@ -280,22 +280,22 @@ public class TestStorage {
 
         storageManager.close();
 
-        TestDebugger.log(this, "[E_TestMySQL] Checking data...");
+        TestDebugger.log(this, "[ETestMySQL] Checking data...");
         assertEquals(numRanks, PRCache.getRanks().size());
         assertEquals(numPlayers, PRCache.getPlayers().size());
 
         storageSpeeds.add(storageSpeed);
-        TestDebugger.log(this, "[E_TestMySQL] OK");
+        TestDebugger.log(this, "[ETestMySQL] OK");
     }
 
     @Test
-    public void Y_Cleanup() {
+    public void YCleanup() {
         File directory = new File(storageDirectory);
         assertTrue(deleteDirectory(directory));
     }
 
     @Test
-    public void Z_ShowStorageStats() {
+    public void ZShowStorageStats() {
         assertTrue(storageSpeeds.size() > 0);
 
         TestDebugger.log(this, "---------------------------------");

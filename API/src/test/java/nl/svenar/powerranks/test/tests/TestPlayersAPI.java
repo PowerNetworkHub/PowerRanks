@@ -52,8 +52,8 @@ public class TestPlayersAPI {
     }
 
     @Test
-    public void A_TestRanks() {
-        TestDebugger.log(this, "[A_TestRanks] Setup...");
+    public void aTestRanks() {
+        TestDebugger.log(this, "[aTestRanks] Setup...");
 
         assertEquals(0, api.getPlayersAPI().getRanks(player1).size());
 
@@ -66,12 +66,12 @@ public class TestPlayersAPI {
         api.getPlayersAPI().removeRank(player1, rank1);
         assertEquals(1, api.getPlayersAPI().getRanks(player1).size());
 
-        TestDebugger.log(this, "[A_TestRanks] OK");
+        TestDebugger.log(this, "[aTestRanks] OK");
     }
 
     @Test
-    public void B_TestPermissions() {
-        TestDebugger.log(this, "[B_TestPermissions] Setup...");
+    public void bTestPermissions() {
+        TestDebugger.log(this, "[bTestPermissions] Setup...");
 
         assertEquals(0, api.getPlayersAPI().getPermissions(player1).size());
 
@@ -94,12 +94,12 @@ public class TestPlayersAPI {
         assertTrue(!api.getPlayersAPI().isPermissionAllowed(player1, "test.permission.2"));
 
 
-        TestDebugger.log(this, "[B_TestPermissions] OK");
+        TestDebugger.log(this, "[bTestPermissions] OK");
     }
 
     @Test
-    public void C_TestPlaytime() {
-        TestDebugger.log(this, "[C_TestPlaytime] Setup...");
+    public void cTestPlaytime() {
+        TestDebugger.log(this, "[cTestPlaytime] Setup...");
 
         assertEquals(0, api.getPlayersAPI().getPlaytime(player1));
 
@@ -107,12 +107,12 @@ public class TestPlayersAPI {
 
         assertEquals(100, api.getPlayersAPI().getPlaytime(player1));
 
-        TestDebugger.log(this, "[C_TestPlaytime] OK");
+        TestDebugger.log(this, "[cTestPlaytime] OK");
     }
 
     @Test
-    public void D_TestUsertags() {
-        TestDebugger.log(this, "[D_TestUsertags] Setup...");
+    public void dTestUsertags() {
+        TestDebugger.log(this, "[dTestUsertags] Setup...");
 
         assertEquals(0, api.getPlayersAPI().getUsertags(player1).size());
 
@@ -124,7 +124,7 @@ public class TestPlayersAPI {
         api.getPlayersAPI().removeUsertag(player1, "usertag1");
         assertEquals(1, api.getPlayersAPI().getUsertags(player1).size());
 
-        TestDebugger.log(this, "[D_TestUsertags] OK");
+        TestDebugger.log(this, "[dTestUsertags] OK");
     }
 
 }
