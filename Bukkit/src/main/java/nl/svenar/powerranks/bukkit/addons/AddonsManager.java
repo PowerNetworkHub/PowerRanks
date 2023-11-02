@@ -14,8 +14,9 @@ import nl.svenar.powerranks.bukkit.util.Util;
 public class AddonsManager {
 
     public static HashMap<File, Boolean> loadedAddons = new HashMap<File, Boolean>(); // file_path, is_loaded
-    
-    public HashMap<File, PowerRanksAddon> addonClasses = new HashMap<File, PowerRanksAddon>(); // file_path, PowerRanksAddon
+
+    public HashMap<File, PowerRanksAddon> addonClasses = new HashMap<File, PowerRanksAddon>(); // file_path,
+                                                                                               // PowerRanksAddon
 
     private PowerRanks powerranks;
 
@@ -59,7 +60,8 @@ public class AddonsManager {
                             pra = (PowerRanksAddon) c.getDeclaredConstructor().newInstance();
                             addonClasses.put(prAddon.getKey(), pra);
                             prAddon.setValue(true);
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                             e.printStackTrace();
                         }
 
@@ -69,20 +71,24 @@ public class AddonsManager {
         }
 
         ArrayList<File> tmp_prAddon = new ArrayList<File>();
-        
+
         for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
-            if (Util.calculateVersionFromString(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", "")) >= Util.calculateVersionFromString(prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", ""))) {
-                PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " v" + prAddon.getValue().getVersion() + " by: " + prAddon.getValue().getAuthor() + " loaded!");
+            if (Util.calculateVersionFromString(PowerRanks.pdf.getVersion().replaceAll("[a-zA-Z ]", "")) >= Util
+                    .calculateVersionFromString(
+                            prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", ""))) {
+                PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " v"
+                        + prAddon.getValue().getVersion() + " by: " + prAddon.getValue().getAuthor() + " loaded!");
                 prAddon.getValue().setup(this.powerranks);
                 prAddon.getValue().setup();
             } else {
-                PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " requires PowerRanks v" + prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", "") + " or higher");
+                PowerRanks.log.info("PowerRanks addon: " + prAddon.getValue().getIdentifier() + " requires PowerRanks v"
+                        + prAddon.getValue().minimalPowerRanksVersion().replaceAll("[a-zA-Z ]", "") + " or higher");
                 tmp_prAddon.add(prAddon.getKey());
                 loadedAddons.put(prAddon.getKey(), false);
-                
+
             }
         }
-        
+
         for (File addon_file : tmp_prAddon) {
             addonClasses.remove(addon_file);
         }
@@ -98,19 +104,17 @@ public class AddonsManager {
 
     public void disable() {
         for (Entry<File, Boolean> prAddonLoaded : loadedAddons.entrySet()) {
-            if (prAddonLoaded.getKey().exists()) {
-                if (prAddonLoaded.getValue()) {
-                    PowerRanksAddon addon = null;
-                    for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
-                        if (prAddon.getKey().getAbsolutePath().equals(prAddonLoaded.getKey().getAbsolutePath())) {
-                            addon = prAddon.getValue();
-                            break;
-                        }
+            if (prAddonLoaded.getKey().exists() && prAddonLoaded.getValue()) {
+                PowerRanksAddon addon = null;
+                for (Entry<File, PowerRanksAddon> prAddon : addonClasses.entrySet()) {
+                    if (prAddon.getKey().getAbsolutePath().equals(prAddonLoaded.getKey().getAbsolutePath())) {
+                        addon = prAddon.getValue();
+                        break;
                     }
+                }
 
-                    if (addon != null) {
-                        addon.unload();
-                    }
+                if (addon != null) {
+                    addon.unload();
                 }
             }
         }

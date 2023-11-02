@@ -31,7 +31,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 public class TablistManager {
 
     private Scoreboard scoreboard;
-    
+
     private HashMap<UUID, Integer> playerHighestWeight = new HashMap<UUID, Integer>();
 
     private int numRanks = -1;
@@ -85,7 +85,6 @@ public class TablistManager {
                 }
 
                 boolean doUpdateRanks = false;
-
 
                 List<PRRank> sortedRanks = CacheManager.getRanks();
                 PRUtil.sortRanksByWeight(sortedRanks);
@@ -317,11 +316,9 @@ public class TablistManager {
 
             for (String rankname : ranknames) {
                 PRRank rank = CacheManager.getRank(rankname);
-                if (rank != null) {
-                    if (rank.getWeight() > playerHighestRankWeight) {
-                        playerHighestRankWeight = rank.getWeight();
-                        playerHighestRank = rank;
-                    }
+                if (rank != null && rank.getWeight() > playerHighestRankWeight) {
+                    playerHighestRankWeight = rank.getWeight();
+                    playerHighestRank = rank;
                 }
             }
 

@@ -119,12 +119,10 @@ public class OnChat implements Listener {
 						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
 
 				// Dirty PremiumVanish work around
-				if (Objects
-						.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
-					if (player_formatted_chat_msg.endsWith("/")) {
-						player_formatted_chat_msg = player_formatted_chat_msg.substring(0,
-								player_formatted_chat_msg.length() - 1);
-					}
+				if (Objects.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))
+						&& player_formatted_chat_msg.endsWith("/")) {
+					player_formatted_chat_msg = player_formatted_chat_msg.substring(0,
+							player_formatted_chat_msg.length() - 1);
 				}
 
 				if (PowerRanks.placeholderapiExpansion != null) {

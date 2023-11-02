@@ -49,7 +49,7 @@ import com.google.gson.internal.LinkedTreeMap;
 public abstract class PowerConfigManager {
 
     protected Map<String, Object> data;
-    
+
     protected boolean hasCreatedFile = false;
 
     /**
@@ -150,20 +150,16 @@ public abstract class PowerConfigManager {
                 if (index == 0) {
                     tmp = this.data.get(keyPart);
                 } else {
-                    if (tmp != null) {
-                        if (tmp instanceof HashMap) {
-                            Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
-                            tmp = tmpMap.get(keyPart);
-                        }
+                    if (tmp != null && tmp instanceof HashMap) {
+                        Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
+                        tmp = tmpMap.get(keyPart);
                     }
                 }
             } else {
                 if (index > 0) {
-                    if (tmp != null) {
-                        if (tmp instanceof HashMap) {
-                            Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
-                            output = tmpMap.get(keyPart);
-                        }
+                    if (tmp != null && tmp instanceof HashMap) {
+                        Map<String, Object> tmpMap = (HashMap<String, Object>) tmp;
+                        output = tmpMap.get(keyPart);
                     }
                 } else {
                     output = this.data.get(keyPart);
@@ -173,11 +169,9 @@ public abstract class PowerConfigManager {
             index++;
         }
 
-        if (output == null) {
-            if (defaultValue != null) {
-                this.setKV(key, defaultValue);
-                output = defaultValue;
-            }
+        if (output == null && defaultValue != null) {
+            this.setKV(key, defaultValue);
+            output = defaultValue;
         }
 
         return output;
@@ -200,20 +194,21 @@ public abstract class PowerConfigManager {
 
             if (!isLast) {
                 if (currentKey instanceof HashMap) {
-                    currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                    currentKey = ((HashMap<String, Object>) currentKey).get(keySplit[i]);
                 } else {
                     if (currentKey != null) {
-                        if (((HashMap<String, Object>)currentKey).containsKey(keySplit[i])) {
-                            throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key + "' is not a map and has no children to be set!");
+                        if (((HashMap<String, Object>) currentKey).containsKey(keySplit[i])) {
+                            throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key
+                                    + "' is not a map and has no children to be set!");
                         } else {
-                            ((HashMap<String, Object>)currentKey).put(keySplit[i], new HashMap<String, Object>());
-                            currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                            ((HashMap<String, Object>) currentKey).put(keySplit[i], new HashMap<String, Object>());
+                            currentKey = ((HashMap<String, Object>) currentKey).get(keySplit[i]);
                         }
                     }
                 }
             } else {
                 if (currentKey != null) {
-                    ((HashMap<String, Object>)currentKey).put(keySplit[i], value);
+                    ((HashMap<String, Object>) currentKey).put(keySplit[i], value);
                 }
             }
         }

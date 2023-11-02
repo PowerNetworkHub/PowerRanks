@@ -68,16 +68,16 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 
 	public PowerCommandHandler(PowerRanks plugin, String commandName) {
 		super("powerranks", plugin);
-		this.setAliases(new String[]{"pr"});
+		this.setAliases(new String[] { "pr" });
 		this.getCommandParameters().clear();
-		
+
 		this.plugin = plugin;
 
-		this.getCommandParameters().put("help", new CommandParameter[]{
-			CommandParameter.newType("page", false, CommandParamType.INT)
+		this.getCommandParameters().put("help", new CommandParameter[] {
+				CommandParameter.newType("page", false, CommandParamType.INT)
 		});
 
-		this.getCommandParameters().put("stats", new CommandParameter[]{
+		this.getCommandParameters().put("stats", new CommandParameter[] {
 		});
 
 		new CmdHelp(plugin, "help", COMMANDEXECUTOR.ALL);
@@ -142,19 +142,23 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 								|| command_handler.getCommandExecutor() == COMMANDEXECUTOR.ALL));
 	}
 
-
-
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (args.length == 0) {
 			sender.sendMessage(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
-					+ plugin.getDescription().getName() + TextFormat.DARK_AQUA + "----------" + TextFormat.BLUE + "===");
-			sender.sendMessage(TextFormat.GREEN + "/" + commandLabel + " help" + TextFormat.DARK_GREEN + " - For the command list.");
+					+ plugin.getDescription().getName() + TextFormat.DARK_AQUA + "----------" + TextFormat.BLUE
+					+ "===");
+			sender.sendMessage(TextFormat.GREEN + "/" + commandLabel + " help" + TextFormat.DARK_GREEN
+					+ " - For the command list.");
 			sender.sendMessage("");
-			sender.sendMessage(TextFormat.DARK_GREEN + "Author: " + TextFormat.GREEN + plugin.getDescription().getAuthors().get(0));
-			sender.sendMessage(TextFormat.DARK_GREEN + "Version: " + TextFormat.GREEN + plugin.getDescription().getVersion());
-            sender.sendMessage(TextFormat.DARK_GREEN + "Website: " + TextFormat.GREEN + plugin.getDescription().getWebsite());
-            sender.sendMessage(TextFormat.DARK_GREEN + "Documentation: " + TextFormat.GREEN + "https://docs.powerranks.nl");
+			sender.sendMessage(TextFormat.DARK_GREEN + "Author: " + TextFormat.GREEN
+					+ plugin.getDescription().getAuthors().get(0));
+			sender.sendMessage(
+					TextFormat.DARK_GREEN + "Version: " + TextFormat.GREEN + plugin.getDescription().getVersion());
+			sender.sendMessage(
+					TextFormat.DARK_GREEN + "Website: " + TextFormat.GREEN + plugin.getDescription().getWebsite());
+			sender.sendMessage(
+					TextFormat.DARK_GREEN + "Documentation: " + TextFormat.GREEN + "https://docs.powerranks.nl");
 			sender.sendMessage(TextFormat.DARK_GREEN + "Support me: " + TextFormat.YELLOW + "https://ko-fi.com/svenar");
 			sender.sendMessage(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "------------------------------"
 					+ TextFormat.BLUE + "===");
@@ -170,29 +174,32 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 								Arrays.copyOfRange(args, 1, args.length));
 					} else {
 						sender.sendMessage(
-							plugin.getLanguageManager().getFormattedMessage("general.no-permission"));
+								plugin.getLanguageManager().getFormattedMessage("general.no-permission"));
 					}
 				} else {
-					sender.sendMessage(plugin.getChatPluginPrefix() + TextFormat.DARK_RED + "You can't execute this command here");
+					sender.sendMessage(
+							plugin.getChatPluginPrefix() + TextFormat.DARK_RED + "You can't execute this command here");
 				}
-			// } else {
-			// 	boolean addonCommandFound = false;
-			// 	PowerRanksPlayer prPlayer = null;
-			// 	if (sender instanceof Player) {
-			// 		prPlayer = new PowerRanksPlayer(this.plugin, (Player) sender);
-			// 	} else {
-			// 		prPlayer = new PowerRanksPlayer(this.plugin, "CONSOLE");
-			// 	}
+				// } else {
+				// boolean addonCommandFound = false;
+				// PowerRanksPlayer prPlayer = null;
+				// if (sender instanceof Player) {
+				// prPlayer = new PowerRanksPlayer(this.plugin, (Player) sender);
+				// } else {
+				// prPlayer = new PowerRanksPlayer(this.plugin, "CONSOLE");
+				// }
 
-			// 	if (prPlayer != null) {
-			// 		for (Entry<File, PowerRanksAddon> prAddon : this.plugin.addonsManager.addonClasses.entrySet()) {
-			// 			if (prAddon.getValue().onPowerRanksCommand(prPlayer, sender instanceof Player, args[0], args)) {
-			// 				addonCommandFound = true;
-			// 			}
-			// 		}
-			// 	}
-			// 	if (!addonCommandFound)
-			// 		sender.sendMessage(plugin.plp + TextFormat.DARK_RED + "Unknown Command");
+				// if (prPlayer != null) {
+				// for (Entry<File, PowerRanksAddon> prAddon :
+				// this.plugin.addonsManager.addonClasses.entrySet()) {
+				// if (prAddon.getValue().onPowerRanksCommand(prPlayer, sender instanceof
+				// Player, args[0], args)) {
+				// addonCommandFound = true;
+				// }
+				// }
+				// }
+				// if (!addonCommandFound)
+				// sender.sendMessage(plugin.plp + TextFormat.DARK_RED + "Unknown Command");
 			}
 
 		}
@@ -215,27 +222,27 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 		power_commands.put(command_name.toLowerCase(), command_handler);
 	}
 
-    private static boolean hasCommandPermission(CommandSender sender, String cmd) {
-        boolean hasPermission = !(sender instanceof Player) || ((Player) sender).hasPermission("powerranks.cmd." + cmd.toLowerCase());
-        return hasPermission;
-    }
+	private static boolean hasCommandPermission(CommandSender sender, String cmd) {
+		boolean hasPermission = !(sender instanceof Player)
+				|| ((Player) sender).hasPermission("powerranks.cmd." + cmd.toLowerCase());
+		return hasPermission;
+	}
 
 	public static ArrayList<String> handleTabComplete(CommandSender sender, String cmd, String[] args) {
 		ArrayList<String> output = new ArrayList<String>();
 		if (args.length == 0) {
 			for (Entry<String, PowerCommand> entry : power_commands.entrySet()) {
 				if (cmd.length() == 0 || entry.getKey().toLowerCase().contains(cmd.toLowerCase())) {
-					boolean is_allowed = canExecuteCommand(sender, entry.getValue()) && hasCommandPermission(sender, cmd);
+					boolean is_allowed = canExecuteCommand(sender, entry.getValue())
+							&& hasCommandPermission(sender, cmd);
 					if (is_allowed) {
 						output.add(entry.getKey());
 					}
 				}
 			}
 		} else {
-			if (power_commands.containsKey(cmd.toLowerCase())) {
-				if (hasCommandPermission(sender, cmd)) {
-                    output = power_commands.get(cmd.toLowerCase()).tabCompleteEvent(sender, args);
-                }
+			if (power_commands.containsKey(cmd.toLowerCase()) && hasCommandPermission(sender, cmd)) {
+				output = power_commands.get(cmd.toLowerCase()).tabCompleteEvent(sender, args);
 			}
 
 		}

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.google.common.collect.ImmutableMap;
 
-
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.Player;
 
@@ -64,14 +63,14 @@ public class CmdAddownrank extends PowerCommand {
                 } else {
                     if (targetPlayer != null && rank != null) {
                         sender.sendMessage(PRUtil.powerFormatter(
-                            plugin.getLanguageManager()
-                                    .getFormattedMessage(
-                                            "commands." + commandName.toLowerCase() + ".failed-executor"),
-                            ImmutableMap.<String, String>builder()
-                                    .put("player", targetPlayer.getName())
-                                    .put("rank", rank.getName())
-                                    .build(),
-                            '[', ']'));
+                                plugin.getLanguageManager()
+                                        .getFormattedMessage(
+                                                "commands." + commandName.toLowerCase() + ".failed-executor"),
+                                ImmutableMap.<String, String>builder()
+                                        .put("player", targetPlayer.getName())
+                                        .put("rank", rank.getName())
+                                        .build(),
+                                '[', ']'));
                     }
                 }
             } else {
@@ -89,13 +88,11 @@ public class CmdAddownrank extends PowerCommand {
     public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
         ArrayList<String> tabcomplete = new ArrayList<String>();
 
-        if (args.length == 1) {
-            if (sender instanceof Player) {
-                PRPlayer targetPlayer = PRCache.getPlayer(sender.getName());
-                for (PRRank rank : PRCache.getRanks()) {
-                    if (!targetPlayer.hasRank(rank.getName())) {
-                        tabcomplete.add(rank.getName());
-                    }
+        if (args.length == 1 && sender instanceof Player) {
+            PRPlayer targetPlayer = PRCache.getPlayer(sender.getName());
+            for (PRRank rank : PRCache.getRanks()) {
+                if (!targetPlayer.hasRank(rank.getName())) {
+                    tabcomplete.add(rank.getName());
                 }
             }
         }

@@ -92,10 +92,8 @@ public class PRSerializer {
         // End of convert from v1.10.0 - v1.10.3 to v1.10.4
 
         // Convert from v1.10.4 to v1.10.5
-        if (clazz == PRRank.class) {
-            if (!map.containsKey("default")) {
-                map.put("default", false);
-            }
+        if (clazz == PRRank.class && !map.containsKey("default")) {
+            map.put("default", false);
         }
         // End of convert from v1.10.4 to v1.10.5
 

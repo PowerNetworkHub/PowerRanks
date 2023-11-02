@@ -27,13 +27,12 @@ import nl.svenar.powerranks.bukkit.cache.CacheManager;
 public class ConfigFilesUpdater {
 
 	private final static String subPrefixSuffixRegex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}[\\[](subprefix|subsuffix)[\\]][ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}";
-	
+
 	private static File backupDir;
-	
+
 	private static File backupRanks;
 
 	private static File backupConfig;
-	
 
 	private static File backupLang;
 
@@ -203,8 +202,10 @@ public class ConfigFilesUpdater {
 				newRank.setChatcolor(ranksYaml.getString("Groups." + rankName + ".chat.chatColor"));
 				newRank.setNamecolor(ranksYaml.getString("Groups." + rankName + ".chat.nameColor"));
 
-				// newRank.setPromoteRank(ranksYaml.getString("Groups." + rankName + ".level.promote"));
-				// newRank.setDemoteRank(ranksYaml.getString("Groups." + rankName + ".level.demote"));
+				// newRank.setPromoteRank(ranksYaml.getString("Groups." + rankName +
+				// ".level.promote"));
+				// newRank.setDemoteRank(ranksYaml.getString("Groups." + rankName +
+				// ".level.demote"));
 
 				newRank.setBuyableRanks(
 						new ArrayList<String>(ranksYaml.getStringList("Groups." + rankName + ".economy.buyable")));
@@ -233,21 +234,23 @@ public class ConfigFilesUpdater {
 				}
 
 				if (!playersYaml.isString("players." + playerUUID + ".subranks")) {
-					for (String playerSubrankName : playersYaml.getConfigurationSection("players." + playerUUID + ".subranks").getKeys(false)) {
+					for (String playerSubrankName : playersYaml
+							.getConfigurationSection("players." + playerUUID + ".subranks").getKeys(false)) {
 						newPlayer.addRank(new PRPlayerRank(playerSubrankName));
-				// 		PRSubrank newSubrank = new PRSubrank();
+						// PRSubrank newSubrank = new PRSubrank();
 
-				// 		newSubrank.setName(playerSubrankName);
-				// 		newSubrank.setUsingPrefix(playersYaml.getBoolean(
-				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".use_prefix"));
-				// 		newSubrank.setUsingSuffix(playersYaml.getBoolean(
-				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".use_suffix"));
-				// 		newSubrank.setUsingPermissions(playersYaml.getBoolean(
-				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".use_permissions"));
-				// 		newSubrank.setWorlds(new ArrayList<String>(playersYaml.getStringList(
-				// 				"players." + playerUUID + ".subranks." + playerSubrankName + ".worlds")));
+						// newSubrank.setName(playerSubrankName);
+						// newSubrank.setUsingPrefix(playersYaml.getBoolean(
+						// "players." + playerUUID + ".subranks." + playerSubrankName + ".use_prefix"));
+						// newSubrank.setUsingSuffix(playersYaml.getBoolean(
+						// "players." + playerUUID + ".subranks." + playerSubrankName + ".use_suffix"));
+						// newSubrank.setUsingPermissions(playersYaml.getBoolean(
+						// "players." + playerUUID + ".subranks." + playerSubrankName +
+						// ".use_permissions"));
+						// newSubrank.setWorlds(new ArrayList<String>(playersYaml.getStringList(
+						// "players." + playerUUID + ".subranks." + playerSubrankName + ".worlds")));
 
-				// 		newPlayer.addSubrank(newSubrank);
+						// newPlayer.addSubrank(newSubrank);
 					}
 				}
 
@@ -298,10 +301,14 @@ public class ConfigFilesUpdater {
 					}
 				}
 
-				yamlConf.set("chat.format", yamlConf.getString("chat.format").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
-				yamlConf.set("tablist_modification.format", yamlConf.getString("tablist_modification.format").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
-				yamlConf.set("nametagedit.prefix", yamlConf.getString("nametagedit.prefix").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
-				yamlConf.set("nametagedit.suffix", yamlConf.getString("nametagedit.suffix").replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+				yamlConf.set("chat.format", yamlConf.getString("chat.format").replaceAll(subPrefixSuffixRegex, " ")
+						.replaceAll("  ", " ").trim());
+				yamlConf.set("tablist_modification.format", yamlConf.getString("tablist_modification.format")
+						.replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+				yamlConf.set("nametagedit.prefix", yamlConf.getString("nametagedit.prefix")
+						.replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
+				yamlConf.set("nametagedit.suffix", yamlConf.getString("nametagedit.suffix")
+						.replaceAll(subPrefixSuffixRegex, " ").replaceAll("  ", " ").trim());
 
 				yamlConf.set("version", PowerRanks.getVersion().replaceAll("[a-zA-Z ]", ""));
 				yamlConf.save(file);
@@ -323,16 +330,14 @@ public class ConfigFilesUpdater {
 				yamlConf.set("version", null);
 				yamlConf.set("commands.help", null);
 				for (String key : tmpYamlConf.getConfigurationSection("").getKeys(true)) {
-                    if (!yamlConf.contains(key)) {
-                        if (tmpYamlConf.isString(key)) {
-                            yamlConf.set(key, tmpYamlConf.get(key));
-                        }
-                    }
+					if (!yamlConf.contains(key) && tmpYamlConf.isString(key)) {
+						yamlConf.set(key, tmpYamlConf.get(key));
+					}
 					// for (String key2 : tmpYamlConf.getConfigurationSection(key).getKeys(false)) {
-					// 	String field = key + "." + key2;
-					// 	if (!yamlConf.contains(field)) {
-					// 		yamlConf.set(field, tmpYamlConf.get(field));
-					// 	}
+					// String field = key + "." + key2;
+					// if (!yamlConf.contains(field)) {
+					// yamlConf.set(field, tmpYamlConf.get(field));
+					// }
 					// }
 				}
 				// yamlConf.set("commands.help", null);

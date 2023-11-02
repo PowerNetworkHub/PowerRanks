@@ -320,121 +320,18 @@ public class Users implements Listener {
 					}
 				}
 			}
-			// if (CacheManager.getRank(CacheManager.getDefaultRank()) ==
-			// CacheManager.getRank(prPlayer.getRank())) {
-			// prPlayer.setRank(CacheManager.getDefaultRank());
-			// }
 		}
 
 		CacheManager.removeRank(CacheManager.getRank(rankToDelete));
 
-		// for (String uuid :
-		// CachedPlayers.getConfigurationSection("players").getKeys(false)) {
-		// boolean setup_permissions = false;
-
-		// String player_rank = CachedPlayers.getString("players." + uuid + ".rank");
-
-		// if (player_rank.equalsIgnoreCase(rank)) {
-		// CachedPlayers.set("players." + uuid + ".rank",
-		// CachedRanks.getString("Default"), false);
-		// setup_permissions = true;
-		// }
-
-		// if (CachedPlayers.getConfigurationSection("players." + uuid + ".subranks") !=
-		// null) {
-		// for (String subrank : CachedPlayers.getConfigurationSection("players." + uuid
-		// + ".subranks")
-		// .getKeys(false)) {
-		// if (subrank.equalsIgnoreCase(rank)) {
-		// CachedPlayers.set("players." + uuid + ".subranks." + subrank, null, false);
-		// setup_permissions = true;
-		// }
-		// }
-		// }
-
-		// if (setup_permissions) {
-		// Player target =
-		// Bukkit.getServer().getPlayer(CachedPlayers.getString("players." + uuid +
-		// ".name"));
-
-		// if (target.isOnline()) {
-		// // this.m.setupPermissions(target);
-		// this.m.updateTablistName(target);
-		// }
-		// }
-
-		// }
-		// try {
-		// if (CacheManager.getRank(rank) != null) {
-		// CachedRanks.set("Groups." + rank, (Object) null);
-		// return true;
-		// }
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
 
 		return true;
 	}
 
 	public boolean renameRank(String rank, String to) {
-		if (CacheManager.getRank(rank) != null) {
-			// List<String> listPermissions = (List<String>)
-			// CachedRanks.getStringList("Groups." + to + ".permissions");
-			// for (String line : CachedRanks.getStringList("Groups." + rank +
-			// ".permissions")) {
-			// listPermissions.add(line);
-			// }
-			// CachedRanks.set("Groups." + to + ".permissions", (Object) listPermissions);
-
-			// List<String> listInheritance = (List<String>)
-			// CachedRanks.getStringList("Groups." + to + ".inheritance");
-			// for (String line : CachedRanks.getStringList("Groups." + rank +
-			// ".inheritance")) {
-			// listInheritance.add(line);
-			// }
-			// CachedRanks.set("Groups." + to + ".inheritance", (Object) listInheritance);
-
-			// CachedRanks.set("Groups." + to + ".chat.prefix", CachedRanks.get("Groups." +
-			// rank + ".chat.prefix"));
-			// CachedRanks.set("Groups." + to + ".chat.suffix", CachedRanks.get("Groups." +
-			// rank + ".chat.suffix"));
-			// CachedRanks.set("Groups." + to + ".chat.chatColor", CachedRanks.get("Groups."
-			// + rank + ".chat.chatColor"));
-			// CachedRanks.set("Groups." + to + ".chat.nameColor", CachedRanks.get("Groups."
-			// + rank + ".chat.nameColor"));
-			// CachedRanks.set("Groups." + to + ".level.promote", CachedRanks.get("Groups."
-			// + rank + ".level.promote"));
-			// CachedRanks.set("Groups." + to + ".level.demote", CachedRanks.get("Groups." +
-			// rank + ".level.demote"));
-
-			// List<String> listEconomyBuyable = (List<String>) CachedRanks
-			// .getStringList("Groups." + to + ".economy.buyable");
-			// for (String line : CachedRanks.getStringList("Groups." + rank +
-			// ".economy.buyable")) {
-			// listEconomyBuyable.add(line);
-			// }
-			// CachedRanks.set("Groups." + to + ".economy.buyable", (Object)
-			// listEconomyBuyable);
-			// CachedRanks.set("Groups." + to + ".economy.cost", CachedRanks.get("Groups." +
-			// rank + ".economy.cost"));
-			// CachedRanks.set("Groups." + to + ".gui.icon", CachedRanks.get("Groups." +
-			// rank + ".gui.icon"));
-
-			// ConfigurationSection players =
-			// CachedPlayers.getConfigurationSection("players");
-			// for (String p : players.getKeys(false)) {
-			// if (CachedPlayers.getString("players." + p + ".rank") != null) {
-			// if (CachedPlayers.getString("players." + p + ".rank").equalsIgnoreCase(rank))
-			// {
-			// CachedPlayers.set("players." + p + ".rank", to, false);
-			// }
-			// }
-			// }
-			// deleteRank(rank);
-			if (CacheManager.getRank(getRankIgnoreCase(to)) == null) {
-				CacheManager.getRank(rank).setName(to);
-				return true;
-			}
+		if (CacheManager.getRank(rank) != null && CacheManager.getRank(getRankIgnoreCase(to)) == null) {
+			CacheManager.getRank(rank).setName(to);
+			return true;
 		}
 		return false;
 	}

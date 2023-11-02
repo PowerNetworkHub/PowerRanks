@@ -110,7 +110,8 @@ public class OnInteract implements Listener {
 					}
 					// s.setGroup(player, s.getRankIgnoreCase(sign_argument), true);
 				} else {
-					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (sign_command.equalsIgnoreCase("addrank")) {
 				if (player.hasPermission("powerranks.signs.setrank")) {
@@ -131,7 +132,8 @@ public class OnInteract implements Listener {
 					}
 					// s.setGroup(player, s.getRankIgnoreCase(sign_argument), true);
 				} else {
-					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (sign_command.equalsIgnoreCase("checkrank")) {
 				if (player.hasPermission("powerranks.signs.checkrank")) {
@@ -162,7 +164,8 @@ public class OnInteract implements Listener {
 
 					// s.getGroup(player.getName(), player.getName());
 				} else {
-					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 				// } else if (sign_command.equalsIgnoreCase("gui")) {
 				// if (player.hasPermission("powerranks.signs.gui")) {
@@ -203,7 +206,8 @@ public class OnInteract implements Listener {
 								'[', ']'));
 					}
 				} else {
-					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
@@ -221,19 +225,17 @@ public class OnInteract implements Listener {
 									VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 									PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
 									if (rank != null) {
-										if (rank != null) {
-											PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
-											CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
+										PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+										CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
 
-											player.sendMessage(PRUtil.powerFormatter(
-													PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-															"commands.setrank.success-receiver"),
-													ImmutableMap.<String, String>builder()
-															.put("player", player.getName())
-															.put("rank", rank.getName())
-															.build(),
-													'[', ']'));
-										}
+										player.sendMessage(PRUtil.powerFormatter(
+												PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
+														"commands.setrank.success-receiver"),
+												ImmutableMap.<String, String>builder()
+														.put("player", player.getName())
+														.put("rank", rank.getName())
+														.build(),
+												'[', ']'));
 									}
 									// users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
 									player.sendMessage(PRUtil.powerFormatter(
@@ -271,12 +273,14 @@ public class OnInteract implements Listener {
 						}
 					}
 				} else {
-					player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
+					player.sendMessage(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				}
 			} else {
 				if (player.hasPermission("powerranks.signs.admin")) {
 					player.sendMessage(
-							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("messages.signs.unknown-command"));
+							PowerRanks.getInstance().getLanguageManager()
+									.getFormattedMessage("messages.signs.unknown-command"));
 				}
 			}
 		}

@@ -43,12 +43,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * 
  * @author svenar
  */
-@JsonIgnoreProperties({"defaultRanks", "effectivePermissions"})
+@JsonIgnoreProperties({ "defaultRanks", "effectivePermissions" })
 public class PRPlayer {
 
     // Storage
     private UUID uuid;
-    
+
     private String name = "";
 
     private String nickname = "";
@@ -129,16 +129,15 @@ public class PRPlayer {
 
     /**
      * Get the default ranks of this player
+     * 
      * @return List of PRRank instances
      */
     public List<PRRank> getDefaultRanks() {
         List<PRRank> defaultRanks = new ArrayList<PRRank>();
         for (PRPlayerRank rank : this.ranks) {
             PRRank prRank = PRCache.getRank(rank.getName());
-            if (prRank != null) {
-                if (prRank.isDefault()) {
-                    defaultRanks.add(prRank);
-                }
+            if (prRank != null && prRank.isDefault()) {
+                defaultRanks.add(prRank);
             }
         }
         return defaultRanks;
@@ -173,7 +172,6 @@ public class PRPlayer {
             this.ranks.add(rank);
         }
     }
-
 
     /**
      * Add a rank on this player
@@ -363,6 +361,7 @@ public class PRPlayer {
 
     /**
      * Get all effective permissions for this player
+     * 
      * @return List of PRPermission instances
      */
     public List<PRPermission> getEffectivePermissions() {

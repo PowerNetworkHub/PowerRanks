@@ -20,7 +20,7 @@ import nl.svenar.powerranks.bukkit.gui.GUIPage.GUIPAGEID;
 public class GUI {
 
 	private static PowerRanks powerRanks;
-	
+
 	public static HashMap<Player, GUIPage> guis = new HashMap<Player, GUIPage>();
 
 	public static void setPlugin(PowerRanks powerRanks) {
@@ -78,63 +78,60 @@ public class GUI {
 			openGUI(player, gui.getPageID());
 		}
 
-		if (gui.getPageID().getID() == GUIPAGEID.RANKUP.getID()) {
-			if (slot < gui.getGUI().getSize() - 9) {
-				Users users = new Users(powerRanks);
-				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
-				if (users.rankExists(rankname)) {
-					float cost = CacheManager.getRank(rankname).getBuyCost();
-					double player_balance = VaultHook.getVaultEconomy().getBalance(player);
-					if (cost >= 0 && player_balance >= cost) {
-						VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
+		if (gui.getPageID().getID() == GUIPAGEID.RANKUP.getID() && slot < gui.getGUI().getSize() - 9) {
+			Users users = new Users(powerRanks);
+			String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();
+			if (users.rankExists(rankname)) {
+				float cost = CacheManager.getRank(rankname).getBuyCost();
+				double player_balance = VaultHook.getVaultEconomy().getBalance(player);
+				if (cost >= 0 && player_balance >= cost) {
+					VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
 
-						PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
-						if (rank != null) {
-							PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
-							CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
-							player.sendMessage(PRUtil.powerFormatter(
-									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-											"commands.setrank.success-receiver"),
-									ImmutableMap.<String, String>builder()
-											.put("player", player.getName())
-											.put("rank", rank.getName())
-											.build(),
-									'[', ']'));
-						}
-
-						// users.setGroup(player, rankname, true);
-						if (PowerRanks.getConfigManager().getBool("rankup.buy_command.enabled", false)) {
-							if (PowerRanks.getConfigManager().getString("rankup.buy_command.command", "")
-									.length() > 0) {
-								powerRanks.getServer().dispatchCommand(
-										(CommandSender) powerRanks.getServer().getConsoleSender(),
-										PowerRanks.getConfigManager().getString("rankup.buy_command.command", "")
-												.replaceAll("%playername%", player.getName())
-												.replaceAll("%rankname%", rankname));
-							}
-						}
+					PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(rankname));
+					if (rank != null) {
+						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
+						CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
 						player.sendMessage(PRUtil.powerFormatter(
 								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-										"commands.buyrank.success-buy"),
+										"commands.setrank.success-receiver"),
 								ImmutableMap.<String, String>builder()
 										.put("player", player.getName())
-										.put("rank", rankname)
-										.build(),
-								'[', ']'));
-					} else {
-						player.sendMessage(PRUtil.powerFormatter(
-								PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-										"commands.buyrank.failed-buy-not-enough-money"),
-								ImmutableMap.<String, String>builder()
-										.put("player", player.getName())
-										.put("rank", rankname)
+										.put("rank", rank.getName())
 										.build(),
 								'[', ']'));
 					}
-					closeGUI(player);
+
+					// users.setGroup(player, rankname, true);
+					if (PowerRanks.getConfigManager().getBool("rankup.buy_command.enabled", false) && PowerRanks
+							.getConfigManager().getString("rankup.buy_command.command", "").length() > 0) {
+						powerRanks.getServer().dispatchCommand(
+								(CommandSender) powerRanks.getServer().getConsoleSender(),
+								PowerRanks.getConfigManager().getString("rankup.buy_command.command", "")
+										.replaceAll("%playername%", player.getName())
+										.replaceAll("%rankname%", rankname));
+					}
+					player.sendMessage(PRUtil.powerFormatter(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
+									"commands.buyrank.success-buy"),
+							ImmutableMap.<String, String>builder()
+									.put("player", player.getName())
+									.put("rank", rankname)
+									.build(),
+							'[', ']'));
+				} else {
+					player.sendMessage(PRUtil.powerFormatter(
+							PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
+									"commands.buyrank.failed-buy-not-enough-money"),
+							ImmutableMap.<String, String>builder()
+									.put("player", player.getName())
+									.put("rank", rankname)
+									.build(),
+							'[', ']'));
 				}
+				closeGUI(player);
 			}
 		}
+
 	}
 
 	public static void closeGUI(Player player) {
