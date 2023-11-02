@@ -477,7 +477,9 @@ public class Updater {
 	}
 
 	private URL followRedirects(String location) throws IOException {
-		URL resourceUrl, base, next;
+		URL resourceUrl;
+		URL base;
+		URL next;
 		HttpURLConnection conn;
 		String redLoc;
 		while (true) {

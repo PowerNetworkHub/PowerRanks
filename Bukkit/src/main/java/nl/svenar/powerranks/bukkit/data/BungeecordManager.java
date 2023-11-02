@@ -22,7 +22,10 @@ public class BungeecordManager {
     private ArrayList<UUID> onlineServers = new ArrayList<UUID>();
     private boolean ready = false;
     private BukkitRunnable mainTask;
-    private int ranksHashcode, playersHashcode, lastRanksHashcode, lastPlayersHashcode;
+    private int ranksHashcode;
+    private int playersHashcode;
+    private int lastRanksHashcode;
+    private int lastPlayersHashcode;
 
     public BungeecordManager(PowerRanks powerRanks) {
         serverUUID = UUID.fromString(PowerRanks.getConfigManager().getString("bungeecord.uuid", UUID.randomUUID().toString()));

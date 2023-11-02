@@ -17,7 +17,9 @@ import nl.svenar.powerranks.test.util.TestDebugger;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestRanksAPI {
 
-    private PRRank rank1, rank2, rank3;
+    private PRRank rank1;
+    private PRRank rank2;
+    private PRRank rank3;
     private PowerRanksAPI api;
 
     @Before

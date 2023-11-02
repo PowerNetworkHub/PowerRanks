@@ -53,7 +53,8 @@ import nl.svenar.powerranks.common.structure.PRRank;
  */
 public class PSMStorageManager extends PowerStorageManager {
 
-    private File ranksFile, playersFile;
+    private File ranksFile;
+    private File playersFile;
 
     /**
      * Initialize this storage method by creating the required files

@@ -59,7 +59,8 @@ public class YAMLStorageManager extends PowerStorageManager {
     private final Representer yamlRepresenter = new Representer(yamlOptions);
     private final Yaml yaml = new Yaml(new Constructor(loaderOptions), yamlRepresenter, yamlOptions, loaderOptions);
 
-    private File ranksFile, playersFile;
+    private File ranksFile;
+    private File playersFile;
 
     /**
      * Initialize this storage method by creating the required files
