@@ -13,52 +13,52 @@ import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.utils.TextFormat;
 import nl.svenar.powerranks.nukkit.PowerRanks;
-import nl.svenar.powerranks.nukkit.commands.PowerCommand.COMMAND_EXECUTOR;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_config;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_dump;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_factoryreset;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_help;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_pluginhook;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_reload;
-import nl.svenar.powerranks.nukkit.commands.core.cmd_stats;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_addownrank;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_addplayerperm;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_addrank;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_checkrank;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_delplayerperm;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_delrank;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_haspermission;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_listplayerpermissions;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_nick;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_playerinfo;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_setownrank;
-import nl.svenar.powerranks.nukkit.commands.player.cmd_setrank;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_addinheritance;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_addperm;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_createrank;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_deleterank;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_delinheritance;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_delperm;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_listdefaultranks;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_listpermissions;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_listranks;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_rankinfo;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_renamerank;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_setchatcolor;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_setdefault;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_setnamecolor;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_setprefix;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_setsuffix;
-import nl.svenar.powerranks.nukkit.commands.rank.cmd_setweight;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_addusertag;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_clearusertag;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_createusertag;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_delusertag;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_editusertag;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_listusertags;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_removeusertag;
-import nl.svenar.powerranks.nukkit.commands.usertags.cmd_setusertag;
-import nl.svenar.powerranks.nukkit.commands.webeditor.cmd_webeditor;
+import nl.svenar.powerranks.nukkit.commands.PowerCommand.COMMANDEXECUTOR;
+import nl.svenar.powerranks.nukkit.commands.core.CmdConfig;
+import nl.svenar.powerranks.nukkit.commands.core.CmdDump;
+import nl.svenar.powerranks.nukkit.commands.core.CmdFactoryreset;
+import nl.svenar.powerranks.nukkit.commands.core.CmdHelp;
+import nl.svenar.powerranks.nukkit.commands.core.CmdPluginhook;
+import nl.svenar.powerranks.nukkit.commands.core.CmdReload;
+import nl.svenar.powerranks.nukkit.commands.core.CmdStats;
+import nl.svenar.powerranks.nukkit.commands.player.CmdAddownrank;
+import nl.svenar.powerranks.nukkit.commands.player.CmdAddplayerperm;
+import nl.svenar.powerranks.nukkit.commands.player.CmdAddrank;
+import nl.svenar.powerranks.nukkit.commands.player.CmdCheckrank;
+import nl.svenar.powerranks.nukkit.commands.player.CmdDelplayerperm;
+import nl.svenar.powerranks.nukkit.commands.player.CmdDelrank;
+import nl.svenar.powerranks.nukkit.commands.player.CmdHaspermission;
+import nl.svenar.powerranks.nukkit.commands.player.CmdListplayerpermissions;
+import nl.svenar.powerranks.nukkit.commands.player.CmdNick;
+import nl.svenar.powerranks.nukkit.commands.player.CmdPlayerinfo;
+import nl.svenar.powerranks.nukkit.commands.player.CmdSetownrank;
+import nl.svenar.powerranks.nukkit.commands.player.CmdSetrank;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdAddinheritance;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdAddperm;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdCreaterank;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdDeleterank;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdDelinheritance;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdDelperm;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdListdefaultranks;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdListpermissions;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdListranks;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdRankinfo;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdRenamerank;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdSetchatcolor;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdSetdefault;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdSetnamecolor;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdSetprefix;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdSetsuffix;
+import nl.svenar.powerranks.nukkit.commands.rank.CmdSetweight;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdAddusertag;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdClearusertag;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdCreateusertag;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdDelusertag;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdEditusertag;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdListusertags;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdRemoveusertag;
+import nl.svenar.powerranks.nukkit.commands.usertags.CmdSetusertag;
+import nl.svenar.powerranks.nukkit.commands.webeditor.CmdWebeditor;
 
 public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 
@@ -80,66 +80,66 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 		this.getCommandParameters().put("stats", new CommandParameter[]{
 		});
 
-		new cmd_help(plugin, "help", COMMAND_EXECUTOR.ALL);
-		new cmd_reload(plugin, "reload", COMMAND_EXECUTOR.ALL);
-		new cmd_pluginhook(plugin, "pluginhook", COMMAND_EXECUTOR.ALL);
-		new cmd_config(plugin, "config", COMMAND_EXECUTOR.ALL);
-		new cmd_stats(plugin, "stats", COMMAND_EXECUTOR.ALL);
-		new cmd_factoryreset(plugin, "factoryreset", COMMAND_EXECUTOR.ALL);
-		new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
-		new cmd_haspermission(plugin, "haspermission", COMMAND_EXECUTOR.ALL);
-		new cmd_dump(plugin, "dump", COMMAND_EXECUTOR.ALL);
+		new CmdHelp(plugin, "help", COMMANDEXECUTOR.ALL);
+		new CmdReload(plugin, "reload", COMMANDEXECUTOR.ALL);
+		new CmdPluginhook(plugin, "pluginhook", COMMANDEXECUTOR.ALL);
+		new CmdConfig(plugin, "config", COMMANDEXECUTOR.ALL);
+		new CmdStats(plugin, "stats", COMMANDEXECUTOR.ALL);
+		new CmdFactoryreset(plugin, "factoryreset", COMMANDEXECUTOR.ALL);
+		new CmdPlayerinfo(plugin, "playerinfo", COMMANDEXECUTOR.ALL);
+		new CmdHaspermission(plugin, "haspermission", COMMANDEXECUTOR.ALL);
+		new CmdDump(plugin, "dump", COMMANDEXECUTOR.ALL);
 
-		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
-		new cmd_setownrank(plugin, "setownrank", COMMAND_EXECUTOR.PLAYER);
-		new cmd_addrank(plugin, "addrank", COMMAND_EXECUTOR.ALL);
-		new cmd_addownrank(plugin, "addownrank", COMMAND_EXECUTOR.PLAYER);
-		new cmd_delrank(plugin, "delrank", COMMAND_EXECUTOR.ALL);
+		new CmdSetrank(plugin, "setrank", COMMANDEXECUTOR.ALL);
+		new CmdSetownrank(plugin, "setownrank", COMMANDEXECUTOR.PLAYER);
+		new CmdAddrank(plugin, "addrank", COMMANDEXECUTOR.ALL);
+		new CmdAddownrank(plugin, "addownrank", COMMANDEXECUTOR.PLAYER);
+		new CmdDelrank(plugin, "delrank", COMMANDEXECUTOR.ALL);
 
-		new cmd_listranks(plugin, "listranks", COMMAND_EXECUTOR.ALL);
-		new cmd_listpermissions(plugin, "listpermissions", COMMAND_EXECUTOR.ALL);
-		new cmd_listplayerpermissions(plugin, "listplayerpermissions", COMMAND_EXECUTOR.ALL);
-		new cmd_listusertags(plugin, "listusertags", COMMAND_EXECUTOR.ALL);
+		new CmdListranks(plugin, "listranks", COMMANDEXECUTOR.ALL);
+		new CmdListpermissions(plugin, "listpermissions", COMMANDEXECUTOR.ALL);
+		new CmdListplayerpermissions(plugin, "listplayerpermissions", COMMANDEXECUTOR.ALL);
+		new CmdListusertags(plugin, "listusertags", COMMANDEXECUTOR.ALL);
 
-		new cmd_checkrank(plugin, "checkrank", COMMAND_EXECUTOR.ALL);
-		new cmd_nick(plugin, "nick", COMMAND_EXECUTOR.ALL);
+		new CmdCheckrank(plugin, "checkrank", COMMANDEXECUTOR.ALL);
+		new CmdNick(plugin, "nick", COMMANDEXECUTOR.ALL);
 
-		new cmd_createrank(plugin, "createrank", COMMAND_EXECUTOR.ALL);
-		new cmd_deleterank(plugin, "deleterank", COMMAND_EXECUTOR.ALL);
-		new cmd_renamerank(plugin, "renamerank", COMMAND_EXECUTOR.ALL);
-		new cmd_setdefault(plugin, "setdefault", COMMAND_EXECUTOR.ALL);
-		new cmd_listdefaultranks(plugin, "listdefaultranks", COMMAND_EXECUTOR.ALL);
-		new cmd_addperm(plugin, "addperm", COMMAND_EXECUTOR.ALL);
-		new cmd_delperm(plugin, "delperm", COMMAND_EXECUTOR.ALL);
-		new cmd_setprefix(plugin, "setprefix", COMMAND_EXECUTOR.ALL);
-		new cmd_setsuffix(plugin, "setsuffix", COMMAND_EXECUTOR.ALL);
-		new cmd_setchatcolor(plugin, "setchatcolor", COMMAND_EXECUTOR.ALL);
-		new cmd_setnamecolor(plugin, "setnamecolor", COMMAND_EXECUTOR.ALL);
-		new cmd_addinheritance(plugin, "addinheritance", COMMAND_EXECUTOR.ALL);
-		new cmd_delinheritance(plugin, "delinheritance", COMMAND_EXECUTOR.ALL);
-		new cmd_setweight(plugin, "setweight", COMMAND_EXECUTOR.ALL);
-		new cmd_rankinfo(plugin, "rankinfo", COMMAND_EXECUTOR.ALL);
+		new CmdCreaterank(plugin, "createrank", COMMANDEXECUTOR.ALL);
+		new CmdDeleterank(plugin, "deleterank", COMMANDEXECUTOR.ALL);
+		new CmdRenamerank(plugin, "renamerank", COMMANDEXECUTOR.ALL);
+		new CmdSetdefault(plugin, "setdefault", COMMANDEXECUTOR.ALL);
+		new CmdListdefaultranks(plugin, "listdefaultranks", COMMANDEXECUTOR.ALL);
+		new CmdAddperm(plugin, "addperm", COMMANDEXECUTOR.ALL);
+		new CmdDelperm(plugin, "delperm", COMMANDEXECUTOR.ALL);
+		new CmdSetprefix(plugin, "setprefix", COMMANDEXECUTOR.ALL);
+		new CmdSetsuffix(plugin, "setsuffix", COMMANDEXECUTOR.ALL);
+		new CmdSetchatcolor(plugin, "setchatcolor", COMMANDEXECUTOR.ALL);
+		new CmdSetnamecolor(plugin, "setnamecolor", COMMANDEXECUTOR.ALL);
+		new CmdAddinheritance(plugin, "addinheritance", COMMANDEXECUTOR.ALL);
+		new CmdDelinheritance(plugin, "delinheritance", COMMANDEXECUTOR.ALL);
+		new CmdSetweight(plugin, "setweight", COMMANDEXECUTOR.ALL);
+		new CmdRankinfo(plugin, "rankinfo", COMMANDEXECUTOR.ALL);
 
-		new cmd_addplayerperm(plugin, "addplayerperm", COMMAND_EXECUTOR.ALL);
-		new cmd_delplayerperm(plugin, "delplayerperm", COMMAND_EXECUTOR.ALL);
-		new cmd_createusertag(plugin, "createusertag", COMMAND_EXECUTOR.ALL);
-		new cmd_editusertag(plugin, "editusertag", COMMAND_EXECUTOR.ALL);
-		new cmd_removeusertag(plugin, "removeusertag", COMMAND_EXECUTOR.ALL);
-		new cmd_addusertag(plugin, "addusertag", COMMAND_EXECUTOR.ALL);
-		new cmd_setusertag(plugin, "setusertag", COMMAND_EXECUTOR.ALL);
-		new cmd_delusertag(plugin, "delusertag", COMMAND_EXECUTOR.ALL);
-		new cmd_clearusertag(plugin, "clearusertag", COMMAND_EXECUTOR.ALL);
+		new CmdAddplayerperm(plugin, "addplayerperm", COMMANDEXECUTOR.ALL);
+		new CmdDelplayerperm(plugin, "delplayerperm", COMMANDEXECUTOR.ALL);
+		new CmdCreateusertag(plugin, "createusertag", COMMANDEXECUTOR.ALL);
+		new CmdEditusertag(plugin, "editusertag", COMMANDEXECUTOR.ALL);
+		new CmdRemoveusertag(plugin, "removeusertag", COMMANDEXECUTOR.ALL);
+		new CmdAddusertag(plugin, "addusertag", COMMANDEXECUTOR.ALL);
+		new CmdSetusertag(plugin, "setusertag", COMMANDEXECUTOR.ALL);
+		new CmdDelusertag(plugin, "delusertag", COMMANDEXECUTOR.ALL);
+		new CmdClearusertag(plugin, "clearusertag", COMMANDEXECUTOR.ALL);
 
-		new cmd_webeditor(plugin, "webeditor", COMMAND_EXECUTOR.ALL);
-		new cmd_webeditor(plugin, "we", COMMAND_EXECUTOR.ALL);
+		new CmdWebeditor(plugin, "webeditor", COMMANDEXECUTOR.ALL);
+		new CmdWebeditor(plugin, "we", COMMANDEXECUTOR.ALL);
 	}
 
 	private static boolean canExecuteCommand(CommandSender sender, PowerCommand command_handler) {
-		return (sender instanceof Player && (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.PLAYER
-				|| command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL))
+		return (sender instanceof Player && (command_handler.getCommandExecutor() == COMMANDEXECUTOR.PLAYER
+				|| command_handler.getCommandExecutor() == COMMANDEXECUTOR.ALL))
 				|| (sender instanceof ConsoleCommandSender
-						&& (command_handler.getCommandExecutor() == COMMAND_EXECUTOR.CONSOLE
-								|| command_handler.getCommandExecutor() == COMMAND_EXECUTOR.ALL));
+						&& (command_handler.getCommandExecutor() == COMMANDEXECUTOR.CONSOLE
+								|| command_handler.getCommandExecutor() == COMMANDEXECUTOR.ALL));
 	}
 
 
@@ -160,7 +160,7 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 					+ TextFormat.BLUE + "===");
 		} else {
 			String command = args[0];
-			PowerCommand command_handler = get_power_command(command);
+			PowerCommand command_handler = getPowerCommand(command);
 			if (command_handler != null) {
 				boolean is_allowed = canExecuteCommand(sender, command_handler);
 				boolean hasPermission = hasPermission(sender, command_handler);
@@ -207,20 +207,20 @@ public class PowerCommandHandler extends PluginCommand<PowerRanks> {
 		return sender.hasPermission(command_handler.getCommandPermission());
 	}
 
-	public static PowerCommand get_power_command(String command_name) {
+	public static PowerCommand getPowerCommand(String command_name) {
 		return power_commands.get(command_name.toLowerCase());
 	}
 
-	public static void add_power_command(String command_name, PowerCommand command_handler) {
+	public static void addPowerCommand(String command_name, PowerCommand command_handler) {
 		power_commands.put(command_name.toLowerCase(), command_handler);
 	}
 
     private static boolean hasCommandPermission(CommandSender sender, String cmd) {
-        boolean hasPermission = sender instanceof Player ? ((Player) sender).hasPermission("powerranks.cmd." + cmd.toLowerCase()) : true;
+        boolean hasPermission = !(sender instanceof Player) || ((Player) sender).hasPermission("powerranks.cmd." + cmd.toLowerCase());
         return hasPermission;
     }
 
-	public static ArrayList<String> handle_tab_complete(CommandSender sender, String cmd, String[] args) {
+	public static ArrayList<String> handleTabComplete(CommandSender sender, String cmd, String[] args) {
 		ArrayList<String> output = new ArrayList<String>();
 		if (args.length == 0) {
 			for (Entry<String, PowerCommand> entry : power_commands.entrySet()) {

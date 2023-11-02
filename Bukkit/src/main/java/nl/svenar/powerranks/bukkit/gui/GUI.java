@@ -15,7 +15,7 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.data.Users;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
-import nl.svenar.powerranks.bukkit.gui.GUIPage.GUI_PAGE_ID;
+import nl.svenar.powerranks.bukkit.gui.GUIPage.GUIPAGEID;
 
 public class GUI {
 
@@ -27,7 +27,7 @@ public class GUI {
 		GUI.powerRanks = powerRanks;
 	}
 
-	public static void openGUI(Player player, GUI_PAGE_ID pageID) {
+	public static void openGUI(Player player, GUIPAGEID pageID) {
 		if (guis.get(player) == null || guis.get(player).getPageID().getID() != pageID.getID()) {
 			GUIPage new_gui = new GUIPage(powerRanks, player, pageID);
 			guis.put(player, new_gui);
@@ -78,7 +78,7 @@ public class GUI {
 			openGUI(player, gui.getPageID());
 		}
 
-		if (gui.getPageID().getID() == GUI_PAGE_ID.RANKUP.getID()) {
+		if (gui.getPageID().getID() == GUIPAGEID.RANKUP.getID()) {
 			if (slot < gui.getGUI().getSize() - 9) {
 				Users users = new Users(powerRanks);
 				String rankname = gui.getGUI().getItem(slot).getItemMeta().getDisplayName();

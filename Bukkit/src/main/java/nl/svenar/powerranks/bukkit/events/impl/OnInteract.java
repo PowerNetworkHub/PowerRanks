@@ -22,7 +22,7 @@ import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.data.Users;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
 import nl.svenar.powerranks.bukkit.gui.GUI;
-import nl.svenar.powerranks.bukkit.gui.GUIPage.GUI_PAGE_ID;
+import nl.svenar.powerranks.bukkit.gui.GUIPage.GUIPAGEID;
 import nl.svenar.powerranks.bukkit.util.Util;
 
 public class OnInteract implements Listener {
@@ -166,7 +166,7 @@ public class OnInteract implements Listener {
 				}
 				// } else if (sign_command.equalsIgnoreCase("gui")) {
 				// if (player.hasPermission("powerranks.signs.gui")) {
-				// GUI.openGUI(player, GUI_PAGE_ID.MAIN);
+				// GUI.openGUI(player, GUIPAGEID.MAIN);
 				// } else {
 				// player.sendMessage(PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
 				// }
@@ -208,7 +208,7 @@ public class OnInteract implements Listener {
 			} else if (sign_command.equalsIgnoreCase("rankup")) {
 				if (player.hasPermission("powerranks.signs.rankup")) {
 					if (sign_argument.length() == 0) {
-						GUI.openGUI(player, GUI_PAGE_ID.RANKUP);
+						GUI.openGUI(player, GUIPAGEID.RANKUP);
 					} else {
 						if (PowerRanks.vaultEconomyEnabled) {
 							if (sign_argument2.length() > 0) {

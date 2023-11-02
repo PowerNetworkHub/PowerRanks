@@ -30,13 +30,13 @@ public class GUIPage {
 
 	private Users users;
 
-	private GUI_PAGE_ID pageID = null;
+	private GUIPAGEID pageID = null;
 
 	public int current_page = 0;
 
 	private static HashMap<String, String> storedData = new HashMap<String, String>();
 
-	public static enum GUI_PAGE_ID {
+	public static enum GUIPAGEID {
 		RANKUP(0, "rankup"), MAIN(1, "main"), CMD_SETRANK_INPUT_PLAYER(2, "select player"),
 		CMD_SETRANK_INPUT_RANK(3, "select rank"), CMD_CHECKRANK_INPUT_PLAYER(4, "select player"),
 		CMD_PROMOTE_INPUT_PLAYER(5, "select player"), CMD_DEMOTE_INPUT_PLAYER(6, "select player"),
@@ -53,7 +53,7 @@ public class GUIPage {
 		public final int id;
 		public final String name;
 
-		private GUI_PAGE_ID(int id, String name) {
+		private GUIPAGEID(int id, String name) {
 			this.id = id;
 			this.name = name;
 		}
@@ -67,12 +67,12 @@ public class GUIPage {
 		}
 	}
 
-	public static enum INVENTORY_SIZE {
+	public static enum INVENTORYSIZE {
 		SMALL(9), NORMAL(27), BIG(54);
 
 		public final int size;
 
-		private INVENTORY_SIZE(int size) {
+		private INVENTORYSIZE(int size) {
 			this.size = size;
 		}
 
@@ -81,19 +81,19 @@ public class GUIPage {
 		}
 	}
 
-	public GUIPage(PowerRanks powerRanks, Player player, GUI_PAGE_ID pageID) {
+	public GUIPage(PowerRanks powerRanks, Player player, GUIPAGEID pageID) {
 		this.player = player;
 		this.users = new Users(powerRanks);
 		this.pageID = pageID;
 		this.gui = setupGUI(pageID);
 	}
 
-	Inventory setupGUI(GUI_PAGE_ID pageID) {
+	Inventory setupGUI(GUIPAGEID pageID) {
 		if (current_page < 0) {
 			current_page = 0;
 		}
 
-		Inventory new_gui = Bukkit.createInventory(null, INVENTORY_SIZE.NORMAL.getSize(),
+		Inventory new_gui = Bukkit.createInventory(null, INVENTORYSIZE.NORMAL.getSize(),
 				"PowerRanks " + pageID.getName());
 
 		for (int i = 0; i < new_gui.getSize(); i++) {
@@ -107,7 +107,7 @@ public class GUIPage {
 		new_gui.setItem(new_gui.getSize() - 5,
 				createGuiItem(Material.BARRIER, "Close", PowerRanks.pdf.getName().toLowerCase()));
 
-		if (pageID.getID() == GUI_PAGE_ID.RANKUP.getID()) {
+		if (pageID.getID() == GUIPAGEID.RANKUP.getID()) {
 			List<String> ranks = users.getBuyableRanks(users.getPrimaryRank(player));
 			int num_rank_on_page = new_gui.getSize() - 9;
 
@@ -159,7 +159,7 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.MAIN.getID()) {
+		if (pageID.getID() == GUIPAGEID.MAIN.getID()) {
 			new_gui.setItem(0, createGuiItem(Material.DISPENSER, ChatColor.GREEN + "Set a players rank",
 					ChatColor.BLACK + "cmd:setrank", ChatColor.RESET + "/pr set <player> <rank>"));
 			new_gui.setItem(1, createGuiItem(Material.REDSTONE, ChatColor.GREEN + "Check a players rank",
@@ -196,10 +196,10 @@ public class GUIPage {
 			// delinheritance", "Remove a inheritance from a rank."));
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_SETRANK_INPUT_PLAYER.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_CHECKRANK_INPUT_PLAYER.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_PROMOTE_INPUT_PLAYER.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_DEMOTE_INPUT_PLAYER.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_SETRANK_INPUT_PLAYER.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_CHECKRANK_INPUT_PLAYER.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_PROMOTE_INPUT_PLAYER.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_DEMOTE_INPUT_PLAYER.getID()) {
 			Object[] online_players = Bukkit.getServer().getOnlinePlayers().toArray();
 			int num_items_on_page = new_gui.getSize() - 9;
 
@@ -222,14 +222,14 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_SETRANK_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_SETDEFAULTRANK_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_SETRANK_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_SETCHATCOLOR_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_SETNAMECOLOR_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_SETDEFAULTRANK_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_ADDINHERITANCE_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_DELINHERITANCE_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_ADDBUYABLERANK_INPUT_RANK.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_DELBUYABLERANK_INPUT_RANK.getID()) {
 			Object[] ranks = users.getGroups().toArray();
 			int num_rank_on_page = new_gui.getSize() - 9;
 
@@ -258,8 +258,8 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_ADDINHERITANCE_INPUT_RANK2.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_ADDBUYABLERANK_INPUT_RANK2.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_ADDINHERITANCE_INPUT_RANK2.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_ADDBUYABLERANK_INPUT_RANK2.getID()) {
 			Object[] ranks = users.getGroups().toArray();
 			int num_rank_on_page = new_gui.getSize() - 9;
 
@@ -290,7 +290,7 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_DELINHERITANCE_INPUT_RANK2.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_DELINHERITANCE_INPUT_RANK2.getID()) {
 			Object[] ranks = users.getInheritances(getData(player.getName() + ":rankname")).toArray();
 			int num_rank_on_page = new_gui.getSize() - 9;
 
@@ -317,7 +317,7 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_DELBUYABLERANK_INPUT_RANK2.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_DELBUYABLERANK_INPUT_RANK2.getID()) {
 			Object[] ranks = users.getBuyableRanks(getData(player.getName() + ":rankname")).toArray();
 			int num_rank_on_page = new_gui.getSize() - 9;
 
@@ -345,8 +345,8 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_COLOR.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_COLOR.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_SETCHATCOLOR_INPUT_COLOR.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_SETNAMECOLOR_INPUT_COLOR.getID()) {
 			try {
 				new_gui.setItem(0,
 						BannerItem.addPattern(BannerItem.createEmpty("Black", "&0"), DyeColor.BLACK, PatternType.BASE));
@@ -419,8 +419,8 @@ public class GUIPage {
 			}
 		}
 
-		if (pageID.getID() == GUI_PAGE_ID.CMD_SETCHATCOLOR_INPUT_SPECIAL.getID()
-				|| pageID.getID() == GUI_PAGE_ID.CMD_SETNAMECOLOR_INPUT_SPECIAL.getID()) {
+		if (pageID.getID() == GUIPAGEID.CMD_SETCHATCOLOR_INPUT_SPECIAL.getID()
+				|| pageID.getID() == GUIPAGEID.CMD_SETNAMECOLOR_INPUT_SPECIAL.getID()) {
 			try {
 				new_gui.setItem(0,
 						BannerItem.addPattern(BannerItem.createEmpty("None", ""), DyeColor.WHITE, PatternType.BASE));
@@ -487,7 +487,7 @@ public class GUIPage {
 		return gui;
 	}
 
-	public GUI_PAGE_ID getPageID() {
+	public GUIPAGEID getPageID() {
 		return pageID;
 	}
 

@@ -11,7 +11,7 @@ public abstract class PowerCommand {
     
     private String commandPermission = "";
     
-    public enum COMMAND_EXECUTOR {
+    public enum COMMANDEXECUTOR {
         NONE,
         PLAYER,
         CONSOLE,
@@ -19,17 +19,17 @@ public abstract class PowerCommand {
         ALL
     }
     
-    private COMMAND_EXECUTOR ce = COMMAND_EXECUTOR.NONE;
+    private COMMANDEXECUTOR ce = COMMANDEXECUTOR.NONE;
     
-    public PowerCommand(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
-        PowerCommandHandler.add_power_command(command_name, this);
+    public PowerCommand(PowerRanks plugin, String command_name, COMMANDEXECUTOR ce) {
+        PowerCommandHandler.addPowerCommand(command_name, this);
         this.plugin = plugin;
         this.ce = ce;
     }
     
     public abstract boolean onCommand(CommandSender sender, String commandLabel, String commandName, String[] args);
     
-    public COMMAND_EXECUTOR getCommandExecutor() {
+    public COMMANDEXECUTOR getCommandExecutor() {
         return this.ce;
     }
     
