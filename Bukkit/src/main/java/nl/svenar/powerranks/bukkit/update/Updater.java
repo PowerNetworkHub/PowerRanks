@@ -45,329 +45,329 @@ import nl.svenar.powerranks.bukkit.util.Util;
 
 public class Updater {
 
-	/* Constants */
+    /* Constants */
 
-	// Remote file's title
-	private static final String TITLE_VALUE = "name";
-	
-	// Remote file's download link
-	private static final String LINK_VALUE = "downloadUrl";
+    // Remote file's title
+    private static final String TITLE_VALUE = "name";
+    
+    // Remote file's download link
+    private static final String LINK_VALUE = "downloadUrl";
 
-	// Remote file's release type
-	private static final String TYPE_VALUE = "releaseType";
+    // Remote file's release type
+    private static final String TYPE_VALUE = "releaseType";
 
-	// Remote file's build version
-	private static final String VERSION_VALUE = "gameVersion";
+    // Remote file's build version
+    private static final String VERSION_VALUE = "gameVersion";
 
-	// Path to GET
-	private static final String QUERY = "/servermods/files?projectIds=";
+    // Path to GET
+    private static final String QUERY = "/servermods/files?projectIds=";
 
-	// Slugs will be appended to this to get to the project's RSS feed
-	private static final String HOST = "https://api.curseforge.com";
+    // Slugs will be appended to this to get to the project's RSS feed
+    private static final String HOST = "https://api.curseforge.com";
 
-	// User-agent when querying Curse
-	private static final String USER_AGENT = "Updater (by Gravity)";
+    // User-agent when querying Curse
+    private static final String USER_AGENT = "Updater (by Gravity)";
 
-	// Used for locating version numbers in file names
-	private static final String DELIMETER = "^v|[\\s_-]v";
+    // Used for locating version numbers in file names
+    private static final String DELIMETER = "^v|[\\s_-]v";
 
-	// If the version number contains one of these, don't update.
-	private static final String[] NO_UPDATE_TAG = { "-DEV", "-PRE", "-SNAPSHOT" };
+    // If the version number contains one of these, don't update.
+    private static final String[] NO_UPDATE_TAG = { "-DEV", "-PRE", "-SNAPSHOT" };
 
-	// Used for downloading files
-	private static final int BYTE_SIZE = 1024;
+    // Used for downloading files
+    private static final int BYTE_SIZE = 1024;
 
-	// Config key for api key
-	private static final String API_KEY_CONFIG_KEY = "api-key";
+    // Config key for api key
+    private static final String API_KEY_CONFIG_KEY = "api-key";
 
-	// Config key for disabling Updater
-	private static final String DISABLE_CONFIG_KEY = "disable";
+    // Config key for disabling Updater
+    private static final String DISABLE_CONFIG_KEY = "disable";
 
-	// Default api key value in config
-	private static final String API_KEY_DEFAULT = "PUT_API_KEY_HERE";
+    // Default api key value in config
+    private static final String API_KEY_DEFAULT = "PUT_API_KEY_HERE";
 
-	// Default disable value in config
-	private static final boolean DISABLE_DEFAULT = false;
+    // Default disable value in config
+    private static final boolean DISABLE_DEFAULT = false;
 
-	/* User-provided variables */
+    /* User-provided variables */
 
-	// Plugin running Updater
-	private final Plugin plugin;
+    // Plugin running Updater
+    private final Plugin plugin;
 
-	// Type of update check to run
-	private final UpdateType type;
+    // Type of update check to run
+    private final UpdateType type;
 
-	// Whether to announce file downloads
-	private final boolean announce;
+    // Whether to announce file downloads
+    private final boolean announce;
 
-	// The plugin file (jar)
-	private final File file;
+    // The plugin file (jar)
+    private final File file;
 
-	// The folder that downloads will be placed in
-	private final File updateFolder;
+    // The folder that downloads will be placed in
+    private final File updateFolder;
 
-	// The provided callback (if any)
-	private final UpdateCallback callback;
+    // The provided callback (if any)
+    private final UpdateCallback callback;
 
-	// Project's Curse ID
-	private int id = -1;
+    // Project's Curse ID
+    private int id = -1;
 
-	// BukkitDev ServerMods API key
-	private String apiKey = null;
+    // BukkitDev ServerMods API key
+    private String apiKey = null;
 
-	/* Collected from Curse API */
+    /* Collected from Curse API */
 
-	private String versionName;
+    private String versionName;
 
-	private String versionLink;
+    private String versionLink;
 
-	private String versionType;
+    private String versionType;
 
-	private String versionGameVersion;
+    private String versionGameVersion;
 
-	/* Update process variables */
+    /* Update process variables */
 
-	// Connection to RSS
-	private URL url;
+    // Connection to RSS
+    private URL url;
 
-	// Updater thread
-	private Thread thread;
+    // Updater thread
+    private Thread thread;
 
-	// Used for determining the outcome of the update process
-	private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS;
+    // Used for determining the outcome of the update process
+    private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS;
 
-	/**
-	 * Gives the developer the result of the update process. Can be obtained by
-	 * called {@link #getResult()}
-	 */
-	public enum UpdateResult {
-		/**
-		 * The updater found an update, and has readied it to be loaded the next time
-		 * the server restarts/reloads.
-		 */
-		SUCCESS,
-		/**
-		 * The updater did not find an update, and nothing was downloaded.
-		 */
-		NO_UPDATE,
-		/**
-		 * The server administrator has disabled the updating system.
-		 */
-		DISABLED,
-		/**
-		 * The updater found an update, but was unable to download it.
-		 */
-		FAIL_DOWNLOAD,
-		/**
-		 * For some reason, the updater was unable to contact dev.bukkit.org to download
-		 * the file.
-		 */
-		FAIL_DBO,
-		/**
-		 * When running the version check, the file on DBO did not contain a
-		 * recognizable version.
-		 */
-		FAIL_NOVERSION,
-		/**
-		 * The id provided by the plugin running the updater was invalid and doesn't
-		 * exist on DBO.
-		 */
-		FAIL_BADID,
-		/**
-		 * The server administrator has improperly configured their API key in the
-		 * configuration.
-		 */
-		FAIL_APIKEY,
-		/**
-		 * The updater found an update, but because of the UpdateType being set to
-		 * NO_DOWNLOAD, it wasn't downloaded.
-		 */
-		UPDATE_AVAILABLE
-	}
+    /**
+     * Gives the developer the result of the update process. Can be obtained by
+     * called {@link #getResult()}
+     */
+    public enum UpdateResult {
+        /**
+         * The updater found an update, and has readied it to be loaded the next time
+         * the server restarts/reloads.
+         */
+        SUCCESS,
+        /**
+         * The updater did not find an update, and nothing was downloaded.
+         */
+        NO_UPDATE,
+        /**
+         * The server administrator has disabled the updating system.
+         */
+        DISABLED,
+        /**
+         * The updater found an update, but was unable to download it.
+         */
+        FAIL_DOWNLOAD,
+        /**
+         * For some reason, the updater was unable to contact dev.bukkit.org to download
+         * the file.
+         */
+        FAIL_DBO,
+        /**
+         * When running the version check, the file on DBO did not contain a
+         * recognizable version.
+         */
+        FAIL_NOVERSION,
+        /**
+         * The id provided by the plugin running the updater was invalid and doesn't
+         * exist on DBO.
+         */
+        FAIL_BADID,
+        /**
+         * The server administrator has improperly configured their API key in the
+         * configuration.
+         */
+        FAIL_APIKEY,
+        /**
+         * The updater found an update, but because of the UpdateType being set to
+         * NO_DOWNLOAD, it wasn't downloaded.
+         */
+        UPDATE_AVAILABLE
+    }
 
-	/**
-	 * Allows the developer to specify the type of update that will be run.
-	 */
-	public enum UpdateType {
-		/**
-		 * Run a version check, and then if the file is out of date, download the newest
-		 * version.
-		 */
-		DEFAULT,
-		/**
-		 * Don't run a version check, just find the latest update and download it.
-		 */
-		NO_VERSION_CHECK,
-		/**
-		 * Get information about the version and the download size, but don't actually
-		 * download anything.
-		 */
-		NO_DOWNLOAD
-	}
+    /**
+     * Allows the developer to specify the type of update that will be run.
+     */
+    public enum UpdateType {
+        /**
+         * Run a version check, and then if the file is out of date, download the newest
+         * version.
+         */
+        DEFAULT,
+        /**
+         * Don't run a version check, just find the latest update and download it.
+         */
+        NO_VERSION_CHECK,
+        /**
+         * Get information about the version and the download size, but don't actually
+         * download anything.
+         */
+        NO_DOWNLOAD
+    }
 
-	/**
-	 * Represents the various release types of a file on BukkitDev.
-	 */
-	public enum ReleaseType {
-		/**
-		 * An "alpha" file.
-		 */
-		ALPHA,
-		/**
-		 * A "beta" file.
-		 */
-		BETA,
-		/**
-		 * A "release" file.
-		 */
-		RELEASE
-	}
+    /**
+     * Represents the various release types of a file on BukkitDev.
+     */
+    public enum ReleaseType {
+        /**
+         * An "alpha" file.
+         */
+        ALPHA,
+        /**
+         * A "beta" file.
+         */
+        BETA,
+        /**
+         * A "release" file.
+         */
+        RELEASE
+    }
 
-	/**
-	 * Initialize the updater.
-	 *
-	 * @param plugin   The plugin that is checking for an update.
-	 * @param id       The dev.bukkit.org id of the project.
-	 * @param file     The file that the plugin is running from, get this by doing
-	 *                 this.getFile() from within your main class.
-	 * @param type     Specify the type of update this will be. See
-	 *                 {@link UpdateType}
-	 * @param announce True if the program should announce the progress of new
-	 *                 updates in console.
-	 */
-	public Updater(Plugin plugin, int id, File file, UpdateType type, boolean announce) {
-		this(plugin, id, file, type, null, announce);
-	}
+    /**
+     * Initialize the updater.
+     *
+     * @param plugin   The plugin that is checking for an update.
+     * @param id       The dev.bukkit.org id of the project.
+     * @param file     The file that the plugin is running from, get this by doing
+     *                 this.getFile() from within your main class.
+     * @param type     Specify the type of update this will be. See
+     *                 {@link UpdateType}
+     * @param announce True if the program should announce the progress of new
+     *                 updates in console.
+     */
+    public Updater(Plugin plugin, int id, File file, UpdateType type, boolean announce) {
+        this(plugin, id, file, type, null, announce);
+    }
 
-	/**
-	 * Initialize the updater with the provided callback.
-	 *
-	 * @param plugin   The plugin that is checking for an update.
-	 * @param id       The dev.bukkit.org id of the project.
-	 * @param file     The file that the plugin is running from, get this by doing
-	 *                 this.getFile() from within your main class.
-	 * @param type     Specify the type of update this will be. See
-	 *                 {@link UpdateType}
-	 * @param callback The callback instance to notify when the Updater has finished
-	 */
-	public Updater(Plugin plugin, int id, File file, UpdateType type, UpdateCallback callback) {
-		this(plugin, id, file, type, callback, false);
-	}
+    /**
+     * Initialize the updater with the provided callback.
+     *
+     * @param plugin   The plugin that is checking for an update.
+     * @param id       The dev.bukkit.org id of the project.
+     * @param file     The file that the plugin is running from, get this by doing
+     *                 this.getFile() from within your main class.
+     * @param type     Specify the type of update this will be. See
+     *                 {@link UpdateType}
+     * @param callback The callback instance to notify when the Updater has finished
+     */
+    public Updater(Plugin plugin, int id, File file, UpdateType type, UpdateCallback callback) {
+        this(plugin, id, file, type, callback, false);
+    }
 
-	/**
-	 * Initialize the updater with the provided callback.
-	 *
-	 * @param plugin   The plugin that is checking for an update.
-	 * @param id       The dev.bukkit.org id of the project.
-	 * @param file     The file that the plugin is running from, get this by doing
-	 *                 this.getFile() from within your main class.
-	 * @param type     Specify the type of update this will be. See
-	 *                 {@link UpdateType}
-	 * @param callback The callback instance to notify when the Updater has finished
-	 * @param announce True if the program should announce the progress of new
-	 *                 updates in console.
-	 */
+    /**
+     * Initialize the updater with the provided callback.
+     *
+     * @param plugin   The plugin that is checking for an update.
+     * @param id       The dev.bukkit.org id of the project.
+     * @param file     The file that the plugin is running from, get this by doing
+     *                 this.getFile() from within your main class.
+     * @param type     Specify the type of update this will be. See
+     *                 {@link UpdateType}
+     * @param callback The callback instance to notify when the Updater has finished
+     * @param announce True if the program should announce the progress of new
+     *                 updates in console.
+     */
 
-	@SuppressWarnings("deprecation")
-	public Updater(Plugin plugin, int id, File file, UpdateType type, UpdateCallback callback, boolean announce) {
-		this.plugin = plugin;
-		this.type = type;
-		this.announce = announce;
-		this.file = file;
-		this.id = id;
-		this.updateFolder = this.plugin.getServer().getUpdateFolderFile();
-		this.callback = callback;
+    @SuppressWarnings("deprecation")
+    public Updater(Plugin plugin, int id, File file, UpdateType type, UpdateCallback callback, boolean announce) {
+        this.plugin = plugin;
+        this.type = type;
+        this.announce = announce;
+        this.file = file;
+        this.id = id;
+        this.updateFolder = this.plugin.getServer().getUpdateFolderFile();
+        this.callback = callback;
 
-		final File pluginFile = this.plugin.getDataFolder().getParentFile();
-		final File updaterFile = new File(pluginFile, "Updater");
-		final File updaterConfigFile = new File(updaterFile, "config.yml");
+        final File pluginFile = this.plugin.getDataFolder().getParentFile();
+        final File updaterFile = new File(pluginFile, "Updater");
+        final File updaterConfigFile = new File(updaterFile, "config.yml");
 
-		YamlConfiguration config = new YamlConfiguration();
-		try {
-			List<String> header = new ArrayList<String>();
-			header.add(
-					"This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )");
-			header.add(
-					"If you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below.");
-			header.add(
-					"Some updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
-			config.options().setHeader(header);
-		} catch (NoSuchMethodError e) {
-			config.options()
-					.header("This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )"
-							+ '\n'
-							+ "If you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below."
-							+ '\n'
-							+ "Some updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
-		}
-		config.addDefault(API_KEY_CONFIG_KEY, API_KEY_DEFAULT);
-		config.addDefault(DISABLE_CONFIG_KEY, DISABLE_DEFAULT);
+        YamlConfiguration config = new YamlConfiguration();
+        try {
+            List<String> header = new ArrayList<String>();
+            header.add(
+                    "This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )");
+            header.add(
+                    "If you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below.");
+            header.add(
+                    "Some updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
+            config.options().setHeader(header);
+        } catch (NoSuchMethodError e) {
+            config.options()
+                    .header("This configuration file affects all plugins using the Updater system (version 2+ - http://forums.bukkit.org/threads/96681/ )"
+                            + '\n'
+                            + "If you wish to use your API key, read http://wiki.bukkit.org/ServerMods_API and place it below."
+                            + '\n'
+                            + "Some updating systems will not adhere to the disabled value, but these may be turned off in their plugin's configuration.");
+        }
+        config.addDefault(API_KEY_CONFIG_KEY, API_KEY_DEFAULT);
+        config.addDefault(DISABLE_CONFIG_KEY, DISABLE_DEFAULT);
 
-		if (!updaterFile.exists()) {
-			this.fileIOOrError(updaterFile, updaterFile.mkdir(), true);
-		}
+        if (!updaterFile.exists()) {
+            this.fileIOOrError(updaterFile, updaterFile.mkdir(), true);
+        }
 
-		boolean createFile = !updaterConfigFile.exists();
-		try {
-			if (createFile) {
-				this.fileIOOrError(updaterConfigFile, updaterConfigFile.createNewFile(), true);
-				config.options().copyDefaults(true);
-				config.save(updaterConfigFile);
-			} else {
-				config.load(updaterConfigFile);
-			}
-		} catch (final Exception e) {
-			final String message;
-			if (createFile) {
-				message = "The updater could not create configuration at " + updaterFile.getAbsolutePath();
-			} else {
-				message = "The updater could not load configuration at " + updaterFile.getAbsolutePath();
-			}
-			this.plugin.getLogger().log(Level.SEVERE, message, e);
-		}
+        boolean createFile = !updaterConfigFile.exists();
+        try {
+            if (createFile) {
+                this.fileIOOrError(updaterConfigFile, updaterConfigFile.createNewFile(), true);
+                config.options().copyDefaults(true);
+                config.save(updaterConfigFile);
+            } else {
+                config.load(updaterConfigFile);
+            }
+        } catch (final Exception e) {
+            final String message;
+            if (createFile) {
+                message = "The updater could not create configuration at " + updaterFile.getAbsolutePath();
+            } else {
+                message = "The updater could not load configuration at " + updaterFile.getAbsolutePath();
+            }
+            this.plugin.getLogger().log(Level.SEVERE, message, e);
+        }
 
-		// if (config.getBoolean(DISABLE_CONFIG_KEY)) {
-		// this.result = UpdateResult.DISABLED;
-		// return;
-		// }
+        // if (config.getBoolean(DISABLE_CONFIG_KEY)) {
+        // this.result = UpdateResult.DISABLED;
+        // return;
+        // }
 
-		String key = config.getString(API_KEY_CONFIG_KEY);
-		if (API_KEY_DEFAULT.equalsIgnoreCase(key) || "".equals(key)) {
-			key = null;
-		}
+        String key = config.getString(API_KEY_CONFIG_KEY);
+        if (API_KEY_DEFAULT.equalsIgnoreCase(key) || "".equals(key)) {
+            key = null;
+        }
 
-		this.apiKey = key;
+        this.apiKey = key;
 
-		try {
-			this.url = new URL(Updater.HOST + Updater.QUERY + this.id);
-		} catch (final MalformedURLException e) {
-			this.plugin.getLogger().log(Level.SEVERE,
-					"The project ID provided for updating, " + this.id + " is invalid.", e);
-			this.result = UpdateResult.FAIL_BADID;
-		}
+        try {
+            this.url = new URL(Updater.HOST + Updater.QUERY + this.id);
+        } catch (final MalformedURLException e) {
+            this.plugin.getLogger().log(Level.SEVERE,
+                    "The project ID provided for updating, " + this.id + " is invalid.", e);
+            this.result = UpdateResult.FAIL_BADID;
+        }
 
-		if (this.result != UpdateResult.FAIL_BADID) {
-			this.thread = new Thread(new UpdateRunnable());
-			this.thread.start();
-		} else {
-			runUpdater();
-		}
-	}
+        if (this.result != UpdateResult.FAIL_BADID) {
+            this.thread = new Thread(new UpdateRunnable());
+            this.thread.start();
+        } else {
+            runUpdater();
+        }
+    }
 
-	/**
-	 * Get the result of the update process.
-	 *
-	 * @return result of the update process.
-	 * @see UpdateResult
-	 */
-	public Updater.UpdateResult getResult() {
-		this.waitForThread();
-		return this.result;
-	}
+    /**
+     * Get the result of the update process.
+     *
+     * @return result of the update process.
+     * @see UpdateResult
+     */
+    public Updater.UpdateResult getResult() {
+        this.waitForThread();
+        return this.result;
+    }
 
-	/**
-	 * Get the latest version's release type.
-	 *
+    /**
+     * Get the latest version's release type.
+     *
 	 * @return latest version's release type.
 	 * @see ReleaseType
 	 */

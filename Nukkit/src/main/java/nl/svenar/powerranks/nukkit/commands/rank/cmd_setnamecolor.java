@@ -17,56 +17,56 @@ import nl.svenar.powerranks.nukkit.commands.PowerCommand;
 public class cmd_setnamecolor extends PowerCommand {
 
 
-	public cmd_setnamecolor(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
-		super(plugin, command_name, ce);
-		this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
-	}
+    public cmd_setnamecolor(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {
+        super(plugin, command_name, ce);
+        this.setCommandPermission("powerranks.cmd." + command_name.toLowerCase());
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, String commandLabel, String commandName, String[] args) {
-		if (args.length == 2) {
-			final String rankname = args[0];
-			final String color = args[1];
-			PRRank rank = PRCache.getRank(rankname);
-			if (rank != null) {
-				rank.setNamecolor(color);
-				sender.sendMessage(PRUtil.powerFormatter(
-						plugin.getLanguageManager().getFormattedMessage(
-								"commands." + commandName.toLowerCase() + ".success"),
-						ImmutableMap.<String, String>builder()
-								.put("player", sender.getName())
-								.put("rank", rankname)
-								.put("color", color)
-								.build(),
-						'[', ']'));
-			} else {
-				sender.sendMessage(PRUtil.powerFormatter(
-						plugin.getLanguageManager().getFormattedMessage(
-								"general.rank-not-found"),
-						ImmutableMap.<String, String>builder()
-								.put("player", sender.getName())
-								.put("rank", rankname)
-								.build(),
-						'[', ']'));
-			}
-		} else {
-			sender.sendMessage(
-					plugin.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
-							"commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
-		}
+    @Override
+    public boolean onCommand(CommandSender sender, String commandLabel, String commandName, String[] args) {
+        if (args.length == 2) {
+            final String rankname = args[0];
+            final String color = args[1];
+            PRRank rank = PRCache.getRank(rankname);
+            if (rank != null) {
+                rank.setNamecolor(color);
+                sender.sendMessage(PRUtil.powerFormatter(
+                        plugin.getLanguageManager().getFormattedMessage(
+                                "commands." + commandName.toLowerCase() + ".success"),
+                        ImmutableMap.<String, String>builder()
+                                .put("player", sender.getName())
+                                .put("rank", rankname)
+                                .put("color", color)
+                                .build(),
+                        '[', ']'));
+            } else {
+                sender.sendMessage(PRUtil.powerFormatter(
+                        plugin.getLanguageManager().getFormattedMessage(
+                                "general.rank-not-found"),
+                        ImmutableMap.<String, String>builder()
+                                .put("player", sender.getName())
+                                .put("rank", rankname)
+                                .build(),
+                        '[', ']'));
+            }
+        } else {
+            sender.sendMessage(
+                    plugin.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
+                            "commands." + commandName.toLowerCase() + ".arguments", sender instanceof Player));
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
-		ArrayList<String> tabcomplete = new ArrayList<String>();
+    public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {
+        ArrayList<String> tabcomplete = new ArrayList<String>();
 
-		if (args.length == 1) {
-			for (PRRank rank : PRCache.getRanks()) {
-				tabcomplete.add(rank.getName());
-			}
-		}
+        if (args.length == 1) {
+            for (PRRank rank : PRCache.getRanks()) {
+                tabcomplete.add(rank.getName());
+            }
+        }
 
-		return tabcomplete;
-	}
+        return tabcomplete;
+    }
 }

@@ -75,7 +75,7 @@ public class PowerRanks extends PluginBase {
 
 
         this.chatPluginPrefix = TextFormat.BLACK + "[" + TextFormat.AQUA + this.getDescription().getName() + TextFormat.BLACK + "]"
-				+ TextFormat.RESET + " ";
+                + TextFormat.RESET + " ";
 
         this.permissionRegistry = new PermissionRegistry();
 
@@ -214,24 +214,24 @@ public class PowerRanks extends PluginBase {
 
     public void factoryReset(CommandSender sender) {
         PRCache.setRanks(new ArrayList<PRRank>());
-		PRCache.setPlayers(new ArrayList<PRPlayer>());
+        PRCache.setPlayers(new ArrayList<PRPlayer>());
 
-		PRUtil.deleteDir(new File(Util.DATA_DIR));
-		PRUtil.createDir(Util.DATA_DIR);
+        PRUtil.deleteDir(new File(Util.DATA_DIR));
+        PRUtil.createDir(Util.DATA_DIR);
 
-		configManager = new YAMLConfigManager(Util.DATA_DIR, "config.yml", "config.yml");
-		languageManager = new LanguageManager();
-		languageManager.setLanguage(configManager.getString("general.language", "en"));
+        configManager = new YAMLConfigManager(Util.DATA_DIR, "config.yml", "config.yml");
+        languageManager = new LanguageManager();
+        languageManager.setLanguage(configManager.getString("general.language", "en"));
 
-		PowerConfigManager ranksManager = new YAMLConfigManager(Util.DATA_DIR, "ranks.yml");
-		PowerConfigManager playersManager = new YAMLConfigManager(Util.DATA_DIR, "players.yml");
-		ranksManager.save();
-		playersManager.save();
+        PowerConfigManager ranksManager = new YAMLConfigManager(Util.DATA_DIR, "ranks.yml");
+        PowerConfigManager playersManager = new YAMLConfigManager(Util.DATA_DIR, "players.yml");
+        ranksManager.save();
+        playersManager.save();
 
-		getStorageLoader().loadData(getStorageManager());
+        getStorageLoader().loadData(getStorageManager());
 
-		for (Player player : this.getServer().getOnlinePlayers().values()) {
-			PermissibleInjector.inject(this, player);
-		}
+        for (Player player : this.getServer().getOnlinePlayers().values()) {
+            PermissibleInjector.inject(this, player);
+        }
     }
 }

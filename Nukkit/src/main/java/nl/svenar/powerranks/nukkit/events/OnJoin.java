@@ -28,7 +28,7 @@ public class OnJoin implements Listener {
         }
 
         long time = new Date().getTime();
-		PRUtil.addPlayerPlaytimeCache(player.getUniqueId(), time);
+        PRUtil.addPlayerPlaytimeCache(player.getUniqueId(), time);
 
         PermissibleInjector.inject(plugin, player);
     }

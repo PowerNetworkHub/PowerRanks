@@ -28,12 +28,12 @@ public class OnLeave implements Listener {
         PRPlayer prPlayer = PRCache.getPlayer(player.getUniqueId().toString());
 
         long leave_time = new Date().getTime();
-		long join_time = leave_time;
-		try {
-			join_time = PRUtil.getPlayerPlaytimeCache(player.getUniqueId());
-		} catch (Exception e1) {
-		}
+        long join_time = leave_time;
+        try {
+            join_time = PRUtil.getPlayerPlaytimeCache(player.getUniqueId());
+        } catch (Exception e1) {
+        }
 
-		prPlayer.setPlaytime(prPlayer.getPlaytime() + (leave_time - join_time) / 1000);
+        prPlayer.setPlaytime(prPlayer.getPlaytime() + (leave_time - join_time) / 1000);
     }
 }
