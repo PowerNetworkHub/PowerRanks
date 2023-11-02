@@ -221,21 +221,22 @@ public class Messages {
 	}
 
 	public static void messageRankInfo(CommandSender sender, PRRank rank, int page) {
+		int targetPage = page;
 
-		String formatted_inheritances = "";
+		String formattedInheritances = "";
 		for (String rankname : rank.getInheritances()) {
-			formatted_inheritances += rankname + " ";
+			formattedInheritances += rankname + " ";
 		}
-		if (formatted_inheritances.endsWith(" ")) {
-			formatted_inheritances = formatted_inheritances.substring(0, formatted_inheritances.length() - 1);
+		if (formattedInheritances.endsWith(" ")) {
+			formattedInheritances = formattedInheritances.substring(0, formattedInheritances.length() - 1);
 		}
 
 		String formatted_buyableranks = "";
 		for (String rankname : rank.getBuyableRanks()) {
-			formatted_inheritances += rankname + " ";
+			formattedInheritances += rankname + " ";
 		}
-		if (formatted_inheritances.endsWith(" ")) {
-			formatted_inheritances = formatted_inheritances.substring(0, formatted_inheritances.length() - 1);
+		if (formattedInheritances.endsWith(" ")) {
+			formattedInheritances = formattedInheritances.substring(0, formattedInheritances.length() - 1);
 		}
 
 		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "----------" + ChatColor.AQUA
@@ -253,25 +254,25 @@ public class Messages {
 		sender.sendMessage(ChatColor.YELLOW + "Buy cost: " + ChatColor.GOLD + rank.getBuyCost());
 		sender.sendMessage(ChatColor.YELLOW + "Buy description: " + ChatColor.GOLD + rank.getBuyDescription());
 		sender.sendMessage(ChatColor.YELLOW + "Buy command: " + ChatColor.GOLD + rank.getBuyCommand());
-		sender.sendMessage(ChatColor.GREEN + "Inheritance(s): " + ChatColor.DARK_GREEN + formatted_inheritances);
+		sender.sendMessage(ChatColor.GREEN + "Inheritance(s): " + ChatColor.DARK_GREEN + formattedInheritances);
 		sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
 		ArrayList<PRPermission> playerPermissions = rank.getPermissions();
-		int lines_per_page = sender instanceof Player ? 5 : 10;
-		int last_page = playerPermissions.size() / lines_per_page;
+		int linesPerPage = sender instanceof Player ? 5 : 10;
+		int lastPage = playerPermissions.size() / linesPerPage;
 
 		if (!(sender instanceof Player)) {
-			page -= 1;
+			targetPage -= 1;
 		}
 
-		page = page < 0 ? 0 : page;
-		page = page > last_page ? last_page : page;
+		targetPage = targetPage < 0 ? 0 : targetPage;
+		targetPage = targetPage > lastPage ? lastPage : targetPage;
 
 		if (sender instanceof Player) {
-			String page_selector_tellraw = "tellraw " + sender.getName()
+			String pageSelectorTellraw = "tellraw " + sender.getName()
 					+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
 					+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
-					+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+					+ ",{\"text\":\"%lastPage%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
 					+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 					+ "%commandlabel%" + " rankinfo %rankname% " + "%previous_page%"
 					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
@@ -285,29 +286,29 @@ public class Messages {
 					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 					+ "%commandlabel%" + " rankinfo %rankname% " + "%next_page%" + "\"}}]";
 
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%", String.valueOf(page - 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
-					String.valueOf(last_page + 1));
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%rankname%", rank.getName());
-			page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
+			pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%next_page%", String.valueOf(targetPage + 1));
+			pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%previous_page%", String.valueOf(targetPage - 1));
+			pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%lastPage%",
+					String.valueOf(lastPage + 1));
+			pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%rankname%", rank.getName());
+			pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%commandlabel%", "pr");
 
 			Messages.powerRanks.getServer().dispatchCommand(
-					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), pageSelectorTellraw);
 		} else {
-			sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
-					+ ChatColor.BLUE + (last_page + 1));
+			sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (targetPage + 1) + ChatColor.AQUA + "/"
+					+ ChatColor.BLUE + (lastPage + 1));
 			sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " rankinfo "
-					+ rank.getName() + " " + ChatColor.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+					+ rank.getName() + " " + ChatColor.BLUE + (targetPage + 2 > lastPage + 1 ? lastPage + 1 : targetPage + 2));
 		}
 
-		int line_index = 0;
+		int lineIndex = 0;
 		for (PRPermission permission : playerPermissions) {
-			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
+			if (lineIndex >= page * linesPerPage && lineIndex < page * linesPerPage + linesPerPage) {
+				sender.sendMessage(ChatColor.DARK_GREEN + "#" + (lineIndex + 1) + ". "
 						+ (!permission.getValue() ? ChatColor.RED : ChatColor.GREEN) + permission.getName());
 			}
-			line_index += 1;
+			lineIndex += 1;
 		}
 
 		sender.sendMessage(ChatColor.BLUE + "===" + ChatColor.DARK_AQUA + "------------------------------"
@@ -315,6 +316,7 @@ public class Messages {
 	}
 
 	public static void messagePlayerInfo(final CommandSender sender, final PRPlayer prPlayer, int page) {
+		int targetPage = page;
 		Player player = Bukkit.getPlayer(prPlayer.getUUID());
 
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -379,21 +381,21 @@ public class Messages {
 			sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
 			List<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
-			int lines_per_page = sender instanceof Player ? 5 : 10;
-			int last_page = playerPermissions.size() / lines_per_page;
+			int linesPerPage = sender instanceof Player ? 5 : 10;
+			int lastPage = playerPermissions.size() / linesPerPage;
 
 			if (!(sender instanceof Player)) {
-				page -= 1;
+				targetPage -= 1;
 			}
 
-			page = page < 0 ? 0 : page;
-			page = page > last_page ? last_page : page;
+			targetPage = targetPage < 0 ? 0 : targetPage;
+			targetPage = targetPage > lastPage ? lastPage : targetPage;
 
 			if (sender instanceof Player) {
-				String page_selector_tellraw = "tellraw " + sender.getName()
+				String pageSelectorTellraw = "tellraw " + sender.getName()
 						+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
 						+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
-						+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+						+ ",{\"text\":\"%lastPage%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
 						+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 						+ "%commandlabel%" + " playerinfo %playername% " + "%previous_page%"
 						+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
@@ -407,31 +409,31 @@ public class Messages {
 						+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 						+ "%commandlabel%" + " playerinfo %playername% " + "%next_page%" + "\"}}]";
 
-				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%next_page%", String.valueOf(page + 1));
-				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%previous_page%",
-						String.valueOf(page - 1));
-				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%last_page%",
-						String.valueOf(last_page + 1));
-				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%playername%", player.getName());
-				page_selector_tellraw = Util.replaceAll(page_selector_tellraw, "%commandlabel%", "pr");
+				pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%next_page%", String.valueOf(targetPage + 1));
+				pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%previous_page%",
+						String.valueOf(targetPage - 1));
+				pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%lastPage%",
+						String.valueOf(lastPage + 1));
+				pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%playername%", player.getName());
+				pageSelectorTellraw = Util.replaceAll(pageSelectorTellraw, "%commandlabel%", "pr");
 
 				Messages.powerRanks.getServer().dispatchCommand(
-						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+						(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), pageSelectorTellraw);
 			} else {
-				sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (page + 1) + ChatColor.AQUA + "/"
-						+ ChatColor.BLUE + (last_page + 1));
+				sender.sendMessage(ChatColor.AQUA + "Page " + ChatColor.BLUE + (targetPage + 1) + ChatColor.AQUA + "/"
+						+ ChatColor.BLUE + (lastPage + 1));
 				sender.sendMessage(ChatColor.AQUA + "Next page " + ChatColor.BLUE + "/pr" + " playerinfo "
 						+ player.getName() + " " + ChatColor.BLUE
-						+ (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+						+ (targetPage + 2 > lastPage + 1 ? lastPage + 1 : targetPage + 2));
 			}
 
-			int line_index = 0;
+			int lineIndex = 0;
 			for (PRPermission permission : playerPermissions) {
-				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-					sender.sendMessage(ChatColor.DARK_GREEN + "#" + (line_index + 1) + ". "
+				if (lineIndex >= targetPage * linesPerPage && lineIndex < targetPage * linesPerPage + linesPerPage) {
+					sender.sendMessage(ChatColor.DARK_GREEN + "#" + (lineIndex + 1) + ". "
 							+ (!permission.getValue() ? ChatColor.RED : ChatColor.GREEN) + permission.getName());
 				}
-				line_index += 1;
+				lineIndex += 1;
 			}
 		}
 
@@ -580,16 +582,16 @@ public class Messages {
 
 		if (sender instanceof Player) {
 
-			int lines_per_page = 5;
-			int last_page = PowerRanks.getInstance().addonsManager.getAddonDownloader() == null ? 0
+			int linesPerPage = 5;
+			int lastPage = PowerRanks.getInstance().addonsManager.getAddonDownloader() == null ? 0
 					: PowerRanks.getInstance().addonsManager.getAddonDownloader().getDownloadableAddons().size()
-							/ lines_per_page;
+							/ linesPerPage;
 
 			page = page < 0 ? 0 : page;
-			page = page > last_page ? last_page : page;
+			page = page > lastPage ? lastPage : page;
 
-			int pageStartIndex = lines_per_page * page;
-			int pageEndIndex = lines_per_page * page + lines_per_page;
+			int pageStartIndex = linesPerPage * page;
+			int pageEndIndex = linesPerPage * page + linesPerPage;
 
 			int previousPage = page - 1;
 			int currentPage = page;
@@ -890,15 +892,15 @@ public class Messages {
 
 	public static void listRankPermissions(CommandSender sender, Users users, String rank_name, int page) {
 		List<PRPermission> lines = users.getPermissions(rank_name);
-		int lines_per_page = 10;
+		int linesPerPage = 10;
 
 		if (page < 0)
 			page = 0;
 
-		if (page > lines.size() / lines_per_page)
-			page = lines.size() / lines_per_page;
+		if (page > lines.size() / linesPerPage)
+			page = lines.size() / linesPerPage;
 
-		String page_selector_tellraw = "tellraw " + sender.getName()
+		String pageSelectorTellraw = "tellraw " + sender.getName()
 				+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
 				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listpermissions "
 				+ rank_name + " " + (page - 1)
@@ -917,11 +919,11 @@ public class Messages {
 				+ rank_name + ChatColor.DARK_AQUA + "--------");
 		if (Messages.powerRanks != null)
 			Messages.powerRanks.getServer().dispatchCommand(
-					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), pageSelectorTellraw);
 
-		for (int i = 0; i < lines_per_page; i++) {
-			if (lines_per_page * page + i < lines.size()) {
-				PRPermission permission = lines.get(lines_per_page * page + i);
+		for (int i = 0; i < linesPerPage; i++) {
+			if (linesPerPage * page + i < lines.size()) {
+				PRPermission permission = lines.get(linesPerPage * page + i);
 				if (permission.getName().length() > 0)
 					sender.sendMessage(
 							(permission.getValue() ? ChatColor.GREEN : ChatColor.RED) + permission.getName());
@@ -933,15 +935,15 @@ public class Messages {
 
 	public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
 		Set<PRPermission> lines = users.getPlayerPermissions(target_player);
-		int lines_per_page = 10;
+		int linesPerPage = 10;
 
 		if (page < 0)
 			page = 0;
 
-		if (page > lines.size() / lines_per_page)
-			page = lines.size() / lines_per_page;
+		if (page > lines.size() / linesPerPage)
+			page = lines.size() / linesPerPage;
 
-		String page_selector_tellraw = "tellraw " + sender.getName()
+		String pageSelectorTellraw = "tellraw " + sender.getName()
 				+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + (page + 1)
 				+ "\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"},{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr listplayerpermissions "
 				+ target_player + " " + (page - 1)
@@ -960,11 +962,11 @@ public class Messages {
 				+ target_player + ChatColor.DARK_AQUA + "--------");
 		if (Messages.powerRanks != null)
 			Messages.powerRanks.getServer().dispatchCommand(
-					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), page_selector_tellraw);
+					(CommandSender) Messages.powerRanks.getServer().getConsoleSender(), pageSelectorTellraw);
 
 		Iterator<PRPermission> permissionIterator = lines.iterator();
-		for (int i = 0; i < lines_per_page; i++) {
-			if (lines_per_page * page + i < lines.size()) {
+		for (int i = 0; i < linesPerPage; i++) {
+			if (linesPerPage * page + i < lines.size()) {
 				if (!permissionIterator.hasNext()) {
 					break;
 				}

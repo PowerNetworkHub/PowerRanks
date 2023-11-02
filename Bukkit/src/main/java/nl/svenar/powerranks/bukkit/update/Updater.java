@@ -482,8 +482,9 @@ public class Updater {
 		URL next;
 		HttpURLConnection conn;
 		String redLoc;
+		String targetLocation = location;
 		while (true) {
-			resourceUrl = new URL(location);
+			resourceUrl = new URL(targetLocation);
 			conn = (HttpURLConnection) resourceUrl.openConnection();
 
 			conn.setConnectTimeout(15000);
@@ -494,9 +495,9 @@ public class Updater {
 			if (conn.getResponseCode() == HttpURLConnection.HTTP_MOVED_PERM
 					|| conn.getResponseCode() == HttpURLConnection.HTTP_MOVED_TEMP) {
 				redLoc = conn.getHeaderField("Location");
-				base = new URL(location);
+				base = new URL(targetLocation);
 				next = new URL(base, redLoc); // Deal with relative URLs
-				location = next.toExternalForm();
+				targetLocation = next.toExternalForm();
 				continue;
 			}
 

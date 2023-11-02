@@ -16,9 +16,9 @@ public class StorageLoader {
 
     public PowerStorageManager getStorageManager(String dataDirectory, String storageType, PowerSQLConfiguration sqlConfiguration) {
         PowerStorageManager storageManager = null;
-        storageType = storageType.toUpperCase();
+        String targetStorageType = storageType.toUpperCase();
 
-        switch (storageType) {
+        switch (targetStorageType) {
             case "JSON":
                 storageManager = new JSONStorageManager(dataDirectory, "ranks.json", "players.json");
                 break;

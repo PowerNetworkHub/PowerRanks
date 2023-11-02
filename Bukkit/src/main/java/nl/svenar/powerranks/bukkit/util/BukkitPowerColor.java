@@ -10,19 +10,23 @@ public class BukkitPowerColor {
         this.powerColor = new PowerColor();
     }
 
-    public String format(char altColorChar, String text, boolean special, boolean addLeadingReset, boolean addTrailingReset) {
-        text = this.powerColor.formatSpecial(altColorChar, text);
-        text = this.powerColor.formatHEX(altColorChar, text);
-        text = this.powerColor.formatColor(altColorChar, text);
+    public String format(char altColorChar, String text, boolean special, boolean addLeadingReset,
+            boolean addTrailingReset) {
+        String targetText = text;
+        targetText = this.powerColor.formatSpecial(altColorChar, targetText);
+        targetText = this.powerColor.formatHEX(altColorChar, targetText);
+        targetText = this.powerColor.formatColor(altColorChar, targetText);
 
-        return text;
+        return targetText;
     }
 
     public String removeFormat(char altColorChar, String text) {
-        text = this.powerColor.removeFormatSpecial(altColorChar, text);
-        text = this.powerColor.removeFormatHEX(altColorChar, text);
-        text = this.powerColor.removeFormatColor(altColorChar, text);
+        String targetText = text;
+        targetText = this.powerColor.removeFormatSpecial(altColorChar, text);
+        targetText = this.powerColor.removeFormatHEX(altColorChar, targetText);
+        targetText = this.powerColor.removeFormatColor(altColorChar, targetText);
 
-        return text;    }
+        return targetText;
+    }
 
 }

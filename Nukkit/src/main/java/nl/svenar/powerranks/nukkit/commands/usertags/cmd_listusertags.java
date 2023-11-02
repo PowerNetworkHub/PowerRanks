@@ -34,28 +34,29 @@ public class cmd_listusertags extends PowerCommand {
 	}
 
 	private void displayList(CommandSender sender, String commandLabel, int page) {
-		ArrayList<String> output_messages = new ArrayList<String>();
+		int targetPage = page;
+		ArrayList<String> outputMessages = new ArrayList<String>();
 
-		output_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
+		outputMessages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
 				+ plugin.getDescription().getName() + TextFormat.DARK_AQUA + "----------" + TextFormat.BLUE + "===");
 
 		Set<String> items = plugin.getUsertagManager().getUsertags();
 
-		int lines_per_page = sender instanceof Player ? 5 : 10;
-		int last_page = items.size() / lines_per_page;
+		int linesPerPage = sender instanceof Player ? 5 : 10;
+		int lastPage = items.size() / linesPerPage;
 
 		if (!(sender instanceof Player)) {
-			page -= 1;
+			targetPage -= 1;
 		}
 
-		page = page < 0 ? 0 : page;
-		page = page > last_page ? last_page : page;
+		targetPage = targetPage < 0 ? 0 : targetPage;
+		targetPage = targetPage > lastPage ? lastPage : targetPage;
 
 		if (sender instanceof Player) {
-			String page_selector_tellraw = "tellraw " + sender.getName()
+			String pageSelectorTellraw = "tellraw " + sender.getName()
 					+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
 					+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
-					+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
+					+ ",{\"text\":\"%lastPage%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
 					+ ",{\"text\":\"[\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 					+ "%commandlabel%" + " listusertags " + "%previous_page%"
 					+ "\"}},{\"text\":\"<\",\"color\":\"blue\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
@@ -69,40 +70,40 @@ public class cmd_listusertags extends PowerCommand {
 					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 					+ "%commandlabel%" + " listusertags " + "%next_page%" + "\"}}]";
 
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%next_page%", String.valueOf(page + 1));
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%previous_page%", String.valueOf(page - 1));
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%last_page%",
-					String.valueOf(last_page + 1));
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%commandlabel%", commandLabel);
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%next_page%", String.valueOf(targetPage + 1));
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%previous_page%", String.valueOf(targetPage - 1));
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%lastPage%",
+					String.valueOf(lastPage + 1));
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%commandlabel%", commandLabel);
 
-			output_messages.add(page_selector_tellraw);
+			outputMessages.add(pageSelectorTellraw);
 
-			output_messages.add(TextFormat.AQUA + "Usertags:");
+			outputMessages.add(TextFormat.AQUA + "Usertags:");
 
-			// sender.sendMessage("[A] " + last_page + " " + lines_per_page);
+			// sender.sendMessage("[A] " + lastPage + " " + linesPerPage);
 		} else {
-			output_messages.add(TextFormat.AQUA + "Page " + TextFormat.BLUE + (page + 1) + TextFormat.AQUA + "/"
-					+ TextFormat.BLUE + (last_page + 1));
-			output_messages.add(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/" + commandLabel + " listusertags "
-					+ " " + TextFormat.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+			outputMessages.add(TextFormat.AQUA + "Page " + TextFormat.BLUE + (targetPage + 1) + TextFormat.AQUA + "/"
+					+ TextFormat.BLUE + (lastPage + 1));
+			outputMessages.add(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/" + commandLabel + " listusertags "
+					+ " " + TextFormat.BLUE + (targetPage + 2 > lastPage + 1 ? lastPage + 1 : targetPage + 2));
 		}
 
-		int line_index = 0;
+		int lineIndex = 0;
 		for (String item : items) {
-			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
+			if (lineIndex >= targetPage * linesPerPage && lineIndex < targetPage * linesPerPage + linesPerPage) {
 				String usertagValue = plugin.getUsertagManager().getUsertagValue(item);
-				output_messages
-						.add(TextFormat.DARK_GREEN + "#" + (line_index + 1) + ". " + TextFormat.GREEN + item + " "
+				outputMessages
+						.add(TextFormat.DARK_GREEN + "#" + (lineIndex + 1) + ". " + TextFormat.GREEN + item + " "
 								+ TextFormat.RESET + plugin.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, usertagValue, true, false, false));
 			}
-			line_index += 1;
+			lineIndex += 1;
 		}
 
-		output_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "------------------------------"
+		outputMessages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "------------------------------"
 				+ TextFormat.BLUE + "===");
 
 		if (plugin != null) {
-			for (String msg : output_messages) {
+			for (String msg : outputMessages) {
 				if (msg.startsWith("tellraw")) {
 					plugin.getServer().dispatchCommand((CommandSender) plugin.getServer().getConsoleSender(), msg);
 				} else {

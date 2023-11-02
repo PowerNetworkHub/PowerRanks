@@ -84,30 +84,33 @@ public class PRPlayerRank {
             return;
         }
 
-        if (tagName.equalsIgnoreCase("expires")) {
+        String targetTagName = tagName;
+        Object targetTagValue = tagValue;
+
+        if (targetTagName.equalsIgnoreCase("expires")) {
             long currentTimeMillis = System.currentTimeMillis();
-            tagValue = PRUtil.timeStringToSecondsConverter(String.valueOf(tagValue));
-            tagValue = currentTimeMillis + ((int) tagValue * 1000);
+            targetTagValue = PRUtil.timeStringToSecondsConverter(String.valueOf(targetTagValue));
+            targetTagValue = currentTimeMillis + ((int) targetTagValue * 1000);
         }
 
-        if (tagName.equalsIgnoreCase("world")) {
-            tagName = "worlds";
+        if (targetTagName.equalsIgnoreCase("world")) {
+            targetTagName = "worlds";
 
             List<String> worlds = new ArrayList<String>();
 
-            if (this.tags.containsKey(tagName)) {
-                for (Object world : (List<?>) this.tags.get(tagName)) {
+            if (this.tags.containsKey(targetTagName)) {
+                for (Object world : (List<?>) this.tags.get(targetTagName)) {
                     if (world instanceof String) {
                         worlds.add((String) world);
                     }
                 }
             }
 
-            worlds.add((String) tagValue);
-            tagValue = worlds;
+            worlds.add((String) targetTagValue);
+            targetTagValue = worlds;
         }
 
-        this.tags.put(tagName, tagValue);
+        this.tags.put(targetTagName, targetTagValue);
     }
 
     public void addTagRaw(String tagName, Object tagValue) {

@@ -64,7 +64,8 @@ public class Util {
 	}
 
 	public static String replaceAll(String source, String key, String value) {
-		String[] split = source.split(Pattern.quote(key));
+		String targetSource = source;
+		String[] split = targetSource.split(Pattern.quote(key));
 		if (split.length > 0) {
 			StringBuilder builder = new StringBuilder();
 			builder.append(split[0]);
@@ -72,13 +73,13 @@ public class Util {
 				builder.append(value);
 				builder.append(split[i]);
 			}
-			while (source.endsWith(key)) {
+			while (targetSource.endsWith(key)) {
 				builder.append(value);
-				source = source.substring(0, source.length() - key.length());
+				targetSource = targetSource.substring(0, targetSource.length() - key.length());
 			}
 			return builder.toString();
 		} else {
-			return source;
+			return targetSource;
 		}
 	}
 
@@ -140,13 +141,13 @@ public class Util {
 
 	public static int calculateVersionFromString(String input) {
 		int output = 0;
-		input = input.replaceAll("[a-zA-Z- ]", "");
-		String[] input_split = input.split("\\.");
+		String targetInput = input.replaceAll("[a-zA-Z- ]", "");
+		String[] inputSplit = targetInput.split("\\.");
 
 		String calcString = "1000000";
-		for (int i = 0; i < input_split.length; i++) {
-			if (input_split[i].length() != 0) {
-				int num = Integer.parseInt(input_split[i]) * Integer.parseInt(calcString);
+		for (int i = 0; i < inputSplit.length; i++) {
+			if (inputSplit[i].length() != 0) {
+				int num = Integer.parseInt(inputSplit[i]) * Integer.parseInt(calcString);
 				if (calcString.charAt(calcString.length() - 1) == '0') {
 					calcString = calcString.substring(0, calcString.length() - 1);
 				}

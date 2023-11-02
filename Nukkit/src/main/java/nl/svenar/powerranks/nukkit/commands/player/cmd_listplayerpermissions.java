@@ -63,25 +63,26 @@ public class cmd_listplayerpermissions extends PowerCommand {
 	}
 
 	private void displayList(CommandSender sender, PRPlayer prPlayer, String commandLabel, int page) {
-		ArrayList<String> output_messages = new ArrayList<String>();
+		int targetPage = page;
+		ArrayList<String> outputMessages = new ArrayList<String>();
 
-		output_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
+		outputMessages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
 				+ plugin.getDescription().getName() + TextFormat.DARK_AQUA + "----------" + TextFormat.BLUE + "===");
 
 		Set<PRPermission> playerPermissions = prPlayer.getPermissions();
 
-		int lines_per_page = sender instanceof Player ? 5 : 10;
-		int last_page = playerPermissions.size() / lines_per_page;
+		int linesPerPage = sender instanceof Player ? 5 : 10;
+		int last_page = playerPermissions.size() / linesPerPage;
 
 		if (!(sender instanceof Player)) {
-			page -= 1;
+			targetPage -= 1;
 		}
 
-		page = page < 0 ? 0 : page;
-		page = page > last_page ? last_page : page;
+		targetPage = targetPage < 0 ? 0 : targetPage;
+		targetPage = targetPage > last_page ? last_page : targetPage;
 
 		if (sender instanceof Player) {
-			String page_selector_tellraw = "tellraw " + sender.getName()
+			String pageSelectorTellraw = "tellraw " + sender.getName()
 					+ " [\"\",{\"text\":\"Page \",\"color\":\"aqua\"},{\"text\":\"" + "%next_page%"
 					+ "\",\"color\":\"blue\"},{\"text\":\"/\",\"color\":\"aqua\"}"
 					+ ",{\"text\":\"%last_page%\",\"color\":\"blue\"},{\"text\":\": \",\"color\":\"aqua\"}"
@@ -98,40 +99,40 @@ public class cmd_listplayerpermissions extends PowerCommand {
 					+ "\"}},{\"text\":\"]\",\"color\":\"aqua\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/"
 					+ "%commandlabel%" + " listplayerpermissions %playername% " + "%next_page%" + "\"}}]";
 
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%next_page%", String.valueOf(page + 1));
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%previous_page%", String.valueOf(page - 1));
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%last_page%",
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%next_page%", String.valueOf(targetPage + 1));
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%previous_page%", String.valueOf(targetPage - 1));
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%last_page%",
 					String.valueOf(last_page + 1));
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%playername%", prPlayer.getName());
-			page_selector_tellraw = page_selector_tellraw.replaceAll("%commandlabel%", commandLabel);
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%playername%", prPlayer.getName());
+			pageSelectorTellraw = pageSelectorTellraw.replaceAll("%commandlabel%", commandLabel);
 
-			output_messages.add(page_selector_tellraw);
+			outputMessages.add(pageSelectorTellraw);
 
-			output_messages.add(TextFormat.AQUA + prPlayer.getName() + "'s permissions:");
+			outputMessages.add(TextFormat.AQUA + prPlayer.getName() + "'s permissions:");
 
-			// sender.sendMessage("[A] " + last_page + " " + lines_per_page);
+			// sender.sendMessage("[A] " + last_page + " " + linesPerPage);
 		} else {
-			output_messages.add(TextFormat.AQUA + "Page " + TextFormat.BLUE + (page + 1) + TextFormat.AQUA + "/"
+			outputMessages.add(TextFormat.AQUA + "Page " + TextFormat.BLUE + (targetPage + 1) + TextFormat.AQUA + "/"
 					+ TextFormat.BLUE + (last_page + 1));
-			output_messages.add(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/" + commandLabel
+			outputMessages.add(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/" + commandLabel
 					+ " listplayerpermissions " + prPlayer.getName() + " " + TextFormat.BLUE
-					+ (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+					+ (targetPage + 2 > last_page + 1 ? last_page + 1 : targetPage + 2));
 		}
 
-		int line_index = 0;
+		int lineIndex = 0;
 		for (PRPermission permission : playerPermissions) {
-			if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-				output_messages.add(TextFormat.DARK_GREEN + "#" + (line_index + 1) + ". "
+			if (lineIndex >= targetPage * linesPerPage && lineIndex < targetPage * linesPerPage + linesPerPage) {
+				outputMessages.add(TextFormat.DARK_GREEN + "#" + (lineIndex + 1) + ". "
 						+ (permission.getValue() ? TextFormat.GREEN : TextFormat.RED) + permission.getName());
 			}
-			line_index += 1;
+			lineIndex += 1;
 		}
 
-		output_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "------------------------------"
+		outputMessages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "------------------------------"
 				+ TextFormat.BLUE + "===");
 
 		if (plugin != null) {
-			for (String msg : output_messages) {
+			for (String msg : outputMessages) {
 				if (msg.startsWith("tellraw")) {
 					plugin.getServer().dispatchCommand((CommandSender) plugin.getServer().getConsoleSender(), msg);
 				} else {

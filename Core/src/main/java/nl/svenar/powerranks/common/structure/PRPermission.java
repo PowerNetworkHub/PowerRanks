@@ -63,9 +63,10 @@ public class PRPermission {
     public void setName(String name) {
         this.setValue(!name.startsWith("-"));
         if (name.startsWith("-")) {
-            name = name.replaceFirst("-", "");
+            this.name = name.replaceFirst("-", "");
+        } else {
+            this.name = name;
         }
-        this.name = name;
     }
 
     /**

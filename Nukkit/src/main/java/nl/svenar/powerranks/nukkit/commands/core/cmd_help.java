@@ -20,56 +20,56 @@ public class cmd_help extends PowerCommand {
 
 	@Override
 	public boolean onCommand(CommandSender sender, String commandLabel, String commandName, String[] args) {
-		ArrayList<String> help_messages = new ArrayList<String>();
+		int targetPage = 0;
+		ArrayList<String> helpMessages = new ArrayList<String>();
 
 		LanguageManager languageManager = plugin.getLanguageManager();
 		List<String> lines = languageManager.getKeys("commands");
 
-		int lines_per_page = sender instanceof Player ? 5 : 10;
-		int last_page = lines.size() / lines_per_page;
+		int linesPerPage = sender instanceof Player ? 5 : 10;
+		int lastPage = lines.size() / linesPerPage;
 
-		int page = 0;
 		if (args.length > 0) {
-			page = args[0].replaceAll("[a-zA-Z]", "").length() > 0
+			targetPage = args[0].replaceAll("[a-zA-Z]", "").length() > 0
 					? Integer.parseInt(args[0].replaceAll("[a-zA-Z]", ""))
 					: 0;
 
 			if (!(sender instanceof Player)) {
-				page -= 1;
+				targetPage -= 1;
 			}
 		}
 
-		page = page < 0 ? 0 : page;
-		page = page > last_page ? last_page : page;
+		targetPage = targetPage < 0 ? 0 : targetPage;
+		targetPage = targetPage > lastPage ? lastPage : targetPage;
 
 		if (lines != null) {
-			help_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
+			helpMessages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
 					+ plugin.getDescription().getName() + TextFormat.DARK_AQUA + "----------" + TextFormat.BLUE
 					+ "===");
-			help_messages.add(TextFormat.AQUA + "Page " + TextFormat.BLUE + (page + 1) + TextFormat.AQUA + "/"
-					+ TextFormat.BLUE + (last_page + 1));
-			help_messages.add(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/" + commandLabel + " help "
-					+ TextFormat.BLUE + (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+			helpMessages.add(TextFormat.AQUA + "Page " + TextFormat.BLUE + (targetPage + 1) + TextFormat.AQUA + "/"
+					+ TextFormat.BLUE + (lastPage + 1));
+			helpMessages.add(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/" + commandLabel + " help "
+					+ TextFormat.BLUE + (targetPage + 2 > lastPage + 1 ? lastPage + 1 : targetPage + 2));
 
-			int line_index = 0;
+			int lineIndex = 0;
 			for (String section : lines) {
-				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
+				if (lineIndex >= targetPage * linesPerPage && lineIndex < targetPage * linesPerPage + linesPerPage) {
 					String help_command = section + " "
 							+ languageManager.getUnformattedMessage("commands." + section + ".arguments");
 					String help_description = languageManager
 							.getUnformattedMessage("commands." + section + ".description");
-					help_messages.add(TextFormat.BLACK + "[" + TextFormat.GREEN + "/" + commandLabel + " "
+					helpMessages.add(TextFormat.BLACK + "[" + TextFormat.GREEN + "/" + commandLabel + " "
 							+ help_command + TextFormat.BLACK + "] " + TextFormat.DARK_GREEN + help_description);
 				}
-				line_index += 1;
+				lineIndex += 1;
 			}
 		}
 
-		help_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "-----------------------------"
+		helpMessages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "-----------------------------"
 				+ TextFormat.BLUE + "===");
 
 		if (plugin != null)
-			for (String msg : help_messages)
+			for (String msg : helpMessages)
 				sender.sendMessage(msg);
 
 		return false;

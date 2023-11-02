@@ -93,6 +93,7 @@ public class cmd_playerinfo extends PowerCommand {
 	}
 
 	public void messagePlayerInfo(final CommandSender sender, final PRPlayer prPlayer, int page) {
+		int targetPage = page;
 		Player player = Util.getPlayerByName(prPlayer.getName());
 
 		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -112,7 +113,7 @@ public class cmd_playerinfo extends PowerCommand {
 				? String.format("%02d %s %02d:%02d:%02d", days, days == 1 ? "day" : "days", hours, minutes, seconds)
 				: String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
-		String formatted_ranks = "";
+		String formattedRanks = "";
 
 		List<String> ranknames = new ArrayList<>();
 		for (PRPlayerRank playerRank : prPlayer.getRanks()) {
@@ -122,10 +123,10 @@ public class cmd_playerinfo extends PowerCommand {
 		}
 
 		for (String rankname : ranknames) {
-			formatted_ranks += rankname + " ";
+			formattedRanks += rankname + " ";
 		}
-		if (formatted_ranks.endsWith(" ")) {
-			formatted_ranks = formatted_ranks.substring(0, formatted_ranks.length() - 1);
+		if (formattedRanks.endsWith(" ")) {
+			formattedRanks = formattedRanks.substring(0, formattedRanks.length() - 1);
 		}
 
 		sender.sendMessage(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
@@ -152,34 +153,34 @@ public class cmd_playerinfo extends PowerCommand {
 		if (player != null) {
 			sender.sendMessage(TextFormat.GREEN + "Chat format: " + TextFormat.RESET + getSampleChatFormat(player));
 		}
-		sender.sendMessage(TextFormat.GREEN + "Rank(s): " + TextFormat.DARK_GREEN + formatted_ranks);
+		sender.sendMessage(TextFormat.GREEN + "Rank(s): " + TextFormat.DARK_GREEN + formattedRanks);
 		if (player != null) {
 			sender.sendMessage(TextFormat.GREEN + "Effective Permissions: ");
 
 			List<PRPermission> playerPermissions = prPlayer.getEffectivePermissions();
-			int lines_per_page = sender instanceof Player ? 5 : 10;
-			int last_page = playerPermissions.size() / lines_per_page;
+			int linesPerPage = sender instanceof Player ? 5 : 10;
+			int lastPage = playerPermissions.size() / linesPerPage;
 
 			if (!(sender instanceof Player)) {
-				page -= 1;
+				targetPage -= 1;
 			}
 
-			page = page < 0 ? 0 : page;
-			page = page > last_page ? last_page : page;
+			targetPage = targetPage < 0 ? 0 : targetPage;
+			targetPage = targetPage > lastPage ? lastPage : targetPage;
 
-			sender.sendMessage(TextFormat.AQUA + "Page " + TextFormat.BLUE + (page + 1) + TextFormat.AQUA + "/"
-					+ TextFormat.BLUE + (last_page + 1));
+			sender.sendMessage(TextFormat.AQUA + "Page " + TextFormat.BLUE + (targetPage + 1) + TextFormat.AQUA + "/"
+					+ TextFormat.BLUE + (lastPage + 1));
 			sender.sendMessage(TextFormat.AQUA + "Next page " + TextFormat.BLUE + "/pr" + " playerinfo "
 					+ player.getName() + " " + TextFormat.BLUE
-					+ (page + 2 > last_page + 1 ? last_page + 1 : page + 2));
+					+ (targetPage + 2 > lastPage + 1 ? lastPage + 1 : targetPage + 2));
 
-			int line_index = 0;
+			int lineIndex = 0;
 			for (PRPermission permission : playerPermissions) {
-				if (line_index >= page * lines_per_page && line_index < page * lines_per_page + lines_per_page) {
-					sender.sendMessage(TextFormat.DARK_GREEN + "#" + (line_index + 1) + ". "
+				if (lineIndex >= targetPage * linesPerPage && lineIndex < targetPage * linesPerPage + linesPerPage) {
+					sender.sendMessage(TextFormat.DARK_GREEN + "#" + (lineIndex + 1) + ". "
 							+ (!permission.getValue() ? TextFormat.RED : TextFormat.GREEN) + permission.getName());
 				}
-				line_index += 1;
+				lineIndex += 1;
 			}
 		}
 
@@ -208,23 +209,23 @@ public class cmd_playerinfo extends PowerCommand {
 		PRUtil.sortRanksByWeight(ranks);
 		PRUtil.reverseRanks(ranks);
 
-		String formatted_prefix = "";
-		String formatted_suffix = "";
+		String formattedPrefix = "";
+		String formattedSuffix = "";
 		String chatColor = ranks.size() > 0 ? ranks.get(0).getChatcolor() : "&f";
 		String nameColor = ranks.size() > 0 ? ranks.get(0).getNamecolor() : "&f";
 		String usertag = "";
 
 		for (PRRank rank : ranks) {
-			formatted_prefix += rank.getPrefix() + " ";
-			formatted_suffix += rank.getSuffix() + " ";
+			formattedPrefix += rank.getPrefix() + " ";
+			formattedSuffix += rank.getSuffix() + " ";
 		}
 
-		if (formatted_prefix.endsWith(" ")) {
-			formatted_prefix = formatted_prefix.substring(0, formatted_prefix.length() - 1);
+		if (formattedPrefix.endsWith(" ")) {
+			formattedPrefix = formattedPrefix.substring(0, formattedPrefix.length() - 1);
 		}
 
-		if (formatted_suffix.endsWith(" ")) {
-			formatted_suffix = formatted_suffix.substring(0, formatted_suffix.length() - 1);
+		if (formattedSuffix.endsWith(" ")) {
+			formattedSuffix = formattedSuffix.substring(0, formattedSuffix.length() - 1);
 		}
 
 		PRPlayer targetPlayer = PRCache.getPlayer(player.getUniqueId().toString());
@@ -247,13 +248,13 @@ public class cmd_playerinfo extends PowerCommand {
 		if (!player.hasPermission("powerranks.chat.chatcolor")) {
 			playersChatMessage = playersChatMessage.replaceAll("(&[0-9a-fA-FiIjJrRlLmMnNoO])|(#[0-9a-fA-F]{6})", "");
 		}
-		String player_formatted_name = (nameColor.length() == 0 ? "&r" : nameColor) + player.getDisplayName();
-		String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : chatColor) + playersChatMessage;
+		String playerFormattedName = (nameColor.length() == 0 ? "&r" : nameColor) + player.getDisplayName();
+		String playerFormattedChatMessage = (chatColor.length() == 0 ? "&r" : chatColor) + playersChatMessage;
 
-		format = PRUtil.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formatted_prefix)
-				.put("suffix", formatted_suffix)
+		format = PRUtil.powerFormatter(format, ImmutableMap.<String, String>builder().put("prefix", formattedPrefix)
+				.put("suffix", formattedSuffix)
 				.put("usertag", usertag)
-				.put("player", player_formatted_name).put("msg", player_formatted_chat_msg)
+				.put("player", playerFormattedName).put("msg", playerFormattedChatMessage)
 				.put("world", player.getLevel().getName()).build(), '[', ']');
 
 		format = plugin.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, format, true, false, false);

@@ -85,8 +85,10 @@ public class PowerColor {
         Pattern HEXPattern = Pattern.compile(altColorChar + "?#[a-fA-F0-9]{6}");
         Matcher HEXMatcher = HEXPattern.matcher(text);
 
+        String targetText = text;
+
         while (HEXMatcher.find()) {
-            String rawHEX = text.substring(HEXMatcher.start(), HEXMatcher.end());
+            String rawHEX = targetText.substring(HEXMatcher.start(), HEXMatcher.end());
             String formattedHEX = rawHEX.startsWith(altColorChar + "") ? rawHEX.substring(1) : rawHEX;
 
             StringBuilder magic = new StringBuilder(altColorChar + "x");
@@ -95,11 +97,11 @@ public class PowerColor {
             }
             formattedHEX = magic.toString();
 
-            text = HEXMatcher.replaceFirst(formattedHEX);
-            HEXMatcher = HEXPattern.matcher(text);
+            targetText = HEXMatcher.replaceFirst(formattedHEX);
+            HEXMatcher = HEXPattern.matcher(targetText);
         }
 
-        return text;
+        return targetText;
     }
 
     /**
@@ -110,13 +112,14 @@ public class PowerColor {
      * @return String
      */
     public String formatSpecial(char altColorChar, String text) {
-        text = parseGradient(altColorChar, text);
-        text += altColorChar + "r";
-        text = parseRainbow(altColorChar, text);
-        text += altColorChar + "r";
-        text = text.replaceAll(altColorChar + "r" + altColorChar + "r", altColorChar + "r");
+        String targetText = text;
+        targetText = parseGradient(altColorChar, targetText);
+        targetText += altColorChar + "r";
+        targetText = parseRainbow(altColorChar, targetText);
+        targetText += altColorChar + "r";
+        targetText = targetText.replaceAll(altColorChar + "r" + altColorChar + "r", altColorChar + "r");
 
-        return text;
+        return targetText;
     }
 
     public String parseGradient(char altColorChar, String input) {
