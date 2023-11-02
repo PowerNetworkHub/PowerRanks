@@ -30,7 +30,9 @@ import nl.svenar.powerranks.test.util.TestDebugger;
 public class TestStorage {
 
     private final String storageDirectory = "storage";
+
     private final int numPlayers = 1000;
+
     private final int numRanks = 1000;
 
     private static List<StorageSpeed> storageSpeeds = new ArrayList<StorageSpeed>();
@@ -342,8 +344,11 @@ public class TestStorage {
     }
 
     private class StorageSpeed {
+        
         public String name;
+
         public int speedSave;
+
         public int speedLoad;
 
         public int totalDuration() {

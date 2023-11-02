@@ -7,10 +7,15 @@ import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRRank;
 
 public class RankChangeEvent extends Event {
+    
     private static final HandlerList handlers = new HandlerList();
+
     private PRPlayer player;
+
     private PRRank newRank;
+
     private String[] tags;
+
     private boolean cancelled = false;
 
     public RankChangeEvent(PRPlayer player, PRRank newRank, String[] tags) {

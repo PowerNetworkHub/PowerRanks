@@ -30,15 +30,25 @@ package nl.svenar.powerranks.common.storage;
  * @author svenar
  */
 public class PowerSQLConfiguration {
+    
     private String host;
+
     private int port;
+
     private String database;
+
     private String username;
+
     private String password;
+
     private boolean useSSL;
+
     private String tableRanks;
+
     private String tablePlayers;
+
     private String tableMessages;
+
     private boolean silentErrors;
 
     /**

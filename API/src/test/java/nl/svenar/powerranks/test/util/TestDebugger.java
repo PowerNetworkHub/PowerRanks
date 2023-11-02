@@ -7,8 +7,11 @@ import java.util.Objects;
 public class TestDebugger {
 
     private static boolean DEBUG = true;
+    
     public static boolean DOPERFORMANCETEST = false;
+
     private static Instant startTime;
+
     private static String lastClassName = "";
 
     public static void log(Object clazz, String message) {

@@ -38,17 +38,29 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class PRRank {
 
     private String name;
+    
     private boolean isDefault;
+
     private ArrayList<PRPermission> permissions;
+
     private ArrayList<String> inheritances;
+
     private String chatPrefix;
+
     private String chatSuffix;
+
     private String chatNamecolor;
+
     private String chatChatcolor;
+
     private ArrayList<String> economyBuyable;
+
     private float economyCost;
+
     private String economyDescription;
+
     private String economyBuyCommand;
+
     private int weight;
 
     public PRRank() {

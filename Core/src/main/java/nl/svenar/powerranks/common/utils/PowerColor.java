@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 public class PowerColor {
 
     public static final char UNFORMATTED_COLOR_CHAR = '&';
+
     public static final char COLOR_CHAR = '\u00A7';
+
     private final String ALL_COLOR_CODES = "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx";
 
     public enum ChatColor {
@@ -52,6 +54,7 @@ public class PowerColor {
     }
 
     private Map<String, String> hexToMCColors = new HashMap<String, String>(); // HEX, MC-Color
+    
     private final String[] rainbowHEXColors = {
             "#E81416", // Red
             "#FFA500", // Orange

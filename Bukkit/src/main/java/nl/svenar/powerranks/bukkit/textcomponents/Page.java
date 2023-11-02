@@ -14,10 +14,21 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.common.utils.PowerColor;
 
 public class Page {
-    private int pageNum, totalPages;
-    private String title, baseCommand;
+
+    private int pageNum;
+    
+    private int totalPages;
+
+    private String title;
+
+    private String baseCommand;
+
     private List<String> items;
-    private boolean isMonospace, fancyPageControls;
+
+    private boolean isMonospace;
+
+    private boolean fancyPageControls;
+
     private int internalTitleWidth;
 
     public Page(int pageNum, int totalPages, String title, String baseCommand, List<String> items, boolean isMonospace,

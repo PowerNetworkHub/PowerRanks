@@ -19,12 +19,19 @@ import nl.svenar.powerranks.bukkit.cache.CacheManager;
 public class BungeecordManager {
 
     private UUID serverUUID;
+    
     private ArrayList<UUID> onlineServers = new ArrayList<UUID>();
+
     private boolean ready = false;
+
     private BukkitRunnable mainTask;
+
     private int ranksHashcode;
+
     private int playersHashcode;
+
     private int lastRanksHashcode;
+
     private int lastPlayersHashcode;
 
     public BungeecordManager(PowerRanks powerRanks) {

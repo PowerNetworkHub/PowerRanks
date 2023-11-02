@@ -49,6 +49,7 @@ import com.google.gson.internal.LinkedTreeMap;
 public abstract class PowerConfigManager {
 
     protected Map<String, Object> data;
+    
     protected boolean hasCreatedFile = false;
 
     /**

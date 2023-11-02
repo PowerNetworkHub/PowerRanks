@@ -22,8 +22,11 @@ import nl.svenar.powerranks.bukkit.cache.CacheManager;
 public class PowerPermissibleBase extends PermissibleBase {
 
 	private PowerRanks plugin;
+	
 	private Player player;
+
 	private PermissionRegistry permissionRegistry;
+
 	private PRPlayer prPlayer;
 
 	public static Map<String, Integer> permissionCallCount = new HashMap<String, Integer>();

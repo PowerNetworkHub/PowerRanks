@@ -7,10 +7,18 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.common.utils.PowerColor;
 
 public class PageNavigationManager {
+    
     private int itemsPerPage;
-    private String title, baseCommand;
+
+    private String title;
+
+    private String baseCommand;
+
     private List<String> items;
-    private boolean isMonospace, fancyPageControls;
+
+    private boolean isMonospace;
+
+    private boolean fancyPageControls;
 
     public PageNavigationManager() {
         this.itemsPerPage = 10;

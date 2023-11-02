@@ -29,16 +29,28 @@ public class ConfigFilesUpdater {
 	private final static String subPrefixSuffixRegex = "[ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}[\\[](subprefix|subsuffix)[\\]][ ]{0,1}([&][a-fA-F0-9k-oK-OrR]){0,1}((&){0,1}[#][a-fA-F0-9]{6}){0,1}[ ]{0,1}";
 	
 	private static File backupDir;
+	
 	private static File backupRanks;
+
 	private static File backupConfig;
+	
+
 	private static File backupLang;
+
 	private static File backupPlayers;
+
 	private static File oldRanksFile;
+
 	private static File newRanksFile;
+
 	private static File oldPlayersFile;
+
 	private static File newPlayersFile;
+
 	private static File usertagsFile;
+
 	private static File configFile;
+
 	private static File langFile;
 
 	/**

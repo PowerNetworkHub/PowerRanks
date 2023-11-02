@@ -49,30 +49,43 @@ public class Updater {
 
 	// Remote file's title
 	private static final String TITLE_VALUE = "name";
+	
 	// Remote file's download link
 	private static final String LINK_VALUE = "downloadUrl";
+
 	// Remote file's release type
 	private static final String TYPE_VALUE = "releaseType";
+
 	// Remote file's build version
 	private static final String VERSION_VALUE = "gameVersion";
+
 	// Path to GET
 	private static final String QUERY = "/servermods/files?projectIds=";
+
 	// Slugs will be appended to this to get to the project's RSS feed
 	private static final String HOST = "https://api.curseforge.com";
+
 	// User-agent when querying Curse
 	private static final String USER_AGENT = "Updater (by Gravity)";
+
 	// Used for locating version numbers in file names
 	private static final String DELIMETER = "^v|[\\s_-]v";
+
 	// If the version number contains one of these, don't update.
 	private static final String[] NO_UPDATE_TAG = { "-DEV", "-PRE", "-SNAPSHOT" };
+
 	// Used for downloading files
 	private static final int BYTE_SIZE = 1024;
+
 	// Config key for api key
 	private static final String API_KEY_CONFIG_KEY = "api-key";
+
 	// Config key for disabling Updater
 	private static final String DISABLE_CONFIG_KEY = "disable";
+
 	// Default api key value in config
 	private static final String API_KEY_DEFAULT = "PUT_API_KEY_HERE";
+
 	// Default disable value in config
 	private static final boolean DISABLE_DEFAULT = false;
 
@@ -80,34 +93,46 @@ public class Updater {
 
 	// Plugin running Updater
 	private final Plugin plugin;
+
 	// Type of update check to run
 	private final UpdateType type;
+
 	// Whether to announce file downloads
 	private final boolean announce;
+
 	// The plugin file (jar)
 	private final File file;
+
 	// The folder that downloads will be placed in
 	private final File updateFolder;
+
 	// The provided callback (if any)
 	private final UpdateCallback callback;
+
 	// Project's Curse ID
 	private int id = -1;
+
 	// BukkitDev ServerMods API key
 	private String apiKey = null;
 
 	/* Collected from Curse API */
 
 	private String versionName;
+
 	private String versionLink;
+
 	private String versionType;
+
 	private String versionGameVersion;
 
 	/* Update process variables */
 
 	// Connection to RSS
 	private URL url;
+
 	// Updater thread
 	private Thread thread;
+
 	// Used for determining the outcome of the update process
 	private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS;
 

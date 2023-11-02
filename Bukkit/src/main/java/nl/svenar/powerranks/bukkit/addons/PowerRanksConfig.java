@@ -14,6 +14,7 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 public class PowerRanksConfig {
 
 	private String filename = "";
+	
 	private File configFile;
 	
 	public PowerRanksConfig(String configName) {

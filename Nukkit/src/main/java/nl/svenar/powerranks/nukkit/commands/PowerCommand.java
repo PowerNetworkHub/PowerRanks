@@ -8,6 +8,7 @@ import nl.svenar.powerranks.nukkit.PowerRanks;
 public abstract class PowerCommand {
 	
 	protected PowerRanks plugin;
+	
 	private String commandPermission = "";
 	
 	public enum COMMAND_EXECUTOR {

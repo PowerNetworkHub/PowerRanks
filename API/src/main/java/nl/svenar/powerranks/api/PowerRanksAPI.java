@@ -5,6 +5,7 @@ public class PowerRanksAPI {
 	private final String API_VERSION = "2.0";
 
 	private RanksAPI ranksAPI;
+	
 	private PlayersAPI playersAPI;
 
 	/**

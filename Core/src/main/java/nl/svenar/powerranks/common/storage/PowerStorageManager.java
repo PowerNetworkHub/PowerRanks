@@ -42,7 +42,9 @@ import nl.svenar.powerranks.common.structure.PRRank;
 public abstract class PowerStorageManager {
 
     private List<PRRank> ranks = new ArrayList<PRRank>();
+    
     private List<PRPlayer> players = new ArrayList<PRPlayer>();
+
     private PRSerializer serializer = new PRSerializer();
 
     public PowerStorageManager() {

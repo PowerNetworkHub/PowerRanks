@@ -14,8 +14,11 @@ import nl.svenar.powerranks.bukkit.util.Util;
 public class AddonsManager {
 
 	public static HashMap<File, Boolean> loadedAddons = new HashMap<File, Boolean>(); // file_path, is_loaded
+	
 	public HashMap<File, PowerRanksAddon> addonClasses = new HashMap<File, PowerRanksAddon>(); // file_path, PowerRanksAddon
+
 	private PowerRanks powerranks;
+
 	private AddonDownloader addonDownloader;
 
 	public AddonsManager(PowerRanks powerranks) {

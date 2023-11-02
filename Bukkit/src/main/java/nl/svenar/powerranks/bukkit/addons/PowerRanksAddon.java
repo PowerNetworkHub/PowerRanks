@@ -13,8 +13,11 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 public abstract class PowerRanksAddon {
 
 	private PowerRanksConfig powerranksConfig = null;
+	
 	private ArrayList<String> registeredCommands = new ArrayList<String>();
+
 	private ArrayList<String> registeredPermissions = new ArrayList<String>();
+
 	private List<String> storageManagers = new ArrayList<String>();
 
 	public enum RankChangeCause {

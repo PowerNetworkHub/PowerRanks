@@ -14,9 +14,13 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 public class PowerRanksVerbose {
 
 	public static boolean USE_VERBOSE = false;
+	
 	public static boolean USE_VERBOSE_LIVE = false;
+
 	private static ArrayList<String> VERBOSE_LOG = new ArrayList<String>();
+
 	private static PowerRanks plugin;
+
 	private static String filter = "";
 
 	public PowerRanksVerbose(PowerRanks plugin) {

@@ -55,6 +55,7 @@ import nl.svenar.powerranks.common.structure.PRRank;
 public class JSONStorageManager extends PowerStorageManager {
 
     private File ranksFile;
+    
     private File playersFile;
 
     /**

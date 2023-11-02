@@ -39,13 +39,19 @@ public class PowerRanks extends PluginBase {
     private static PowerRanks instance;
 
     private StorageLoader storageLoader;
+    
     private PowerStorageManager storageManager;
+
     private PowerConfigManager configManager;
+
     private LanguageManager languageManager;
+
     private PowerConfigManager usertagStorage;
+
     private UsertagManager usertagManager;
 
     private PermissionRegistry permissionRegistry;
+
     private NukkitPowerColor powerColor = new NukkitPowerColor();
 
     private PluginLogger logger;

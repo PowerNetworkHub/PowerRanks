@@ -8,8 +8,11 @@ import nl.svenar.powerranks.bukkit.data.Users;
 public class PowerRanksPlayer {
 
 	private PowerRanks powerRanks;
+	
 	private Player player;
+
 	private Users users;
+
 	private String name;
 
 	public PowerRanksPlayer(PowerRanks powerRanks, Player player) {

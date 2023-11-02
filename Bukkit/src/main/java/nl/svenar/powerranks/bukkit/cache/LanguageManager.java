@@ -118,6 +118,7 @@ public class LanguageManager {
     public void save() {
         this.languageManager.save();
     }
+    
     /**
      * Reload the language data
      */

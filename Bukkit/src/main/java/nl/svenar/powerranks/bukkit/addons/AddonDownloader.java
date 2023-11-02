@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 import nl.svenar.powerranks.bukkit.util.Util;
 
 public class AddonDownloader {
+
     private String addonsURL = "http://addons.powerranks.nl/addons.json";
+    
     private Addons addonlist;
 
     public AddonDownloader() {
@@ -33,11 +35,17 @@ public class AddonDownloader {
 
     static class Addon {
         String name;
+
         String version;
+
         String powerranksVersion;
+
         ArrayList<String> description;
+
         String download;
+
         boolean autoDownloadable;
+
         String author;
     }
 

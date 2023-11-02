@@ -110,6 +110,7 @@ public enum DefaultFontInfo {
     RIGHT_POINTING_TRIANGLE('▶', 6);
 
     private char character;
+    
     private int length;
 
     DefaultFontInfo(char character, int length) {

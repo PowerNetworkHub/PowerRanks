@@ -48,11 +48,17 @@ public class PRPlayer {
 
     // Storage
     private UUID uuid;
+    
     private String name = "";
+
     private String nickname = "";
+
     private Set<PRPlayerRank> ranks = new HashSet<PRPlayerRank>();
+
     private Set<PRPermission> permissions = new HashSet<PRPermission>();
+
     private Set<String> usertags = new HashSet<String>();
+
     private long playtime = 0L;
 
     public PRPlayer() {

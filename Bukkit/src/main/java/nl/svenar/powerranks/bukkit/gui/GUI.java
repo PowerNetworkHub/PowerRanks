@@ -20,6 +20,7 @@ import nl.svenar.powerranks.bukkit.gui.GUIPage.GUI_PAGE_ID;
 public class GUI {
 
 	private static PowerRanks powerRanks;
+	
 	public static HashMap<Player, GUIPage> guis = new HashMap<Player, GUIPage>();
 
 	public static void setPlugin(PowerRanks powerRanks) {

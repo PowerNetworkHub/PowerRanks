@@ -12,6 +12,7 @@ import nl.svenar.powerranks.bukkit.PowerRanks;
 public class Mock {
     
     private static ServerMock serverMock;
+    
     private static PowerRanks plugin;
 
     public static ServerMock getServerMock() {

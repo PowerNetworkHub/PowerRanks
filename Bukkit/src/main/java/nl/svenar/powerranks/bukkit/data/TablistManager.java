@@ -31,14 +31,23 @@ import me.clip.placeholderapi.PlaceholderAPI;
 public class TablistManager {
 
     private Scoreboard scoreboard;
+    
     private HashMap<UUID, Integer> playerHighestWeight = new HashMap<UUID, Integer>();
+
     private int numRanks = -1;
+
     private int totalWeight = -1;
+
     private BukkitRunnable sortingTask;
+
     private BukkitRunnable headerFooterTask;
+
     private ArrayList<String> headerLines = new ArrayList<String>();
+
     private ArrayList<String> footerLines = new ArrayList<String>();
+
     private HashMap<String, TablistAnimation> tablistAnimations = new HashMap<String, TablistAnimation>();
+
     private int verboseLogInterval = 0;
 
     public TablistManager() {

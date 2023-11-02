@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 public class AsyncReadFile {
 
     private Path path;
+
     private DataBuffer dataBuffer;
 
     public void setFile(String filePath) {
@@ -53,7 +54,9 @@ public class AsyncReadFile {
     }
 
     private class DataBuffer {
+
         private String data;
+
         private boolean doneReading;
 
         public void addData(String data) {
@@ -76,7 +79,9 @@ public class AsyncReadFile {
     private class CallbackHandler implements CompletionHandler<Integer, AsynchronousFileChannel> {
 
         private int position = 0;
+        
         private ByteBuffer buffer = null;
+
         private DataBuffer dataBuffer;
 
         public CallbackHandler(ByteBuffer buffer, DataBuffer dataBuffer) {

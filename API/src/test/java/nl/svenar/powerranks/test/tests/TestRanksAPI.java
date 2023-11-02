@@ -18,8 +18,11 @@ import nl.svenar.powerranks.test.util.TestDebugger;
 public class TestRanksAPI {
 
     private PRRank rank1;
+
     private PRRank rank2;
+
     private PRRank rank3;
+    
     private PowerRanksAPI api;
 
     @Before

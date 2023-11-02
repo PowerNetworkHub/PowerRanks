@@ -30,9 +30,11 @@ import nl.svenar.powerranks.nukkit.util.Util;
 public class cmd_dump extends PowerCommand {
 
     private String databin_url = "https://databin.svenar.nl";
+
     private String logs_powerranks_url = "https://logs.powerranks.nl/dump/?id=";
 
     ArrayList<String> serverLog = new ArrayList<String>();
+    
     Map<String, Object> coreData = new HashMap<String, Object>();
 
     public cmd_dump(PowerRanks plugin, String command_name, COMMAND_EXECUTOR ce) {

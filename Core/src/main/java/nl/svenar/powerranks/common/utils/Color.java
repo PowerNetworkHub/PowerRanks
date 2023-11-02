@@ -1,12 +1,17 @@
 package nl.svenar.powerranks.common.utils;
 
 public class Color {
+    
     private static final int BIT_MASK = 0xff;
+    
     private static final int DEFAULT_ALPHA = 255;
 
     private final byte alpha;
+
     private final byte red;
+
     private final byte green;
+
     private final byte blue;
 
     public static Color fromARGB(int alpha, int red, int green, int blue) throws IllegalArgumentException {

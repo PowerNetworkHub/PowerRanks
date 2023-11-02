@@ -49,8 +49,11 @@ import org.yaml.snakeyaml.constructor.Constructor;
 public class YAMLConfigManager extends PowerConfigManager {
 
     private final DumperOptions yamlOptions = new DumperOptions();
+
     private final LoaderOptions loaderOptions = new LoaderOptions();
+
     private final Representer yamlRepresenter = new Representer(yamlOptions);
+    
     private final Yaml yaml = new Yaml(new Constructor(loaderOptions), yamlRepresenter, yamlOptions, loaderOptions);
 
     private File configFile;

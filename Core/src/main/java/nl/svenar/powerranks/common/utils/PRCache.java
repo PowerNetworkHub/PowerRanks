@@ -16,8 +16,11 @@ import nl.svenar.powerranks.common.structure.PRRank;
 public class PRCache {
 
     private static Map<String, PRRank> registeredRanks = new TreeMap<String, PRRank>();
+
     private static Map<String, PRPlayer> registeredPlayersByName = new TreeMap<String, PRPlayer>();
+
     private static Map<UUID, PRPlayer> registeredPlayersByUUID = new TreeMap<UUID, PRPlayer>();
+    
     private static Set<PRRank> defaultRanks = new HashSet<PRRank>();
 
     public static void reset() {

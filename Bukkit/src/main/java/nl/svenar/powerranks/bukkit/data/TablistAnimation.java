@@ -5,8 +5,11 @@ import java.util.ArrayList;
 public class TablistAnimation {
 
     private int delay = 0;
+    
     private int tick = 0;
+
     private int index = 0;
+
     private ArrayList<String> frames = new ArrayList<String>();
 
     public void setDelay(int delay) {

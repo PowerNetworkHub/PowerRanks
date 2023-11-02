@@ -36,7 +36,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class PRPlayerRank {
 
     private String name;
+    
     private HashMap<String, Object> tags;
+
     private boolean disabled;
 
     public PRPlayerRank() {

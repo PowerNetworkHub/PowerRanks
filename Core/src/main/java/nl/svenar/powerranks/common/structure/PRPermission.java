@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class PRPermission {
 
     private String name;
+    
     private boolean value;
 
     public PRPermission() {

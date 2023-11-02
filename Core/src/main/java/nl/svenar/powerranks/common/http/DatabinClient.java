@@ -18,8 +18,11 @@ import okhttp3.Response;
 public class DatabinClient extends PowerHTTPClient {
 
     private final String url;
+    
     private final String userAgent;
+
     private String rawResponse = "";
+
     private int responseCode = 0;
 
     public DatabinClient(OkHttpClient httpClient, String url, String userAgent) {

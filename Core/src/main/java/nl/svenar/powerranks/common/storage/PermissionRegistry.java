@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PermissionRegistry {
 
     private Set<String> permissions = new HashSet<String>();
+    
     private Queue<String> queue = new ConcurrentLinkedQueue<>();
 
     public PermissionRegistry() {

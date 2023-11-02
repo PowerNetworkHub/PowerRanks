@@ -11,6 +11,7 @@ public abstract class PowerSubCommand {
 	protected PowerRanks plugin;
 	
 	private String commandName;
+	
 	private COMMAND_EXECUTOR commandExecutor = COMMAND_EXECUTOR.NONE;
 	
 	public PowerSubCommand(PowerRanks plugin, String commandName, COMMAND_EXECUTOR commandExecutor) {

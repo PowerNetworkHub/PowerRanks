@@ -99,45 +99,71 @@ import co.aikar.commands.PaperCommandManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 
 public class PowerRanks extends JavaPlugin implements Listener {
+
 	public String bukkit_dev_url_powerranks = "https://dev.bukkit.org/projects/powerranks";
+
 	public ArrayList<String> donation_urls = new ArrayList<String>(Arrays.asList("https://ko-fi.com/svenar"));
 
 	public int TASK_TPS = 20;
+
 	private static PowerRanks instance;
+
 	public static PluginDescriptionFile pdf;
+
 	public AddonsManager addonsManager;
+
 	private TablistManager tablistManager;
+
 	private static BukkitPowerColor powerColor;
+
 	public static Logger log;
+
 	public static String fileLoc;
+
 	public static String factoryresetid = null;
+
 	public static Instant powerranks_start_time = Instant.now();
+
 	private String update_available = "";
 
 	private static PowerConfigManager configManager;
+
 	private static LanguageManager languageManager;
+
 	private static PowerConfigManager usertagManager;
+
 	private static PowerConfigManager tablistConfigManager;
 
 	private BungeecordManager bungeecordManager;
+
 	private PermissionRegistry permissionRegistry;
+
 	private PaperCommandManager acfManager;
 
 	// Soft Dependencies
 	private VaultHook vaultHook;
+
 	private DeluxeTagsHook deluxeTagsHook;
 
 	public static boolean vaultEconomyEnabled = false;
+
 	public static boolean vaultPermissionsEnabled = false;
+
 	public static PowerRanksExpansion placeholderapiExpansion;
+
 	public static boolean plugin_hook_deluxetags = false;
+
 	public static boolean plugin_hook_nametagedit = false;
 	// Soft Dependencies
 
 	public String updatemsg;
+	
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
+
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
+
 	public Map<UUID, Long> playerPlayTimeCache = new HashMap<UUID, Long>();
+
 	// public Map<UUID, String> playerNameCache = new HashMap<UUID, String>();
 
 	public PowerRanks() {

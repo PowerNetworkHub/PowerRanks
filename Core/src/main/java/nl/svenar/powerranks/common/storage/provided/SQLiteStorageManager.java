@@ -56,9 +56,11 @@ import nl.svenar.powerranks.common.structure.PRRank;
 public class SQLiteStorageManager extends PowerStorageManager {
 
     private File ranksFile;
+
     private File playersFile;
 
     private Connection ranksSQLConnection;
+    
     private Connection playersSQLConnection;
 
     /**

@@ -25,10 +25,15 @@ import nl.svenar.powerranks.bukkit.external.VaultHook;
 public class GUIPage {
 
 	Inventory gui = null;
+	
 	private Player player;
+
 	private Users users;
+
 	private GUI_PAGE_ID pageID = null;
+
 	public int current_page = 0;
+
 	private static HashMap<String, String> storedData = new HashMap<String, String>();
 
 	public static enum GUI_PAGE_ID {
