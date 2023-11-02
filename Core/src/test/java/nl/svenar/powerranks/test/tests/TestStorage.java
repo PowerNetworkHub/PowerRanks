@@ -229,17 +229,19 @@ public class TestStorage {
 
         TestDebugger.log(this, "[ETestMySQL] Setup...");
 
-        PowerSQLConfiguration configuration = new PowerSQLConfiguration(
-                "0.0.0.0",
-                3306,
-                "powerranks",
-                "powerranks",
-                "powerranks",
-                false,
-                "ranks",
-                "players",
-                "messages",
-                true);
+        PowerSQLConfiguration configuration = new PowerSQLConfiguration();
+        
+        configuration.setHost("0.0.0.0");
+        configuration.setPort(3306);
+        configuration.setDatabase("powerranks");
+        configuration.setUsername("powerranks");
+        configuration.setPassword("powerranks");
+        configuration.setUseSSL(false);
+        configuration.setTableRanks("ranks");
+        configuration.setTablePlayers("players");
+        configuration.setTableMessages("messages");
+        configuration.setSilentErrors(true);
+
         MySQLStorageManager storageManager = new MySQLStorageManager(configuration);
 
         if (!storageManager.isConnected()) {

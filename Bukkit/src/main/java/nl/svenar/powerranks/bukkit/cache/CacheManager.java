@@ -94,10 +94,19 @@ public class CacheManager {
                 storageManager = new SQLiteStorageManager(dataDirectory, "ranks.db", "players.db");
             } else if (storageType.equals("MYSQL")) {
                 PowerConfigManager pcm = PowerRanks.getConfigManager();
-                PowerSQLConfiguration configuration = new PowerSQLConfiguration(pcm.getString("storage.mysql.host", "127.0.0.1"),
-                        pcm.getInt("storage.mysql.port", 3306), pcm.getString("storage.mysql.database", "powerranks"),
-                        pcm.getString("storage.mysql.username", "username"), pcm.getString("storage.mysql.password", "password"),
-                        pcm.getBool("storage.mysql.ssl", false), "ranks", "players", "messages", pcm.getBool("storage.mysql.verbose", false));
+                PowerSQLConfiguration configuration = new PowerSQLConfiguration();
+
+                configuration.setHost(pcm.getString("storage.mysql.host", "127.0.0.1"));
+                configuration.setPort(pcm.getInt("storage.mysql.port", 3306));
+                configuration.setDatabase(pcm.getString("storage.mysql.database", "powerranks"));
+                configuration.setUsername(pcm.getString("storage.mysql.username", "username"));
+                configuration.setPassword(pcm.getString("storage.mysql.password", "password"));
+                configuration.setUseSSL(pcm.getBool("storage.mysql.ssl", false));
+                configuration.setTableRanks("ranks");
+                configuration.setTablePlayers("players");
+                configuration.setTableMessages("messages");
+                configuration.setSilentErrors(pcm.getBool("storage.mysql.verbose", false));
+
                 storageManager = new MySQLStorageManager(configuration);
             } else { // Default to yaml
 
@@ -126,7 +135,8 @@ public class CacheManager {
                 }
 
                 if (Objects.isNull(storageManager)) {
-                    PowerRanks.getInstance().getLogger().warning("Unknown storage method configured! Falling back to YAML");
+                    PowerRanks.getInstance().getLogger()
+                            .warning("Unknown storage method configured! Falling back to YAML");
                     storageManager = new YAMLStorageManager(dataDirectory, "ranks.yml", "players.yml");
                 } else {
                     if (usedStorageManagerAddon != null) {
@@ -173,7 +183,8 @@ public class CacheManager {
             return;
         }
         MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
-        localStorageManager.SQLInsert(localStorageManager.getConfig().getDatabase(), localStorageManager.getConfig().getTableMessages(),
+        localStorageManager.SQLInsert(localStorageManager.getConfig().getDatabase(),
+                localStorageManager.getConfig().getTableMessages(),
                 uuid.toString() + "." + key, message);
     }
 
@@ -187,7 +198,8 @@ public class CacheManager {
         }
         MySQLStorageManager localStorageManager = (MySQLStorageManager) getStorageManager();
 
-        Map<String, String> messages = localStorageManager.selectSimiliarInTable(localStorageManager.getConfig().getDatabase(),
+        Map<String, String> messages = localStorageManager.selectSimiliarInTable(
+                localStorageManager.getConfig().getDatabase(),
                 localStorageManager.getConfig().getTableMessages(), uuid.toString());
         return messages;
     }
