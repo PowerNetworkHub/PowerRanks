@@ -67,11 +67,9 @@ import nl.svenar.powerranks.bukkit.data.Messages;
 import nl.svenar.powerranks.bukkit.data.PowerPermissibleBase;
 import nl.svenar.powerranks.bukkit.data.PowerRanksVerbose;
 import nl.svenar.powerranks.bukkit.data.TablistManager;
-import nl.svenar.powerranks.bukkit.data.Users;
 import nl.svenar.powerranks.bukkit.events.impl.OnBlockChange;
 import nl.svenar.powerranks.bukkit.events.impl.OnChat;
 import nl.svenar.powerranks.bukkit.events.impl.OnInteract;
-import nl.svenar.powerranks.bukkit.events.impl.OnInventory;
 import nl.svenar.powerranks.bukkit.events.impl.OnJoin;
 import nl.svenar.powerranks.bukkit.events.impl.OnMove;
 import nl.svenar.powerranks.bukkit.events.impl.OnPreCommand;
@@ -80,7 +78,6 @@ import nl.svenar.powerranks.bukkit.events.impl.OnWorldChange;
 import nl.svenar.powerranks.bukkit.external.DeluxeTagsHook;
 import nl.svenar.powerranks.bukkit.external.PowerRanksExpansion;
 import nl.svenar.powerranks.bukkit.external.VaultHook;
-import nl.svenar.powerranks.bukkit.gui.GUI;
 import nl.svenar.powerranks.bukkit.metrics.Metrics;
 import nl.svenar.powerranks.bukkit.update.ConfigFilesUpdater;
 import nl.svenar.powerranks.bukkit.update.Updater;
@@ -157,7 +154,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	// Soft Dependencies
 
 	public String updatemsg;
-	
+
 	public Map<UUID, PermissionAttachment> playerPermissionAttachment = new HashMap<UUID, PermissionAttachment>();
 
 	public Map<UUID, String> playerTablistNameBackup = new HashMap<UUID, String>();
@@ -191,7 +188,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnChat(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInteract(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnSignChanged(this), (Plugin) this);
-		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnInventory(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnMove(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnWorldChange(this), (Plugin) this);
 		Bukkit.getServer().getPluginManager().registerEvents((Listener) new OnBlockChange(this), (Plugin) this);
@@ -244,8 +240,6 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		PowerRanks.log.info("");
 		PowerRanks.log.info("=== ------- LOADING PLUGIN HOOKS ------- ===");
 		setupSoftDependencies();
-
-		GUI.setPlugin(this);
 
 		this.bungeecordManager = new BungeecordManager(this);
 		this.bungeecordManager.start();
@@ -340,8 +334,10 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 		this.acfManager.getCommandReplacements().addReplacement("powerrankscommand", "powerranks|pr");
 
-		this.acfManager.getCommandCompletions().registerAsyncCompletion("prplayers", c -> PRCache.getPlayers().stream().map(PRPlayer::getName).collect(Collectors.toList()));
-		this.acfManager.getCommandCompletions().registerAsyncCompletion("prranks", c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("prplayers",
+				c -> PRCache.getPlayers().stream().map(PRPlayer::getName).collect(Collectors.toList()));
+		this.acfManager.getCommandCompletions().registerAsyncCompletion("prranks",
+				c -> PRCache.getRanks().stream().map(PRRank::getName).collect(Collectors.toList()));
 
 		this.acfManager.registerCommand(new MainCommand(this));
 		this.acfManager.registerCommand(new CmdHelp(this));
@@ -1184,17 +1180,28 @@ public class PowerRanks extends JavaPlugin implements Listener {
 				.setPlaytime(current_playtime + (leave_time - join_time) / 1000);
 	}
 
-	public void updatePlayersWithRank(Users users, String rank) {
+	public void updatePlayersWithRank(String rank) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			updateTablistName(p);
 			// p.updateCommands();
 		}
 	}
 
-	public void updatePlayersTABlistWithRank(Users users, String rank) {
+	public void updatePlayersTABlistWithRank(String rankname) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-			if (users.getPrimaryRank(p).equalsIgnoreCase(rank)) {
-				updateTablistName(p);
+			PRPlayer prPlayer = PRCache.getPlayer(p.getUniqueId().toString());
+			if (prPlayer.getRanks().size() > 0) {
+				boolean hasRank = false;
+
+				for (PRPlayerRank playerRank : prPlayer.getRanks()) {
+					if (playerRank.getName().equalsIgnoreCase(rankname)) {
+						hasRank = true;
+					}
+				}
+
+				if (hasRank) {
+					updateTablistName(p);
+				}
 			}
 		}
 	}

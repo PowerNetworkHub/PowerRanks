@@ -13,7 +13,6 @@ import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.bukkit.data.PowerRanksVerbose;
-import nl.svenar.powerranks.bukkit.data.Users;
 
 import com.google.common.collect.Iterables;
 
@@ -21,13 +20,13 @@ import net.milkbowl.vault.permission.Permission;
 
 @SuppressWarnings("deprecation")
 public class PowerRanksVaultPermission extends Permission {
+
 	final PowerRanks plugin;
-	final Users users;
+	
 	private boolean playerHasErrorQueueOffline = false;
 
 	PowerRanksVaultPermission(PowerRanks plugin) {
 		this.plugin = plugin;
-		this.users = new Users(plugin);
 	}
 
 	@Override

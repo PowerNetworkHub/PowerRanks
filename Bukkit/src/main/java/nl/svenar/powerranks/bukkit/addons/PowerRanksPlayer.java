@@ -1,9 +1,16 @@
 package nl.svenar.powerranks.bukkit.addons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.entity.Player;
 
 import nl.svenar.powerranks.bukkit.PowerRanks;
-import nl.svenar.powerranks.bukkit.data.Users;
+import nl.svenar.powerranks.bukkit.cache.CacheManager;
+import nl.svenar.powerranks.common.structure.PRPlayerRank;
+import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRCache;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 public class PowerRanksPlayer {
 
@@ -11,14 +18,11 @@ public class PowerRanksPlayer {
     
     private Player player;
 
-    private Users users;
-
     private String name;
 
     public PowerRanksPlayer(PowerRanks powerRanks, Player player) {
         this.powerRanks = powerRanks;
         this.player = player;
-        this.users = new Users(this.powerRanks);
         if (player != null)
             name = player.getName();
     }
@@ -26,7 +30,6 @@ public class PowerRanksPlayer {
     public PowerRanksPlayer(PowerRanks powerRanks, String name) {
         this.powerRanks = powerRanks;
         this.name = name;
-        this.users = new Users(this.powerRanks);
     }
 
     public PowerRanks getPowerRanks() {
@@ -45,7 +48,19 @@ public class PowerRanksPlayer {
     // Arguments: Returns:
     // String (player's rank)
     public String getRank() {
-        return users.getPrimaryRank(getPlayer());
+        List<PRRank> playerRanks = new ArrayList<PRRank>();
+
+		for (PRPlayerRank playerRank : PRCache.getPlayer(getPlayer().getUniqueId().toString()).getRanks()) {
+			PRRank rank = CacheManager.getRank(playerRank.getName());
+			if (rank != null) {
+				playerRanks.add(rank);
+			}
+		}
+
+		PRUtil.sortRanksByWeight(playerRanks);
+		PRUtil.reverseRanks(playerRanks);
+        
+        return playerRanks.size() > 0 ? playerRanks.get(0).getName() : null;
     }
     
 //    // Set the users rank

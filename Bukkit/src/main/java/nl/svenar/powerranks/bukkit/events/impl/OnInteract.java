@@ -14,15 +14,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRCache;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
-import nl.svenar.powerranks.bukkit.data.Users;
-import nl.svenar.powerranks.bukkit.external.VaultHook;
-import nl.svenar.powerranks.bukkit.gui.GUI;
-import nl.svenar.powerranks.bukkit.gui.GUIPage.GUIPAGEID;
 import nl.svenar.powerranks.bukkit.util.Util;
 
 public class OnInteract implements Listener {
@@ -49,10 +47,8 @@ public class OnInteract implements Listener {
 
 	@SuppressWarnings("deprecation")
 	private void handlePowerRanksSign(Sign sign, Player player) {
-		final Users users = new Users(this.plugin);
 		String sign_command;
 		String sign_argument;
-		String sign_argument2;
 		boolean sign_error;
 
 		try {
@@ -64,12 +60,10 @@ public class OnInteract implements Listener {
 				sign_command = sign.getSide(signSide).getLine(1);
 			}
 			sign_argument = sign.getSide(signSide).getLine(2);
-			sign_argument2 = sign.getSide(signSide).getLine(3);
 			sign_error = sign.getSide(signSide).getLine(3).toLowerCase().contains("error");
 		} catch (ClassNotFoundException e) {
 			sign_command = sign.getLine(1);
 			sign_argument = sign.getLine(2);
-			sign_argument2 = sign.getLine(3);
 			sign_error = sign.getLine(3).toLowerCase().contains("error");
 		}
 
@@ -95,7 +89,7 @@ public class OnInteract implements Listener {
 			// } else
 			if (sign_command.equalsIgnoreCase("setrank")) {
 				if (player.hasPermission("powerranks.signs.setrank")) {
-					PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
+					PRRank rank = PRCache.getRankIgnoreCase(sign_argument);
 					if (rank != null) {
 						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 						CacheManager.getPlayer(player.getUniqueId().toString()).setRank(playerRank);
@@ -115,7 +109,7 @@ public class OnInteract implements Listener {
 				}
 			} else if (sign_command.equalsIgnoreCase("addrank")) {
 				if (player.hasPermission("powerranks.signs.setrank")) {
-					PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
+					PRRank rank = PRCache.getRankIgnoreCase(sign_argument);
 					if (rank != null) {
 						PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
 						CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
@@ -175,7 +169,9 @@ public class OnInteract implements Listener {
 				// }
 			} else if (sign_command.equalsIgnoreCase("usertag")) {
 				if (player.hasPermission("powerranks.signs.usertag")) {
-					if (users.setUserTag(player, sign_argument)) {
+					PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+					if (prPlayer != null) {
+						prPlayer.setUsertag(sign_argument);
 						if (sign_argument.length() > 0) {
 							player.sendMessage(PRUtil.powerFormatter(
 									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
@@ -204,73 +200,6 @@ public class OnInteract implements Listener {
 										.put("usertag", sign_argument)
 										.build(),
 								'[', ']'));
-					}
-				} else {
-					player.sendMessage(
-							PowerRanks.getInstance().getLanguageManager().getFormattedMessage("general.no-permission"));
-				}
-			} else if (sign_command.equalsIgnoreCase("rankup")) {
-				if (player.hasPermission("powerranks.signs.rankup")) {
-					if (sign_argument.length() == 0) {
-						GUI.openGUI(player, GUIPAGEID.RANKUP);
-					} else {
-						if (PowerRanks.vaultEconomyEnabled) {
-							if (sign_argument2.length() > 0) {
-								// Users users = new Users(this.plugin);
-								int cost = Integer.parseInt(sign_argument2);
-								double player_balance = VaultHook.getVaultEconomy() != null
-										? VaultHook.getVaultEconomy().getBalance(player)
-										: 0;
-								if (cost >= 0 && player_balance >= cost) {
-									VaultHook.getVaultEconomy().withdrawPlayer(player, cost);
-									PRRank rank = CacheManager.getRank(users.getRankIgnoreCase(sign_argument));
-									if (rank != null) {
-										PRPlayerRank playerRank = new PRPlayerRank(rank.getName());
-										CacheManager.getPlayer(player.getUniqueId().toString()).addRank(playerRank);
-
-										player.sendMessage(PRUtil.powerFormatter(
-												PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-														"commands.setrank.success-receiver"),
-												ImmutableMap.<String, String>builder()
-														.put("player", player.getName())
-														.put("rank", rank.getName())
-														.build(),
-												'[', ']'));
-									}
-									// users.setGroup(player, users.getRankIgnoreCase(sign_argument), true);
-									player.sendMessage(PRUtil.powerFormatter(
-											PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-													"commands.buyrank.success-buy"),
-											ImmutableMap.<String, String>builder()
-													.put("player", player.getName())
-													.put("rank", sign_argument)
-													.build(),
-											'[', ']'));
-								} else {
-									player.sendMessage(PRUtil.powerFormatter(
-											PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-													"commands.buyrank.failed-buy-not-enough-money"),
-											ImmutableMap.<String, String>builder()
-													.put("player", player.getName())
-													.put("rank", sign_argument)
-													.build(),
-											'[', ']'));
-								}
-							} else {
-								player.sendMessage(PRUtil.powerFormatter(
-										PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-												"commands.buyrank.failed-buy-not-enough-money"),
-										ImmutableMap.<String, String>builder()
-												.put("player", player.getName())
-												.put("rank", sign_argument)
-												.build(),
-										'[', ']'));
-							}
-						} else {
-							player.sendMessage(
-									PowerRanks.getInstance().getLanguageManager().getFormattedMessage(
-											"commands.buyrank.buy-not-available"));
-						}
 					}
 				} else {
 					player.sendMessage(

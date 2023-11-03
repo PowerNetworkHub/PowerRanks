@@ -24,6 +24,7 @@ import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRCache;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.common.utils.PowerColor;
 import nl.svenar.powerranks.bukkit.PowerRanks;
@@ -59,7 +60,6 @@ public class Messages {
     }
 
     public static void messageStats(CommandSender sender) {
-        Users users = new Users(null);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -82,9 +82,9 @@ public class Messages {
                 + format.format(Duration.between(PowerRanks.powerranks_start_time, current_time).toMillis()));
         sender.sendMessage(
                 ChatColor.GREEN + "PowerRanks Version: " + ChatColor.DARK_GREEN + PowerRanks.pdf.getVersion());
-        sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + users.getGroups().size());
+        sender.sendMessage(ChatColor.GREEN + "Registered ranks: " + ChatColor.DARK_GREEN + PRCache.getRanks().size());
         sender.sendMessage(
-                ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + users.getCachedPlayers().size());
+                ChatColor.GREEN + "Registered players: " + ChatColor.DARK_GREEN + PRCache.getPlayers().size());
         sender.sendMessage(ChatColor.GREEN + "Registered addons: " + ChatColor.DARK_GREEN + addonCount);
 
         boolean hex_color_supported = false;
@@ -174,7 +174,14 @@ public class Messages {
         sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
     }
 
-    public static void messageCommandBuyrank(CommandSender sender, Users users, String rankname) {
+    public static void messageCommandBuyrank(CommandSender sender, String rankname) {
+        PRPlayer prPlayer = PRCache.getPlayer(((Player) sender).getUniqueId().toString());
+        if (prPlayer == null) {
+            return;
+        }
+        if (prPlayer.getRanks().size() == 0) {
+            return;
+        }
         if (rankname == null) {
             String tellraw_command = "tellraw %player% [\"\",{\"text\":\"[\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"Buy\",\"color\":\"green\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"]\",\"color\":\"black\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\" %rank% \",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"|\",\"color\":\"yellow\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\" Cost: \",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}},{\"text\":\"%cost%\",\"color\":\"%cost_color%\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/pr buyrank %rank%\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"Buy this rank\"}}]";
             double player_balance = VaultHook.getVaultEconomy() != null
@@ -185,7 +192,18 @@ public class Messages {
                     + ChatColor.DARK_AQUA + "--------");
             sender.sendMessage(ChatColor.DARK_GREEN + "Your balance: " + ChatColor.GREEN + player_balance);
             sender.sendMessage(ChatColor.DARK_GREEN + "Ranks available to buy (click to buy):");
-            List<String> ranks = users.getBuyableRanks(users.getPrimaryRank((Player) sender));
+            
+            List<PRRank> playerRanks = new ArrayList<PRRank>();
+            for (PRPlayerRank playerRank : prPlayer.getRanks()) {
+                PRRank rank = CacheManager.getRank(playerRank.getName());
+                if (rank != null) {
+                    playerRanks.add(rank);
+                }
+            }
+
+            PRUtil.sortRanksByWeight(playerRanks);
+            PRUtil.reverseRanks(playerRanks);
+            List<String> ranks = playerRanks.get(0).getBuyableRanks();
             for (String rank : ranks) {
                 float cost = CacheManager.getRank(rank).getBuyCost();
                 String cost_color = player_balance >= cost ? "green" : "red";
@@ -890,8 +908,8 @@ public class Messages {
         }
     }
 
-    public static void listRankPermissions(CommandSender sender, Users users, String rank_name, int page) {
-        List<PRPermission> lines = users.getPermissions(rank_name);
+    public static void listRankPermissions(CommandSender sender, String rank_name, int page) {
+        List<PRPermission> lines = PRCache.getRank(rank_name).getPermissions();
         int linesPerPage = 10;
 
         if (page < 0)
@@ -933,8 +951,8 @@ public class Messages {
         sender.sendMessage(ChatColor.DARK_AQUA + "--------------------------");
     }
 
-    public static void listPlayerPermissions(CommandSender sender, Users users, String target_player, int page) {
-        Set<PRPermission> lines = users.getPlayerPermissions(target_player);
+    public static void listPlayerPermissions(CommandSender sender, String target_player, int page) {
+        Set<PRPermission> lines = PRCache.getPlayer(target_player).getPermissions();
         int linesPerPage = 10;
 
         if (page < 0)

@@ -3,18 +3,22 @@ package nl.svenar.powerranks.bukkit.external;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
-import nl.svenar.powerranks.bukkit.data.Users;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 /**
@@ -119,29 +123,33 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 			return "";
 		}
 
-		Users users = new Users(null);
+		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
+		if (prPlayer == null) {
+			return "";
+		}
+
+		List<PRRank> playerRanks = getPlayerRanksSorted(prPlayer);
 
 		// DEPRECATED
 		if (identifier.equals("rank")) {
-			return users.getPrimaryRank(player);
+			return playerRanks.get(0).getName();
 		}
 
 		if (identifier.equals("prefix")) {
 			if (format_colors) {
-				return PowerRanks.chatColor(users.getPrefix(player), true) + ChatColor.RESET;
+				return PowerRanks.chatColor(playerRanks.get(0).getPrefix(), true) + ChatColor.RESET;
 			}
-			return users.getPrefix(player) + ChatColor.RESET;
+			return playerRanks.get(0).getPrefix() + ChatColor.RESET;
 		}
 
 		if (identifier.equals("suffix")) {
 			if (format_colors) {
-				return ChatColor.RESET + PowerRanks.chatColor(users.getSuffix(player), true);
+				return ChatColor.RESET + PowerRanks.chatColor(playerRanks.get(0).getSuffix(), true);
 			}
-			return ChatColor.RESET + users.getSuffix(player);
+			return ChatColor.RESET + playerRanks.get(0).getSuffix();
 		}
 
 		if (identifier.equals("subrankprefix")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> prefixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
 				if (format_colors) {
@@ -150,11 +158,11 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					prefixes.add(rank.getPrefix() + ChatColor.RESET);
 				}
 			}
-			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), prefixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "),
+					prefixes);
 		}
 
 		if (identifier.equals("subranksuffix")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> suffixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
 				if (format_colors) {
@@ -163,26 +171,25 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					suffixes.add(ChatColor.RESET + rank.getSuffix());
 				}
 			}
-			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), suffixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "),
+					suffixes);
 		}
 		// DEPRECATED
 
 		if (identifier.equals("primary_rank")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			return playerRanks.size() > 0 ? playerRanks.get(0).getName() : "";
 		}
 
 		if (identifier.equals("ranks")) {
 			List<String> playerRankNames = new ArrayList<String>();
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			for (PRRank rank : playerRanks) {
 				playerRankNames.add(rank.getName());
 			}
-			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), playerRankNames);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "),
+					playerRankNames);
 		}
 
 		if (identifier.equals("primary_prefix")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			return playerRanks.size() > 0
 					? (format_colors ? PowerRanks.chatColor(playerRanks.get(0).getPrefix(), true)
 							: playerRanks.get(0).getPrefix()) + ChatColor.RESET
@@ -190,7 +197,6 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		}
 
 		if (identifier.equals("primary_suffix")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			return playerRanks.size() > 0
 					? ChatColor.RESET + (format_colors ? PowerRanks.chatColor(playerRanks.get(0).getSuffix(), true)
 							: playerRanks.get(0).getSuffix())
@@ -198,7 +204,6 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		}
 
 		if (identifier.equals("prefixes")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> prefixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
 				if (format_colors) {
@@ -207,11 +212,11 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					prefixes.add(rank.getPrefix() + ChatColor.RESET);
 				}
 			}
-			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), prefixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "),
+					prefixes);
 		}
 
 		if (identifier.equals("suffixes")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			List<String> suffixes = new ArrayList<String>();
 			for (PRRank rank : playerRanks) {
 				if (format_colors) {
@@ -220,11 +225,11 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 					suffixes.add(ChatColor.RESET + rank.getSuffix());
 				}
 			}
-			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "), suffixes);
+			return String.join(PowerRanks.getInstance().getConfigString("placeholderapi.multi_rank_separator", " "),
+					suffixes);
 		}
 
 		if (identifier.equals("chatcolor")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			return playerRanks.size() > 0
 					? (format_colors ? PowerRanks.chatColor(playerRanks.get(0).getChatcolor(), true)
 							: playerRanks.get(0).getChatcolor())
@@ -232,7 +237,6 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		}
 
 		if (identifier.equals("namecolor")) {
-			List<PRRank> playerRanks = getPlayerRanksSorted(player);
 			return playerRanks.size() > 0
 					? (format_colors ? PowerRanks.chatColor(playerRanks.get(0).getNamecolor(), true)
 							: playerRanks.get(0).getNamecolor())
@@ -240,8 +244,24 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		}
 
 		if (identifier.equals("usertag")) {
-			return (format_colors ? PowerRanks.chatColor(users.getUserTagValue(player), true)
-					: users.getUserTagValue(player));
+			String usertag = "";
+			Map<?, ?> availableUsertags = PowerRanks.getUsertagManager().getMap("usertags",
+					new HashMap<String, String>());
+			Set<String> playerUsertags = prPlayer.getUsertags();
+
+			for (String playerUsertag : playerUsertags) {
+				String value = "";
+				for (Entry<?, ?> entry : availableUsertags.entrySet()) {
+					if (entry.getKey().toString().equalsIgnoreCase(playerUsertag)) {
+						value = entry.getValue().toString();
+					}
+				}
+
+				if (value.length() > 0) {
+					usertag += (usertag.length() > 0 ? " " : "") + value;
+				}
+			}
+			return (format_colors ? PowerRanks.chatColor(usertag, true) : usertag);
 		}
 
 		if (identifier.equals("world")) {
@@ -260,16 +280,15 @@ public class PowerRanksExpansion extends PlaceholderExpansion {
 		return null;
 	}
 
-	private List<PRRank> getPlayerRanksSorted(Player player) {
+	private List<PRRank> getPlayerRanksSorted(PRPlayer player) {
 		List<PRRank> playerRanks = new ArrayList<PRRank>();
 
-		for (PRPlayerRank playerRank : CacheManager.getPlayer(player.getUniqueId().toString()).getRanks()) {
+		for (PRPlayerRank playerRank : player.getRanks()) {
 			PRRank rank = CacheManager.getRank(playerRank.getName());
 			if (rank != null) {
 				playerRanks.add(rank);
 			}
 		}
-
 
 		PRUtil.sortRanksByWeight(playerRanks);
 		PRUtil.reverseRanks(playerRanks);

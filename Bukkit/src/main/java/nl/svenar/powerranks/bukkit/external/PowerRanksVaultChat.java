@@ -5,7 +5,6 @@ import nl.svenar.powerranks.common.structure.PRRank;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
-import nl.svenar.powerranks.bukkit.data.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +14,10 @@ import net.milkbowl.vault.permission.Permission;
 
 public class PowerRanksVaultChat extends Chat {
 	final PowerRanks plugin;
-	final Users users;
 
 	public PowerRanksVaultChat(PowerRanks plugin, Permission perms) {
 		super(perms);
 		this.plugin = plugin;
-		this.users = new Users(plugin);
 	}
 
 	@Override
