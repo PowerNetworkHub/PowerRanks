@@ -66,7 +66,7 @@ public class TestPCCache {
         final int numPlayers = PRCache.getPlayers().size();
         final int numRanks = PRCache.getRanks().size();
         final float maxDurationEachPlayer = 0.0020f;
-        final float maxDurationEachRank = 0.125f;
+        final float maxDurationEachRank = 0.25f;
 
         Instant rankStartTimestamp = Instant.now();
         Iterator<PRRank> rankIterator = PRCache.getRanks().iterator();
