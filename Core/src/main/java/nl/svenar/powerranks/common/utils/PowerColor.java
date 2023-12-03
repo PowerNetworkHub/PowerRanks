@@ -48,21 +48,28 @@ public class PowerColor {
         Pattern HEXPattern = Pattern.compile(altColorChar + "?#[a-fA-F0-9]{6}");
         Matcher HEXMatcher = HEXPattern.matcher(text);
 
+        StringBuilder result = new StringBuilder(text.length());
+
+        int lastAppendPosition = 0;
+
         while (HEXMatcher.find()) {
             String rawHEX = text.substring(HEXMatcher.start(), HEXMatcher.end());
             String formattedHEX = rawHEX.startsWith(altColorChar + "") ? rawHEX.substring(1) : rawHEX;
 
             StringBuilder magic = new StringBuilder(altColorChar + "x");
-            for (char c : formattedHEX.substring(1).toCharArray()) {
-                magic.append(altColorChar).append(c);
+            for (int i = 1; i < formattedHEX.length(); i++) {
+                magic.append(altColorChar).append(formattedHEX.charAt(i));
             }
             formattedHEX = magic.toString();
 
-            text = HEXMatcher.replaceFirst(formattedHEX);
-            HEXMatcher = HEXPattern.matcher(text);
+            result.append(text, lastAppendPosition, HEXMatcher.start()).append(formattedHEX);
+
+            lastAppendPosition = HEXMatcher.end();
         }
 
-        return text;
+        result.append(text.substring(lastAppendPosition));
+
+        return result.toString();
     }
 
     /**
@@ -83,35 +90,73 @@ public class PowerColor {
     }
 
     public String parseGradient(char altColorChar, String input) {
+        int patternStart = input.indexOf("[gradient=");
+        if (patternStart == -1) {
+            return input;
+        }
+
+        int inputLength = input.length();
+        char[] inputChars = input.toCharArray();
+
+        int lastAppendPosition = 0;
+
         Pattern pattern = Pattern.compile("\\[gradient=([^,]+),([^\\]]+)\\]([^\\[]+)\\[/gradient\\]");
         Matcher matcher = pattern.matcher(input);
-        StringBuffer result = new StringBuffer();
 
-        while (matcher.find()) {
+        StringBuilder result = new StringBuilder(); // Initial capacity
+
+        while (matcher.find(patternStart)) {
             String startColor = matcher.group(1);
             String endColor = matcher.group(2);
             String content = matcher.group(3);
 
             String gradient = generateGradient(startColor, endColor, content);
-            matcher.appendReplacement(result, gradient);
+
+            result.append(inputChars, lastAppendPosition, matcher.start() - lastAppendPosition);
+            result.append(gradient);
+
+            lastAppendPosition = matcher.end();
+            patternStart = lastAppendPosition;
+
+            // Restrict the search region for the next match
+            matcher.region(patternStart, inputLength);
         }
-        matcher.appendTail(result);
+
+        result.append(inputChars, lastAppendPosition, inputLength - lastAppendPosition);
 
         return result.toString();
     }
 
     public String parseRainbow(char altColorChar, String input) {
-        Pattern pattern = Pattern.compile("\\[rainbow\\]([^\\[]+)\\[/rainbow\\]");
-        Matcher matcher = pattern.matcher(input);
-        StringBuffer result = new StringBuffer();
-
-        while (matcher.find()) {
-            String content = matcher.group(1);
-
-            String rainbow = generateRainbow(content);
-            matcher.appendReplacement(result, rainbow);
+        int patternStart = input.indexOf("[rainbow]");
+        if (patternStart == -1) {
+            return input;
         }
-        matcher.appendTail(result);
+
+        int inputLength = input.length();
+        StringBuilder result = new StringBuilder();
+        int lastAppendPosition = 0;
+
+        Pattern pattern = Pattern.compile("\\[rainbow\\]([^\\[]+)\\[/rainbow\\]");
+
+        do {
+
+            Matcher matcher = pattern.matcher(input);
+
+            if (!matcher.find(patternStart)) {
+                break;
+            }
+
+            String content = matcher.group(1);
+            String rainbow = generateRainbow(content);
+            result.append(input, lastAppendPosition, matcher.start()).append(rainbow);
+
+            lastAppendPosition = matcher.end();
+            patternStart = lastAppendPosition;
+
+        } while (patternStart < inputLength);
+
+        result.append(input, lastAppendPosition, inputLength);
 
         return result.toString();
     }
@@ -119,16 +164,19 @@ public class PowerColor {
     private String generateGradient(String startColor, String endColor, String content) {
         StringBuilder result = new StringBuilder();
 
+        Color numColor1 = hexToRGB(startColor);
+        Color numColor2 = hexToRGB(endColor);
+
         for (int i = 0; i < content.length(); i++) {
             char c = content.charAt(i);
             double ratio = (double) i / (content.length() - 1);
-            int r = (int) (Integer.parseInt(startColor.substring(1, 3), 16) * (1 - ratio)
-                    + Integer.parseInt(endColor.substring(1, 3), 16) * ratio);
-            int g = (int) (Integer.parseInt(startColor.substring(3, 5), 16) * (1 - ratio)
-                    + Integer.parseInt(endColor.substring(3, 5), 16) * ratio);
-            int b = (int) (Integer.parseInt(startColor.substring(5, 7), 16) * (1 - ratio)
-                    + Integer.parseInt(endColor.substring(5, 7), 16) * ratio);
-            result.append(String.format("#%02x%02x%02x", r, g, b));
+            int r = (int) (numColor1.getRed() * (1 - ratio) + numColor2.getRed() * ratio);
+            int g = (int) (numColor1.getGreen() * (1 - ratio) + numColor2.getGreen() * ratio);
+            int b = (int) (numColor1.getBlue() * (1 - ratio) + numColor2.getBlue() * ratio);
+            result.append('#');
+            result.append(toHexString(r));
+            result.append(toHexString(g));
+            result.append(toHexString(b));
             result.append(c);
         }
 
@@ -136,43 +184,54 @@ public class PowerColor {
     }
 
     private String generateRainbow(String text) {
-
         int numColors = rainbowHEXColors.length;
-
         StringBuilder result = new StringBuilder();
 
         if (text.length() <= 9) {
             int step = (int) Math.round((float) numColors / (float) text.length());
             int index = 0;
+
             for (int i = 0; i < text.length(); i++) {
                 char c = text.charAt(i);
-                String color = rainbowHEXColors[index % rainbowHEXColors.length];
+                String color = rainbowHEXColors[index % numColors];
                 index += step;
                 result.append(color);
                 result.append(c);
             }
         } else {
             int rainbowStep = Math.round((float) text.length() / (float) (numColors - 1));
+
             for (int i = 0; i < numColors - 1; i++) {
-                String subText = text.substring(i * rainbowStep,
-                        i != numColors - 2 ? (i + 1) * rainbowStep : text.length());
+                int start = i * rainbowStep;
+                int end = (i != numColors - 2) ? (i + 1) * rainbowStep : text.length();
 
                 String fromhex = rainbowHEXColors[i];
                 String tohex = rainbowHEXColors[i + 1];
 
-                if (subText.length() > 0) {
-                    List<String> rainbowGradientPart = this.interpolateColors(fromhex, tohex, subText.length());
+                if (start < end) {
+                    List<String> rainbowGradientPart = interpolateColors(fromhex, tohex, end - start);
 
-                    for (int j = 0; j < subText.length(); j++) {
-                        result.append(rainbowGradientPart.get(j) + subText.charAt(j));
-
+                    for (int j = start; j < end; j++) {
+                        result.append(rainbowGradientPart.get(j - start)).append(text.charAt(j));
                     }
                 }
             }
-
         }
 
         return result.toString();
+    }
+
+    /**
+     * Convert int to HEX String
+     * 
+     * @param value
+     * @return String
+     */
+    private String toHexString(int value) {
+        char[] hexChars = new char[2];
+        hexChars[0] = Character.forDigit((value >> 4) & 0xF, 16);
+        hexChars[1] = Character.forDigit(value & 0xF, 16);
+        return new String(hexChars);
     }
 
     /**
@@ -203,10 +262,10 @@ public class PowerColor {
     public String hexCompatibilityConverter(char altColorChar, String inputHEX) {
         String output = "";
         int last_distance = Integer.MAX_VALUE;
-        Color input_color = hex2Rgb(inputHEX);
+        Color input_color = hexToRGB(inputHEX);
 
         for (Entry<String, String> entry : hexToMCColors.entrySet()) {
-            int distance = calculateColorDistance(input_color, hex2Rgb(entry.getKey()));
+            int distance = calculateColorDistance(input_color, hexToRGB(entry.getKey()));
             if (distance < last_distance) {
                 last_distance = distance;
                 output = altColorChar + entry.getValue();
@@ -236,9 +295,11 @@ public class PowerColor {
      * @param colorStr
      * @return Color
      */
-    public Color hex2Rgb(String colorStr) {
-        return Color.fromRGB(Integer.valueOf(colorStr.substring(1, 3), 16),
-                Integer.valueOf(colorStr.substring(3, 5), 16), Integer.valueOf(colorStr.substring(5, 7), 16));
+    private Color hexToRGB(String colorStr) {
+        return Color.fromRGB(
+                Integer.valueOf(colorStr.substring(1, 3), 16),
+                Integer.valueOf(colorStr.substring(3, 5), 16),
+                Integer.valueOf(colorStr.substring(5, 7), 16));
     }
 
     /**
@@ -271,21 +332,15 @@ public class PowerColor {
         int green2 = Integer.parseInt(color2.substring(3, 5), 16);
         int blue2 = Integer.parseInt(color2.substring(5, 7), 16);
 
-        int[] numColor1 = { red1, green1, blue1 };
-        int[] numColor2 = { red2, green2, blue2 };
+        int red = (int) (red1 * (1 - factor) + red2 * factor);
+        int green = (int) (green1 * (1 - factor) + green2 * factor);
+        int blue = (int) (blue1 * (1 - factor) + blue2 * factor);
 
-        int[] startColor = numColor1.clone();
-        startColor[0] += factor * (numColor2[0] - numColor1[0]);
-        startColor[1] += factor * (numColor2[1] - numColor1[1]);
-        startColor[2] += factor * (numColor2[2] - numColor1[2]);
-
-        return "#"
-                + (Integer.toHexString(startColor[0]).length() == 1 ? "0" + Integer.toHexString(startColor[0])
-                        : Integer.toHexString(startColor[0]))
-                + (Integer.toHexString(startColor[1]).length() == 1 ? "0" + Integer.toHexString(startColor[1])
-                        : Integer.toHexString(startColor[1]))
-                + (Integer.toHexString(startColor[2]).length() == 1 ? "0" + Integer.toHexString(startColor[2])
-                        : Integer.toHexString(startColor[2]));
+        StringBuilder result = new StringBuilder("#");
+        result.append(toHexString(red));
+        result.append(toHexString(green));
+        result.append(toHexString(blue));
+        return result.toString();
     }
 
     /**
@@ -310,8 +365,8 @@ public class PowerColor {
             throw new IllegalArgumentException("Invalid color2");
         }
 
-        double stepFactor = 1.0 / (float) (steps - 1);
-        List<String> interpolatedColorArray = new ArrayList<String>();
+        double stepFactor = 1.0 / (double) (steps - 1.0);
+        List<String> interpolatedColorArray = new ArrayList<>(steps);
 
         for (int i = 0; i < steps; i++) {
             interpolatedColorArray.add(interpolateColor(color1, color2, stepFactor * i));

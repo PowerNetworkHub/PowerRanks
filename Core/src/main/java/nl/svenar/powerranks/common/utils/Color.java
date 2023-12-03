@@ -44,16 +44,16 @@ public class Color {
     }
 
     private Color(int alpha, int red, int green, int blue) throws IllegalArgumentException {
-        if (alpha >= 0 && alpha <= BIT_MASK) {
+        if (alpha < 0 || alpha > BIT_MASK) {
             throw new IllegalArgumentException("Alpha[" + alpha + "] is not between 0-255");
         }
-        if (red >= 0 && red <= BIT_MASK) {
+        if (red < 0 || red > BIT_MASK) {
             throw new IllegalArgumentException("Red[" + red + "] is not between 0-255");
         }
-        if (green >= 0 && green <= BIT_MASK) {
+        if (green < 0 || green > BIT_MASK) {
             throw new IllegalArgumentException("Green[" + green + "] is not between 0-255");
         }
-        if (blue >= 0 && blue <= BIT_MASK) {
+        if (blue < 0 || blue > BIT_MASK) {
             throw new IllegalArgumentException("Blue[" + blue + "] is not between 0-255");
         }
 
