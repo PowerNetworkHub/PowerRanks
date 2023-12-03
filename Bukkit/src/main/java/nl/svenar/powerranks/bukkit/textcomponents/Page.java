@@ -16,7 +16,7 @@ import nl.svenar.powerranks.common.utils.PowerColor;
 public class Page {
 
     private int pageNum;
-    
+
     private int totalPages;
 
     private String title;
@@ -90,14 +90,14 @@ public class Page {
             if (item instanceof String) {
                 newItem = PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, (String) item,
                         true, false, false);
-            // } else {
-            //     for (BaseComponent component : ((TextComponent) item).getExtra()) {
-            //         System.out.println(((TextComponent) component).getText());
-            //         ((TextComponent) component)
-            //                 .setText(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
-            //                         ((TextComponent) component).getText(), true, false, false));
-            //                         System.out.println(((TextComponent) component).getText() + "\n");
-            //     }
+                // } else {
+                // for (BaseComponent component : ((TextComponent) item).getExtra()) {
+                // System.out.println(((TextComponent) component).getText());
+                // ((TextComponent) component)
+                // .setText(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR,
+                // ((TextComponent) component).getText(), true, false, false));
+                // System.out.println(((TextComponent) component).getText() + "\n");
+                // }
             }
             generatedList.set(generatedList.indexOf(item), newItem);
         }
@@ -136,37 +136,48 @@ public class Page {
         Object pageInfo = "";
         String baseText = "";
         if (!fancyPageControls) {
-            pageInfo = "#7E63DE│ [gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
-                    + "[/gradient] #f50be5│";
+            pageInfo = (totalPages > 1
+                    ? "#7E63DE│ [gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages + "[/gradient] #f50be5│"
+                    : "");
         } else {
-            baseText = "#7E63DE│ &r◀[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
-            + "[/gradient]&r▶ #f50be5│";
+            baseText = (totalPages > 1
+                    ? "#7E63DE│ &r◀[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages + "[/gradient]&r▶ #f50be5│"
+                    : "");
 
-            pageInfo = new ComponentBuilder();
+            if (totalPages > 1) {
+                pageInfo = new ComponentBuilder();
 
-            TextComponent leftArrow = new TextComponent("◀");
-            TextComponent rightArrow = new TextComponent("▶");
-            leftArrow.setColor(ChatColor.WHITE);
-            rightArrow.setColor(ChatColor.WHITE);
-            leftArrow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Previous page")));
-            rightArrow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Next page")));
-            leftArrow.setClickEvent(
-                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + baseCommand + " " + previousPage));
-            rightArrow.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + baseCommand + " " + nextPage));
+                TextComponent leftArrow = new TextComponent("◀");
+                TextComponent rightArrow = new TextComponent("▶");
+                leftArrow.setColor(ChatColor.WHITE);
+                rightArrow.setColor(ChatColor.WHITE);
+                leftArrow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Previous page")));
+                rightArrow.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Next page")));
+                leftArrow.setClickEvent(
+                        new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + baseCommand + " " + previousPage));
+                rightArrow.setClickEvent(
+                        new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + baseCommand + " " + nextPage));
 
-            ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, "#7E63DE│ ", true, false, false));
-            ((ComponentBuilder) pageInfo).append(leftArrow);
-            ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, "[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
-                    + "[/gradient]", true, false, false));
-            ((ComponentBuilder) pageInfo).append(rightArrow);
-            ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, " #f50be5│", true, false, false));
+                ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor()
+                        .format(PowerColor.UNFORMATTED_COLOR_CHAR, "#7E63DE│ ", true, false, false));
+                ((ComponentBuilder) pageInfo).append(leftArrow);
+                ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor()
+                        .format(PowerColor.UNFORMATTED_COLOR_CHAR,
+                                "[gradient=#ffff00,#ef3300]" + pageNum + "/" + totalPages
+                                        + "[/gradient]",
+                                true, false, false));
+                ((ComponentBuilder) pageInfo).append(rightArrow);
+                ((ComponentBuilder) pageInfo).appendLegacy(PowerRanks.getPowerColor()
+                        .format(PowerColor.UNFORMATTED_COLOR_CHAR, " #f50be5│", true, false, false));
 
-            pageInfo = ((ComponentBuilder) pageInfo).create();
+                pageInfo = ((ComponentBuilder) pageInfo).create();
+            }
         }
         String unformattedPageInfo = PowerRanks.getPowerColor().removeFormat(PowerColor.UNFORMATTED_COLOR_CHAR,
-                PowerRanks.getPowerColor().removeFormat(PowerColor.COLOR_CHAR, pageInfo instanceof String
-                        ? (String) pageInfo
-                        : baseText));
+                PowerRanks.getPowerColor().removeFormat(PowerColor.COLOR_CHAR,
+                        pageInfo instanceof String && pageInfo != null
+                                ? (String) pageInfo
+                                : baseText));
         String pageInfoOffset = "";
 
         while ((isMonospace ? (unformattedTitle + pageInfoOffset + unformattedPageInfo).length()
@@ -215,7 +226,8 @@ public class Page {
             generatedList.add(title + pageInfoOffset + pageInfo);
         } else {
             ComponentBuilder titleComponent = new ComponentBuilder();
-            titleComponent.appendLegacy(PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, title, true, false, false));
+            titleComponent.appendLegacy(
+                    PowerRanks.getPowerColor().format(PowerColor.UNFORMATTED_COLOR_CHAR, title, true, false, false));
             titleComponent.append(pageInfoOffset);
             titleComponent.append((BaseComponent[]) pageInfo);
             generatedList.add(titleComponent.create());
