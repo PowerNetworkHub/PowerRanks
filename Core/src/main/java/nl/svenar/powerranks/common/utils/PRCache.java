@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -152,22 +153,24 @@ public class PRCache {
     }
 
     public static PRPlayer createPlayer(String name, UUID uniqueID) {
-        for (PRPlayer prPlayer : getPlayers()) {
-            if (prPlayer.getUUID().toString().equalsIgnoreCase(uniqueID.toString())) {
-                return null;
-            }
+        Optional<PRPlayer> existingPlayer = getPlayers().stream()
+                .filter(player -> player.getUUID().equals(uniqueID))
+                .findFirst();
+    
+        if (existingPlayer.isPresent()) {
+            return existingPlayer.get(); // Return existing player if found
         }
-
+    
         PRPlayer prPlayer = new PRPlayer();
         prPlayer.setUUID(uniqueID);
         prPlayer.setName(name);
-
+    
         Set<PRPlayerRank> playerRanks = getDefaultRanks().stream()
                 .map(PRPlayerRank::new)
                 .collect(Collectors.toSet());
-
+    
         prPlayer.setRanks(playerRanks);
-
+    
         addPlayer(prPlayer);
         return prPlayer;
     }
