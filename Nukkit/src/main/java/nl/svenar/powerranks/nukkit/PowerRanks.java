@@ -89,14 +89,18 @@ public class PowerRanks extends PluginBase {
         // ===---------------------------------------------------------=== //
         logger.info("Loading player & rank data");
         this.storageLoader = new StorageLoader();
-        PowerSQLConfiguration sqlConfig = new PowerSQLConfiguration(
-                configManager.getString("storage.mysql.host", "127.0.0.1"),
-                configManager.getInt("storage.mysql.port", 3306),
-                configManager.getString("storage.mysql.database", "powerranks"),
-                configManager.getString("storage.mysql.username", "username"),
-                configManager.getString("storage.mysql.password", "password"),
-                configManager.getBool("storage.mysql.ssl", false), "ranks", "players", "messages",
-                configManager.getBool("storage.mysql.verbose", false));
+        PowerSQLConfiguration sqlConfig = new PowerSQLConfiguration();
+
+        sqlConfig.setHost(configManager.getString("storage.mysql.host", "127.0.0.1"));
+        sqlConfig.setPort(configManager.getInt("storage.mysql.port", 3306));
+        sqlConfig.setDatabase(configManager.getString("storage.mysql.database", "powerranks"));
+        sqlConfig.setUsername(configManager.getString("storage.mysql.username", "username"));
+        sqlConfig.setPassword(configManager.getString("storage.mysql.password", "password"));
+        sqlConfig.setUseSSL(configManager.getBool("storage.mysql.ssl", false));
+        sqlConfig.setTableRanks("ranks");
+        sqlConfig.setTablePlayers("players");
+        sqlConfig.setTableMessages("messages");
+        sqlConfig.setSilentErrors(configManager.getBool("storage.mysql.verbose", false));
 
         this.storageManager = storageLoader.getStorageManager(Util.DATA_DIR,
                 configManager.getString("storage.type", "yaml"), sqlConfig);
