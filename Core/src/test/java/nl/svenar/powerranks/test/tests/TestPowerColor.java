@@ -207,15 +207,15 @@ public class TestPowerColor {
     }
 
     @Test
-    public void testPerformance() {
-        int numItems = 10000;
-        float maxDurationEachItem = 0.05f;
+    public void testGradientPerformance() {
+        int numItems = 100000;
+        float maxDurationEachItem = 0.02f;
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[testPerformance] Start");
+        TestDebugger.log(this, "[testGradientPerformance] Start");
 
         PowerColor powerColor = new PowerColor();
 
-        String inputString = "[gradient=#000000,#FFFFFF]This is a test message[/gradient]";
+        String inputString = "[gradient=#000000,#FFFFFF]This is a test message[/gradient] Hello, world! [gradient=#AABBCC,#BEDEAD]This is a another test message[/gradient]";
 
         Instant start = Instant.now();
         for (int i = 0; i < numItems; i++) {
@@ -223,9 +223,53 @@ public class TestPowerColor {
         }
         Instant end = Instant.now();
         assertTrue(end.toEpochMilli() - start.toEpochMilli() < maxDurationEachItem * numItems);
-        TestDebugger.log(this, "[testPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms (max: " + Math.round(maxDurationEachItem * numItems) + "ms)");
+        TestDebugger.log(this, "[testGradientPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms (max: " + Math.round(maxDurationEachItem * numItems) + "ms)");
 
-        TestDebugger.log(this, "[testPerformance] Done!");
+        TestDebugger.log(this, "[testGradientPerformance] Done!");
+    }
+
+    @Test
+    public void testRainbowPerformance() {
+        int numItems = 100000;
+        float maxDurationEachItem = 0.02f;
+        TestDebugger.log(this, "");
+        TestDebugger.log(this, "[testRainbowPerformance] Start");
+
+        PowerColor powerColor = new PowerColor();
+
+        String inputString = "[rainbow]Another message[/rainbow] Hello, world! [rainbow]This is a another test message[/rainbow]";
+
+        Instant start = Instant.now();
+        for (int i = 0; i < numItems; i++) {
+            powerColor.formatSpecial(PowerColor.UNFORMATTED_COLOR_CHAR, inputString);
+        }
+        Instant end = Instant.now();
+        assertTrue(end.toEpochMilli() - start.toEpochMilli() < maxDurationEachItem * numItems);
+        TestDebugger.log(this, "[testRainbowPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms (max: " + Math.round(maxDurationEachItem * numItems) + "ms)");
+
+        TestDebugger.log(this, "[testRainbowPerformance] Done!");
+    }
+
+    @Test
+    public void testPerformanceHEX() {
+        int numItems = 100000;
+        float maxDurationEachItem = 0.002f;
+        TestDebugger.log(this, "");
+        TestDebugger.log(this, "[testPerformanceHEX] Start");
+
+        PowerColor powerColor = new PowerColor();
+
+        String inputString = "#00cefbT#17bbf2e#2ea9e9s#4596e0t #5c83d7M#7370cee#8a5ec5s#a14bbcs#b838b3a#cf25aag#e613a1e#fd0098!";
+
+        Instant start = Instant.now();
+        for (int i = 0; i < numItems; i++) {
+            powerColor.formatSpecial(PowerColor.UNFORMATTED_COLOR_CHAR, inputString);
+        }
+        Instant end = Instant.now();
+        assertTrue(end.toEpochMilli() - start.toEpochMilli() < maxDurationEachItem * numItems);
+        TestDebugger.log(this, "[testPerformanceHEX] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms (max: " + Math.round(maxDurationEachItem * numItems) + "ms)");
+
+        TestDebugger.log(this, "[testPerformanceHEX] Done!");
     }
 
 }
