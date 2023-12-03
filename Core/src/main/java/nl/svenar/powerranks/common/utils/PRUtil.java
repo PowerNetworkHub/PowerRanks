@@ -36,7 +36,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
 
 public class PRUtil {
@@ -61,6 +63,18 @@ public class PRUtil {
      */
     public static void reverseRanks(List<PRRank> ranks) {
         Collections.reverse(ranks);
+    }
+
+    /**
+     * Convert a list of PRPlayerRanks to a list of PRRanks
+     * @param playerRanks
+     * @return List<PRRank>
+     */
+    public static List<PRRank> playerRanksToRanks(List<PRPlayerRank> playerRanks) {
+        return playerRanks.stream()
+                .map(PRPlayerRank::getName)
+                .map(name -> PRCache.getRank(name))
+                .collect(Collectors.toList());
     }
 
     /**

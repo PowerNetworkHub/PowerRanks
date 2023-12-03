@@ -4,8 +4,12 @@ import java.util.ArrayList;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+
+import com.google.common.collect.ImmutableMap;
 
 import nl.svenar.powerranks.bukkit.PowerRanks;
+import nl.svenar.powerranks.common.utils.PRUtil;
 
 public abstract class PowerCommand {
 	
@@ -43,4 +47,18 @@ public abstract class PowerCommand {
 	public String getCommandPermission() {
 		return this.commandPermission;
 	}
+
+	protected String prepareMessage(String langArg, boolean addPluginPrefix) {
+        return prepareMessage(langArg, ImmutableMap.of(), addPluginPrefix);
+    }
+
+    protected String prepareMessage(String langArg, ImmutableMap<String, @NotNull String> data, boolean addPluginPrefix) {
+        String langLine = PowerRanks.getLanguageManager().getFormattedMessage(langArg, false);
+        if (addPluginPrefix) {
+            String langPrefix = PowerRanks.getLanguageManager().getFormattedMessage("prefix", false);
+            return PRUtil.powerFormatter(langPrefix + " " + langLine, data, '[', ']');
+        } else {
+            return PRUtil.powerFormatter(langLine, data, '[', ']');
+        }
+    }
 }

@@ -52,10 +52,22 @@ public class LanguageManager {
      * @return Unformatted message with plugin prefix
      */
     public String getMessage(String path) {
+        return getMessage(path, true);
+    }
+
+    /**
+     * Get a message from the language cache in a specific language.
+     * 
+     * @param path
+     * @param addPrefix
+     * @return Unformatted message with plugin prefix
+     */
+    public String getMessage(String path, boolean addPrefix) {
         path = "lang." + this.language + "." + path;
         String output = this.languageManager.getString(path);
         output = output == null ? path : output;
-        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + output;
+        output = (addPrefix ? this.languageManager.getString("lang." + this.language + ".general.prefix") + " " : "")
+                + output;
         return output;
     }
 
@@ -83,11 +95,24 @@ public class LanguageManager {
         return PowerRanks.chatColor(getMessage(path), true);
     }
 
+    /**
+     * Get a message from the language cache in a specific language and return the
+     * chatcolor formatted message.
+     * 
+     * @param path
+     * @param addPrefix
+     * @return Chatcolor formatted message
+     */
+    public String getFormattedMessage(String path, boolean addPrefix) {
+        return PowerRanks.chatColor(getMessage(path, addPrefix), true);
+    }
+
     public String getUsageMessage(String commandLabel, String commandName, String path, boolean isPlayer) {
         path = "lang." + this.language + "." + path;
         String output = this.languageManager.getString(path);
         output = output == null ? path : output;
-        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " " + (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
+        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " "
+                + (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
         return output;
     }
 
@@ -119,6 +144,7 @@ public class LanguageManager {
     public void save() {
         this.languageManager.save();
     }
+
     /**
      * Reload the language data
      */

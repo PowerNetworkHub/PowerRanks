@@ -18,4 +18,13 @@ public class BukkitPowerColor {
         return text;
     }
 
+    public String removeFormat(char altColorChar, String text) {
+        String targetText = text;
+        targetText = this.powerColor.removeFormatSpecial(altColorChar, text);
+        targetText = this.powerColor.removeFormatHEX(altColorChar, targetText);
+        targetText = this.powerColor.removeFormatColor(altColorChar, targetText);
+
+        return targetText;
+    }
+
 }
