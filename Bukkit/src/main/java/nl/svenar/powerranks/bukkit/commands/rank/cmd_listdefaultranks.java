@@ -227,7 +227,7 @@ public class cmd_listdefaultranks extends PowerCommand {
 		}
 
 		for (PRRank prrank : ranks) {
-			String line = prepareMessage("list-rank-item", ImmutableMap.of( //
+			String line = prepareMessage("list.list-rank-item", ImmutableMap.of( //
 					"rank", nameBuffer.get(prrank.getName()), //
 					"prefix", prefixBuffer.get(prrank.getName()), //
 					"suffix", suffixBuffer.get(prrank.getName()), //

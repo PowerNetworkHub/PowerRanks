@@ -10,6 +10,9 @@ lang:
          console-is-no-player: "&cThe console is not a player and has no ranks!"
          player-rank-has-expired: "&aYour rank [rank] has expired!"
          player-rank-expired-console: "&cRemoved expired rank [rank] from [player]"
+      list:
+         list-rank-item: "&7[weight] &f[rank]&a &r[prefix]"
+         list-permission-item: "&r[permission]"
       messages:
          signs:
             created: "&aNew sign command created"
