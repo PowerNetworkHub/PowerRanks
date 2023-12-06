@@ -73,6 +73,9 @@ public class PageNavigationManager {
                 }
             }
             if (everyLineBeginsWithSpace) {
+                if (pageItems.size() == 0) {
+                    break;
+                }
                 for (int i = 0; i < pageItems.size(); i++) {
                     String color = "";
                     for (char c : pageItems.get(i).toCharArray()) {
