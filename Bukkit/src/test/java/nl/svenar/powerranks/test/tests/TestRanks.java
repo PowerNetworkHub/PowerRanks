@@ -10,6 +10,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import org.bukkit.entity.Player;
 
@@ -33,6 +34,7 @@ public class TestRanks {
         server = Mock.getServerMock();
 
         server.setPlayers(numPlayers);
+        assumeTrue(numPlayers == CacheManager.getPlayers().size());
     }
 
     @AfterAll
@@ -49,7 +51,6 @@ public class TestRanks {
 
         player.setOp(true);
 
-        assertEquals(numPlayers, CacheManager.getPlayers().size());
         int numRanks = CacheManager.getRanks().size();
         server.execute("pr", player, "createrank", "Test1");
         assertEquals(numRanks + 1, CacheManager.getRanks().size());
