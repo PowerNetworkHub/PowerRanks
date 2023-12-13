@@ -27,4 +27,7 @@ public class BukkitPowerColor {
         return targetText;
     }
 
+    public PowerColor getPowerColorHandler() {
+        return this.powerColor;
+    }
 }
