@@ -43,12 +43,15 @@ public class GUI {
 		boolean is_powerranks_gui = false;
 
 		for (int i = 0; i < inventory.getSize(); i++) {
-			if (inventory.getItem(i) != null && inventory.getItem(i).getItemMeta() != null
-					&& inventory.getItem(i).getItemMeta().getLore() != null
-					&& inventory.getItem(i).getItemMeta().getLore().get(0).toLowerCase()
-							.contains(PowerRanks.pdf.getName().toLowerCase())) {
-				is_powerranks_gui = true;
-				break;
+			try {
+				if (inventory.getItem(i) != null && inventory.getItem(i).getItemMeta() != null
+						&& inventory.getItem(i).getItemMeta().getLore() != null
+						&& inventory.getItem(i).getItemMeta().getLore().get(0).toLowerCase()
+								.contains(PowerRanks.pdf.getName().toLowerCase())) {
+					is_powerranks_gui = true;
+					break;
+				}
+			} catch (IndexOutOfBoundsException e) {
 			}
 		}
 
