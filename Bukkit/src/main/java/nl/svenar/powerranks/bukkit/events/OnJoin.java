@@ -75,6 +75,7 @@ public class OnJoin implements Listener {
 		plugin.playerInjectPermissible(player);
 
 		PRPlayer prPlayer = CacheManager.getPlayer(player);
+		prPlayer.setName(player.getName());
 		prPlayer.updateTags(player.getLocation().getWorld().getName());
 		plugin.updateTablistName(player);
 		plugin.getTablistManager().updateSorting(player);
