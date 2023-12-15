@@ -76,7 +76,6 @@ public class TablistManager {
 
                 boolean doUpdateRanks = false;
 
-
                 List<PRRank> sortedRanks = CacheManager.getRanks();
                 PRUtil.sortRanksByWeight(sortedRanks);
                 if (!PowerRanks.getTablistConfigManager().getBool("sorting.reverse", false)) {
@@ -269,12 +268,18 @@ public class TablistManager {
         PowerRanksVerbose.log("TablistSort", "Stopping");
 
         if (sortingTask != null) {
-            sortingTask.cancel();
+            try {
+                sortingTask.cancel();
+            } catch (IllegalStateException e) {
+            }
             sortingTask = null;
         }
 
         if (headerFooterTask != null) {
-            headerFooterTask.cancel();
+            try {
+                headerFooterTask.cancel();
+            } catch (IllegalStateException e) {
+            }
             headerFooterTask = null;
         }
 
