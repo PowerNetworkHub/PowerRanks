@@ -149,6 +149,12 @@ public class PRCache {
         } catch (IllegalArgumentException e) {
         }
 
+        for (PRPlayer player : registeredPlayersByName.values()) {
+            if (player.getName().equalsIgnoreCase(identifier)) {
+                return player;
+            }
+        }
+
         return prPlayer;
     }
 
