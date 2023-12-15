@@ -199,20 +199,25 @@ public abstract class PowerConfigManager {
 
             if (!isLast) {
                 if (currentKey instanceof HashMap) {
-                    currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                    currentKey = ((HashMap<String, Object>) currentKey).get(keySplit[i]);
                 } else {
                     if (currentKey != null) {
-                        if (((HashMap<String, Object>)currentKey).containsKey(keySplit[i])) {
-                            throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key + "' is not a map and has no children to be set!");
+                        if (((HashMap<String, Object>) currentKey).containsKey(keySplit[i])) {
+                            throw new IllegalStateException("Key part '" + keySplit[i] + "' from '" + key
+                                    + "' is not a map and has no children to be set!");
                         } else {
-                            ((HashMap<String, Object>)currentKey).put(keySplit[i], new HashMap<String, Object>());
-                            currentKey = ((HashMap<String, Object>)currentKey).get(keySplit[i]);
+                            ((HashMap<String, Object>) currentKey).put(keySplit[i], new HashMap<String, Object>());
+                            currentKey = ((HashMap<String, Object>) currentKey).get(keySplit[i]);
                         }
                     }
                 }
             } else {
                 if (currentKey != null) {
-                    ((HashMap<String, Object>)currentKey).put(keySplit[i], value);
+                    try {
+                        ((HashMap<String, Object>) currentKey).put(keySplit[i], value);
+                    } catch (ClassCastException cce) {
+                        ((LinkedTreeMap<String, Object>) currentKey).put(keySplit[i], value);
+                    }
                 }
             }
         }
@@ -271,7 +276,11 @@ public abstract class PowerConfigManager {
      * @return integer
      */
     public int getInt(String key, int defaultValue) {
-        return Integer.parseInt(this.getKV(key, defaultValue).toString());
+        String input = this.getKV(key, defaultValue).toString();
+        int output = input.contains(".")
+                ? Math.round(Float.parseFloat(input.replaceAll("[^0-9.]", "")))
+                : Integer.parseInt(input.replaceAll("[^0-9.]", ""));
+        return output;
     }
 
     /**

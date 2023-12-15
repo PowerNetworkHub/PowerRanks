@@ -54,19 +54,26 @@ public class PowerSQLConfiguration {
      * @param tablePlayers
      * @param tableMessages
      */
-    public PowerSQLConfiguration(String host, int port, String database, String username, String password,
-            boolean useSSL,
-            String tableRanks, String tablePlayers, String tableMessages, boolean silentErrors) {
+    public PowerSQLConfiguration() {
+        this.host = "";
+        this.port = 0;
+        this.database = "";
+        this.username = "";
+        this.password = "";
+        this.useSSL = false;
+        this.tableRanks = "";
+        this.tablePlayers = "";
+        this.tableMessages = "";
+        this.silentErrors = false;
+    }
+
+    /**
+     * Set the database host (ip or hostname)
+     * 
+     * @param host
+     */
+    public void setHost(String host) {
         this.host = host;
-        this.port = port;
-        this.database = database;
-        this.username = username;
-        this.password = password;
-        this.useSSL = useSSL;
-        this.tableRanks = tableRanks;
-        this.tablePlayers = tablePlayers;
-        this.tableMessages = tableMessages;
-        this.silentErrors = silentErrors;
     }
 
     /**
@@ -78,11 +85,29 @@ public class PowerSQLConfiguration {
     }
 
     /**
+     * Set the database port
+     * 
+     * @param port
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
      * 
      * @return Database port
      */
     public int getPort() {
         return this.port;
+    }
+
+    /**
+     * Set the database name
+     * 
+     * @param database
+     */
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     /**
@@ -94,11 +119,29 @@ public class PowerSQLConfiguration {
     }
 
     /**
+     * Set the database username
+     * 
+     * @param username
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
      * 
      * @return Database username
      */
     public String getUsername() {
         return this.username;
+    }
+
+    /**
+     * Set the database password
+     * 
+     * @param password
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -110,11 +153,29 @@ public class PowerSQLConfiguration {
     }
 
     /**
+     * Set whether to use SSL for connecting
+     * 
+     * @param useSSL
+     */
+    public void setUseSSL(boolean useSSL) {
+        this.useSSL = useSSL;
+    }
+
+    /**
      * 
      * @return Whether to use SSL for connecting
      */
     public boolean isUsingSSL() {
         return this.useSSL;
+    }
+
+    /**
+     * Set the name used to store all rank data in
+     * 
+     * @param tableRanks
+     */
+    public void setTableRanks(String tableRanks) {
+        this.tableRanks = tableRanks;
     }
 
     /**
@@ -127,12 +188,30 @@ public class PowerSQLConfiguration {
     }
 
     /**
+     * Set the name used to store all player data in
+     * 
+     * @param tablePlayers
+     */
+    public void setTablePlayers(String tablePlayers) {
+        this.tablePlayers = tablePlayers;
+    }
+
+    /**
      * Get the name used to store all player data in
      * 
      * @return Table name for players
      */
     public String getTablePlayers() {
         return this.tablePlayers;
+    }
+
+    /**
+     * Set the name used to store all message data in
+     * 
+     * @param tableMessages
+     */
+    public void setTableMessages(String tableMessages) {
+        this.tableMessages = tableMessages;
     }
 
     /**
@@ -144,6 +223,20 @@ public class PowerSQLConfiguration {
         return this.tableMessages;
     }
 
+    /**
+     * Set whether to silently ignore errors
+     * 
+     * @param silentErrors
+     */
+    public void setSilentErrors(boolean silentErrors) {
+        this.silentErrors = silentErrors;
+    }
+
+    /**
+     * Get whether to silently ignore errors
+     * 
+     * @return Whether to silently ignore errors
+     */
     public boolean silentErrors() {
         return this.silentErrors;
     }

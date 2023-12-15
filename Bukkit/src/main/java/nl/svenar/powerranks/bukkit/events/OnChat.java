@@ -113,17 +113,17 @@ public class OnChat implements Listener {
 							"");
 				}
 
-				String player_formatted_name = (nameColor.length() == 0 ? "&r" : "")
-						+ PowerRanks.applyMultiColorFlow(nameColor, player.getDisplayName());
-				String player_formatted_chat_msg = (chatColor.length() == 0 ? "&r" : "")
-						+ PowerRanks.applyMultiColorFlow(chatColor, playersChatMessage);
+				String playerFormattedName = PowerRanks.getPowerColor().getPowerColorHandler()
+						.formatAroundMessage(player.getDisplayName(), nameColor);
+				String playerFormattedChatMessage = PowerRanks.getPowerColor().getPowerColorHandler()
+						.formatAroundMessage(playersChatMessage, chatColor);
 
 				// Dirty PremiumVanish work around
 				if (Objects
 						.nonNull(PowerRanks.getInstance().getServer().getPluginManager().getPlugin("PremiumVanish"))) {
-					if (player_formatted_chat_msg.endsWith("/")) {
-						player_formatted_chat_msg = player_formatted_chat_msg.substring(0,
-								player_formatted_chat_msg.length() - 1);
+					if (playerFormattedChatMessage.endsWith("/")) {
+						playerFormattedChatMessage = playerFormattedChatMessage.substring(0,
+								playerFormattedChatMessage.length() - 1);
 					}
 				}
 
@@ -139,8 +139,8 @@ public class OnChat implements Listener {
 										!PowerRanks.plugin_hook_deluxetags ? usertag
 												: PowerRanks.getInstance().getDeluxeTagsHook()
 														.getPlayerDisplayTag(player))
-								.put("player", player_formatted_name)
-								.put("msg", PowerRanks.chatColor(player_formatted_chat_msg, true))
+								.put("player", playerFormattedName)
+								.put("msg", PowerRanks.chatColor(playerFormattedChatMessage, true))
 								.put("format", e.getFormat()).put("world", player.getWorld().getName()).build(),
 						'[', ']');
 
