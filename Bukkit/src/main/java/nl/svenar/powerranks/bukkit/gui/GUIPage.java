@@ -434,7 +434,7 @@ public class GUIPage {
 																						"&n"),
 																				DyeColor.WHITE, PatternType.BASE),
 																		DyeColor.BLACK,
-																		PatternType.HALF_HORIZONTAL_MIRROR),
+																		PatternType.HALF_HORIZONTAL_BOTTOM),
 														DyeColor.WHITE, PatternType.STRIPE_BOTTOM),
 										DyeColor.WHITE, PatternType.STRIPE_MIDDLE));
 				new_gui.setItem(3, BannerItem.addPattern(BannerItem.addPattern(BannerItem.createEmpty("Itallic", "&o"),
@@ -456,7 +456,7 @@ public class GUIPage {
 																				PatternType.STRIPE_DOWNLEFT),
 																		DyeColor.BLACK, PatternType.TRIANGLE_BOTTOM),
 														DyeColor.BLACK, PatternType.TRIANGLE_TOP),
-										DyeColor.BLACK, PatternType.CIRCLE_MIDDLE));
+										DyeColor.BLACK, PatternType.CIRCLE));
 				new_gui.setItem(5, BannerItem.addPattern(
 						BannerItem.addPattern(BannerItem.createEmpty("Strike", "&m"), DyeColor.WHITE, PatternType.BASE),
 						DyeColor.BLACK, PatternType.STRIPE_MIDDLE));
