@@ -1,29 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.svenar</groupId>
-    <artifactId>powerranks.nukkit</artifactId>
-    <version>${revision}</version>
-    <name>PowerRanks Nukkit</name>
-    <description>Rank-based permission manager</description>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nl.svenar</groupId>
+	<artifactId>powerranks.nukkit</artifactId>
+	<version>${revision}</version>
+	<name>PowerRanks Nukkit</name>
+	<description>Rank-based permission manager</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <src.dir>src/main/java</src.dir>
-        <rsc.dir>src/main/resources</rsc.dir>
-        <shade.basepattern>nl.svenar.lib</shade.basepattern>
-        <skipNukkitTests>false</skipNukkitTests>
-    </properties>
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<src.dir>src/main/java</src.dir>
+		<rsc.dir>src/main/resources</rsc.dir>
+		<shade.basepattern>nl.svenar.lib</shade.basepattern>
+		<skipNukkitTests>false</skipNukkitTests>
+	</properties>
 
-    <parent>
+	<parent>
 		<groupId>nl.svenar</groupId>
 		<artifactId>powerranks</artifactId>
 		<version>${revision}</version>
 	</parent>
 
-    <build>
+	<build>
 		<defaultGoal>clean compile package</defaultGoal>
 		<finalName>${output.name}</finalName>
 		<sourceDirectory>${src.dir}</sourceDirectory>
@@ -49,7 +49,7 @@
 				<version>2.3.1</version>
 			</plugin>
 
-            <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.1.0</version>
@@ -105,22 +105,22 @@
 		</plugins>
 	</build>
 
-    <repositories>
+	<repositories>
 		<repository>
 			<id>svenar</id>
 			<url>https://svenar.nl/repo/</url>
 		</repository>
-        <repository>
-            <id>opencollab-repo-release</id>
-            <url>https://repo.opencollab.dev/maven-releases</url>
-        </repository>
-        <repository>
-            <id>opencollab-repo-snapshot</id>
-            <url>https://repo.opencollab.dev/maven-snapshots</url>
-        </repository>
-    </repositories>
+		<repository>
+			<id>opencollab-repo-release</id>
+			<url>https://repo.opencollab.dev/maven-releases</url>
+		</repository>
+		<repository>
+			<id>opencollab-repo-snapshot</id>
+			<url>https://repo.opencollab.dev/maven-snapshots</url>
+		</repository>
+	</repositories>
 
-    <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>nl.svenar</groupId>
 			<artifactId>powerranks.core</artifactId>
@@ -132,11 +132,10 @@
 			<version>${revision}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>cn.nukkit</groupId>
-            <artifactId>nukkit</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.powernukkit</groupId>
+			<artifactId>powernukkit</artifactId>
+			<version>1.6.0.1-PN</version>
+		</dependency>
+	</dependencies>
 </project>
