@@ -131,6 +131,8 @@ permissions:
     default: op
   powerranks.cmd.playerinfo:
     default: op
+  powerranks.cmd.permissionlookups:
+    default: op
   powerranks.cmd.verbose:
     default: op
   powerranks.cmd.pluginhook:

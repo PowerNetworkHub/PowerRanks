@@ -1,7 +1,7 @@
 package nl.svenar.powerranks.test.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 
@@ -23,9 +23,9 @@ public class TestPowerColor {
         String expected = "§4§lHello §c§lWorld";
         String actual = powerColor.formatColor(PowerColor.UNFORMATTED_COLOR_CHAR, input);
 
-        if (!expected.toLowerCase().equals(actual.toLowerCase())) {
+        if (!expected.equalsIgnoreCase(actual)) {
             TestDebugger.log(this,
-                    "[testOldColorFormat] (" + (expected.toLowerCase().equals(actual.toLowerCase()))
+                    "[testOldColorFormat] (" + (expected.equalsIgnoreCase(actual))
                             + "): "
                             + expected.toLowerCase() + " == " + actual.toLowerCase());
         }
@@ -47,15 +47,15 @@ public class TestPowerColor {
         String actual1 = powerColor.formatHEX(PowerColor.UNFORMATTED_COLOR_CHAR, input);
         String actual2 = powerColor.formatColor(PowerColor.UNFORMATTED_COLOR_CHAR, actual1);
 
-        if (!expected1.toLowerCase().equals(actual1.toLowerCase())) {
+        if (!expected1.equalsIgnoreCase(actual1)) {
             TestDebugger.log(this, "[testHEXColorFormat] ("
-                    + (expected1.toLowerCase().equals(actual1.toLowerCase()))
+                    + (expected1.equalsIgnoreCase(actual1))
                     + "): " + expected1.toLowerCase() + " == " + actual1.toLowerCase());
         }
         assertEquals(expected1.toLowerCase(), actual1.toLowerCase());
-        if (!expected2.toLowerCase().equals(actual2.toLowerCase())) {
+        if (!expected2.equalsIgnoreCase(actual2)) {
             TestDebugger.log(this, "[testHEXColorFormat] ("
-                    + (expected2.toLowerCase().equals(actual2.toLowerCase()))
+                    + (expected2.equalsIgnoreCase(actual2))
                     + "): " + expected2.toLowerCase() + " == " + actual2.toLowerCase());
         }
         assertEquals(expected2.toLowerCase(), actual2.toLowerCase());
@@ -76,7 +76,7 @@ public class TestPowerColor {
         String interpolateOutput = powerColor.interpolateColor(interpolateColor1, interpolateColor2, 0.5);
         String interpolateExpected = "#c3d4e5";
 
-        if (!interpolateExpected.toLowerCase().equals(interpolateOutput.toLowerCase())) {
+        if (!interpolateExpected.equalsIgnoreCase(interpolateOutput)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat interpolation] ("
                             + (interpolateExpected.toLowerCase()
@@ -96,21 +96,19 @@ public class TestPowerColor {
         String actualRainbow2 = powerColor.formatColor(PowerColor.UNFORMATTED_COLOR_CHAR,
                 powerColor.formatHEX(PowerColor.UNFORMATTED_COLOR_CHAR, actualRainbow1));
 
-        if (!expectedRainbow1.toLowerCase().equals(actualRainbow1.toLowerCase())) {
+        if (!expectedRainbow1.equalsIgnoreCase(actualRainbow1)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat rainbow #1] ("
-                            + (expectedRainbow1.toLowerCase()
-                                    .equals(actualRainbow1.toLowerCase()))
+                            + (expectedRainbow1.equalsIgnoreCase(actualRainbow1))
                             + "): "
                             + expectedRainbow1.toLowerCase() + " == "
                             + actualRainbow1.toLowerCase());
         }
         assertEquals(expectedRainbow1.toLowerCase(), actualRainbow1.toLowerCase());
-        if (!expectedRainbow2.toLowerCase().equals(actualRainbow2.toLowerCase())) {
+        if (!expectedRainbow2.equalsIgnoreCase(actualRainbow2)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat rainbow #2] ("
-                            + (expectedRainbow2.toLowerCase()
-                                    .equals(actualRainbow2.toLowerCase()))
+                            + (expectedRainbow2.equalsIgnoreCase(actualRainbow2))
                             + "): "
                             + expectedRainbow2.toLowerCase() + " == "
                             + actualRainbow2.toLowerCase());
@@ -126,21 +124,19 @@ public class TestPowerColor {
         String actualGradient2 = powerColor.formatColor(PowerColor.UNFORMATTED_COLOR_CHAR,
                 powerColor.formatHEX(PowerColor.UNFORMATTED_COLOR_CHAR, actualGradient1));
 
-        if (!expectedGradient1.toLowerCase().equals(actualGradient1.toLowerCase())) {
+        if (!expectedGradient1.equalsIgnoreCase(actualGradient1)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat gradient #1] ("
-                            + (expectedGradient1.toLowerCase()
-                                    .equals(actualGradient1.toLowerCase()))
+                            + (expectedGradient1.equalsIgnoreCase(actualGradient1))
                             + "): "
                             + expectedGradient1.toLowerCase() + " == "
                             + actualGradient1.toLowerCase());
         }
         assertEquals(expectedGradient2.toLowerCase(), actualGradient2.toLowerCase());
-        if (!expectedGradient2.toLowerCase().equals(actualGradient2.toLowerCase())) {
+        if (!expectedGradient2.equalsIgnoreCase(actualGradient2)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat gradient #2] ("
-                            + (expectedGradient2.toLowerCase()
-                                    .equals(actualGradient2.toLowerCase()))
+                            + (expectedGradient2.equalsIgnoreCase(actualGradient2))
                             + "): "
                             + expectedGradient2.toLowerCase() + " == "
                             + actualGradient2.toLowerCase());
@@ -155,18 +151,18 @@ public class TestPowerColor {
         String actualAll2 = powerColor.formatColor(PowerColor.UNFORMATTED_COLOR_CHAR,
                 powerColor.formatHEX(PowerColor.UNFORMATTED_COLOR_CHAR, actualAll1));
         
-        if (!expectedAll1.toLowerCase().equals(actualAll1.toLowerCase())) {
+        if (!expectedAll1.equalsIgnoreCase(actualAll1)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat all #1] ("
-                            + (expectedAll1.toLowerCase().equals(actualAll1.toLowerCase()))
+                            + (expectedAll1.equalsIgnoreCase(actualAll1))
                             + "): " + expectedAll1.toLowerCase() + " == "
                             + actualAll1.toLowerCase());
         }
         assertEquals(expectedAll1.toLowerCase(), actualAll1.toLowerCase());
-        if (!expectedAll2.toLowerCase().equals(actualAll2.toLowerCase())) {
+        if (!expectedAll2.equalsIgnoreCase(actualAll2)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat all #2] ("
-                            + (expectedAll2.toLowerCase().equals(actualAll2.toLowerCase()))
+                            + (expectedAll2.equalsIgnoreCase(actualAll2))
                             + "): " + expectedAll2.toLowerCase() + " == "
                             + actualAll2.toLowerCase());
         }
@@ -180,22 +176,20 @@ public class TestPowerColor {
         String actualChat2 = powerColor.formatColor(PowerColor.UNFORMATTED_COLOR_CHAR,
                 powerColor.formatHEX(PowerColor.UNFORMATTED_COLOR_CHAR, actualChat1));
 
-        if (!expectedChat1.toLowerCase().equals(actualChat1.toLowerCase())) {
+        if (!expectedChat1.equalsIgnoreCase(actualChat1)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat chat #1] ("
-                            + (expectedChat1.toLowerCase()
-                                    .equals(actualChat1.toLowerCase()))
+                            + (expectedChat1.equalsIgnoreCase(actualChat1))
                             + "): "
                             + expectedChat1.toLowerCase() + " == "
                             + actualChat1.toLowerCase());
         }
         assertEquals(expectedChat2.toLowerCase(), actualChat2.toLowerCase());
 
-        if (!expectedChat2.toLowerCase().equals(actualChat2.toLowerCase())) {
+        if (!expectedChat2.equalsIgnoreCase(actualChat2)) {
             TestDebugger.log(this,
                     "[testSpecialColorFormat chat #2] ("
-                            + (expectedChat2.toLowerCase()
-                                    .equals(actualChat2.toLowerCase()))
+                            + (expectedChat2.equalsIgnoreCase(actualChat2))
                             + "): "
                             + expectedChat2.toLowerCase() + " == "
                             + actualChat2.toLowerCase());
@@ -222,7 +216,7 @@ public class TestPowerColor {
             powerColor.formatSpecial(PowerColor.UNFORMATTED_COLOR_CHAR, inputString);
         }
         Instant end = Instant.now();
-        assumeTrue(end.toEpochMilli() - start.toEpochMilli() < maxDurationEachItem * numItems);
+        assertTrue(end.toEpochMilli() - start.toEpochMilli() < maxDurationEachItem * numItems);
         TestDebugger.log(this, "[testPerformance] " + (end.toEpochMilli() - start.toEpochMilli()) + "ms (max: " + Math.round(maxDurationEachItem * numItems) + "ms)");
 
         TestDebugger.log(this, "[testPerformance] Done!");

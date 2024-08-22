@@ -13,6 +13,7 @@ lang:
       list:
          list-rank-item: "&7[weight] &f[rank]&a &r[prefix]"
          list-permission-item: "&r[permission]"
+         list-permissioncallcount-item: "&7[callcount] &r[permission]"
       messages:
          signs:
             created: "&aNew sign command created"

@@ -37,6 +37,7 @@ import nl.svenar.powerranks.bukkit.commands.core.cmd_reload;
 import nl.svenar.powerranks.bukkit.commands.core.cmd_stats;
 import nl.svenar.powerranks.bukkit.commands.core.cmd_tablist;
 import nl.svenar.powerranks.bukkit.commands.core.cmd_verbose;
+import nl.svenar.powerranks.bukkit.commands.core.cmd_permissionlookups;
 import nl.svenar.powerranks.bukkit.commands.player.cmd_addownrank;
 import nl.svenar.powerranks.bukkit.commands.player.cmd_addplayerperm;
 import nl.svenar.powerranks.bukkit.commands.player.cmd_addrank;
@@ -66,7 +67,6 @@ import nl.svenar.powerranks.bukkit.commands.rank.cmd_setnamecolor;
 import nl.svenar.powerranks.bukkit.commands.rank.cmd_setprefix;
 import nl.svenar.powerranks.bukkit.commands.rank.cmd_setsuffix;
 import nl.svenar.powerranks.bukkit.commands.rank.cmd_setweight;
-import nl.svenar.powerranks.bukkit.commands.test.cmd_test;
 import nl.svenar.powerranks.bukkit.commands.usertags.cmd_addusertag;
 import nl.svenar.powerranks.bukkit.commands.usertags.cmd_clearusertag;
 import nl.svenar.powerranks.bukkit.commands.usertags.cmd_createusertag;
@@ -98,6 +98,7 @@ public class PowerCommandHandler implements CommandExecutor {
 		new cmd_addonmanager(plugin, "addonmanager", COMMAND_EXECUTOR.ALL);
 		new cmd_playerinfo(plugin, "playerinfo", COMMAND_EXECUTOR.ALL);
 		new cmd_haspermission(plugin, "haspermission", COMMAND_EXECUTOR.ALL);
+		new cmd_permissionlookups(plugin, "permissionlookups", COMMAND_EXECUTOR.ALL);
 		new cmd_dump(plugin, "dump", COMMAND_EXECUTOR.ALL);
 
 		new cmd_setrank(plugin, "setrank", COMMAND_EXECUTOR.ALL);
@@ -151,8 +152,6 @@ public class PowerCommandHandler implements CommandExecutor {
 
 		new cmd_webeditor(plugin, "webeditor", COMMAND_EXECUTOR.ALL);
 		new cmd_webeditor(plugin, "we", COMMAND_EXECUTOR.ALL);
-
-		new cmd_test(plugin, "test", COMMAND_EXECUTOR.ALL);
 	}
 
 	private static boolean canExecuteCommand(CommandSender sender, PowerCommand command_handler) {

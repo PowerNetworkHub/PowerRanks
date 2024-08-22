@@ -34,11 +34,11 @@ public class LanguageManager {
      * @return List of found keys
      */
     public List<String> getKeys(String path) {
-        path = "lang." + this.language + "." + path;
+        String targetPath = "lang." + this.language + "." + path;
 
         List<String> keys = new ArrayList<String>();
 
-        for (Entry<?, ?> entry : this.languageManager.getMap(path, new HashMap<String, String>()).entrySet()) {
+        for (Entry<?, ?> entry : this.languageManager.getMap(targetPath, new HashMap<String, String>()).entrySet()) {
             keys.add(String.valueOf(entry.getKey()));
         }
 
@@ -78,9 +78,9 @@ public class LanguageManager {
      * @return Unformatted message
      */
     public String getUnformattedMessage(String path) {
-        path = "lang." + this.language + "." + path;
-        String output = this.languageManager.getString(path);
-        output = output == null ? path : output;
+        String targetPath = "lang." + this.language + "." + path;
+        String output = this.languageManager.getString(targetPath);
+        output = output == null ? targetPath : output;
         return output;
     }
 
@@ -108,11 +108,10 @@ public class LanguageManager {
     }
 
     public String getUsageMessage(String commandLabel, String commandName, String path, boolean isPlayer) {
-        path = "lang." + this.language + "." + path;
-        String output = this.languageManager.getString(path);
-        output = output == null ? path : output;
-        output = this.languageManager.getString("lang." + this.language + ".general.prefix") + " "
-                + (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
+        String targetPath = "lang." + this.language + "." + path;
+        String output = this.languageManager.getString(targetPath);
+        output = output == null ? targetPath : output;
+        output = (isPlayer ? "/" : "") + commandLabel + " " + commandName + " " + output;
         return output;
     }
 
@@ -144,7 +143,6 @@ public class LanguageManager {
     public void save() {
         this.languageManager.save();
     }
-
     /**
      * Reload the language data
      */
