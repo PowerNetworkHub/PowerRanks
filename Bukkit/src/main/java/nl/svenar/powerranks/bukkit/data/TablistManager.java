@@ -217,6 +217,10 @@ public class TablistManager {
             output += line + "\n";
         }
 
+        if (output.length() == 0) {
+            return output;
+        }
+
         if (PowerRanks.placeholderapiExpansion != null) {
             output = PlaceholderAPI.setPlaceholders(player, output).replaceAll("" + ChatColor.COLOR_CHAR,
                     "" + PowerColor.UNFORMATTED_COLOR_CHAR);
@@ -234,6 +238,10 @@ public class TablistManager {
 
         for (String line : footerLines) {
             output += line + "\n";
+        }
+
+        if (output.length() == 0) {
+            return output;
         }
 
         if (PowerRanks.placeholderapiExpansion != null) {
