@@ -453,7 +453,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				permissionRegistry.tick();
+				permissionRegistry.tick(256);
 			}
 		}.runTaskTimer(this, 1, 1);
 	}

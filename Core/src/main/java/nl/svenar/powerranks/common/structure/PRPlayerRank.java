@@ -72,7 +72,7 @@ public class PRPlayerRank {
         if (tagName.equalsIgnoreCase("expires")) {
             long currentTimeMillis = System.currentTimeMillis();
             tagValue = PRUtil.timeStringToSecondsConverter(String.valueOf(tagValue));
-            tagValue = currentTimeMillis + ((int) tagValue * 1000);
+            tagValue = currentTimeMillis + ((int) tagValue * 1000L);
         }
 
         if (tagName.equalsIgnoreCase("world")) {
