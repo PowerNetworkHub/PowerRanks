@@ -17,9 +17,10 @@ public class PermissionRegistry {
         this.queue.add(permissionNode);
     }
 
-    public void tick() {
-        String permissionNode = this.queue.poll();
-        if (permissionNode != null) {
+    public void tick(int batchSize) {
+        for (int i = 0; i < batchSize; i++) {
+            String permissionNode = this.queue.poll();
+            if (permissionNode == null) break;
             addPermission(permissionNode);
         }
     }
