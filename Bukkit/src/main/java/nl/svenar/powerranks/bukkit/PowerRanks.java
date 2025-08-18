@@ -1199,7 +1199,7 @@ public class PowerRanks extends JavaPlugin implements Listener {
 
 	private boolean isMockBukkitLoaded() {
 		try {
-			Class.forName("be.seeseemelk.mockbukkit.MockBukkit");
+			Class.forName("org.mockbukkit.mockbukkit.MockBukkit");
 			return true;
 		} catch (ClassNotFoundException e) {
 			return false;

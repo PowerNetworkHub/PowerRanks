@@ -14,7 +14,7 @@ import static org.junit.Assume.assumeTrue;
 
 import org.bukkit.entity.Player;
 
-import be.seeseemelk.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.ServerMock;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.test.util.Mock;

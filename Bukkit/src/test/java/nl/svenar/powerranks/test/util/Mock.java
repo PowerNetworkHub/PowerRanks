@@ -4,9 +4,10 @@ import static org.junit.Assert.assertNotNull;
 
 import org.bukkit.entity.Player;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.UnimplementedOperationException;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.exception.UnimplementedOperationException;
+
 import nl.svenar.powerranks.bukkit.PowerRanks;
 
 public class Mock {
