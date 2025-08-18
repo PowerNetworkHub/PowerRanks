@@ -207,7 +207,7 @@ public class ConfigFilesUpdater {
 						playersYaml.getStringList("players." + playerUUID + ".permissions"))) {
 					PRPermission newPermission = new PRPermission();
 					newPermission.setName(perm);
-					newPlayer.addPermission(newPermission);
+					newPlayer.addPlayerPermission(newPermission);
 				}
 
 				if (!playersYaml.isString("players." + playerUUID + ".subranks")) {

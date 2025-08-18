@@ -18,6 +18,7 @@ import nl.svenar.powerranks.common.structure.PRPermission;
 import nl.svenar.powerranks.common.structure.PRPlayer;
 import nl.svenar.powerranks.common.structure.PRPlayerRank;
 import nl.svenar.powerranks.common.structure.PRRank;
+import nl.svenar.powerranks.common.utils.PRCache;
 import nl.svenar.powerranks.common.utils.PRUtil;
 import nl.svenar.powerranks.bukkit.PowerRanks;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
@@ -380,28 +381,29 @@ public class Users implements Listener {
 		if (CacheManager.getRank(rank) != null) {
 			if (CacheManager.getRank(getRankIgnoreCase(to)) == null) {
 				// Rename the rank
-				CacheManager.getRank(rank).setName(to);
+				PRCache.renameRank(rank, to);
+				// CacheManager.getRank(rank).setName(to);
 
-				// Make sure the ranks that have "rank" as inheritance are updated
-				for (PRRank r : CacheManager.getRanks()) {
-					List<String> inheritances = r.getInheritances();
-					if (inheritances.contains(rank)) {
-						inheritances.remove(rank);
-						r.addInheritance(to);
-						break;
-					}
-				}
+				// // Make sure the ranks that have "rank" as inheritance are updated
+				// for (PRRank r : CacheManager.getRanks()) {
+				// 	List<String> inheritances = r.getInheritances();
+				// 	if (inheritances.contains(rank)) {
+				// 		inheritances.remove(rank);
+				// 		r.addInheritance(to);
+				// 		break;
+				// 	}
+				// }
 
-				// Make sure all players with this rank are updated
-				for (PRPlayer prPlayer : CacheManager.getPlayers()) {
-					Set<PRPlayerRank> ranks = prPlayer.getRanks();
-					for (PRPlayerRank playerRank : ranks) {
-						if (Objects.equals(playerRank.getName(), rank)) {
-							playerRank.setName(to);
-						}
-					}
-					this.m.updatePlayersWithRank(this, to);
-				}
+				// // Make sure all players with this rank are updated
+				// for (PRPlayer prPlayer : CacheManager.getPlayers()) {
+				// 	Set<PRPlayerRank> ranks = prPlayer.getRanks();
+				// 	for (PRPlayerRank playerRank : ranks) {
+				// 		if (Objects.equals(playerRank.getName(), rank)) {
+				// 			playerRank.setName(to);
+				// 		}
+				// 	}
+				// 	this.m.updatePlayersWithRank(this, to);
+				// }
 				return true;
 			}
 		}
@@ -681,7 +683,7 @@ public class Users implements Listener {
 
 		if (targetPlayer != null) {
 			try {
-				Set<PRPermission> list = targetPlayer.getPermissions();
+				Set<PRPermission> list = targetPlayer.getPlayerPermissions();
 				PRPermission targetPermission = null;
 				for (PRPermission prPermission : list) {
 					if (prPermission.getName().equals(permission)) {
@@ -693,7 +695,7 @@ public class Users implements Listener {
 					PRPermission newPermission = new PRPermission();
 					newPermission.setName(permission);
 					newPermission.setValue(allowed);
-					targetPlayer.addPermission(newPermission);
+					targetPlayer.addPlayerPermission(newPermission);
 				}
 				return true;
 			} catch (Exception e) {
@@ -714,7 +716,7 @@ public class Users implements Listener {
 			try {
 				if (CacheManager.getPlayer(target_player.getUniqueId().toString()) != null) {
 					Set<PRPermission> list = CacheManager.getPlayer(target_player.getUniqueId().toString())
-							.getPermissions();
+							.getPlayerPermissions();
 					PRPermission targetPermission = null;
 					for (PRPermission prPermission : list) {
 						if (prPermission.getName().equals(permission)) {
@@ -724,7 +726,7 @@ public class Users implements Listener {
 					}
 					if (targetPermission != null) {
 						CacheManager.getPlayer(target_player.getUniqueId().toString())
-								.removePermission(targetPermission);
+								.removePlayerPermission(targetPermission);
 					}
 					return true;
 				} else {
@@ -744,7 +746,7 @@ public class Users implements Listener {
 
 				if (uuid.length() > 0) {
 					if (CacheManager.getPlayer(uuid) != null) {
-						Set<PRPermission> list = CacheManager.getPlayer(uuid).getPermissions();
+						Set<PRPermission> list = CacheManager.getPlayer(uuid).getPlayerPermissions();
 						PRPermission targetPermission = null;
 						for (PRPermission prPermission : list) {
 							if (prPermission.getName().equals(permission)) {
@@ -756,7 +758,7 @@ public class Users implements Listener {
 							// PRPermission newPermission = new PRPermission();
 							// newPermission.setName(permission);
 							// newPermission.setValue(true);
-							CacheManager.getPlayer(uuid).removePermission(targetPermission);
+							CacheManager.getPlayer(uuid).removePlayerPermission(targetPermission);
 							// r.addPermission(newPermission);
 							// list.add(permission);
 							// CachedRanks.set("Groups." + r + ".permissions", (Object) list);
@@ -791,7 +793,7 @@ public class Users implements Listener {
 		try {
 
 			if (CacheManager.getPlayer(uuid) != null) {
-				list = CacheManager.getPlayer(uuid).getPermissions();
+				list = CacheManager.getPlayer(uuid).getPlayerPermissions();
 			} else {
 				return list;
 			}

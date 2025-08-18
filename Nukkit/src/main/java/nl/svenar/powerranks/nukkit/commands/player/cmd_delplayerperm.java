@@ -32,7 +32,7 @@ public class cmd_delplayerperm extends PowerCommand {
 			PRPlayer targetPlayer = PRCache.getPlayer(targetPlayerName);
 			if (targetPlayer != null) {
 				for (PRPermission prPermission : targetPlayer.getPermissions()) {
-					targetPlayer.removePermission(prPermission);
+					targetPlayer.removePlayerPermission(prPermission);
 					result = true;
 					break;
 				}

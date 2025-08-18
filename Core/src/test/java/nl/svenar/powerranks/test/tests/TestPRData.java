@@ -53,7 +53,7 @@ public class TestPRData {
             PRPlayer prPlayer = PRCache.getPlayer("player" + i);
             assertTrue(prPlayer != null);
             PRPermission testPermission = new PRPermission("test.player.permission." + prPlayer.getName(), i % 2 == 0);
-            prPlayer.addPermission(testPermission);
+            prPlayer.addPlayerPermission(testPermission);
         }
         endTime = System.nanoTime();
         playerCreationTimeNS = (endTime - startTime);

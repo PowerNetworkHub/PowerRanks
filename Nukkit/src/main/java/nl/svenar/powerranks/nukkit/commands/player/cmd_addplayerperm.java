@@ -38,7 +38,7 @@ public class cmd_addplayerperm extends PowerCommand {
 			PRPlayer targetPlayer = PRCache.getPlayer(targetPlayerName);
 			PRPermission prPermission = new PRPermission(permission, allowed);
 			if (targetPlayer != null) {
-				targetPlayer.addPermission(prPermission);
+				targetPlayer.addPlayerPermission(prPermission);
 				result = true;
 			}
 

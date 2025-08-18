@@ -78,6 +78,44 @@ public class PRCache {
         }
     }
 
+    public static void renameRank(String oldName, String newName) {
+        if (oldName == null || newName == null) {
+            throw new NullPointerException("oldName or newName is null");
+        }
+
+        PRRank rank = getRank(oldName);
+        if (rank == null) {
+            return; // Rank does not exist
+        }
+
+        // Update the rank name
+        rank.setName(newName);
+        registeredRanks.remove(oldName);
+        registeredRanks.put(newName, rank);
+
+        // Update player ranks
+        for (PRPlayer prPlayer : registeredPlayersByName.values()) {
+            prPlayer.getRanks().stream()
+                    .filter(prPlayerRank -> prPlayerRank.getName().equalsIgnoreCase(oldName))
+                    .forEach(prPlayerRank -> prPlayerRank.setName(newName));
+        }
+
+        // Update default ranks if necessary
+        if (defaultRanks.contains(rank)) {
+            defaultRanks.remove(rank);
+            rank.setDefault(true);
+            defaultRanks.add(rank);
+        }
+
+        // Update inheritance
+        for (PRRank prRank : registeredRanks.values()) {
+            if (prRank.getInheritances().contains(oldName)) {
+                prRank.getInheritances().remove(oldName);
+                prRank.getInheritances().add(newName);
+            }
+        }
+    }
+
     public static PRRank getRank(String name) {
         return registeredRanks.get(name);
     }

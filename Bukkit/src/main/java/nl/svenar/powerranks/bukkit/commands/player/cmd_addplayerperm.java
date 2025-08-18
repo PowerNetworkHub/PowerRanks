@@ -38,27 +38,18 @@ public class cmd_addplayerperm extends PowerCommand {
 				allowed = false;
 			}
 			final boolean result = this.users.addPlayerPermission(targetPlayerName, permission, allowed);
-			if (result) {
-				sender.sendMessage(PRUtil.powerFormatter(
-						PowerRanks.getLanguageManager().getFormattedMessage(
-								"commands." + commandName.toLowerCase() + ".success"),
-						ImmutableMap.<String, String>builder()
-								.put("player", sender.getName())
-								.put("target", targetPlayerName)
-								.put("permission", permission)
-								.build(),
-						'[', ']'));
-			} else {
-				sender.sendMessage(PRUtil.powerFormatter(
-						PowerRanks.getLanguageManager().getFormattedMessage(
-								"commands." + commandName.toLowerCase() + ".failed"),
-						ImmutableMap.<String, String>builder()
-								.put("player", sender.getName())
-								.put("target", targetPlayerName)
-								.put("permission", permission)
-								.build(),
-						'[', ']'));
-			}
+			sendResultToPlayer(sender, result, commandName, targetPlayerName, permission);
+
+		} else if (args.length == 3) {
+			final String targetPlayerName = args[0];
+			String permission = args[1];
+			boolean allowed = args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("yes")
+					|| args[2].equalsIgnoreCase("1") || args[2].equalsIgnoreCase("on")
+					|| args[2].equalsIgnoreCase("enable") || args[2].equalsIgnoreCase("y");
+
+			final boolean result = this.users.addPlayerPermission(targetPlayerName, permission, allowed);
+			sendResultToPlayer(sender, result, commandName, targetPlayerName, permission);
+			
 		} else {
 			sender.sendMessage(
 					PowerRanks.getLanguageManager().getFormattedUsageMessage(commandLabel, commandName,
@@ -66,6 +57,31 @@ public class cmd_addplayerperm extends PowerCommand {
 		}
 
 		return false;
+	}
+
+	private void sendResultToPlayer(CommandSender sender, boolean result, String commandName, String targetPlayerName,
+			String permission) {
+		if (result) {
+			sender.sendMessage(PRUtil.powerFormatter(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".success"),
+					ImmutableMap.<String, String>builder()
+							.put("player", sender.getName())
+							.put("target", targetPlayerName)
+							.put("permission", permission)
+							.build(),
+					'[', ']'));
+		} else {
+			sender.sendMessage(PRUtil.powerFormatter(
+					PowerRanks.getLanguageManager().getFormattedMessage(
+							"commands." + commandName.toLowerCase() + ".failed"),
+					ImmutableMap.<String, String>builder()
+							.put("player", sender.getName())
+							.put("target", targetPlayerName)
+							.put("permission", permission)
+							.build(),
+					'[', ']'));
+		}
 	}
 
 	public ArrayList<String> tabCompleteEvent(CommandSender sender, String[] args) {

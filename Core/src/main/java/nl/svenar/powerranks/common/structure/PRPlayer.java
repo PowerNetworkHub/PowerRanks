@@ -26,7 +26,9 @@ package nl.svenar.powerranks.common.structure;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -43,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * 
  * @author svenar
  */
-@JsonIgnoreProperties({"defaultRanks", "effectivePermissions"})
+@JsonIgnoreProperties({ "defaultRanks", "effectivePermissions" })
 public class PRPlayer {
 
     // Storage
@@ -52,6 +54,7 @@ public class PRPlayer {
     private String nickname = "";
     private Set<PRPlayerRank> ranks = new HashSet<PRPlayerRank>();
     private Set<PRPermission> permissions = new HashSet<PRPermission>();
+    private Set<PRPermission> playerPermissions = new HashSet<PRPermission>();
     private Set<String> usertags = new HashSet<String>();
     private long playtime = 0L;
 
@@ -123,6 +126,7 @@ public class PRPlayer {
 
     /**
      * Get the default ranks of this player
+     * 
      * @return List of PRRank instances
      */
     public List<PRRank> getDefaultRanks() {
@@ -167,7 +171,6 @@ public class PRPlayer {
             this.ranks.add(rank);
         }
     }
-
 
     /**
      * Add a rank on this player
@@ -227,25 +230,69 @@ public class PRPlayer {
      * 
      * @param permission
      */
-    public void addPermission(PRPermission permission) {
-        if (this.permissions == null) {
-            this.permissions = new HashSet<PRPermission>();
-        }
+    // public void addPermission(PRPermission permission) {
+    //     if (this.permissions == null) {
+    //         this.permissions = new HashSet<PRPermission>();
+    //     }
 
-        this.permissions.add(permission);
-    }
+    //     this.permissions.add(permission);
+    // }
 
     /**
      * Remove a PRPermission instance from this player
      * 
      * @param permission
      */
-    public void removePermission(PRPermission permission) {
-        if (!this.permissions.contains(permission)) {
+    // public void removePermission(PRPermission permission) {
+    //     if (!this.permissions.contains(permission)) {
+    //         return;
+    //     }
+
+    //     this.permissions.remove(permission);
+    // }
+
+    /**
+     * Get a list of all stored playerPermissions in this player
+     * 
+     * @return Java ArrayList with all PRPermission instances
+     */
+    public Set<PRPermission> getPlayerPermissions() {
+        return this.playerPermissions;
+    }
+
+    /**
+     * Overwrite all stored playerPermissions with the provided Java ArrayList
+     * 
+     * @param playerPermissions
+     */
+    public void setPlayerPermissions(HashSet<PRPermission> playerPermissions) {
+        this.playerPermissions = playerPermissions;
+    }
+
+    /**
+     * Add a PRPermission instance to this player's permissions
+     * 
+     * @param permission
+     */
+    public void addPlayerPermission(PRPermission permission) {
+        if (this.playerPermissions == null) {
+            this.playerPermissions = new HashSet<PRPermission>();
+        }
+
+        this.playerPermissions.add(permission);
+    }
+
+    /**
+     * Remove a PRPermission instance from this player's permissions
+     * 
+     * @param permission
+     */
+    public void removePlayerPermission(PRPermission permission) {
+        if (!this.playerPermissions.contains(permission)) {
             return;
         }
 
-        this.permissions.remove(permission);
+        this.playerPermissions.remove(permission);
     }
 
     /**
@@ -253,36 +300,87 @@ public class PRPlayer {
      */
     public void updatePermissionsFromRanks() {
         if (this.permissions == null) {
-            this.permissions = new HashSet<PRPermission>();
+            this.permissions = new HashSet<>();
         } else {
             this.permissions.clear();
         }
 
-        List<PRRank> playerRanks = new ArrayList<>();
+        // Collect directly assigned ranks (enabled only)
+        List<PRRank> assignedRanks = new ArrayList<>();
         for (PRPlayerRank playerRank : this.getRanks()) {
             if (!playerRank.isDisabled()) {
                 PRRank rank = PRCache.getRank(playerRank.getName());
-                if (rank != null) {
-                    playerRanks.add(rank);
-                }
+                if (rank != null)
+                    assignedRanks.add(rank);
             }
         }
 
-        PRUtil.sortRanksByWeight(playerRanks);
-        for (PRRank playerRank : playerRanks) {
-            if (Objects.nonNull(playerRank)) {
-                for (PRPermission permission : playerRank.getPermissions()) {
-                    for (PRPermission existingPermission : this.permissions) {
-                        if (permission.getName().equals(existingPermission.getName())) {
-                            this.permissions.remove(existingPermission);
-                            break;
-                        }
-                    }
-                    this.permissions.add(permission);
-                }
+        // Expand inheritance and track depth from each assigned rank
+        // depth 0 = assigned rank, 1 = its parent, 2 = grandparent, ...
+        LinkedHashSet<PRRank> allRanks = new LinkedHashSet<>();
+        Map<String, Integer> depth = new java.util.HashMap<>();
+
+        for (PRRank root : assignedRanks) {
+            collectInheritedRanksWithDepth(root, 0, allRanks, new java.util.HashSet<>(), depth);
+        }
+
+        // Bucket ranks by depth (deeper first), and sort inside bucket by weight
+        java.util.TreeMap<Integer, List<PRRank>> byDepth = new java.util.TreeMap<>(
+                java.util.Collections.reverseOrder()); // deepest → shallowest
+
+        for (PRRank r : allRanks) {
+            int d = depth.getOrDefault(r.getName(), 0);
+            byDepth.computeIfAbsent(d, k -> new ArrayList<>()).add(r);
+        }
+
+        List<PRRank> ordered = new ArrayList<>();
+        for (List<PRRank> bucket : byDepth.values()) {
+            PRUtil.sortRanksByWeight(bucket); // keep your weight semantics inside same depth
+            ordered.addAll(bucket);
+        }
+
+        // Merge permissions in that order: later ones override earlier ones by name
+        for (PRRank rank : ordered) {
+            for (PRPermission p : rank.getPermissions()) {
+                this.permissions.removeIf(existing -> existing.getName().equals(p.getName()));
+                this.permissions.add(p);
             }
         }
 
+        // Finally, apply player-specific overrides on top
+        if (this.playerPermissions != null) {
+            for (PRPermission p : this.playerPermissions) {
+                this.permissions.removeIf(existing -> existing.getName().equals(p.getName()));
+                this.permissions.add(p);
+            }
+        }
+    }
+
+    /**
+     * Collect a rank and all its ancestors, tracking the MAX depth seen so that
+     * the farthest path determines how early it is applied (deeper first).
+     */
+    private void collectInheritedRanksWithDepth(
+            PRRank rank,
+            int currentDepth,
+            Set<PRRank> collector,
+            Set<String> visited,
+            Map<String, Integer> depthOut) {
+
+        if (rank == null || visited.contains(rank.getName()))
+            return;
+        visited.add(rank.getName());
+
+        // Record max depth for this rank (important for diamonds/multiple paths)
+        depthOut.merge(rank.getName(), currentDepth, Math::max);
+
+        // Recurse to parents first so they end up deeper than this node
+        for (String parentName : rank.getInheritances()) {
+            collectInheritedRanksWithDepth(PRCache.getRank(parentName),
+                    currentDepth + 1, collector, visited, depthOut);
+        }
+
+        collector.add(rank);
     }
 
     /**
@@ -333,30 +431,40 @@ public class PRPlayer {
      * @return PRPermission instance for the provided node, null if no PRPermission
      *         instance was found
      */
+
     public PRPermission getPermission(String name, boolean wildcard) {
-        if (this.permissions == null) {
-            this.permissions = new HashSet<PRPermission>();
+        if (this.permissions == null)
+            this.permissions = new HashSet<>();
+
+        // Exact match first
+        for (PRPermission p : this.permissions) {
+            if (p.getName().equals(name))
+                return p;
         }
 
-        for (PRPermission permission : this.permissions) {
-            if (permission.getName().equals(name)) {
-                return permission;
+        if (!wildcard) {
+            return null;
+        }
+
+        // Deterministic wildcard search: from most-specific to least-specific
+        // PRUtil.generateWildcardList("a.b.c") should yield ["a.b.c", "a.b.*", "a.*",
+        // "*"] or similar.
+        // We iterate that list and pick the first permission we actually have by NAME
+        // equality.
+        List<String> candidates = PRUtil.generateWildcardList(name);
+        for (String candidate : candidates) {
+            for (PRPermission p : this.permissions) {
+                if (p.getName().equals(candidate))
+                    return p;
             }
         }
 
-        if (wildcard) {
-            List<String> wildcardPermissions = PRUtil.generateWildcardList(name);
-            for (PRPermission permission : this.permissions) {
-                if (wildcardPermissions.contains(permission.getName())) {
-                    return permission;
-                }
-            }
-        }
         return null;
     }
 
     /**
      * Get all effective permissions for this player
+     * 
      * @return List of PRPermission instances
      */
     public List<PRPermission> getEffectivePermissions() {
