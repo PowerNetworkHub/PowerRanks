@@ -378,61 +378,30 @@ public class Users implements Listener {
 
 	public boolean renameRank(String rank, String to) {
 		if (CacheManager.getRank(rank) != null) {
-			// List<String> listPermissions = (List<String>)
-			// CachedRanks.getStringList("Groups." + to + ".permissions");
-			// for (String line : CachedRanks.getStringList("Groups." + rank +
-			// ".permissions")) {
-			// listPermissions.add(line);
-			// }
-			// CachedRanks.set("Groups." + to + ".permissions", (Object) listPermissions);
-
-			// List<String> listInheritance = (List<String>)
-			// CachedRanks.getStringList("Groups." + to + ".inheritance");
-			// for (String line : CachedRanks.getStringList("Groups." + rank +
-			// ".inheritance")) {
-			// listInheritance.add(line);
-			// }
-			// CachedRanks.set("Groups." + to + ".inheritance", (Object) listInheritance);
-
-			// CachedRanks.set("Groups." + to + ".chat.prefix", CachedRanks.get("Groups." +
-			// rank + ".chat.prefix"));
-			// CachedRanks.set("Groups." + to + ".chat.suffix", CachedRanks.get("Groups." +
-			// rank + ".chat.suffix"));
-			// CachedRanks.set("Groups." + to + ".chat.chatColor", CachedRanks.get("Groups."
-			// + rank + ".chat.chatColor"));
-			// CachedRanks.set("Groups." + to + ".chat.nameColor", CachedRanks.get("Groups."
-			// + rank + ".chat.nameColor"));
-			// CachedRanks.set("Groups." + to + ".level.promote", CachedRanks.get("Groups."
-			// + rank + ".level.promote"));
-			// CachedRanks.set("Groups." + to + ".level.demote", CachedRanks.get("Groups." +
-			// rank + ".level.demote"));
-
-			// List<String> listEconomyBuyable = (List<String>) CachedRanks
-			// .getStringList("Groups." + to + ".economy.buyable");
-			// for (String line : CachedRanks.getStringList("Groups." + rank +
-			// ".economy.buyable")) {
-			// listEconomyBuyable.add(line);
-			// }
-			// CachedRanks.set("Groups." + to + ".economy.buyable", (Object)
-			// listEconomyBuyable);
-			// CachedRanks.set("Groups." + to + ".economy.cost", CachedRanks.get("Groups." +
-			// rank + ".economy.cost"));
-			// CachedRanks.set("Groups." + to + ".gui.icon", CachedRanks.get("Groups." +
-			// rank + ".gui.icon"));
-
-			// ConfigurationSection players =
-			// CachedPlayers.getConfigurationSection("players");
-			// for (String p : players.getKeys(false)) {
-			// if (CachedPlayers.getString("players." + p + ".rank") != null) {
-			// if (CachedPlayers.getString("players." + p + ".rank").equalsIgnoreCase(rank))
-			// {
-			// CachedPlayers.set("players." + p + ".rank", to, false);
-			// }
-			// }
-			// }
-			// deleteRank(rank);
 			if (CacheManager.getRank(getRankIgnoreCase(to)) == null) {
+				// Rename the rank
 				CacheManager.getRank(rank).setName(to);
+
+				// Make sure the ranks that have "rank" as inheritance are updated
+				for (PRRank r : CacheManager.getRanks()) {
+					List<String> inheritances = r.getInheritances();
+					if (inheritances.contains(rank)) {
+						inheritances.remove(rank);
+						r.addInheritance(to);
+						break;
+					}
+				}
+
+				// Make sure all players with this rank are updated
+				for (PRPlayer prPlayer : CacheManager.getPlayers()) {
+					Set<PRPlayerRank> ranks = prPlayer.getRanks();
+					for (PRPlayerRank playerRank : ranks) {
+						if (Objects.equals(playerRank.getName(), rank)) {
+							playerRank.setName(to);
+						}
+					}
+					this.m.updatePlayersWithRank(this, to);
+				}
 				return true;
 			}
 		}

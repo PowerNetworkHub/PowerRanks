@@ -57,6 +57,13 @@ public class PRPlayerRank {
         return this.name;
     }
 
+    public void setName(String name) {
+        if (name == null || name.length() == 0) {
+            return;
+        }
+        this.name = name;
+    }
+
     public HashMap<String, Object> getTags() {
         return this.tags;
     }
