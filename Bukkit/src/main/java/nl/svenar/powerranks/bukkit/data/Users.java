@@ -64,7 +64,11 @@ public class Users implements Listener {
 
 		try {
 			if (!rank.equals("*")) {
-				List<PRPermission> list = CacheManager.getRank(rank).getPermissions();
+				PRRank r = CacheManager.getRank(rank);
+				if (r == null) {
+					return false;
+				}
+				List<PRPermission> list = r.getPermissions();
 				boolean contains = false;
 				for (PRPermission prPermission : list) {
 					if (prPermission.getName().equals(permission)) {

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.FixMethodOrder;
@@ -115,7 +115,7 @@ public class TestPRData {
         TestDebugger.log(this, "[C_testPRPlayerPermissions] Checking playerpermissions in players...");
         for (int i = 0; i < PRCache.getPlayers().size(); i += PRCache.getPlayers().size() / 100) {
             PRPlayer prPlayer = PRCache.getPlayer("player" + i);
-            List<PRPermission> permissions = prPlayer.getEffectivePermissions();
+            Set<PRPermission> permissions = prPlayer.getEffectivePermissions();
             boolean hasTestPermission = false;
             boolean testPermissionValue = false;
             for (PRPermission permission : permissions) {

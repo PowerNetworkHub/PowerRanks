@@ -156,7 +156,7 @@ public class cmd_playerinfo extends PowerCommand {
 		if (player != null) {
 			sender.sendMessage(TextFormat.GREEN + "Effective Permissions: ");
 
-			List<PRPermission> playerPermissions = prPlayer.getEffectivePermissions();
+			Set<PRPermission> playerPermissions = prPlayer.getEffectivePermissions();
 			int lines_per_page = sender instanceof Player ? 5 : 10;
 			int last_page = playerPermissions.size() / lines_per_page;
 

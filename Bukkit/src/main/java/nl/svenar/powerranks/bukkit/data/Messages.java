@@ -378,7 +378,7 @@ public class Messages {
 		if (player != null) {
 			sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
-			List<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
+			Set<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
 			int lines_per_page = sender instanceof Player ? 5 : 10;
 			int last_page = playerPermissions.size() / lines_per_page;
 

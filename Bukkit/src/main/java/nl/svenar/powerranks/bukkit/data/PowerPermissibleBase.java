@@ -210,12 +210,18 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		boolean caseSensitive = PowerRanks.getConfigManager().getBool("general.case-sensitive-permissions", false);
 
-		for (PRPermission permission : this.plugin.getEffectivePlayerPermissions(this.player)) {
-			if ((caseSensitive && permission.getName().equals(name))
-					|| (!caseSensitive && permission.getName().equalsIgnoreCase(name))) {
-				prPermission = permission;
-				break;
+		try {
+			for (PRPermission permission : this.plugin.getEffectivePlayerPermissions(this.player)) {
+				if (permission == null) {
+					continue;
+				}
+				if ((caseSensitive && permission.getName().equals(name))
+						|| (!caseSensitive && permission.getName().equalsIgnoreCase(name))) {
+					prPermission = permission;
+					break;
+				}
 			}
+		} catch (Exception e) {
 		}
 
 		return prPermission;

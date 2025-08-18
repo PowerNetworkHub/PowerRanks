@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -1147,11 +1148,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return placeholderapiExpansion;
 	}
 
-	public List<PRPermission> getEffectivePlayerPermissions(Player player) {
+	public Set<PRPermission> getEffectivePlayerPermissions(Player player) {
 		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
 		if (prPlayer == null) {
-			return new ArrayList<PRPermission>();
+			return new HashSet<PRPermission>();
 		}
 
 		return prPlayer.getEffectivePermissions();

@@ -2,6 +2,7 @@ package nl.svenar.powerranks.bukkit.commands.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -62,7 +63,7 @@ public class cmd_haspermission extends PowerCommand {
 		if (prPlayer != null && permissionNode != null && permissionNode.length() > 0) {
 			Player player = Bukkit.getPlayer(prPlayer.getUUID());
 			if (player != null) {
-				List<PRPermission> playerPermissions = PowerRanks.getInstance().getEffectivePlayerPermissions(player);
+				Set<PRPermission> playerPermissions = PowerRanks.getInstance().getEffectivePlayerPermissions(player);
 				PRPermission targetPermission = null;
 				PRPermission targetWildcardPermission = null;
 
