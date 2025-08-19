@@ -58,7 +58,8 @@ public class TestInheritance {
         server.execute("pr", admin, "setrank", target.getName(), "ChildA");
 
         prTarget.updatePermissionsFromRanks();
-        Assert.assertTrue("prTarget has permission test.inherit.basic", prTarget.isPermissionAllowed("test.inherit.basic", true));
+        Assert.assertTrue("prTarget has permission test.inherit.basic",
+                prTarget.isPermissionAllowed("test.inherit.basic", true));
 
         TestDebugger.log(this, "[A_simpleInheritance_grantsFromParent] OK");
     }
@@ -94,7 +95,8 @@ public class TestInheritance {
         prTarget.updatePermissionsFromRanks();
 
         Assert.assertTrue("prTarget has permission test.level.b", prTarget.isPermissionAllowed("test.level.b", true));
-        Assert.assertFalse("prTarget does not have permission test.level.c", prTarget.isPermissionAllowed("test.level.c", true));
+        Assert.assertFalse("prTarget does not have permission test.level.c",
+                prTarget.isPermissionAllowed("test.level.c", true));
 
         TestDebugger.log(this, "[B_multiLevelInheritance_conflictingDenyWins_ChildSameWeight] OK");
     }
@@ -130,7 +132,8 @@ public class TestInheritance {
         prTarget.updatePermissionsFromRanks();
 
         Assert.assertTrue("prTarget has permission test.level.b", prTarget.isPermissionAllowed("test.level.b", true));
-        Assert.assertFalse("prTarget does not have permission test.level.c", prTarget.isPermissionAllowed("test.level.c", true));
+        Assert.assertFalse("prTarget does not have permission test.level.c",
+                prTarget.isPermissionAllowed("test.level.c", true));
 
         TestDebugger.log(this, "[C_multiLevelInheritance_conflictingDenyWins_ChildLowerWeight] OK");
     }
@@ -166,7 +169,8 @@ public class TestInheritance {
         prTarget.updatePermissionsFromRanks();
 
         Assert.assertTrue("prTarget has permission test.level.b", prTarget.isPermissionAllowed("test.level.b", true));
-        Assert.assertFalse("prTarget does not have permission test.level.c", prTarget.isPermissionAllowed("test.level.c", true));
+        Assert.assertFalse("prTarget does not have permission test.level.c",
+                prTarget.isPermissionAllowed("test.level.c", true));
 
         TestDebugger.log(this, "[D_multiLevelInheritance_conflictingDenyWins_ChildHigherWeight] OK");
     }
@@ -196,7 +200,8 @@ public class TestInheritance {
         server.execute("pr", admin, "setrank", target.getName(), "ChildC");
         prTarget.updatePermissionsFromRanks();
 
-        Assert.assertFalse("prTarget does not have permission test.conflict.foo", prTarget.isPermissionAllowed("test.conflict.foo", true));
+        Assert.assertFalse("prTarget does not have permission test.conflict.foo",
+                prTarget.isPermissionAllowed("test.conflict.foo", true));
 
         TestDebugger.log(this, "[E_conflictingParents_denyBeatsAllow] OK");
     }
@@ -267,5 +272,31 @@ public class TestInheritance {
         assertTrue(prTarget.isPermissionAllowed("test.deep.end", true));
 
         TestDebugger.log(this, "[G_deepInheritanceChain_resolvesWithoutOverflow] OK");
+    }
+
+    @Test
+    public void H_detectCircularInheritance() {
+        TestDebugger.log(this, "[H_detectCircularInheritance] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(1);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+
+        admin.setOp(true);
+
+        server.execute("pr", admin, "createrank", "LoopA");
+        server.execute("pr", admin, "createrank", "LoopB");
+
+        // Make them inherit each other
+        server.execute("pr", admin, "addinheritance", "LoopA", "LoopB");
+        server.execute("pr", admin, "addinheritance", "LoopB", "LoopA");
+
+        server.execute("pr", admin, "setrank", target.getName(), "LoopA");
+
+        // Should not infinite loop, permissions set stays empty
+        prTarget.updatePermissionsFromRanks();
+        Assert.assertEquals("Circular inheritance should not crash", 0, prTarget.getEffectivePermissions().size());
+
+        TestDebugger.log(this, "[H_detectCircularInheritance] OK");
     }
 }

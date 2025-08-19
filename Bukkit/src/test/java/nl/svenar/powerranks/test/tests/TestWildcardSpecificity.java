@@ -90,13 +90,16 @@ public class TestWildcardSpecificity {
         server.execute("pr", admin, "createrank", "SpecRankB1");
         server.execute("pr", admin, "createrank", "SpecRankB2");
 
+        server.execute("pr", admin, "setweight", "SpecRankB1", "100");
+        server.execute("pr", admin, "setweight", "SpecRankB2", "100");
+
         server.execute("pr", admin, "addperm", "SpecRankB1", "test.depth.same"); // allow
         server.execute("pr", admin, "addperm", "SpecRankB2", "-test.depth.same"); // deny
         server.execute("pr", admin, "setrank", target.getName(), "SpecRankB1");
         server.execute("pr", admin, "addrank", target.getName(), "SpecRankB2");
 
         prTarget.updatePermissionsFromRanks();
-        Assert.assertFalse("prTarget has permission 'test.depth.same'.", prTarget.isPermissionAllowed("test.depth.same", true));
+        Assert.assertFalse("prTarget does not have permission 'test.depth.same'.", prTarget.isPermissionAllowed("test.depth.same", true));
 
         TestDebugger.log(this, "[B_specificAllowDoesNotOverrideSpecificDenySameDepth] OK");
     }
@@ -156,5 +159,29 @@ public class TestWildcardSpecificity {
         assertTrue(prTarget.isPermissionAllowed("test.something", true));
 
         TestDebugger.log(this, "[D_multipleWildcards_mostSpecificWins] OK");
+    }
+
+    @Test
+    public void E_specificDenyBeatsRankWildcardAllow() {
+        TestDebugger.log(this, "[E_specificDenyBeatsRankWildcardAllow] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(1);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+
+        admin.setOp(true);
+        server.execute("pr", admin, "createrank", "WildRank");
+        server.execute("pr", admin, "addperm", "WildRank", "test.wild.*");
+        server.execute("pr", admin, "setrank", target.getName(), "WildRank");
+        prTarget.updatePermissionsFromRanks();
+        Assert.assertTrue("prTarget has permission 'test.wild.block'.", prTarget.isPermissionAllowed("test.wild.block", true));
+
+        // Add specific deny
+        server.execute("pr", admin, "addplayerperm", target.getName(), "test.wild.block", "false");
+        prTarget.updatePermissionsFromRanks();
+        Assert.assertFalse("Specific deny must override wildcard allow",
+                prTarget.isPermissionAllowed("test.wild.block", true));
+
+        TestDebugger.log(this, "[E_specificDenyBeatsRankWildcardAllow] OK");
     }
 }

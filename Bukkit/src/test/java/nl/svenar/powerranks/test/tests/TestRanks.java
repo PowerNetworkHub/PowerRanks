@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.mockbukkit.mockbukkit.ServerMock;
 import nl.svenar.powerranks.bukkit.cache.CacheManager;
 import nl.svenar.powerranks.common.structure.PRPlayer;
+import nl.svenar.powerranks.test.util.Assert;
 import nl.svenar.powerranks.test.util.Mock;
 import nl.svenar.powerranks.test.util.TestDebugger;
 
@@ -117,6 +118,57 @@ public class TestRanks {
         assertTrue(!prPlayer2.getRanks().stream().anyMatch(rank -> rank.getName().equals("testDeleteRankUpdatePlayer")));
 
         TestDebugger.log(this, "[D_testDeleteRankUpdatePlayer] OK");
+    }
 
+    @Test
+    public void E_highWeightOverridesLowWeight() {
+        TestDebugger.log(this, "[E_highWeightOverridesLowWeight] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(1);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+        admin.setOp(true);
+
+        server.execute("pr", admin, "createrank", "LowRank");
+        server.execute("pr", admin, "createrank", "HighRank");
+        server.execute("pr", admin, "addperm", "LowRank", "test.weighted.node");
+        server.execute("pr", admin, "addperm", "HighRank", "-test.weighted.node");
+
+        // Force weights
+        CacheManager.getRank("LowRank").setWeight(1);
+        CacheManager.getRank("HighRank").setWeight(100);
+
+        server.execute("pr", admin, "addrank", target.getName(), "LowRank");
+        server.execute("pr", admin, "addrank", target.getName(), "HighRank");
+
+        prTarget.updatePermissionsFromRanks();
+
+        Assert.assertFalse("High weight deny should win", prTarget.isPermissionAllowed("test.weighted.node", true));
+
+        TestDebugger.log(this, "[E_highWeightOverridesLowWeight] OK");
+    }
+
+    @Test
+    public void F_deleteRankRemovesFromPlayer() {
+        TestDebugger.log(this, "[F_deleteRankRemovesFromPlayer] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(1);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+
+        admin.setOp(true);
+        server.execute("pr", admin, "createrank", "CleanupRank");
+        server.execute("pr", admin, "addperm", "CleanupRank", "test.cleanup");
+        server.execute("pr", admin, "setrank", target.getName(), "CleanupRank");
+
+        prTarget.updatePermissionsFromRanks();
+        Assert.assertTrue("prTarget has permission 'test.cleanup'.", prTarget.isPermissionAllowed("test.cleanup", true));
+
+        // Delete rank
+        server.execute("pr", admin, "deleterank", "CleanupRank");
+        prTarget.updatePermissionsFromRanks();
+        Assert.assertFalse("Rank deleted → no permission", prTarget.isPermissionAllowed("test.cleanup", true));
+
+        TestDebugger.log(this, "[F_deleteRankRemovesFromPlayer] OK");
     }
 }

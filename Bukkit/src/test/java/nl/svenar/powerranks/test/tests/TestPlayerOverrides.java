@@ -184,4 +184,85 @@ public class TestPlayerOverrides {
 
         TestDebugger.log(this, "[E_removeNonExistingPlayerPerm_noChange] OK");
     }
+
+ @Test
+    public void F_playerOverridesRankPermission() {
+        TestDebugger.log(this, "");
+        TestDebugger.log(this, "[F_playerOverridesRankPermission] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(1);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+        admin.setOp(true);
+
+        server.execute("pr", admin, "createrank", "Member");
+        server.execute("pr", admin, "addperm", "Member", "-powerranks.test");
+        server.execute("pr", admin, "setrank", target.getName(), "Member");
+
+        prTarget.updatePermissionsFromRanks();
+        assertFalse("Rank denies powerranks.test", prTarget.isPermissionAllowed("powerranks.test", false));
+
+        // Player override allow
+        server.execute("pr", admin, "addplayerperm", target.getName(), "powerranks.test", "true");
+        prTarget.updatePermissionsFromRanks();
+        assertTrue("Player override should allow the permission",
+                prTarget.isPermissionAllowed("powerranks.test", false));
+
+        TestDebugger.log(this, "[F_playerOverridesRankPermission] OK");
+    }
+
+    @Test
+    public void G_playerOverridesAppliedLast() {
+        TestDebugger.log(this, "");
+        TestDebugger.log(this, "[G_playerOverridesAppliedLast] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(2);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+        admin.setOp(true);
+
+        server.execute("pr", admin, "createrank", "Admin");
+        server.execute("pr", admin, "addperm", "Admin", "powerranks.fly");
+        server.execute("pr", admin, "setrank", target.getName(), "Admin");
+
+        prTarget.updatePermissionsFromRanks();
+        assertTrue("Rank grants powerranks.fly", prTarget.isPermissionAllowed("powerranks.fly", false));
+
+        // Player overrides to false
+        server.execute("pr", admin, "addplayerperm", target.getName(), "powerranks.fly", "false");
+        prTarget.updatePermissionsFromRanks();
+        assertFalse("Player-specific override should disable permission",
+                prTarget.isPermissionAllowed("powerranks.fly", false));
+
+        TestDebugger.log(this, "[G_playerOverridesAppliedLast] OK");
+    }
+
+    @Test
+    public void H_playerOverrideDoesNotDuplicate() {
+        TestDebugger.log(this, "");
+        TestDebugger.log(this, "[H_playerOverrideDoesNotDuplicate] Start");
+
+        Player admin = Mock.getPlayer(0);
+        Player target = Mock.getPlayer(3);
+        PRPlayer prTarget = CacheManager.getPlayer(target.getUniqueId().toString());
+        admin.setOp(true);
+
+        server.execute("pr", admin, "createrank", "Vip");
+        server.execute("pr", admin, "addperm", "Vip", "myworld.build");
+        server.execute("pr", admin, "setrank", target.getName(), "Vip");
+
+        prTarget.updatePermissionsFromRanks();
+        Assert.assertTrue("Rank grants myworld.build", prTarget.isPermissionAllowed("myworld.build", false));
+
+        // Add player override with same value
+        server.execute("pr", admin, "addplayerperm", target.getName(), "myworld.build", "true");
+        prTarget.updatePermissionsFromRanks();
+
+        int count = (int) prTarget.getEffectivePermissions().stream()
+                .filter(p -> p.getName().equals("myworld.build"))
+                .count();
+        Assert.assertEquals("Permission should not be duplicated", 1, count);
+
+        TestDebugger.log(this, "[H_playerOverrideDoesNotDuplicate] OK");
+    }
 }

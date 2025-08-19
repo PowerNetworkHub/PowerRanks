@@ -149,7 +149,20 @@ public class PRPlayer {
         // Merge permissions in order
         for (PRRank rank : ordered) {
             for (PRPermission p : rank.getPermissions()) {
-                merged.removeIf(existing -> existing.getName().equals(p.getName()));
+                Optional<PRPermission> existing = merged.stream()
+                        .filter(e -> e.getName().equals(p.getName()))
+                        .findFirst();
+
+                if (existing.isPresent()) {
+                    PRPermission current = existing.get();
+                    // Deny should override allow when same depth/weight
+                    if (!current.getValue() && p.getValue()) {
+                        // keep deny, skip allow
+                        continue;
+                    }
+                    // Otherwise replace (allow overriding deny at deeper/stronger level)
+                    merged.remove(current);
+                }
                 merged.add(p);
             }
         }

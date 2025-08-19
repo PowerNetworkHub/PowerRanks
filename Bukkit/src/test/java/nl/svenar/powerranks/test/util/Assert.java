@@ -46,7 +46,7 @@ public class Assert {
         }
     }
 
-    public static void assertEquals(String description, String expected, String actual) {
+    public static void assertEquals(String description, Object expected, Object actual) {
         try {
             org.junit.Assert.assertEquals(description, expected, actual);
             System.out.println(description + " - passed");
