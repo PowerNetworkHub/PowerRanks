@@ -31,7 +31,7 @@ public class cmd_delplayerperm extends PowerCommand {
 			boolean result = false;
 			PRPlayer targetPlayer = PRCache.getPlayer(targetPlayerName);
 			if (targetPlayer != null) {
-				for (PRPermission prPermission : targetPlayer.getPermissions()) {
+				for (PRPermission prPermission : targetPlayer.getPlayerPermissions()) {
 					targetPlayer.removePlayerPermission(prPermission);
 					result = true;
 					break;
@@ -80,7 +80,7 @@ public class cmd_delplayerperm extends PowerCommand {
 			PRPlayer targetPlayer = PRCache.getPlayer(args[0]);
 			if (targetPlayer != null) {
 				// for (Permission pai : Nukkit.getServer().getPermissions()) {
-				for (PRPermission perm : targetPlayer.getPermissions()) {
+				for (PRPermission perm : targetPlayer.getEffectivePermissions().values()) {
 					// String perm = pai.getPermission();
 					String userInput = args[1];
 					String autocompletePermission = "";

@@ -56,15 +56,11 @@ public class PRPermission {
     }
 
     /**
-     * Update the permissoin node
+     * Update the permission node
      * 
      * @param name
      */
     public void setName(String name) {
-        this.setValue(!name.startsWith("-"));
-        if (name.startsWith("-")) {
-            name = name.replaceFirst("-", "");
-        }
         this.name = name;
     }
 

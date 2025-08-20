@@ -68,7 +68,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 		output_messages.add(TextFormat.BLUE + "===" + TextFormat.DARK_AQUA + "----------" + TextFormat.AQUA
 				+ plugin.getDescription().getName() + TextFormat.DARK_AQUA + "----------" + TextFormat.BLUE + "===");
 
-		Set<PRPermission> playerPermissions = prPlayer.getPermissions();
+		Set<PRPermission> playerPermissions = prPlayer.getPlayerPermissions();
 
 		int lines_per_page = sender instanceof Player ? 5 : 10;
 		int last_page = playerPermissions.size() / lines_per_page;

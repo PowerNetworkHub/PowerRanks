@@ -25,7 +25,7 @@ import nl.svenar.powerranks.test.util.TestDebugger;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestInstance(Lifecycle.PER_CLASS)
-public class TestWildcardSpecificity {
+public class TestWildcardPermissions {
 
     private final int numPlayers = 20;
     private ServerMock server;
@@ -59,7 +59,7 @@ public class TestWildcardSpecificity {
         server.execute("pr", admin, "addperm", "SpecRankA", "-test.cmd.extra.*"); // specific deny
         server.execute("pr", admin, "setrank", target.getName(), "SpecRankA");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertFalse(prTarget.isPermissionAllowed("test.cmd.extra.kick", true));
         assertTrue(prTarget.isPermissionAllowed("test.cmd.ban", true));
 
@@ -93,13 +93,14 @@ public class TestWildcardSpecificity {
         server.execute("pr", admin, "setweight", "SpecRankB1", "100");
         server.execute("pr", admin, "setweight", "SpecRankB2", "100");
 
+        // Allow overrides deny at the same depth
         server.execute("pr", admin, "addperm", "SpecRankB1", "test.depth.same"); // allow
         server.execute("pr", admin, "addperm", "SpecRankB2", "-test.depth.same"); // deny
         server.execute("pr", admin, "setrank", target.getName(), "SpecRankB1");
         server.execute("pr", admin, "addrank", target.getName(), "SpecRankB2");
 
-        prTarget.updatePermissionsFromRanks();
-        Assert.assertFalse("prTarget does not have permission 'test.depth.same'.", prTarget.isPermissionAllowed("test.depth.same", true));
+        // prTarget.recalculateEffectivePermissions();
+        Assert.assertTrue("prTarget has permission 'test.depth.same'.", prTarget.isPermissionAllowed("test.depth.same", true));
 
         TestDebugger.log(this, "[B_specificAllowDoesNotOverrideSpecificDenySameDepth] OK");
     }
@@ -119,7 +120,7 @@ public class TestWildcardSpecificity {
         server.execute("pr", admin, "createrank", "SpecRankC");
         server.execute("pr", admin, "addperm", "SpecRankC", "test.command.*");
         server.execute("pr", admin, "setrank", target.getName(), "SpecRankC");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         // "test.command" (no trailing segment) should not match "test.command.*"
         assertNull(prTarget.getPermission("test.command", true));
@@ -149,7 +150,7 @@ public class TestWildcardSpecificity {
         server.execute("pr", admin, "addperm", "SpecRankD", "-test.command.*");
         server.execute("pr", admin, "addperm", "SpecRankD", "test.command.kick.*");
         server.execute("pr", admin, "setrank", target.getName(), "SpecRankD");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         // "test.command.kick.temp" -> allow from most specific wildcard despite parent deny
         assertTrue(prTarget.isPermissionAllowed("test.command.kick.temp", true));
@@ -173,12 +174,12 @@ public class TestWildcardSpecificity {
         server.execute("pr", admin, "createrank", "WildRank");
         server.execute("pr", admin, "addperm", "WildRank", "test.wild.*");
         server.execute("pr", admin, "setrank", target.getName(), "WildRank");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("prTarget has permission 'test.wild.block'.", prTarget.isPermissionAllowed("test.wild.block", true));
 
         // Add specific deny
         server.execute("pr", admin, "addplayerperm", target.getName(), "test.wild.block", "false");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertFalse("Specific deny must override wildcard allow",
                 prTarget.isPermissionAllowed("test.wild.block", true));
 

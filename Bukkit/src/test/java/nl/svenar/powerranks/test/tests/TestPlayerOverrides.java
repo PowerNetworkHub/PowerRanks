@@ -55,13 +55,13 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "createrank", "OverrideRankA");
         server.execute("pr", admin, "addperm", "OverrideRankA", "test.override.build.*");
         server.execute("pr", admin, "setrank", target.getName(), "OverrideRankA");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("prTarget should have 'test.override.build.place'.",
                 prTarget.isPermissionAllowed("test.override.build.place", true));
 
         // Player explicit deny
         server.execute("pr", admin, "addplayerperm", target.getName(), "test.override.build.place", "false");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertFalse("prTarget should not have 'test.override.build.place'.",
                 prTarget.isPermissionAllowed("test.override.build.place", true));
 
@@ -83,12 +83,12 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "createrank", "OverrideRankB");
         server.execute("pr", admin, "addperm", "OverrideRankB", "-test.override.break.block");
         server.execute("pr", admin, "setrank", target.getName(), "OverrideRankB");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertFalse(prTarget.isPermissionAllowed("test.override.break.block", true));
 
         // Player tries to allow
         server.execute("pr", admin, "addplayerperm", target.getName(), "test.override.break.block", "true");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue("Rank allow should still win", prTarget.isPermissionAllowed("test.override.break.block", true));
 
         TestDebugger.log(this, "[B_rankDenyBeatsPlayerAllow] OK");
@@ -108,17 +108,17 @@ public class TestPlayerOverrides {
 
         server.execute("pr", admin, "createrank", "OverrideRankC");
         server.execute("pr", admin, "setrank", target.getName(), "OverrideRankC");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         // Player wildcard allow
         server.execute("pr", admin, "addplayerperm", target.getName(), "test.ov.*", "true");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("prTarget should have 'test.ov.anything'.",
                 prTarget.isPermissionAllowed("test.ov.anything", true));
 
         // Specific deny should override wildcard allow (both at player level)
         server.execute("pr", admin, "addplayerperm", target.getName(), "test.ov.block", "false");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertFalse("prTarget should not have 'test.ov.block'.",
                 prTarget.isPermissionAllowed("test.ov.block", true));
         Assert.assertTrue("prTarget should have 'test.ov.other'.", prTarget.isPermissionAllowed("test.ov.other", true));
@@ -141,18 +141,18 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "createrank", "OverrideRankD");
         server.execute("pr", admin, "addperm", "OverrideRankD", "test.revert.inherited");
         server.execute("pr", admin, "setrank", target.getName(), "OverrideRankD");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("prTarget should have 'test.revert.inherited'.",
                 prTarget.isPermissionAllowed("test.revert.inherited", true));
 
         server.execute("pr", admin, "addplayerperm", target.getName(), "test.revert.inherited", "false");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         Assert.assertFalse("prTarget should not have 'test.revert.inherited'.",
                 prTarget.isPermissionAllowed("test.revert.inherited", true));
 
         server.execute("pr", admin, "delplayerperm", target.getName(), "test.revert.inherited");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("Should fall back to inherited allow",
                 prTarget.isPermissionAllowed("test.revert.inherited", true));
 
@@ -174,12 +174,12 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "createrank", "OverrideRankE");
         server.execute("pr", admin, "addperm", "OverrideRankE", "test.none.base");
         server.execute("pr", admin, "setrank", target.getName(), "OverrideRankE");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue(prTarget.isPermissionAllowed("test.none.base", true));
 
         // Try remove a non-existing deny
         server.execute("pr", admin, "delplayerperm", target.getName(), "test.none.base", "false");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue("Base state should remain", prTarget.isPermissionAllowed("test.none.base", true));
 
         TestDebugger.log(this, "[E_removeNonExistingPlayerPerm_noChange] OK");
@@ -199,12 +199,12 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "addperm", "Member", "-powerranks.test");
         server.execute("pr", admin, "setrank", target.getName(), "Member");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertFalse("Rank denies powerranks.test", prTarget.isPermissionAllowed("powerranks.test", false));
 
         // Player override allow
         server.execute("pr", admin, "addplayerperm", target.getName(), "powerranks.test", "true");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue("Player override should allow the permission",
                 prTarget.isPermissionAllowed("powerranks.test", false));
 
@@ -225,12 +225,12 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "addperm", "Admin", "powerranks.fly");
         server.execute("pr", admin, "setrank", target.getName(), "Admin");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue("Rank grants powerranks.fly", prTarget.isPermissionAllowed("powerranks.fly", false));
 
         // Player overrides to false
         server.execute("pr", admin, "addplayerperm", target.getName(), "powerranks.fly", "false");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertFalse("Player-specific override should disable permission",
                 prTarget.isPermissionAllowed("powerranks.fly", false));
 
@@ -251,14 +251,14 @@ public class TestPlayerOverrides {
         server.execute("pr", admin, "addperm", "Vip", "myworld.build");
         server.execute("pr", admin, "setrank", target.getName(), "Vip");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("Rank grants myworld.build", prTarget.isPermissionAllowed("myworld.build", false));
 
         // Add player override with same value
         server.execute("pr", admin, "addplayerperm", target.getName(), "myworld.build", "true");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
-        int count = (int) prTarget.getEffectivePermissions().stream()
+        int count = (int) prTarget.getEffectivePermissions().values().stream()
                 .filter(p -> p.getName().equals("myworld.build"))
                 .count();
         Assert.assertEquals("Permission should not be duplicated", 1, count);

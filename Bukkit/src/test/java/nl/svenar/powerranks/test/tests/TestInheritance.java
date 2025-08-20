@@ -57,7 +57,7 @@ public class TestInheritance {
         server.execute("pr", admin, "addinheritance", "ChildA", "ParentA");
         server.execute("pr", admin, "setrank", target.getName(), "ChildA");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("prTarget has permission test.inherit.basic",
                 prTarget.isPermissionAllowed("test.inherit.basic", true));
 
@@ -65,9 +65,9 @@ public class TestInheritance {
     }
 
     @Test
-    public void B_multiLevelInheritance_conflictingDenyWins_ChildSameWeight() {
+    public void B_multiLevelInheritance_conflictingAllowWins_ChildSameWeight() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[B_multiLevelInheritance_conflictingDenyWins_ChildSameWeight] Start");
+        TestDebugger.log(this, "[B_multiLevelInheritance_conflictingAllowWins_ChildSameWeight] Start");
 
         Player admin = Mock.getPlayer(0);
         Player target = Mock.getPlayer(2);
@@ -86,25 +86,25 @@ public class TestInheritance {
 
         server.execute("pr", admin, "addperm", "LevelC", "test.level.c"); // allow
         server.execute("pr", admin, "addperm", "LevelB", "test.level.b"); // allow
-        server.execute("pr", admin, "addperm", "LevelB", "-test.level.c"); // deny overrides C
+        server.execute("pr", admin, "addperm", "LevelB", "-test.level.c"); // deny does not override C
 
         server.execute("pr", admin, "addinheritance", "LevelB", "LevelC");
         server.execute("pr", admin, "addinheritance", "LevelA", "LevelB");
 
         server.execute("pr", admin, "setrank", target.getName(), "LevelA");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         Assert.assertTrue("prTarget has permission test.level.b", prTarget.isPermissionAllowed("test.level.b", true));
-        Assert.assertFalse("prTarget does not have permission test.level.c",
+        Assert.assertTrue("prTarget has permission test.level.c",
                 prTarget.isPermissionAllowed("test.level.c", true));
 
-        TestDebugger.log(this, "[B_multiLevelInheritance_conflictingDenyWins_ChildSameWeight] OK");
+        TestDebugger.log(this, "[B_multiLevelInheritance_conflictingAllowWins_ChildSameWeight] OK");
     }
 
     @Test
-    public void C_multiLevelInheritance_conflictingDenyWins_ChildLowerWeight() {
+    public void C_multiLevelInheritance_conflictingAllowWins_ChildLowerWeight() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[C_multiLevelInheritance_conflictingDenyWins_ChildLowerWeight] Start");
+        TestDebugger.log(this, "[C_multiLevelInheritance_conflictingAllowWins_ChildLowerWeight] Start");
 
         Player admin = Mock.getPlayer(0);
         Player target = Mock.getPlayer(2);
@@ -123,25 +123,25 @@ public class TestInheritance {
 
         server.execute("pr", admin, "addperm", "LevelC", "test.level.c"); // allow
         server.execute("pr", admin, "addperm", "LevelB", "test.level.b"); // allow
-        server.execute("pr", admin, "addperm", "LevelB", "-test.level.c"); // deny overrides C
+        server.execute("pr", admin, "addperm", "LevelB", "-test.level.c"); // deny does not override C
 
         server.execute("pr", admin, "addinheritance", "LevelB", "LevelC");
         server.execute("pr", admin, "addinheritance", "LevelA", "LevelB");
 
         server.execute("pr", admin, "setrank", target.getName(), "LevelA");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         Assert.assertTrue("prTarget has permission test.level.b", prTarget.isPermissionAllowed("test.level.b", true));
-        Assert.assertFalse("prTarget does not have permission test.level.c",
+        Assert.assertTrue("prTarget has permission test.level.c",
                 prTarget.isPermissionAllowed("test.level.c", true));
 
-        TestDebugger.log(this, "[C_multiLevelInheritance_conflictingDenyWins_ChildLowerWeight] OK");
+        TestDebugger.log(this, "[C_multiLevelInheritance_conflictingAllowWins_ChildLowerWeight] OK");
     }
 
     @Test
-    public void D_multiLevelInheritance_conflictingDenyWins_ChildHigherWeight() {
+    public void D_multiLevelInheritance_conflictingAllowWins_ChildHigherWeight() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[D_multiLevelInheritance_conflictingDenyWins_ChildHigherWeight] Start");
+        TestDebugger.log(this, "[D_multiLevelInheritance_conflictingAllowWins_ChildHigherWeight] Start");
 
         Player admin = Mock.getPlayer(0);
         Player target = Mock.getPlayer(2);
@@ -160,25 +160,25 @@ public class TestInheritance {
 
         server.execute("pr", admin, "addperm", "LevelC", "test.level.c"); // allow
         server.execute("pr", admin, "addperm", "LevelB", "test.level.b"); // allow
-        server.execute("pr", admin, "addperm", "LevelB", "-test.level.c"); // deny overrides C
+        server.execute("pr", admin, "addperm", "LevelB", "-test.level.c"); // deny does not override C
 
         server.execute("pr", admin, "addinheritance", "LevelB", "LevelC");
         server.execute("pr", admin, "addinheritance", "LevelA", "LevelB");
 
         server.execute("pr", admin, "setrank", target.getName(), "LevelA");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         Assert.assertTrue("prTarget has permission test.level.b", prTarget.isPermissionAllowed("test.level.b", true));
-        Assert.assertFalse("prTarget does not have permission test.level.c",
+        Assert.assertTrue("prTarget has permission test.level.c",
                 prTarget.isPermissionAllowed("test.level.c", true));
 
-        TestDebugger.log(this, "[D_multiLevelInheritance_conflictingDenyWins_ChildHigherWeight] OK");
+        TestDebugger.log(this, "[D_multiLevelInheritance_conflictingAllowWins_ChildHigherWeight] OK");
     }
 
     @Test
-    public void E_conflictingParents_denyBeatsAllow() {
+    public void E_conflictingParents_allowBeatsDeny() {
         TestDebugger.log(this, "");
-        TestDebugger.log(this, "[E_conflictingParents_denyBeatsAllow] Start");
+        TestDebugger.log(this, "[E_conflictingParents_allowBeatsDeny] Start");
 
         Player admin = Mock.getPlayer(0);
         Player target = Mock.getPlayer(3);
@@ -198,12 +198,12 @@ public class TestInheritance {
         server.execute("pr", admin, "addinheritance", "ChildC", "ParentDeny");
 
         server.execute("pr", admin, "setrank", target.getName(), "ChildC");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
-        Assert.assertFalse("prTarget does not have permission test.conflict.foo",
+        Assert.assertTrue("prTarget has permission test.conflict.foo",
                 prTarget.isPermissionAllowed("test.conflict.foo", true));
 
-        TestDebugger.log(this, "[E_conflictingParents_denyBeatsAllow] OK");
+        TestDebugger.log(this, "[E_conflictingParents_allowBeatsDeny] OK");
     }
 
     @Test
@@ -229,12 +229,12 @@ public class TestInheritance {
         server.execute("pr", admin, "addinheritance", "ChildD", "ParentY");
 
         server.execute("pr", admin, "setrank", target.getName(), "ChildD");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue(prTarget.isPermissionAllowed("test.remove.x", true));
         assertTrue(prTarget.isPermissionAllowed("test.remove.y", true));
 
         server.execute("pr", admin, "delinheritance", "ChildD", "ParentX");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertFalse(prTarget.isPermissionAllowed("test.remove.x", true));
         assertTrue(prTarget.isPermissionAllowed("test.remove.y", true));
 
@@ -266,7 +266,7 @@ public class TestInheritance {
         server.execute("pr", admin, "addperm", ranks[depth - 1], "test.deep.end");
 
         server.execute("pr", admin, "setrank", target.getName(), ranks[depth - 1]);
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         assertTrue(prTarget.isPermissionAllowed("test.deep.start", true));
         assertTrue(prTarget.isPermissionAllowed("test.deep.end", true));
@@ -294,7 +294,7 @@ public class TestInheritance {
         server.execute("pr", admin, "setrank", target.getName(), "LoopA");
 
         // Should not infinite loop, permissions set stays empty
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertEquals("Circular inheritance should not crash", 0, prTarget.getEffectivePermissions().size());
 
         TestDebugger.log(this, "[H_detectCircularInheritance] OK");

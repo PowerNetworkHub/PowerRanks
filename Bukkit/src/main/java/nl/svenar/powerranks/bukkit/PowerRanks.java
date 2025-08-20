@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1126,6 +1127,11 @@ public class PowerRanks extends JavaPlugin implements Listener {
 	public void updatePlayersWithRank(Users users, String rank) {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			updateTablistName(p);
+			PRPlayer prPlayer = CacheManager.getPlayer(p.getUniqueId().toString());
+			if (prPlayer == null) {
+				continue;
+			}
+			prPlayer.recalculateEffectivePermissions();
 			// p.updateCommands();
 		}
 	}
@@ -1148,14 +1154,14 @@ public class PowerRanks extends JavaPlugin implements Listener {
 		return placeholderapiExpansion;
 	}
 
-	public Set<PRPermission> getEffectivePlayerPermissions(Player player) {
+	public Collection<PRPermission> getEffectivePlayerPermissions(Player player) {
 		PRPlayer prPlayer = CacheManager.getPlayer(player.getUniqueId().toString());
 
 		if (prPlayer == null) {
 			return new HashSet<PRPermission>();
 		}
 
-		return prPlayer.getEffectivePermissions();
+		return prPlayer.getEffectivePermissions().values();
 	}
 
 	public TablistManager getTablistManager() {

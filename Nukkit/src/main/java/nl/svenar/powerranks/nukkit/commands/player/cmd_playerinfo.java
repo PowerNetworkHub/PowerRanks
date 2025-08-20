@@ -2,6 +2,7 @@ package nl.svenar.powerranks.nukkit.commands.player;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -156,7 +157,7 @@ public class cmd_playerinfo extends PowerCommand {
 		if (player != null) {
 			sender.sendMessage(TextFormat.GREEN + "Effective Permissions: ");
 
-			Set<PRPermission> playerPermissions = prPlayer.getEffectivePermissions();
+			Collection<PRPermission> playerPermissions = prPlayer.getEffectivePermissions().values();
 			int lines_per_page = sender instanceof Player ? 5 : 10;
 			int last_page = playerPermissions.size() / lines_per_page;
 

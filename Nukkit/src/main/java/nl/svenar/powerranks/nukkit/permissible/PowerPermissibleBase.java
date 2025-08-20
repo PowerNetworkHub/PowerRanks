@@ -164,7 +164,7 @@ public class PowerPermissibleBase extends PermissibleBase {
 
 		boolean caseSensitive = plugin.getConfigManager().getBool("general.case-sensitive-permissions", false);
 
-		for (PRPermission permission : this.prPlayer.getEffectivePermissions()) {
+		for (PRPermission permission : this.prPlayer.getEffectivePermissions().values()) {
 			if ((caseSensitive && permission.getName().equals(name))
 					|| (!caseSensitive && permission.getName().equalsIgnoreCase(name))) {
 				prPermission = permission;

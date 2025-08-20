@@ -37,7 +37,7 @@ public class cmd_setrank extends PowerCommand {
 			if (sender instanceof Player) {
 				PRPlayer prPlayer = PRCache.getPlayer(((Player) sender).getUniqueId().toString());
 				if (sender instanceof Player) {
-					for (PRPermission permission : prPlayer.getEffectivePermissions()) {
+					for (PRPermission permission : prPlayer.getEffectivePermissions().values()) {
 						if (permission.getName()
 								.equalsIgnoreCase("powerranks.cmd." + commandName.toLowerCase() + "." + target_rank)) {
 							commandAllowed = permission.getValue();

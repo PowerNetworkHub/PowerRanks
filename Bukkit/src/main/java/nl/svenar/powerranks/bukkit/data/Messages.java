@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -378,7 +379,7 @@ public class Messages {
 		if (player != null) {
 			sender.sendMessage(ChatColor.GREEN + "Effective Permissions: ");
 
-			Set<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
+			Collection<PRPermission> playerPermissions = powerRanks.getEffectivePlayerPermissions(player);
 			int lines_per_page = sender instanceof Player ? 5 : 10;
 			int last_page = playerPermissions.size() / lines_per_page;
 

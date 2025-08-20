@@ -55,7 +55,7 @@ public class cmd_listplayerpermissions extends PowerCommand {
 		pageNavigationManager.setFancyPageControls(sender instanceof Player);
 		pageNavigationManager.setBaseCommand("pr listplayerpermissions " + playername);
 		pageNavigationManager.setItems(
-				formatList(PRCache.getPlayer(playername).getPermissions(), sender instanceof ConsoleCommandSender));
+				formatList(PRCache.getPlayer(playername).getPlayerPermissions(), sender instanceof ConsoleCommandSender));
 
 		for (Object line : pageNavigationManager.getPage(page).generate()) {
 			if (line instanceof String) {

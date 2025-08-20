@@ -57,16 +57,16 @@ public class TestRankRenameIntegrity {
         server.execute("pr", admin, "addperm", "ChildR", "test.rename.child");
         server.execute("pr", admin, "setrank", target.getName(), "ParentR");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("Has target player permission 'test.rename.child'.", prTarget.isPermissionAllowed("test.rename.child", true));
 
         // Rename child and ensure inheritance still effective
         server.execute("pr", admin, "renamerank", "ChildR", "ChildR_New");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         // Add a new perm to the renamed child; parent should still see it via inheritance
         server.execute("pr", admin, "addperm", "ChildR_New", "test.rename.child.new");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("Has target player permission 'test.rename.child.new'.", prTarget.isPermissionAllowed("test.rename.child.new", true));
 
         TestDebugger.log(this, "[A_renameChild_keepsInheritanceLinks] OK");
@@ -86,11 +86,11 @@ public class TestRankRenameIntegrity {
 
         server.execute("pr", admin, "createrank", "ToBeRenamed");
         server.execute("pr", admin, "setrank", target.getName(), "ToBeRenamed");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertTrue(prTarget.getRanks().stream().anyMatch(r -> r.getName().equals("ToBeRenamed")));
 
         server.execute("pr", admin, "renamerank", "ToBeRenamed", "RenamedFinal");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         assertFalse(prTarget.getRanks().stream().anyMatch(r -> r.getName().equals("ToBeRenamed")));
         assertTrue(prTarget.getRanks().stream().anyMatch(r -> r.getName().equals("RenamedFinal")));
 

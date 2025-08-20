@@ -1,27 +1,3 @@
-/**
- * This file is part of PowerRanks, licensed under the MIT License.
- *
- * Copyright (c) svenar (Sven) <powerranks@svenar.nl>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
-*/
-
 package nl.svenar.powerranks.common.structure;
 
 import java.util.ArrayList;
@@ -41,14 +17,8 @@ public class PRRank {
     private boolean isDefault;
     private ArrayList<PRPermission> permissions;
     private ArrayList<String> inheritances;
-    private String chatPrefix;
-    private String chatSuffix;
-    private String chatNamecolor;
-    private String chatChatcolor;
-    private ArrayList<String> economyBuyable;
-    private float economyCost;
-    private String economyDescription;
-    private String economyBuyCommand;
+    private PRChatFormat chatFormat;
+    private PREconomyDetails economyDetails;
     private int weight;
 
     public PRRank() {
@@ -56,14 +26,8 @@ public class PRRank {
         isDefault = false;
         permissions = new ArrayList<PRPermission>();
         inheritances = new ArrayList<String>();
-        chatPrefix = "";
-        chatSuffix = "";
-        chatNamecolor = "";
-        chatChatcolor = "";
-        economyBuyable = new ArrayList<String>();
-        economyCost = 0L;
-        economyDescription = "";
-        economyBuyCommand = "";
+        chatFormat = new PRChatFormat();
+        economyDetails = new PREconomyDetails();
         weight = 0;
     }
 
@@ -215,12 +179,28 @@ public class PRRank {
     }
 
     /**
+     * Get the chat format details for this rank.
+     * @return PRChatFormat instance
+     */
+    public PRChatFormat getChatFormat() {
+        return this.chatFormat;
+    }
+
+    /**
+     * Set the chat format details for this rank.
+     * @param chatFormat
+     */
+    public void setChatFormat(PRChatFormat chatFormat) {
+        this.chatFormat = chatFormat;
+    }
+
+    /**
      * Change the chat prefix for this rank
      * 
      * @param prefix
      */
     public void setPrefix(String prefix) {
-        this.chatPrefix = prefix;
+        this.chatFormat.setPrefix(prefix);
     }
 
     /**
@@ -229,7 +209,7 @@ public class PRRank {
      * @return prefix
      */
     public String getPrefix() {
-        return this.chatPrefix;
+        return this.chatFormat.getPrefix();
     }
 
     /**
@@ -238,7 +218,7 @@ public class PRRank {
      * @param suffix
      */
     public void setSuffix(String suffix) {
-        this.chatSuffix = suffix;
+        this.chatFormat.setSuffix(suffix);
     }
 
     /**
@@ -247,7 +227,7 @@ public class PRRank {
      * @return suffix
      */
     public String getSuffix() {
-        return this.chatSuffix;
+        return this.chatFormat.getSuffix();
     }
 
     /**
@@ -256,7 +236,7 @@ public class PRRank {
      * @param namecolor
      */
     public void setNamecolor(String namecolor) {
-        this.chatNamecolor = namecolor;
+        this.chatFormat.setNamecolor(namecolor);
     }
 
     /**
@@ -265,7 +245,7 @@ public class PRRank {
      * @return name color
      */
     public String getNamecolor() {
-        return this.chatNamecolor;
+        return this.chatFormat.getNamecolor();
     }
 
     /**
@@ -274,7 +254,7 @@ public class PRRank {
      * @param chatcolor
      */
     public void setChatcolor(String chatcolor) {
-        this.chatChatcolor = chatcolor;
+        this.chatFormat.setChatcolor(chatcolor);
     }
 
     /**
@@ -283,7 +263,23 @@ public class PRRank {
      * @return chat color
      */
     public String getChatcolor() {
-        return this.chatChatcolor;
+        return this.chatFormat.getChatcolor();
+    }
+
+    /**
+     * Get the economy details for this rank.
+     * @return PREconomyDetails instance
+     */
+    public PREconomyDetails getEconomyDetails() {
+        return this.economyDetails;
+    }
+
+    /**
+     * Set the economy details for this rank.
+     * @param economyDetails
+     */
+    public void setEconomyDetails(PREconomyDetails economyDetails) {
+        this.economyDetails = economyDetails;
     }
 
     /**
@@ -292,7 +288,7 @@ public class PRRank {
      * @return Java ArrayList with all buyable rank names
      */
     public ArrayList<String> getBuyableRanks() {
-        return this.economyBuyable;
+        return this.economyDetails.getBuyableRanks();
     }
 
     /**
@@ -301,7 +297,7 @@ public class PRRank {
      * @param economyBuyable
      */
     public void setBuyableRanks(ArrayList<String> buyableRankNames) {
-        this.economyBuyable = buyableRankNames;
+        this.economyDetails.setBuyableRanks(buyableRankNames);
     }
 
     /**
@@ -310,11 +306,7 @@ public class PRRank {
      * @param buyableRankName
      */
     public void addBuyableRank(String buyableRankName) {
-        if (Objects.isNull(this.economyBuyable)) {
-            this.economyBuyable = new ArrayList<String>();
-        }
-
-        this.economyBuyable.add(buyableRankName);
+        this.economyDetails.addBuyableRank(buyableRankName);
     }
 
     /**
@@ -323,13 +315,7 @@ public class PRRank {
      * @param buyableRankName
      */
     public void removeBuyableRank(String buyableRankName) {
-        if (Objects.isNull(this.economyBuyable)) {
-            this.economyBuyable = new ArrayList<String>();
-        }
-
-        if (this.economyBuyable.contains(buyableRankName)) {
-            this.economyBuyable.remove(buyableRankName);
-        }
+        this.economyDetails.removeBuyableRank(buyableRankName);
     }
 
     /**
@@ -338,7 +324,7 @@ public class PRRank {
      * @return String buy cost of the rank
      */
     public float getBuyCost() {
-        return this.economyCost;
+        return this.economyDetails.getCost();
     }
 
     /**
@@ -347,7 +333,7 @@ public class PRRank {
      * @param economyCost
      */
     public void setBuyCost(float economyCost) {
-        this.economyCost = economyCost;
+        this.economyDetails.setCost(economyCost);
     }
 
     /**
@@ -356,7 +342,7 @@ public class PRRank {
      * @return String buy description of the rank
      */
     public String getBuyDescription() {
-        return this.economyDescription;
+        return this.economyDetails.getDescription();
     }
 
     /**
@@ -365,7 +351,7 @@ public class PRRank {
      * @param description
      */
     public void setBuyDescription(String description) {
-        this.economyDescription = description;
+        this.economyDetails.setDescription(description);
     }
 
     /**
@@ -374,7 +360,7 @@ public class PRRank {
      * @return String buy command of the rank
      */
     public String getBuyCommand() {
-        return this.economyBuyCommand;
+        return this.economyDetails.getBuyCommand();
     }
 
     /**
@@ -383,7 +369,7 @@ public class PRRank {
      * @param buyCommand
      */
     public void setBuyCommand(String buyCommand) {
-        this.economyBuyCommand = buyCommand;
+        this.economyDetails.setBuyCommand(buyCommand);
     }
 
     /**
@@ -410,17 +396,16 @@ public class PRRank {
         + ", isDefault:" + isDefault
         + ", permissions:[<<PERMISSIONS>>]"
         + ", inheritances:[<<INHERITANCES>>]"
-        + ", chatPrefix:" + chatPrefix
-        + ", chatSuffix:" + chatSuffix
-        + ", chatNamecolor:" + chatNamecolor
-        + ", chatChatcolor:" + chatChatcolor
-        + ", economyBuyable:" + economyBuyable
-        + ", economyCost:" + economyCost
-        + ", economyDescription:" + economyDescription
-        + ", economyBuyCommand:" + economyBuyCommand
+        + ", chatPrefix:" + chatFormat.getPrefix()
+        + ", chatSuffix:" + chatFormat.getSuffix()
+        + ", chatNamecolor:" + chatFormat.getNamecolor()
+        + ", chatChatcolor:" + chatFormat.getChatcolor()
+        + ", economyBuyable:" + economyDetails.getBuyableRanks()
+        + ", economyCost:" + economyDetails.getCost()
+        + ", economyDescription:" + economyDetails.getDescription()
+        + ", economyBuyCommand:" + economyDetails.getBuyCommand()
         + ", buyableRanks:[<<BUYABLERANKS>>]"
-        + ", weight:" + weight
-        + ", economyBuyable:" + economyBuyable;
+        + ", weight:" + weight;
 
         String permissions = "";
         for (PRPermission permission : getPermissions()) {

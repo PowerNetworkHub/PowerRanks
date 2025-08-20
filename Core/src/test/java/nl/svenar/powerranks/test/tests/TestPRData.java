@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.junit.FixMethodOrder;
@@ -115,7 +115,7 @@ public class TestPRData {
         TestDebugger.log(this, "[C_testPRPlayerPermissions] Checking playerpermissions in players...");
         for (int i = 0; i < PRCache.getPlayers().size(); i += PRCache.getPlayers().size() / 100) {
             PRPlayer prPlayer = PRCache.getPlayer("player" + i);
-            Set<PRPermission> permissions = prPlayer.getEffectivePermissions();
+            Collection<PRPermission> permissions = prPlayer.getEffectivePermissions().values();
             boolean hasTestPermission = false;
             boolean testPermissionValue = false;
             for (PRPermission permission : permissions) {
@@ -155,7 +155,7 @@ public class TestPRData {
 
         testPlayer.addRank(new PRPlayerRank("testRank1"));
         boolean permissionAllowed = false;
-        for (PRPermission permission : testPlayer.getEffectivePermissions()) {
+        for (PRPermission permission : testPlayer.getEffectivePermissions().values()) {
             if (permission.getName().equals("test.rank.permission")) {
                 permissionAllowed = permission.getValue();
                 break;
@@ -166,7 +166,7 @@ public class TestPRData {
         testPlayer.addRank(new PRPlayerRank("testRank2"));
 
         permissionAllowed = false;
-        for (PRPermission permission : testPlayer.getEffectivePermissions()) {
+        for (PRPermission permission : testPlayer.getEffectivePermissions().values()) {
             if (permission.getName().equals("test.rank.permission")) {
                 permissionAllowed = permission.getValue();
                 break;

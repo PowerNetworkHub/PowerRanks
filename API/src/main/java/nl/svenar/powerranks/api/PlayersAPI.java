@@ -645,13 +645,13 @@ public class PlayersAPI {
             return false;
         }
 
-        for (PRPermission prPermission : player.getPermissions()) {
+        for (PRPermission prPermission : player.getPlayerPermissions()) {
             if (prPermission.getName().equalsIgnoreCase(permission.getName())) {
                 return false;
             }
         }
 
-        player.getPermissions().add(permission);
+        player.getPlayerPermissions().add(permission);
         return true;
     }
 
@@ -722,9 +722,9 @@ public class PlayersAPI {
             return false;
         }
 
-        for (PRPermission prPermission : player.getPermissions()) {
+        for (PRPermission prPermission : player.getPlayerPermissions()) {
             if (prPermission.getName().equalsIgnoreCase(permission.getName())) {
-                player.getPermissions().remove(prPermission);
+                player.getPlayerPermissions().remove(prPermission);
                 return true;
             }
         }
@@ -766,7 +766,7 @@ public class PlayersAPI {
             return false;
         }
 
-        for (PRPermission prPermission : player.getPermissions()) {
+        for (PRPermission prPermission : player.getPlayerPermissions()) {
             if (prPermission.getName().equals(permissionNode)) {
                 return true;
             }
@@ -809,7 +809,7 @@ public class PlayersAPI {
             return false;
         }
 
-        for (PRPermission prPermission : player.getPermissions()) {
+        for (PRPermission prPermission : player.getPlayerPermissions()) {
             if (prPermission.getName().equals(permissionNode)) {
                 return prPermission.getValue();
             }
@@ -852,7 +852,7 @@ public class PlayersAPI {
             return false;
         }
 
-        for (PRPermission prPermission : player.getPermissions()) {
+        for (PRPermission prPermission : player.getPlayerPermissions()) {
             if (prPermission.getName().equals(permissionNode)) {
                 prPermission.setValue(true);
                 return true;
@@ -896,7 +896,7 @@ public class PlayersAPI {
             return false;
         }
 
-        for (PRPermission prPermission : player.getPermissions()) {
+        for (PRPermission prPermission : player.getPlayerPermissions()) {
             if (prPermission.getName().equals(permissionNode)) {
                 prPermission.setValue(false);
                 return true;
@@ -937,7 +937,7 @@ public class PlayersAPI {
             return null;
         }
 
-        return player.getPermissions();
+        return player.getPlayerPermissions();
     }
 
     // ================================================================================

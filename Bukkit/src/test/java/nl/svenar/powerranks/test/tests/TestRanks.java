@@ -141,7 +141,7 @@ public class TestRanks {
         server.execute("pr", admin, "addrank", target.getName(), "LowRank");
         server.execute("pr", admin, "addrank", target.getName(), "HighRank");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
 
         Assert.assertFalse("High weight deny should win", prTarget.isPermissionAllowed("test.weighted.node", true));
 
@@ -161,12 +161,12 @@ public class TestRanks {
         server.execute("pr", admin, "addperm", "CleanupRank", "test.cleanup");
         server.execute("pr", admin, "setrank", target.getName(), "CleanupRank");
 
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertTrue("prTarget has permission 'test.cleanup'.", prTarget.isPermissionAllowed("test.cleanup", true));
 
         // Delete rank
         server.execute("pr", admin, "deleterank", "CleanupRank");
-        prTarget.updatePermissionsFromRanks();
+        // prTarget.recalculateEffectivePermissions();
         Assert.assertFalse("Rank deleted → no permission", prTarget.isPermissionAllowed("test.cleanup", true));
 
         TestDebugger.log(this, "[F_deleteRankRemovesFromPlayer] OK");

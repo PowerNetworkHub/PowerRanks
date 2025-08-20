@@ -76,7 +76,7 @@ public class cmd_delplayerperm extends PowerCommand {
 			PRPlayer targetPlayer = CacheManager.getPlayer(args[0]);
 			if (targetPlayer != null) {
 				// for (Permission pai : Bukkit.getServer().getPermissions()) {
-				for (PRPermission perm : targetPlayer.getPermissions()) {
+				for (PRPermission perm : targetPlayer.getPlayerPermissions()) {
 					// String perm = pai.getPermission();
 					String userInput = args[1];
 					String autocompletePermission = "";

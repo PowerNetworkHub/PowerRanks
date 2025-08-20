@@ -158,49 +158,29 @@ public class PRUtil {
     }
 
     /**
-     * Push an item to the end of an array
-     * @param arr
-     * @param item
-     * @return T[] array
-     */
-	public static <T> T[] array_push(T[] arr, T item) {
-		T[] tmp = Arrays.copyOf(arr, arr.length + 1);
-		tmp[tmp.length - 1] = item;
-		return tmp;
-	}
-
-    /**
-     * Remove the last item from an array
-     * 
-     * @param arr
-     * @return T[] array
-     */
-	public static <T> T[] array_pop(T[] arr) {
-		T[] tmp = Arrays.copyOf(arr, arr.length - 1);
-		return tmp;
-	}
-
-    /**
      * Generate a list of wildcard permissions
      * 
      * @param permission
-     * @return ArrayList<String> wildcard permissions
+     * @return List<String> wildcard permissions
      */
-	public static ArrayList<String> generateWildcardList(String permission) {
-		ArrayList<String> output = new ArrayList<String>();
-		String[] permission_split = permission.split("\\.");
+	public static List<String> generateWildcardList(String permission) {
+	    List<String> wildcards = new ArrayList<>();
+	    String[] parts = permission.split("\\.");
 
-		output.add("*");
+	    // Start from the most specific wildcard and go up
+	    for (int i = parts.length - 2; i >= 0; i--) {
+	        StringBuilder currentWildcard = new StringBuilder();
+	        for (int j = 0; j <= i; j++) {
+	            currentWildcard.append(parts[j]);
+	            if (j < i) {
+	                currentWildcard.append(".");
+	            }
+	        }
+	        wildcards.add(currentWildcard.toString() + ".*");
+	    }
+	    wildcards.add("*"); // Always include the top-level wildcard
 
-		permission_split = array_pop(permission_split);
-		for (int i = 0; i < permission_split.length + 1; i++) {
-			if (permission_split.length == 0)
-				break;
-			output.add(String.join(".", permission_split) + ".*");
-			permission_split = array_pop(permission_split);
-		}
-
-		return output;
+	    return wildcards;
 	}
 
     public static void createDir(final String path) {
